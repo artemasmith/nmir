@@ -28,3 +28,4 @@ database.yml
 
 # other
 ejabberdctl
+/config/database.yml
