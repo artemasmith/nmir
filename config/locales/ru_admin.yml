@@ -1,0 +1,36 @@
+ru:
+  admin:
+    form:
+      optional: 'Необязательный параметр'
+      required: 'Обязательный параметр'
+      char_length_up_to: 'Длина не более '
+
+    flash:
+      model_not_found: 'Модель не найдена'
+    home:
+      name: 'Домой'
+    actions:
+      index:
+        title: 'Административная консоль'
+        breadcrumb: 'обновить'
+        menu: 'главная'
+      dashboard:
+        breadcrumb: 'назад'
+        menu: 'Админка'
+        title: 'Административная консоль'
+        link: 'админка'
+      export:
+        link: 'экспорт'
+        menu: 'экспорт'
+        title: 'Экспорт'
+        breadcrumb: 'экспорт'
+      new:
+        menu: 'Добавить'
+        link: 'Добавить'
+        breadcrumb: 'Добавить'
+        title: 'Добавить'
+      edit:
+        link: 'Редактировать'
+        menu: 'Редактировать'
+        breadcrumb: 'Редактировать'
+        title: 'Редактировать'
