@@ -34,25 +34,28 @@ set :deploy_to, '/home/tea/var/www/multilisting'
 # Default value for keep_releases is 5
 set :keep_releases, 3
 
-namespace :deploy do
-
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      # execute :touch, release_path.join('tmp/restart.txt')
-    end
+desc 'Create symlink'
+task :symlink do
+  on roles(:all) do
+    execute "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
   end
-
-  after :publishing, :restart
-
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-    end
-  end
-
 end
+
+
+desc 'Restart application'
+task :start do
+  on roles(:all) do
+    execute "bundle exec unicorn_rails -c /home/tea/var/www/multilisting/current/config/unicorn.rb -E production"
+  end
+end
+
+after :finishing, 'deploy:cleanup'
+after :finishing, 'deploy:restart'
+
+after :updating, 'deploy:symlink'
+
+before :setup, 'deploy:starting'
+before :setup, 'deploy:updating'
+before :setup, 'bundler:install'
+
+after :setup, 'deploy:start'
