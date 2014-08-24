@@ -49,47 +49,16 @@ namespace :deploy do
   end
   after 'finishing', 'symlink'
 
-  def run_unicorn
-    within release_path do
-      with rails_env: fetch(:rails_env) do
-        execute :bundle, "exec unicorn", "-c #{release_path}/config/unicorn.rb -D -E #{fetch(:rails_env)}"
-      end
-    end
-  end
-
-  desc 'Start unicorn'
-  task :start do
-    on roles(:all) do
-      run_unicorn
-    end
-  end
-
-  desc 'Stop unicorn'
-  task :stop do
-    on roles(:all) do
-      if test "[ -f #{fetch(:unicorn_pid)} ]"
-        execute :kill, "-QUIT `cat #{fetch(:unicorn_pid)}`"
-      end
-    end
-  end
-
-  desc 'Force stop unicorn (kill -9)'
-  task :force_stop do
-    on roles(:all) do
-      if test "[ -f #{fetch(:unicorn_pid)} ]"
-        execute :kill, "-9 `cat #{fetch(:unicorn_pid)}`"
-        execute :rm, fetch(:unicorn_pid)
-      end
-    end
-  end
-
   desc 'Restart unicorn'
   task :restart do
     on roles(:all) do
       if test "[ -f #{fetch(:unicorn_pid)} ]"
-        execute :kill, "-USR2 `cat #{fetch(:unicorn_pid)}`"
-      else
-        run_unicorn
+        execute :kill, "-QUIT `cat #{fetch(:unicorn_pid)}`"
+      end
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, "exec unicorn", "-c #{release_path}/config/unicorn.rb -D -E #{fetch(:rails_env)}"
+        end
       end
     end
   end
