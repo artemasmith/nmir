@@ -2,6 +2,7 @@
 lock '3.2.1'
 set :application, 'multilisting'
 set :repo_url, 'git@github.com:teacplusplus/nmir.git'
+
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master
 #ask :branch, :master
@@ -35,18 +36,23 @@ set :keep_releases, 3
 
 
 
+
 namespace :deploy do
   desc 'Create symlink'
   task :symlink do
     on roles(:all) do
-      execute "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+      execute "cp #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     end
   end
 
   desc 'Start unicorn server'
   task :start do
     on roles(:all) do
-      execute "cd #{current_path} && RAILS_ENV=production bundle exec unicorn_rails -c config/unicorn.rb -D"
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, "exec unicorn_rails -c config/unicorn.rb -E production"
+        end
+      end
     end
   end
 
@@ -57,19 +63,9 @@ namespace :deploy do
     end
   end
 
-  desc "bundle install"
-  task :bundle_install do
-    on roles(:all) do
-      execute "cd #{release_path} && RAILS_ENV=production bundle install"
-    end
-  end
 
-  before 'deploy', 'rvm:install_rvm'  # install/update RVM
-  before 'deploy', 'rvm:install_ruby' # install Ruby and create gemset (both if missing)
-
-  after :finishing, 'deploy:symlink'
-  after :updating, 'deploy:bundle_install'
-  after 'deploy:bundle_install', 'deploy:start'
+   after :deploy, 'deploy:symlink'
+   after :deploy, 'deploy:start'
 end
 
 
