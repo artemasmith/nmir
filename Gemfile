@@ -53,7 +53,7 @@ end
 
 # Use Capistrano for deployment
 group :development do
-  gem 'capistrano'
+  gem 'capistrano', '~> 3.2.0'
   gem 'capistrano-rails'
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'

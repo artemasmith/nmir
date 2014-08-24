@@ -14,16 +14,15 @@ require 'capistrano/deploy'
 #   https://github.com/capistrano/bundler
 #   https://github.com/capistrano/rails
 #
-# require 'capistrano/rvm'
+require 'capistrano/rvm'
 # require 'capistrano/rbenv'
 # require 'capistrano/chruby'
 # require 'capistrano/bundler'
 # require 'capistrano/rails/assets'
 # require 'capistrano/rails/migrations'
 
-require 'capistrano/rvm'
-require 'capistrano/bundler'
-require 'capistrano/rails'
+# require 'capistrano/bundler'
+# require 'capistrano/rails'
 
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
