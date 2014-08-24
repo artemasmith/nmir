@@ -1,3 +1,61 @@
+# == Schema Information
+#
+# Table name: advertisments
+#
+#  id                       :integer          not null, primary key
+#  offer_type               :integer          not null
+#  property_type            :integer          not null
+#  category                 :integer          not null
+#  agent_category           :integer
+#  currency                 :integer
+#  distance                 :integer
+#  time_on_transport        :integer
+#  time_on_foot             :integer
+#  agency_id                :integer
+#  floor_from               :integer
+#  floor_to                 :integer
+#  floor_cnt_from           :integer
+#  floor_cnt_to             :integer
+#  expire_date              :datetime
+#  payed_adv                :boolean          default(FALSE)
+#  manually_added           :boolean
+#  not_for_agents           :boolean
+#  mortgage                 :boolean          default(FALSE)
+#  name                     :string(255)
+#  sales_agent              :string(255)
+#  phone                    :string(255)
+#  organization             :string(255)
+#  space_unit               :string(255)
+#  outdoors_space_from      :decimal(15, 2)
+#  outdoors_space_to        :decimal(15, 2)
+#  outdoors_space_unit      :string(255)
+#  price_from               :integer
+#  price_to                 :integer
+#  unit_price_from          :decimal(15, 2)
+#  unit_price_to            :decimal(15, 2)
+#  outdoors_unit_price_from :integer
+#  outdoors_unit_price_to   :integer
+#  space_from               :decimal(15, 2)
+#  space_to                 :decimal(15, 2)
+#  keywords                 :text
+#  created_at               :datetime
+#  updated_at               :datetime
+#  landmark                 :string(255)
+#  comment                  :text
+#  private_comment          :text
+#  adv_type                 :integer
+#  region_id                :integer
+#  district_id              :integer
+#  city_id                  :integer
+#  admin_area_id            :integer
+#  non_admin_area_id        :integer
+#  street_id                :integer
+#  address_id               :integer
+#  landmark_id              :integer
+#  room_from                :integer
+#  room_to                  :integer
+#
+
 require 'rails_helper'
 include AdvSpecHelper
 

@@ -1,0 +1,41 @@
+- search_results.each do |adv|
+  .col-xs-12 style=("background-color: ivory; padding-top: 5px; padding-bottom: 5px")
+    .col-lg-2.col-md-3
+      input.small style=("position: relative; top: 2px;") type="checkbox" value="true"
+        span= adv.created_at
+        a.btn.btn-default.btn-xs title="редактировать"
+          i.fa.fa-edit.fa-lg
+          | ред.
+        a.btn.btn-default.btn-xs title=("в закладки")
+          i.fa.fa-bookmark-o.fa-lg
+          | в блокнот
+        a.btn.btn-default.btn-xs title="обновить"
+          i.fa.fa-level-up.fa-lg
+          | обновить
+        span.label.label-warning неактивное
+    .col-sm-4.col-lg-2.col-md-3
+      img src="http://www.domowoi.com/system/images/000/026/914/b7bc9112e29318fe7e6ea0436d7d4953.thumb.jpg" style=("height: 96px; width: 155px")
+    .col-lg-5.col-md-6
+      span.h4
+        = link_to adv.name, advertisement_path(adv)
+      br
+        span.lead 25 010
+        span
+          | 000
+          i.fa.fa-rub ;
+        span
+          | 145 000
+          = succeed "/\u{43c}&amp;sup2;" do
+            i.fa.fa-rub
+        br
+          span.h5= "#{ adv.region.title if adv.region }, #{ adv.city.title if adv.city }, #{ adv.district.title if adv.district }"
+    .col-lg-3.col-sm-12
+      span
+        i.fa.fa-life-ring
+        a href="#"  = adv.organization
+      span
+        a href="#" = adv.sales_agent
+      span
+        button.btn.btn-default.btn-xs id="show-phone-#{adv.id}" onclick="show_phone(this);"
+          i.fa.fa-phone.fa-lg
+          | показать телефон

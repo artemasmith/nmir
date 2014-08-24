@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
 
+  resources :locations, only: [:index, :show]
+
+  resources :advertisements do
+    collection do
+      post 'search'
+    end
+  end
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.

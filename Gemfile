@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
 # Use sqlite3 as the database for Active Record
@@ -18,6 +16,14 @@ gem "slim-rails"
 # gem 'therubyracer',  platforms: :ruby
 
 gem 'rails_admin'
+#group :development, :test do
+#  gem 'factory_girl'
+#end
+
+#sphinx
+gem 'mysql2'
+gem 'thinking-sphinx'
+gem 'joiner', '0.3.1'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
