@@ -5,6 +5,7 @@
 # property set.  Don't declare `role :all`, it's a meta role.
 
 role :web, %w{tea@192.168.0.79}
+role :db, %w{tea@192.168.0.79}, :primary => true
 
 
 # Extended Server Syntax

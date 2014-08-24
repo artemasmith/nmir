@@ -3,6 +3,8 @@ lock '3.2.1'
 set :application, 'multilisting'
 set :repo_url, 'git@github.com:teacplusplus/nmir.git'
 set :rails_env, "production"
+set :migration_role, :all
+set :conditionally_migrate, true
 
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master
@@ -47,7 +49,7 @@ namespace :deploy do
       execute "cp #{shared_path}/config/secrets.yml #{release_path}/config/secrets.yml"
     end
   end
-  after 'finishing', 'symlink'
+
 
   desc 'Restart unicorn'
   task :restart do
@@ -62,8 +64,11 @@ namespace :deploy do
       end
     end
   end
+before 'deploy:compile_assets', 'deploy:symlink'
 
-after 'deploy', 'restart'
+after "deploy", "deploy:migrate"
+after 'deploy', 'deploy:restart'
+
 end
 
 
