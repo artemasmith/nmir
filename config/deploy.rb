@@ -2,6 +2,7 @@
 lock '3.2.1'
 set :application, 'multilisting'
 set :repo_url, 'git@github.com:teacplusplus/nmir.git'
+set :rails_env, "production"
 
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master
@@ -35,38 +36,69 @@ set :deploy_to, '/home/tea/var/www/multilisting'
 set :keep_releases, 3
 
 
-
+set :unicorn_pid, "/home/tea/var/www/multilisting/run/unicorn.pid"
 
 namespace :deploy do
+
   desc 'Create symlink'
   task :symlink do
     on roles(:all) do
       execute "cp #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+      execute "cp #{shared_path}/config/secrets.yml #{release_path}/config/secrets.yml"
     end
   end
+  after 'finishing', 'symlink'
 
-  desc 'Start unicorn server'
-  task :start do
-    on roles(:all) do
-      within release_path do
-        with rails_env: fetch(:rails_env) do
-          execute :bundle, "exec unicorn_rails -c config/unicorn.rb -E production"
-        end
+  def run_unicorn
+    within release_path do
+      with rails_env: fetch(:rails_env) do
+        execute :bundle, "exec unicorn", "-c #{release_path}/config/unicorn.rb -D -E #{fetch(:rails_env)}"
       end
     end
   end
 
-  desc 'Stop unicorn server'
-  task :stop do
+  desc 'Start unicorn'
+  task :start do
     on roles(:all) do
-      execute "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -QUIT `cat #{unicorn_pid}`; fi"
+      run_unicorn
     end
   end
 
+  desc 'Stop unicorn'
+  task :stop do
+    on roles(:all) do
+      if test "[ -f #{fetch(:unicorn_pid)} ]"
+        execute :kill, "-QUIT `cat #{fetch(:unicorn_pid)}`"
+      end
+    end
+  end
 
-   after :deploy, 'deploy:symlink'
-   after :deploy, 'deploy:start'
+  desc 'Force stop unicorn (kill -9)'
+  task :force_stop do
+    on roles(:all) do
+      if test "[ -f #{fetch(:unicorn_pid)} ]"
+        execute :kill, "-9 `cat #{fetch(:unicorn_pid)}`"
+        execute :rm, fetch(:unicorn_pid)
+      end
+    end
+  end
+
+  desc 'Restart unicorn'
+  task :restart do
+    on roles(:all) do
+      if test "[ -f #{fetch(:unicorn_pid)} ]"
+        execute :kill, "-USR2 `cat #{fetch(:unicorn_pid)}`"
+      else
+        run_unicorn
+      end
+    end
+  end
+
+after 'deploy', 'restart'
 end
+
+
+
 
 
 
