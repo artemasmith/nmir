@@ -30,3 +30,4 @@ database.yml
 ejabberdctl
 /config/database.yml
 /config/secrets.yml
+/public/assets/
