@@ -14,7 +14,7 @@ role :db, %w{tea@192.168.0.79}, :primary => true
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server '192.168.0.79', user: 'tea', roles: %w{app}, my_property: :my_value
+server '192.168.0.79', user: 'tea', roles: %w{web db}, my_property: :my_value
 
 
 # Custom SSH Options
