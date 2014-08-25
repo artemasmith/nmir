@@ -3,8 +3,8 @@ lock '3.2.1'
 set :application, 'multilisting'
 set :repo_url, 'git@github.com:teacplusplus/nmir.git'
 set :rails_env, "production"
-set :migration_role, :all
-set :conditionally_migrate, true
+
+set :migration_role, 'db'
 
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master
@@ -36,8 +36,6 @@ set :deploy_to, '/home/tea/var/www/multilisting'
 
 # Default value for keep_releases is 5
 set :keep_releases, 3
-
-
 set :unicorn_pid, "/home/tea/var/www/multilisting/run/unicorn.pid"
 
 namespace :deploy do
@@ -55,7 +53,8 @@ namespace :deploy do
   task :restart do
     on roles(:all) do
       if test "[ -f #{fetch(:unicorn_pid)} ]"
-        execute :kill, "-QUIT `cat #{fetch(:unicorn_pid)}`"
+        execute :kill, "-QUIT `cat #{fetch(:unicorn_pid)}` 2>/dev/null; true"
+        execute :rm, fetch(:unicorn_pid)
       end
       within release_path do
         with rails_env: fetch(:rails_env) do
