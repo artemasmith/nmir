@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: phones
+#
+#  id       :integer          not null, primary key
+#  number   :string(255)
+#  original :string(255)
+#  user_id  :integer
+#
+
 require 'rails_helper'
 
 RSpec.describe Phone, :type => :model do

@@ -10,6 +10,9 @@ html
     = javascript_include_tag 'application'
     = csrf_meta_tags
     link href="https://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet"
+    script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"
+      | $(document).ready(function() { $('.dropdown-menu').find('form').click(function (e) { e.stopPropagation(); });});
+
   body
     .container
       = render 'shared/header'

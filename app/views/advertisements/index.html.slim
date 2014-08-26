@@ -1,0 +1,123 @@
+.container      
+  div
+    = render 'advertisements/neighbors', locale: { neighbors: @neigbors } if @neighbors
+  .jumbotron
+    h1
+      i.fa.fa-database
+      | Платная база недвижимости
+    p.lead
+      | Ежедневные поступления от собственников и риэлторов.
+      br/
+    p
+      /WHAT A HELL?????????
+      = link_to render_html_tag(tag: 'i', class: 'fa fa-plus fa-lg', text: 'Добавить объявление'), new_advertisement_path, class: 'btn btn-primary btn-lg'
+  .well
+    span.h2
+      i.fa.fa-crosshairs.fa-lg
+      | Поиск точно в цель
+    p
+    = render 'advertisements/search_form'
+
+  .well
+    span.h2
+      i.fa.fa-check.fa-lg
+      | Реальные объявления отдельно от спама и повторов
+      a.btn.btn-info.btn-xs
+        i.fa.fa-info-circle.fa-lg
+        | как это сделано
+    p
+    div
+      i.fa.fa-list.fa-lg
+      | Найдено
+      b 168
+      | объявлений.
+      = succeed "\u{41f}\u{43e}\u{43a}\u{430}\u{437}\u{430}\u{43d}\u{44b}" do
+        .btn-group
+          a.btn.btn-default.btn-xs
+            i.fa.fa-check-square-o.fa-lg
+            | выбрать все
+          a.btn.btn-default.btn-xs
+            i.fa.fa-print.fa-lg
+            | печатать
+          a.btn.btn-default.btn-xs
+            i.fa.fa-book.fa-lg
+            | блокнот
+      | 1-50
+      .btn-group
+        button.btn.btn-default.disabled.btn-xs type="button" 
+          i.fa.fa-arrow-left
+          | пред.
+        .btn-group
+          button.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown" type="button" 
+            | 1
+            span.caret
+          .dropdown-menu style=("padding: 5px") 
+            form.small
+              label.form-label.horizontal № страницы
+              .input-group.input-group-xs
+                input.form-control type="text" 
+                  span.input-group-btn
+                    button.btn.btn-default type="button"  Перейти
+        button.btn.btn-default.btn-xs type="button" 
+          | след.
+          i.fa.fa-arrow-right
+      .btn-group
+        .button-dropdown
+          a.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown" href="#" 
+            i.fa.fa-list
+            | 30 на страницу
+            span.caret
+          ul.dropdown-menu
+            li
+              a href="#"  50 на страницу
+            li
+              a href="#"  100 на страницу
+            li
+              a href="#"  300 на страницу
+            li
+              a href="#"  500 на страницу
+      .btn-group
+        .button-dropdown
+          a.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown" href="#" 
+            i.fa.fa-sort-amount-desc
+            | по рейтингу
+            span.caret
+          ul.dropdown-menu
+            li
+              a href="#"  по дате
+    p
+    #search-results
+
+    /! end ads
+    .pagination
+      li.disabled
+        a href="#" 
+          i.fa.fa-arrow-left
+          | сюда
+      li.disabled
+        a href="#"  1
+      li
+        a href="#"  2
+      li
+        a href="#"  3
+      li
+        a href="#"  4
+      li
+        a href="#"  5
+      li
+        a href="#"  ....
+      li
+        a href="#"  6
+      li
+        a href="#"  7
+      li
+        a href="#"  8
+      li
+        a href="#"  9
+      li
+        a href="#"  10
+      li
+        a href="#" 
+          | туда
+          i.fa.fa-arrow-right
+  /! колонка рейтинга
