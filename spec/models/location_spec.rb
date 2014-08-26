@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: locations
+#
+#  id            :integer          not null, primary key
+#  title         :string(255)
+#  translit      :string(255)
+#  location_type :integer
+#  location_id   :integer
+#
+
 require 'rails_helper'
 
 RSpec.describe Location, :type => :model do

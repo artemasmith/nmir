@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: locations
+#
+#  id            :integer          not null, primary key
+#  title         :string(255)
+#  translit      :string(255)
+#  location_type :integer
+#  location_id   :integer
+#
+
 class Location < ActiveRecord::Base
   has_many :sublocations, class_name: 'Location', foreign_key: "location_id"
 
@@ -26,6 +37,13 @@ class Location < ActiveRecord::Base
     else
       return memo
     end
+  end
+
+  #parent - title or id of parent location
+  # to_i of string always returns zero, and there is no zero ids
+  def self.get_children(parent)
+    cond = parent.to_i == 0 ? { parent_title: parent } : { parent_id: parent }
+    Location.search(conditions: cond)
   end
 
   def parent?

@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: phones
+#
+#  id       :integer          not null, primary key
+#  number   :string(255)
+#  original :string(255)
+#  user_id  :integer
+#
+
 class Phone < ActiveRecord::Base
   belongs_to :user
 
