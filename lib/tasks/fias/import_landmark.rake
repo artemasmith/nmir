@@ -2,7 +2,7 @@ namespace :fias do
   desc "generate local tables landmark"
 
   def landmark_path
-    ENV['path'].blank? ? "lib/fias_db/LANDMARK.DBF" : File.join(ENV['path'].blank, "LANDMARK.DBF")
+    ENV['path'].blank? ? "lib/fias_db/LANDMARK.DBF" : File.join(ENV['path'], "LANDMARK.DBF")
   end
 
   task generate_local_table_landmark: :environment do
