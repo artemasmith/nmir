@@ -79,3 +79,7 @@ end
 # Use debugger
 #gem 'debugger', group: [:development, :test]
 
+
+#DBF is a small fast library for reading dBase, xBase, Clipper and FoxPro database files
+gem 'dbf'
+

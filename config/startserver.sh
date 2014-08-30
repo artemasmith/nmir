@@ -1,0 +1,2 @@
+cd ~
+echo 'cd /home/tea/var/www/multilisting/releases/20140830213401 && ( RAILS_ENV=production ~/.rvm/bin/rvm default do bundle exec unicorn -c /home/tea/var/www/multilisting/releases/20140830213401/config/unicorn.rb -D -E production )'

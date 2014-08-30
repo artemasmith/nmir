@@ -11,10 +11,73 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140718054510) do
+ActiveRecord::Schema.define(version: 20140829232738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ADDROBJ", force: true do |t|
+    t.integer "actstatus"
+    t.string  "aoguid",     limit: 36
+    t.string  "aoid",       limit: 36
+    t.integer "aolevel"
+    t.string  "areacode",   limit: 3
+    t.string  "autocode",   limit: 1
+    t.integer "centstatus"
+    t.string  "citycode",   limit: 3
+    t.string  "code",       limit: 17
+    t.integer "currstatus"
+    t.date    "enddate"
+    t.string  "formalname", limit: 120
+    t.string  "ifnsfl",     limit: 4
+    t.string  "ifnsul",     limit: 4
+    t.string  "nextid",     limit: 36
+    t.string  "offname",    limit: 120
+    t.string  "okato",      limit: 11
+    t.string  "oktmo",      limit: 8
+    t.integer "operstatus"
+    t.string  "parentguid", limit: 36
+    t.string  "placecode",  limit: 3
+    t.string  "plaincode",  limit: 15
+    t.string  "postalcode", limit: 6
+    t.string  "previd",     limit: 36
+    t.string  "regioncode", limit: 2
+    t.string  "shortname",  limit: 10
+    t.date    "startdate"
+    t.string  "streetcode", limit: 4
+    t.string  "terrifnsfl", limit: 4
+    t.string  "terrifnsul", limit: 4
+    t.date    "updatedate"
+    t.string  "ctarcode",   limit: 3
+    t.string  "extrcode",   limit: 4
+    t.string  "sextcode",   limit: 3
+    t.integer "livestatus"
+    t.string  "normdoc",    limit: 36
+  end
+
+  create_table "HOUSE61", force: true do |t|
+    t.string  "aoguid",     limit: 36
+    t.string  "buildnum",   limit: 10
+    t.date    "enddate"
+    t.integer "eststatus"
+    t.string  "houseguid",  limit: 36
+    t.string  "houseid",    limit: 36
+    t.string  "housenum",   limit: 10
+    t.integer "statstatus"
+    t.string  "ifnsfl",     limit: 4
+    t.string  "ifnsul",     limit: 4
+    t.string  "okato",      limit: 11
+    t.string  "oktmo",      limit: 8
+    t.string  "postalcode", limit: 6
+    t.date    "startdate"
+    t.string  "strucnum",   limit: 10
+    t.integer "strstatus"
+    t.string  "terrifnsfl", limit: 4
+    t.string  "terrifnsul", limit: 4
+    t.date    "updatedate"
+    t.string  "normdoc",    limit: 36
+    t.integer "counter"
+  end
 
   create_table "advertisments", force: true do |t|
     t.integer  "offer_type",                                                        null: false
@@ -75,6 +138,8 @@ ActiveRecord::Schema.define(version: 20140718054510) do
     t.string  "translit"
     t.integer "location_type"
     t.integer "location_id"
+    t.string  "parentguid"
+    t.integer "children_count", default: 0
   end
 
   add_index "locations", ["location_id"], name: "index_locations_on_location_id", using: :btree

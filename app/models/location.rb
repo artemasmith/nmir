@@ -26,7 +26,14 @@ class Location < ActiveRecord::Base
                           association_foreign_key: 'neighbor_id'
 
   # remember! add values to the end of array
-  enum location_type: [:region, :district, :city, :admin_area, :non_admin_area, :street, :address, :landmark]
+  enum location_type: [:region, #1
+                       :district, #3,
+                       :city, #4, #6
+                       :admin_area, # 5
+                       :non_admin_area,
+                       :street, #7
+                       :address,
+                       :landmark]
 
 
   # recursively collect all parent location nodes and return them in array
