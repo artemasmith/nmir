@@ -1,5 +1,5 @@
 namespace :fias do
-  addrobj_path = 'lib/fias_db/ADDROBJ.DBF'
+  addrobj_path = ENV['path'].blank? ? 'lib/fias_db/ADDROBJ.DBF' : File.join(ENV['path'].blank, ADDROBJ.DBF)
 
   desc "generate local table addrobj"
   task generate_local_table_addrobj: :environment do
