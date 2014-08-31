@@ -1,4 +1,4 @@
-class AddSomeFieldsToAdvertisments < ActiveRecord::Migration
+class AddSomeFieldsToAdvertisements < ActiveRecord::Migration
   def change
     add_column :advertisments, :landmark, :string
     add_column :advertisments, :comment, :text

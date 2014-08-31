@@ -1,4 +1,4 @@
-ThinkingSphinx::Index.define :advertisment, :with => :active_record do
+ThinkingSphinx::Index.define :advertisement, :with => :active_record do
   # fields
   indexes :id, sortable: true
   indexes name, sortable: true
@@ -9,7 +9,6 @@ ThinkingSphinx::Index.define :advertisment, :with => :active_record do
   indexes floor_to, type: :integer, sortable: true
   indexes space_from, type: :decimal, sortable: true
   indexes space_to, type: :decimal, sortable: true
-  indexes expire_date, type: :datetime, sortable: true
   indexes category, sortable: true
   indexes offer_type, sortable: true
   indexes space_unit

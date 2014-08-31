@@ -9,7 +9,7 @@ module SectionGenerator
       offer_type: Section.offer_types[offer_type], 
       category: Section.categories[category], 
       location_id: location.id
-    ).increment!(:advertisments_count)
+    ).increment!(:advertisements_count)
   end
 
   def self.by_property_offer(property_type, offer_type, location, loc_chain_url)
@@ -23,7 +23,7 @@ module SectionGenerator
       property_type: Section.property_types[property_type], 
       offer_type: Section.offer_types[offer_type], 
       location_id: location.id
-    ).increment!(:advertisments_count)
+    ).increment!(:advertisements_count)
   end
 
   def self.by_location(location, loc_chain_url)
@@ -33,7 +33,7 @@ module SectionGenerator
     Section.create_with(
       url: loc_chain_url
     )
-    .find_or_create_by(location_id: location.id, offer_type: nil, property_type: nil, category: nil ).increment!(:advertisments_count)
+    .find_or_create_by(location_id: location.id, offer_type: nil, property_type: nil, category: nil ).increment!(:advertisements_count)
   end
 
   def self.chain_url(locations)

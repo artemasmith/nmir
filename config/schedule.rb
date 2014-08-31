@@ -21,5 +21,6 @@
 
 
 every 1.day, :at => '0:00 am' do
-  # rake "my:rake:task"
+  rake 'advertisement:status'
+
 end

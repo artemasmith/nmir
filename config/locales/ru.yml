@@ -292,7 +292,7 @@ ru:
       one: '%{count} товар'
       other: '%{count} товаров'
   
-  advertisment:
+  advertisement:
     quantity:
       few: '%{count} объявлений'
       many: '%{count} объявления'

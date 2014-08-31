@@ -112,7 +112,7 @@ function select_region(){
     })
 }
 
-function search_advertisment(e){
+function search_advertisement(e){
 //Do required stuff for setting up search credentials (we are looking for .active elements)
 
     $('.super-form').trigger('submit.rails');

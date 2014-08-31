@@ -3,7 +3,7 @@
 # Table name: sections
 #
 #  id                  :integer          not null, primary key
-#  advertisments_count :integer          default(0)
+#  advertisements_count :integer          default(0)
 #  url                 :string(255)
 #  description         :text
 #  keywords            :text

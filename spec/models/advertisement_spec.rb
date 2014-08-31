@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: advertisments
+# Table name: advertisements
 #
 #  id                       :integer          not null, primary key
 #  offer_type               :integer          not null
@@ -16,7 +16,6 @@
 #  floor_to                 :integer
 #  floor_cnt_from           :integer
 #  floor_cnt_to             :integer
-#  expire_date              :datetime
 #  payed_adv                :boolean          default(FALSE)
 #  manually_added           :boolean
 #  not_for_agents           :boolean
@@ -59,7 +58,7 @@
 require 'rails_helper'
 include AdvSpecHelper
 
-RSpec.describe Advertisment, :type => :model do
+RSpec.describe Advertisement, :type => :model do
   fixtures :locations
 
   subject(:adv) { AdvSpecHelper.new_adv }

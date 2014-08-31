@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: advertisments
+# Table name: advertisements
 #
 #  id                       :integer          not null, primary key
 #  offer_type               :integer          not null
@@ -56,7 +56,7 @@
 #  room_to                  :integer
 #
 
-class Advertisment < ActiveRecord::Base
+class Advertisement < ActiveRecord::Base
 
   belongs_to :region,   class_name: 'Location', foreign_key: 'region_id'
   belongs_to :district, class_name: 'Location', foreign_key: 'district_id'
@@ -136,10 +136,10 @@ class Advertisment < ActiveRecord::Base
     locations_chain_url = SectionGenerator.chain_url(locations_array.map(&:title))
 
     self.locations.each do |loc_title, loc|
-      # find or create by offer_type + category + each location node, setted in this advertisment
+      # find or create by offer_type + category + each location node, setted in this advertisement
       SectionGenerator.by_offer_category(offer_type, category, loc, locations_chain_url)
 
-      # find or create by property_type + offer_type + each location node, setted in this advertisment
+      # find or create by property_type + offer_type + each location node, setted in this advertisement
       SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url)
 
       # find or create by location node

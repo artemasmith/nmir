@@ -20,11 +20,11 @@ class AdvertisementsController < ApplicationController
     #TODO figure out how to sanitize user input??
     search_cond = {}
 
-    advertisment_params.each do |k,v|
+    advertisement_params.each do |k,v|
       search_cond[k] = v.squish.gsub(' ', ' | ') if !v.blank?
     end
 
-    @search_results = Advertisment.search(conditions: search_cond)
+    @search_results = Advertisement.search(conditions: search_cond)
     respond_to do |format|
       format.js
     end
@@ -37,7 +37,7 @@ class AdvertisementsController < ApplicationController
   def set_location
     @location = params[:location] ? Location.search(conditions: { title: params[:location] }).first : nil
   end
-  def advertisment_params
+  def advertisement_params
     params.permit(:city, :region, :category, :offer_type, :currency, :space_unit, :price_from,
                                        :price_to, :date_from, :date_to)
   end

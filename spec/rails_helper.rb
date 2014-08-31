@@ -95,19 +95,18 @@ module AdvSpecHelper
   end
 
   def from_methods
-    Advertisment.attribute_names.grep(/_from/)
+    Advertisement.attribute_names.grep(/_from/)
   end
 
   def new_adv
     # valid parameters
-    Advertisment.new({
+    Advertisement.new({
       offer_type: 1,
       property_type: 1,
       category: 1,
       currency: 1,
       adv_type: 1,
 
-      expire_date: (DateTime.now + 2.days),
       distance: 100,
       time_on_transport: 15,
       time_on_foot: 15,

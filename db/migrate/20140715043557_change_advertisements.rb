@@ -1,4 +1,4 @@
-class ChangeAdvertisments < ActiveRecord::Migration
+class ChangeAdvertisements < ActiveRecord::Migration
   def up
     change_column :advertisments, :outdoors_space_unit, :string
     change_column :advertisments, :price_to, :integer

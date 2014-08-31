@@ -1,4 +1,4 @@
-class AddLocationFieldsToAdvertisments < ActiveRecord::Migration
+class AddLocationFieldsToAdvertisements < ActiveRecord::Migration
   def up
     # remove placeholders
     remove_columns(:advertisments,
