@@ -26,7 +26,7 @@ namespace :fias do
       current_record_count = 0
       slice_count = 3000
       summ_count = record_count / slice_count
-      index = 0
+      objects = 0
 
       eval("DbfTableHouse#{index}").find_in_batches(batch_size: slice_count) do |group|
         time = Time.now
@@ -42,8 +42,8 @@ namespace :fias do
           end
         end
         time_for_slice = Time.now - time
-        index += 1
-        seconds = (summ_count - index) * time_for_slice.to_i
+        objects += 1
+        seconds = (summ_count - objects) * time_for_slice.to_i
         days = seconds / 86400
         hours = seconds / 3600
         minutes = (seconds - (hours * 3600)) / 60
