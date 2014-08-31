@@ -14,13 +14,14 @@ namespace :fias do
 
     current_record_count = 0
     slice_count = 3000
-    summ_count = record_count / slice_count
+
     index = 0
     DbfTable.reset_column_information
     table = DbfTable
     table = table.where(regioncode: ENV['region']) if ENV['region'].present?
     table = table.where(actstatus: 1)
     record_count = table.count
+    summ_count = record_count / slice_count
     table.where(actstatus: 1).find_in_batches(batch_size: slice_count) do |group|
       time = Time.now
       Location.transaction do
