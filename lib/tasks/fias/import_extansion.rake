@@ -48,7 +48,7 @@ namespace :fias do
       return nil
     end
 
-    def make_local_data(text, region = nil)
+    def make_local_data(text)
       if ActiveRecord::Base.connection.table_exists?(table_name)
         eval_class
         DbfTable.reset_column_information
@@ -68,9 +68,7 @@ namespace :fias do
       slice_count = 3000
       summ_count = record_count / slice_count
       index = 0
-      table = @table
-      table = find_objects(:all, {regioncode: region.to_s, actstatus: 1}) if region.present?
-      table.each_slice(slice_count) do |records|
+      @table.each_slice(slice_count) do |records|
         time = Time.now
         DbfTable.transaction do
           records.each do |record|

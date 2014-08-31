@@ -3,7 +3,7 @@ namespace :fias do
 
   desc "generate local table addrobj"
   task generate_local_table_addrobj: :environment do
-    DbfWrapper.new(addrobj_path).make_local_data("ADDROBJ", ENV['region'])
+    DbfWrapper.new(addrobj_path).make_local_data("ADDROBJ")
   end
 
   desc "Generate locations from fias"
@@ -17,7 +17,9 @@ namespace :fias do
     summ_count = record_count / slice_count
     index = 0
     DbfTable.reset_column_information
-    DbfTable.where(actstatus: 1).find_in_batches(batch_size: slice_count) do |group|
+    table = DbfTable
+    table = table.where(regioncode: ENV['region']) if ENV['region'].present?
+    table.where(actstatus: 1).find_in_batches(batch_size: slice_count) do |group|
       time = Time.now
       Location.transaction do
         group.each do |record|

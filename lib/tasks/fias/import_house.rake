@@ -28,7 +28,7 @@ namespace :fias do
       summ_count = record_count / slice_count
       index = 0
 
-      eval("DbfTableHouse#{index}").where(actstatus: 1).find_in_batches(batch_size: slice_count) do |group|
+      eval("DbfTableHouse#{index}").find_in_batches(batch_size: slice_count) do |group|
         time = Time.now
         Location.transaction do
           group.each do |record|
