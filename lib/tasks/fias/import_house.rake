@@ -18,7 +18,7 @@ namespace :fias do
   task generate_house: :environment do
     (1..99).each do |index|
       next if ENV['region'].present? && ENV['region'].to_i != index
-      return if !File.exist?(house_path(i))
+      return if !File.exist?(house_path(index))
       eval("class DbfTableHouse#{index} < ActiveRecord::Base; self.table_name = '#{DbfWrapper.new(house_path(index)).table_name}'; end")
       eval("DbfTableHouse#{index}.reset_column_information")
       Location.reset_column_information

@@ -11,7 +11,7 @@ namespace :fias do
     eval("class DbfTable < ActiveRecord::Base; self.table_name = '#{DbfWrapper.new(addrobj_path).table_name}'; end")
     Location.reset_column_information
     DbfTable.reset_column_information
-    record_count = DbfTable.count
+
     current_record_count = 0
     slice_count = 3000
     summ_count = record_count / slice_count
@@ -19,6 +19,8 @@ namespace :fias do
     DbfTable.reset_column_information
     table = DbfTable
     table = table.where(regioncode: ENV['region']) if ENV['region'].present?
+    table = table.where(actstatus: 1)
+    record_count = table.count
     table.where(actstatus: 1).find_in_batches(batch_size: slice_count) do |group|
       time = Time.now
       Location.transaction do
