@@ -8,6 +8,7 @@ namespace :fias do
   desc "generate local tables house"
   task generate_local_table_house: :environment do
     (1..99).each do |i|
+      next if ENV['region'].present? && ENV['region'].to_i != i
       DbfWrapper.new(house_path(i)).make_local_data("HOUSE#{i}")
     end
   end
@@ -15,7 +16,7 @@ namespace :fias do
   desc "Generate houses from fias"
   task generate_house: :environment do
     (1..99).each do |index|
-
+      next if ENV['region'].present? && ENV['region'].to_i != i
       eval("class DbfTableHouse#{index} < ActiveRecord::Base; self.table_name = '#{DbfWrapper.new(house_path(index)).table_name}'; end")
       eval("DbfTableHouse#{index}.reset_column_information")
       Location.reset_column_information

@@ -3,7 +3,7 @@ namespace :fias do
 
   desc "generate local table addrobj"
   task generate_local_table_addrobj: :environment do
-    DbfWrapper.new(addrobj_path).make_local_data("ADDROBJ")
+    DbfWrapper.new(addrobj_path).make_local_data("ADDROBJ", ENV['region'])
   end
 
   desc "Generate locations from fias"

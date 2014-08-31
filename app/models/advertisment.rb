@@ -74,6 +74,8 @@ class Advertisment < ActiveRecord::Base
 
   # Enums
   include AdvEnums
+  #rails_admin
+  include AdvRailsAdmin
 
   before_create :set_locations
   after_create :generate_sections

@@ -49,7 +49,6 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # tools
-gem 'rack-mini-profiler'
 gem 'russian', '~> 0.6.0'
 
 group :production do
@@ -59,6 +58,7 @@ end
 
 # Use Capistrano for deployment
 group :development do
+  gem 'rack-mini-profiler'
   gem 'capistrano', '~> 3.2.0'
   # gem 'capistrano-rails'
   #gem 'capistrano-bundler'
