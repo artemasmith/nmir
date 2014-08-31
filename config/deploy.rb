@@ -5,6 +5,7 @@ set :repo_url, 'git@github.com:teacplusplus/nmir.git'
 set :rails_env, "production"
 set :migration_role, 'db'
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+set :whenever_environment, 'production'
 
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master

@@ -61,7 +61,7 @@ end
 group :development do
   gem 'capistrano', '~> 3.2.0'
   # gem 'capistrano-rails'
-  # gem 'capistrano-bundler'
+  #gem 'capistrano-bundler'
   gem 'capistrano-rvm'
   gem 'lol_dba'
   gem 'annotate'
@@ -84,5 +84,5 @@ end
 gem 'dbf'
 
 #Whenever is a Ruby gem that provides a clear syntax for writing and deploying cron jobs.
-gem 'whenever', :require => false
+gem 'whenever', '~> 0.9.0', :require => false
 
