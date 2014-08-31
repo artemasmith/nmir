@@ -83,3 +83,6 @@ end
 #DBF is a small fast library for reading dBase, xBase, Clipper and FoxPro database files
 gem 'dbf'
 
+#Whenever is a Ruby gem that provides a clear syntax for writing and deploying cron jobs.
+gem 'whenever', :require => false
+

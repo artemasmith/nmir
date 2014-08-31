@@ -1,7 +1,8 @@
 namespace :fias do
 
   def house_path(index)
-    ENV['path'].blank? ? "lib/fias_db/HOUSE#{index}.DBF" : File.join(ENV['path'], "HOUSE#{index}.DBF")
+    index_to_s = index < 10 ? "0#{index}" : "#{index}"
+    ENV['path'].blank? ? "lib/fias_db/HOUSE#{index_to_s}.DBF" : File.join(ENV['path'], "HOUSE#{index_to_s}.DBF")
   end
 
   desc "generate local tables house"

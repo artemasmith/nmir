@@ -102,6 +102,19 @@ class Advertisment < ActiveRecord::Base
     end
   end
 
+  def yandex_valid?
+    time_now = Time.now
+    case
+      when sale? && flat? then (created_at > time_now - 90.days) || (updated_at > time_now - 45.days)
+      when rent? && flat? then (created_at > time_now - 7.days) || (updated_at > time_now - 14.days)
+      when sale? && room? then (created_at > time_now - 120.days) || (updated_at > time_now - 45.days)
+      when rent? && room? then (created_at > time_now - 25.days) || (updated_at. > time_now - 24.days)
+      when rent? && house? then (created_at > time_now - 30.days) || (updated_at > time_now - 30.days)
+      else
+        (self.created_at > time_now - 60.days) || (self.updated_at > time_now - 30.days)
+    end
+  end
+
   private
 
   # set all location nodes from one, that submited
@@ -144,6 +157,9 @@ class Advertisment < ActiveRecord::Base
       errors.add :base, "Неверный тип ???"
     end
   end
+
+
+
 
 end
 

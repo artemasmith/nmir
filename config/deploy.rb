@@ -3,8 +3,8 @@ lock '3.2.1'
 set :application, 'multilisting'
 set :repo_url, 'git@github.com:teacplusplus/nmir.git'
 set :rails_env, "production"
-
 set :migration_role, 'db'
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master
