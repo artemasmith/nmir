@@ -93,8 +93,8 @@ class Advertisement < ActiveRecord::Base
 
   def locations
     HashWithIndifferentAccess.new({
-      region: region, district: district, city: city, admin_area: admin_area,
-      non_admin_area: non_admin_area, street: street, address: address, landmark: landmark
+      non_admin_area: non_admin_area, admin_area: admin_area, region: region, city: city,
+      district: district, street: street, address: address, landmark: landmark
     }).delete_if {|k, v| v.blank? }
   end
 

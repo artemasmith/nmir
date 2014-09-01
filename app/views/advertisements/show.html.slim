@@ -1,2 +1,64 @@
-h1 Advertisements#show
-p Find me in app/views/advertisements/show.html.slim
+h1 = @adv.name
+ol.breadcrumb
+  -@adv.locations.each do |k,v|
+    li
+      a = v.title
+  li.active
+    span "Объявление № #{@adv.id}"
+.well.clearfix
+  p.col-lg-12
+    span.pull-right
+      a.btn.btn-warning.btn-xs
+        i.fa.fa-warning.fa-lg
+        | пожаловаться
+      a.btn.btn-default.btn-xs
+        i.fa.fa-book.fa-lg
+        | добавить в блокнот
+    span.small.text-muted
+      = "размещено #{l @adv.created_at}; обновлено #{l @adv.updated_at}; просмотров:"
+      a всего 100500, сегодня 500 Счетчик!
+  .col-xs-12.col-lg-7.pull-right.clearfix
+    img.img-responsive src="http://placehold.it/1024x720" 
+      p.text-center каммент к фото здесь
+      img.col-xs-2.thumbnail src="http://placehold.it/1024x720" 
+        img.col-xs-2.thumbnail src="http://placehold.it/1024x720" 
+          img.col-xs-2.thumbnail src="http://placehold.it/1024x720" 
+            img.col-xs-2.thumbnail src="http://placehold.it/1024x720" 
+              img.col-xs-2.thumbnail src="http://placehold.it/1024x720" 
+                img.col-xs-2.thumbnail src="http://placehold.it/1024x720" 
+                  img.col-xs-2.thumbnail src="http://placehold.it/1024x720" 
+  .col-lg-5.clearfix
+    p =@adv.comment
+    p
+      label цена:
+      span.lead =@adv.price_from.to_s
+      span
+        = succeed ";" do
+          i.fa.fa-rub
+      span
+        = @adv.price_to
+        = succeed "/\u{43c}\u{b2}" do
+          i.fa.fa-rub
+    p
+      span
+        i.fa.fa-life-ring.fa-lg
+        | агентство
+        span
+          a href="#"  = @adv.sales_agent
+        span
+          button.btn.btn-default.btn-xs
+            i.fa.fa-phone.fa-lg
+            | показать телефон
+  .col-lg-8.clearfix
+    script charset="utf-8" src="//api-maps.yandex.ru/services/constructor/1.0/js/?sid=xW1xorCoYr-xI6cCciqN5E8zGSs_rB4x&amp;width=auto&amp;height=250" type="text/javascript" 
+  p.h4.col-sm-12
+    | Больше вариантов недвижимости:
+    a.btn.btn-default.btn-xs переулок Газетный
+    a.btn.btn-default.btn-xs улица Горького
+    a.btn.btn-default.btn-xs ЖК Чебурашка
+    a.btn.btn-default.btn-xs Ленина
+    a.btn.btn-default.btn-xs Нахичевань
+    a.btn.btn-default.btn-xs Левый берег
+  = render partial: 'advertisements/search_results', locals: {search_results: @alt_adv}
+.well.well-sm.col-sm-12.clearfix
+ = render partial: 'advertisements/search_form'
