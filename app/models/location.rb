@@ -28,6 +28,8 @@ class Location < ActiveRecord::Base
   # remember! add values to the end of array
   enum location_type: [:region, :district, :city, :admin_area, :non_admin_area, :street, :address, :landmark]
 
+  scope :children_of, ->(id) { where(location_id: id) }
+
 
   # recursively collect all parent location nodes and return them in array
   def self.parent_locations(l, memo = [])
@@ -42,8 +44,14 @@ class Location < ActiveRecord::Base
   #parent - title or id of parent location
   # to_i of string always returns zero, and there is no zero ids
   def self.get_children(parent)
-    cond = parent.to_i == 0 ? { parent_title: parent } : { parent_id: parent }
-    Location.search(conditions: cond)
+    #Maybe we need to index locations?
+    #cond = parent.to_i == 0 ? { parent_title: parent } : { parent_id: parent }
+    #Location.search(conditions: cond)
+    id = parent.to_i
+    if parent.to_i == 0
+      id = Location.find_by_title(parent).id
+    end
+    Location.where('location_id = ?', id)
   end
 
   def parent?

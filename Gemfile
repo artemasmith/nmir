@@ -24,6 +24,8 @@ gem 'rails_admin'
 gem 'mysql2'
 gem 'thinking-sphinx'
 gem 'joiner', '0.3.1'
+#gem 'will_paginate'
+gem 'sanitize-rails', require: 'sanitize/rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

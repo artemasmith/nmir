@@ -10,6 +10,8 @@ ThinkingSphinx::Index.define :advertisment, :with => :active_record do
   indexes space_from, type: :decimal, sortable: true
   indexes space_to, type: :decimal, sortable: true
   indexes expire_date, type: :datetime, sortable: true
+  indexes adv_type, sortable: true
+  indexes property_type, sortable: true
   indexes category, sortable: true
   indexes offer_type, sortable: true
   indexes space_unit
@@ -18,7 +20,8 @@ ThinkingSphinx::Index.define :advertisment, :with => :active_record do
   indexes comment
   indexes region.id, as: :region, sortable: true
   indexes region.title, as: :region_title, sortable: true
-  indexes district.title, as: :adv_district, sortable: true
+  indexes district.id, as: :district, sortable: true
+  indexes district.id, as: :district_title, sortable: true
   indexes city.title, as: :city_title, sortable: true
   indexes city.id, as: :city, sortable: true
   indexes admin_area.title, as: :admin_area, sortable: true
