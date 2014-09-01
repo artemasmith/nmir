@@ -81,7 +81,7 @@ h1 Новое объявление
                       p
                         - Location.children_of(region.id).each do |city|
                           span
-                            button.btn.btn-default.ClickRegion data-toggle="buttons"  id="city-#{region[1]}" region="#{region.id}" city="#{city.id}"   =city.title
+                            button.btn.btn-default.ClickRegion data-toggle="buttons"  id="city-#{region.id}" region="#{region.id}" city="#{city.id}"   =city.title
 
                   .modal-footer
                     span.pull-left

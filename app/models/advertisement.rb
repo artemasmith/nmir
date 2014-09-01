@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: advertisments
+# Table name: advertisements
 #
 #  id                       :integer          not null, primary key
 #  offer_type               :integer          not null
@@ -56,7 +56,7 @@
 #  room_to                  :integer
 #
 
-class Advertisment < ActiveRecord::Base
+class Advertisement < ActiveRecord::Base
 
   belongs_to :region,   class_name: 'Location', foreign_key: 'region_id'
   belongs_to :district, class_name: 'Location', foreign_key: 'district_id'
@@ -74,6 +74,8 @@ class Advertisment < ActiveRecord::Base
 
   # Enums
   include AdvEnums
+  #rails_admin
+  include AdvRailsAdmin
 
   before_create :set_locations
   after_create :generate_sections
@@ -102,6 +104,19 @@ class Advertisment < ActiveRecord::Base
     end
   end
 
+  def yandex_valid?
+    time_now = Time.now
+    case
+      when sale? && flat? then (created_at > time_now - 90.days) || (updated_at > time_now - 45.days)
+      when rent? && flat? then (created_at > time_now - 7.days) || (updated_at > time_now - 14.days)
+      when sale? && room? then (created_at > time_now - 120.days) || (updated_at > time_now - 45.days)
+      when rent? && room? then (created_at > time_now - 25.days) || (updated_at. > time_now - 24.days)
+      when rent? && house? then (created_at > time_now - 30.days) || (updated_at > time_now - 30.days)
+      else
+        (self.created_at > time_now - 60.days) || (self.updated_at > time_now - 30.days)
+    end
+  end
+
   private
 
   # set all location nodes from one, that submited
@@ -121,10 +136,10 @@ class Advertisment < ActiveRecord::Base
     locations_chain_url = SectionGenerator.chain_url(locations_array.map(&:title))
 
     self.locations.each do |loc_title, loc|
-      # find or create by offer_type + category + each location node, setted in this advertisment
+      # find or create by offer_type + category + each location node, setted in this advertisement
       SectionGenerator.by_offer_category(offer_type, category, loc, locations_chain_url)
 
-      # find or create by property_type + offer_type + each location node, setted in this advertisment
+      # find or create by property_type + offer_type + each location node, setted in this advertisement
       SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url)
 
       # find or create by location node
@@ -144,6 +159,9 @@ class Advertisment < ActiveRecord::Base
       errors.add :base, "Неверный тип ???"
     end
   end
+
+
+
 
 end
 

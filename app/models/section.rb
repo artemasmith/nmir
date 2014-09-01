@@ -3,7 +3,7 @@
 # Table name: sections
 #
 #  id                  :integer          not null, primary key
-#  advertisments_count :integer          default(0)
+#  advertisements_count :integer          default(0)
 #  url                 :string(255)
 #  description         :text
 #  keywords            :text
@@ -30,7 +30,7 @@ class Section < ActiveRecord::Base
   #before_save :generate_title
   #before_save :generate_url
 
-  scope :not_empty, -> { where('advertisments_count > 0') }
+  scope :not_empty, -> { where('advertisements_count > 0') }
 
   private
 

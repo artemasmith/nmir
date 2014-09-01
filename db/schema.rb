@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140718054510) do
+ActiveRecord::Schema.define(version: 20140831134502) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "advertisments", force: true do |t|
+  create_table "advertisements", force: true do |t|
     t.integer  "offer_type",                                                        null: false
     t.integer  "property_type",                                                     null: false
     t.integer  "category",                                                          null: false
@@ -30,7 +30,6 @@ ActiveRecord::Schema.define(version: 20140718054510) do
     t.integer  "floor_to"
     t.integer  "floor_cnt_from"
     t.integer  "floor_cnt_to"
-    t.datetime "expire_date"
     t.boolean  "payed_adv",                                         default: false
     t.boolean  "manually_added"
     t.boolean  "not_for_agents"
@@ -68,6 +67,7 @@ ActiveRecord::Schema.define(version: 20140718054510) do
     t.integer  "landmark_id"
     t.integer  "room_from"
     t.integer  "room_to"
+    t.integer  "status_type",                                       default: 0,     null: false
   end
 
   create_table "locations", force: true do |t|
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20140718054510) do
     t.string  "translit"
     t.integer "location_type"
     t.integer "location_id"
+    t.integer "children_count", default: 0
   end
 
   add_index "locations", ["location_id"], name: "index_locations_on_location_id", using: :btree
@@ -96,7 +97,7 @@ ActiveRecord::Schema.define(version: 20140718054510) do
   add_index "phones", ["user_id"], name: "index_phones_on_user_id", using: :btree
 
   create_table "sections", force: true do |t|
-    t.integer "advertisments_count", default: 0
+    t.integer "advertisements_count", default: 0
     t.string  "url"
     t.text    "description"
     t.text    "keywords"

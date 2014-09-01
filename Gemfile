@@ -13,7 +13,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
 gem "slim-rails"
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer',  platforms: :ruby
+gem 'therubyracer',  platforms: :ruby
 
 gem 'rails_admin'
 #group :development, :test do
@@ -51,7 +51,6 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # tools
-gem 'rack-mini-profiler'
 gem 'russian', '~> 0.6.0'
 
 group :production do
@@ -61,7 +60,11 @@ end
 
 # Use Capistrano for deployment
 group :development do
-  gem 'capistrano-rails'
+  gem 'rack-mini-profiler'
+  gem 'capistrano', '~> 3.2.0'
+  # gem 'capistrano-rails'
+  #gem 'capistrano-bundler'
+  gem 'capistrano-rvm'
   gem 'lol_dba'
   gem 'annotate'
 end
@@ -77,4 +80,11 @@ end
 
 # Use debugger
 #gem 'debugger', group: [:development, :test]
+
+
+#DBF is a small fast library for reading dBase, xBase, Clipper and FoxPro database files
+gem 'dbf'
+
+#Whenever is a Ruby gem that provides a clear syntax for writing and deploying cron jobs.
+gem 'whenever', '~> 0.9.0', :require => false
 

@@ -1,4 +1,4 @@
-ThinkingSphinx::Index.define :advertisment, :with => :active_record do
+ThinkingSphinx::Index.define :advertisement, :with => :active_record do
   # fields
   indexes :id, sortable: true
   indexes name, sortable: true

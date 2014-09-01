@@ -5,10 +5,12 @@ class Ability
     user ||= User.new
     if user.admin?
       can :manage, :all
+      can :access, :rails_admin
+      can :dashboard
     elsif user.owner?
-      #owner rights
+      can :read, :all
     elsif user.agent?
-      #agent rigts
+      can :read, :all
     else
       can :read, :all
     end

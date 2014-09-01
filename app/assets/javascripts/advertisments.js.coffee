@@ -10,11 +10,7 @@
     if oval == '0' || oval == '2' || oval == '3' then val = 1 else val = 0
   if multi
     val = $(sid)[0].getAttribute('value') + ' ' + val
-  console.log('oval=' + oval)
-  console.log('sid=' + sid)
-  console.log('val='+val)
   $(sid)[0].setAttribute('value', val)
-  console.log($(sid))
   return
 
 @set_hidden_multi = ->
@@ -33,9 +29,7 @@
 
 @set_hidden_one =  ->
   hid = this.getAttribute("hid")
-  console.log('hid=' + hid)
   value = this.getAttribute("value")
-  console.log('value=' + value)
   $("#" + hid)[0].setAttribute "value", value
   set_property(hid, false, value)
   return
@@ -58,7 +52,7 @@
   $("#city-select")[0].setAttribute "value", city_value
   return
 
-#TODO: implement DRY on next refactoring!!!!!
+
 @click_district = (e) ->
   cn = e.className
   district = e.getAttribute("district")
@@ -100,7 +94,7 @@
         cities = data[region]
         i = 0
         while i < cities.length
-          resulthtml += "<span><button district=\"" + cities[i][1] + "\" class=\"btn btn-default ClickDistrict\" onclick=\"click_district(this);\"data-toggle=\"buttons\" \">" + cities[i][0] + "</button></span>"
+          resulthtml += "<span><button  district=\"" + cities[i][1] + "\" class=\"btn btn-default ClickDistrict\" onclick=\"click_district(this);\"data-toggle=\"buttons\" \">" + cities[i][0] + "</button></span>"
           i++
         resulthtml += "<p>"
       $("#cities-list").html resulthtml
@@ -108,6 +102,39 @@
       return
 
   return
+
+#REFACTOR and DRY it
+@select_only_region = ->
+  selected_regions = $("#city-select")[0].getAttribute("value")
+  cities = ""
+  $.ajax
+    dataType: "json"
+    url: "/locations?parents=" + selected_regions
+    success: (data) ->
+      $("#region-select-modal").modal "hide"
+      regions = ""
+      resulthtml = ""
+      for region of data
+        resulthtml += "<span>" + region + "</span><p>"
+        regions += region + " "
+        cities = data[region]
+        i = 0
+        while i < cities.length
+          resulthtml += "<span class=\"btn-group \" data-toggle=\"buttons\"><button  district=\"" + cities[i][1] + "\" class=\"btn btn-default ClickDistrict\"></button><input type=\"radio\"></input>" + cities[i][0] + "</span>"
+          i++
+        resulthtml += "<p>"
+      $("#cities-list").html resulthtml
+      $("#region-select-button")[0].textContent = regions
+      return
+  return
+
+@select_only_district = ->
+  mv = this.getAttribute("mv")
+  $("#" + mv).modal "hide"
+  dts = $('.active.ClickDistrict')[0]
+  $('#district-select')[0].setAttribute('value', dts.getAttribute('district'))
+  return
+
 
 @submit_form = (e) ->
 
@@ -123,7 +150,9 @@
   ClickRegion: click_region,
   ClickDistrict: click_district,
   SelectDistrict: select_district,
-  SelectRegion: select_region
+  SelectRegion: select_region,
+  SelectOnlyRegion: select_only_region,
+  SelectOnlyDistrict: select_only_district
 
 @ready = ->
   $('.SetHideMulti').on('click', set_hidden_multi)

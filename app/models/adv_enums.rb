@@ -25,6 +25,7 @@ module AdvEnums
 
   CURRENCIES = [:RUR, :RUB]
 
+  STATUSES = [:active, :expired]
 
   included do
 
@@ -38,6 +39,8 @@ module AdvEnums
     enum adv_type: AdvEnums::ADV_TYPES
 
     enum currency: AdvEnums::CURRENCIES
+
+    enum status_type: AdvEnums::STATUSES
 
   end
 end
