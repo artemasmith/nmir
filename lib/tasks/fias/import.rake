@@ -4,6 +4,8 @@ namespace :fias do
 
     ActiveRecord::Migration.add_column :locations, :aoguid, :string unless 'aoguid'.in? Location.column_names
     ActiveRecord::Migration.add_column :locations, :parentguid, :string unless 'parentguid'.in? Location.column_names
+    ActiveRecord::Migration.add_index :locations, :aoguid, using: :btree unless ActiveRecord::Migration.index_exists?(:locations, :aoguid)
+    ActiveRecord::Migration.add_index :locations, :parentguid, using: :btree unless ActiveRecord::Migration.index_exists?(:locations, :parentguid)
 
 
     Rake::Task["fias:generate_local_table_addrobj"].invoke
