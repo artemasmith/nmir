@@ -9,43 +9,75 @@
       p.pull-left
         a.navbar-brand href="/" 
           i.fa.fa-database.fa-lg
-          | multilisting.su
+          '
+          | Multilisting.su
     .collapse.navbar-collapse
       ul.nav.navbar-nav.navbar-right style=("padding-left: 15px") 
-        p.nav.navbar-text
-          i.fa.fa-key
-          = link_to 'Регистрация', new_user_registration_path, class: 'navbar-link'
+        - unless current_user.present?
+          p.nav.navbar-text
+            i.fa.fa-key
+            '
+            = link_to 'Регистрация', new_user_registration_path, class: 'navbar-link'
         li.dropdown.nav
-          = link_to_sign_in
-          .modal.fade.bs-example-modal-sm aria-hidden="true" aria-labelledby="mySmallModalLabel" role="dialog" tabindex="-1" 
-            .modal-dialog.modal-sm
-              .modal-content style=("padding: 25px; min-width: 320px;") 
-                = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-                  = f.email_field :email, autofocus: true, class: 'form-control', placeholder: 'mail@example.com', required: true
-                  = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: "********"
-                  .row
-                    = f.label :remember_me, class: 'checkbox' do
-                      = f.check_box :remember_me, checked: true
-                      | запомнить меня
-                  = f.button class: 'btn btn-primary' do
-                    i.fa.fa-sign-in
-                    | Войти
-                  span
-                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    a href="#" 
-                      small
-                        i.fa.fa-refresh
-                        | &nbsp;cбросить пароль
-                br
-                  p
-                    b зайти с помощью:
+          - if @current_user
+            .button.btn.navbar-btn.btn-default data-toggle="modal" data-target=".log_out_modal"
+              .i.fa.fa-sign-out
+              '
+              = @current_user.email
+            .modal.fade.log_out_modal aria-hidden="true" aria-labelledby="Выйти" role="dialog"
+              .modal-dialog.modal-sm
+                .modal-content
+                  .modal-header
+                    button.close data-dismiss="modal" type="button"
+                      span aria-hidden="true"  &times;
+                      span.sr-only Close
+                    h4.modal-title Выход
+                  .modal-body
+                    | Вы уверены что хотите выйти?
+                  .modal-footer
+                    = link_to 'Выйти', destroy_user_session_path, method: :delete, class: "btn btn-danger"
+                    a href="#" data-dismiss="modal" class="btn btn-default" type="button"
+                      | Отмена
+          - else
+            .button.btn.navbar-btn.btn-default data-toggle="modal" data-target=".sign_in_modal"
+              .i.fa.fa-sign-in
+                '
+                |Войти
+            .modal.fade.sign_in_modal aria-hidden="true" aria-labelledby="Авторизация" role="dialog"
+              .modal-dialog.modal-sm
+                .modal-content
+                  .modal-header
+                    button.close data-dismiss="modal" type="button"
+                      span aria-hidden="true"  &times;
+                      span.sr-only Close
+                    h4.modal-title Авторизация
+                  .modal-body
+                    = form_for resource, as: resource_name, url: session_path(resource_name), role: "form" do |f|
+                      .form-group
+                        = f.email_field :email, autofocus: true, class: 'form-control', placeholder: 'mail@example.com', required: true
+                      .form-group
+                        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: "********"
+                      .checkbox
+                        = f.label :remember_me, class: 'checkbox' do
+                          = f.check_box :remember_me, checked: true
+                          | запомнить меня
+                      = f.button class: 'btn btn-primary' do
+                        i.fa.fa-sign-in
+                        '
+                        | Войти
+
+
+
       ul.nav.navbar-nav.navbar-left
         li
-          a href="#" 
+          = link_to  new_advertisement_path
             i.fa.fa-plus.fa-lg
+            '
             | Добавить
-        li
-          a href="#" 
-            i.fa.fa-book.fa-lg
-            | Блокнот
+
+        /li
+        /  a href="#"
+        /    i.fa.fa-book.fa-lg
+        /    '
+        /    | Блокнот
 

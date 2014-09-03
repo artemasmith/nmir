@@ -53,6 +53,8 @@ module SectionGenerator
   def self.enum_title(type)
     I18n.t("activerecord.attributes.section.enum_title.#{type}")
   end
+
+
   
   # returns translated & translited enum value
   def self.enum_url(type)

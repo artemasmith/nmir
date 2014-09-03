@@ -61,10 +61,6 @@ class Location < ActiveRecord::Base
     Location.where('location_id = ?', id)
   end
 
-  def parent?
-    location_type == 'region'
-  end
-
   private
 
   def transliterate_title

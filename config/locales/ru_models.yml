@@ -15,6 +15,7 @@ ru:
         number: Номер телефона
 
       section:
+
         enum_title:
           # offer_type
           sale: продам

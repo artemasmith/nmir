@@ -16,49 +16,21 @@ h1 Новое объявление
     legend Раздел
     .form.form-horizontal role="form"
       .form-group
-        label.col-sm-3.control-label for="inputEmail3"  Вид сделки
-        .col-sm-9.btn-group.btn-group data-toggle="buttons"
-          label.btn.btn-default.SetHideOne hid="offer-type-value" value="#{AdvEnums::OFFER_TYPES.index(:sale)}"
-            input type="radio"  продажа
-          label.btn.btn-default.SetHideOne hid="offer-type-value"  value="#{AdvEnums::OFFER_TYPES.index(:for_rent)}"
-            input type="radio"  аренда
-          label.btn.btn-default.SetHideOne hid="offer-type-value"  value="#{AdvEnums::OFFER_TYPES.index(:day)}"
-            input type="radio" посуточно
-          label.btn.btn-default.SetHideOne hid="offer-type-value"  value="#{AdvEnums::OFFER_TYPES.index(:buy)}"
-            input type="radio"  куплю
-          label.btn.btn-default.SetHideOne hid="offer-type-value"  value="#{AdvEnums::OFFER_TYPES.index(:rent)}"
-            input type="radio"  сниму
+        label.col-sm-3.control-label for="offer-type-value"  Вид сделки
+        .col-sm-9.btn-group data-toggle="buttons"
+          - AdvEnums::OFFER_TYPES.each_with_index do |type, index|
+            label.btn.btn-default.SetHideOne hid="offer-type-value" value=index
+              input type="radio"
+                = SectionGenerator.enum_title(type)
       .form-group
-        label.col-sm-3.control-label for="inputEmail3"  Тип недвижимости
-        .col-sm-9.btn-toolbar
-          .btn-group.btn-group data-toggle="buttons"
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:flat)}" hid="category-value"
-              input type="radio" квартиры
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:newbuild)}" hid="category-value"
-              input type="radio" новостройки
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:house)}" hid="category-value"
-              input type="radio" дома, дачи, коттеджи
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:ijs)}" hid="category-value"
-              input type="radio" участки под ИЖС
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:room)}" hid="category-value"
-              input type="radio" гостинки
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:room)}" hid="category-value"
-              input type="radio" комнаты
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:garage)}" hid="category-value"
-              input type="radio" гаражи
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:office)}" hid="category-value"
-              input type="radio" офисы
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:trade)}" hid="category-value"
-              input type="radio" торговля и сервис
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:storage)}" hid="category-value"
-              input type="radio" склад и пр-во
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:cafe)}" hid="category-value"
-              input type="radio" бары, рестораны, кафе
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:land)}" hid="category-value"
-              input type="radio" земля, площадки
-            button.btn.btn-default.SetHideOne value="#{AdvEnums::CATEGORIES.index(:free_appointment)}" hid="category-value"
-              input type="radio" другого и свободного назначения
-    legend Местоположение
+        label.col-sm-3.control-label for="category-value"  Тип недвижимости
+        .col-sm-9.btn-group data-toggle="buttons"
+          - AdvEnums::CATEGORIES.each_with_index do |type, index|
+            label.btn.btn-default.SetHideOne value=index hid="category-value"
+                input type="radio"
+                  = SectionGenerator.enum_title(type)
+
+      legend Местоположение
     .form.form-horizontal role="form"
       .form-group
         label.col-sm-3.control-label
@@ -198,10 +170,10 @@ h1 Новое объявление
       .form.form-inline.form-sm role="form"
         .form.form-group.form-inline.col-xs-12.col-sm-4.col-md-3
           label комнат:
-          br/
+          br
         .form.form-group.form-inline.col-xs-12.col-sm-8.col-md-6.col-lg-5
           label материал стен:
-          br/
+          br
         .form-group.col-xs-4.col-sm-4.col-md-3
           label площадь:
           br

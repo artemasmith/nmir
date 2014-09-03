@@ -163,6 +163,4 @@
   $('.SelectDistrict').on('click', select_district)
   return
 
-#setting up onclick events
-$(document).ready(ready())
-$(document).on('ready page:load', ready);
+$(document).on('ready page:load', @ready());
