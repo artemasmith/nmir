@@ -1,5 +1,6 @@
 offer:
   newbuild:
+    - phone
     - floor_from
     - floor_cnt_from
     - space_from
@@ -15,6 +16,7 @@ offer:
     - landmark
 
   flat:
+    - phone
     - floor_from
     - floor_cnt_from
     - space_from
@@ -30,6 +32,7 @@ offer:
     - landmark
 
   house:
+    - phone
     - space_from
     - space_unit
     - outdoors_space_from
@@ -45,6 +48,7 @@ offer:
 
 
   ijs:
+    - phone
     - outdoors_space_from
     - outdoors_space_unit
     - price_from
@@ -57,6 +61,7 @@ offer:
     - landmark
     
   room:
+    - phone
     - floor_from
     - floor_cnt_from
     - space_from
@@ -72,6 +77,7 @@ offer:
     - landmark
 
   garage:
+    - phone
     - price_from
     - unit_price_from
     - currency
@@ -82,6 +88,7 @@ offer:
     - landmark
 
   office:
+    - phone
     - space_from
     - space_unit
     - price_from
@@ -94,6 +101,7 @@ offer:
     - landmark
 
   trade:
+    - phone
     - space_from
     - space_unit
     - price_from
@@ -106,6 +114,7 @@ offer:
     - landmark
 
   storage:
+    - phone
     - space_from
     - space_unit
     - outdoors_space_from
@@ -120,6 +129,7 @@ offer:
     - landmark
 
   cafe:
+    - phone
     - space_from
     - space_unit
     - outdoors_space_from
@@ -133,6 +143,7 @@ offer:
     - landmark
 
   land:
+    - phone
     - outdoors_space_from
     - outdoors_space_unit
     - price_from
@@ -145,6 +156,7 @@ offer:
     - landmark
 
   free_appointment:
+    - phone
     - space_from
     - space_unit
     - price_from
@@ -157,6 +169,7 @@ offer:
 
 demand:
   newbuild:
+    - phone
     - floor_from
     - floor_to
     - floor_cnt_from
@@ -177,6 +190,7 @@ demand:
     - private_comment
 
   flat:
+    - phone
     - floor_from
     - floor_to
     - floor_cnt_from
@@ -197,6 +211,7 @@ demand:
     - private_comment
 
   house:
+    - phone
     - space_from
     - space_to
     - space_unit
@@ -215,6 +230,7 @@ demand:
 
 
   ijs:
+    - phone
     - outdoors_space_from
     - outdoors_space_to
     - outdoors_space_unit
@@ -229,6 +245,7 @@ demand:
     - private_comment
     
   room:
+    - phone
     - floor_from
     - floor_to
     - floor_cnt_from
@@ -249,6 +266,7 @@ demand:
     - private_comment
 
   garage:
+    - phone
     - price_from
     - price_to
     - unit_price_from
@@ -260,6 +278,7 @@ demand:
     - private_comment
 
   office:
+    - phone
     - space_from
     - space_to
     - space_unit
@@ -274,6 +293,7 @@ demand:
     - private_comment
 
   trade:
+    - phone
     - space_from
     - space_to
     - space_unit
@@ -288,6 +308,7 @@ demand:
     - private_comment
 
   storage:
+    - phone
     - space_from
     - space_to
     - space_unit
@@ -305,6 +326,7 @@ demand:
     - private_comment
 
   cafe:
+    - phone
     - space_from
     - space_to
     - space_unit
@@ -320,6 +342,7 @@ demand:
     - private_comment
 
   land:
+    - phone
     - outdoors_space_from
     - outdoors_space_to
     - outdoors_space_unit
@@ -334,6 +357,7 @@ demand:
     - private_comment
 
   free_appointment:
+    - phone
     - space_from
     - space_to
     - space_unit

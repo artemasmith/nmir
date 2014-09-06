@@ -1,0 +1,6 @@
+- allowed_attributes.each do |atr|
+  - if !atr.match('to')
+    .form-group
+      label.col-sm-3.control-label for="street-input"  = t("advertisement.new.#{atr}")
+      .col-sm-4
+        input.form-control name="advertisement[#{atr}]"

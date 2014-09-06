@@ -2,11 +2,12 @@
 #
 # Table name: locations
 #
-#  id            :integer          not null, primary key
-#  title         :string(255)
-#  translit      :string(255)
-#  location_type :integer
-#  location_id   :integer
+#  id             :integer          not null, primary key
+#  title          :string(255)
+#  translit       :string(255)
+#  location_type  :integer
+#  location_id    :integer
+#  children_count :integer          default(0)
 #
 
 class Location < ActiveRecord::Base
@@ -55,9 +56,10 @@ class Location < ActiveRecord::Base
     #cond = parent.to_i == 0 ? { parent_title: parent } : { parent_id: parent }
     #Location.search(conditions: cond)
     id = parent.to_i
-    if parent.to_i == 0
-      id = Location.find_by_title(parent).id
-    end
+
+    #if parent.to_i == 0
+    #  id = Location.find_by_title(parent).id
+    #end
     Location.where('location_id = ?', id)
   end
 
