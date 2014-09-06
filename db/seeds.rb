@@ -70,6 +70,10 @@ rc.sublocations.find_or_create_by(title: 'ЖД', location_type: 1)
 rc.sublocations.find_or_create_by(title: 'ЗЖМ', location_type: 1)
 rc.sublocations.find_or_create_by(title: 'Левый берег', location_type: 1)
 rc.sublocations.find_or_create_by(title: 'Фрунзе', location_type: 1)
+admin_area = rc.sublocations.find_or_create_by(title: 'Октябрьский', location_type: 3 )
+non_admin_area = rc.sublocations.find_or_create_by(title: 'Западный', location_type: 4 )
+street = rc.sublocations.find_or_create_by(title: 'Ворошиловский', location_type: 5 )
+street.sublocations.find_or_create_by(title: '1 дом', location_type:  6, admin_area_id: admin_area.id, non_admin_area_id: non_admin_area.id)
 rc.sublocations.find_or_create_by(title: 'Каменка', location_type: 1)
 tc.sublocations.find_or_create_by(title: 'Центр', location_type: 1)
 tc.sublocations.find_or_create_by(title: 'Заречный', location_type: 1)
@@ -85,19 +89,19 @@ tc.sublocations.find_or_create_by(title: 'Маяк', location_type: 1)
     { offer_type: 1, category: 1, property_type: 1,  name: 'Сдам однушку',
       phone: '891912332122', price_from: 100, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent', city_id: Location.find_by_title('Ялуторовск').id },
-    { offer_type: 1, category: 1, property_type: 1, expire_date: Date.today + 1.month,
+    { offer_type: 1, category: 1, property_type: 1,
       name: 'Сдам Двухкомнттную',      phone: '891912332133', price_from: 200,
       region_id: Location.where(location_type: 2).first.id , adv_type: 0, currency: 1, sales_agent: 'test agent',
       city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id },
-    { offer_type: 1, category: 1, property_type: 1, expire_date: Date.today + 1.month, name: 'Сдам хрущевку',
+    { offer_type: 1, category: 1, property_type: 1,  name: 'Сдам хрущевку',
       phone: '891912332162', price_from: 50, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
       city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Заречный').id },
-    { offer_type: 0, category: 1, property_type: 1, expire_date: Date.today + 1.month,
+    { offer_type: 0, category: 1, property_type: 1,
       name: 'Продам однушку', phone: '8919123312311', price_from: 55000,
       region_id: Location.where(location_type: 2).first.id, adv_type: 0, currency: 1, sales_agent: 'test agent',
       city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('ЖД').id },
-    { offer_type: 0, category: 1, property_type: 1, expire_date: Date.today + 1.month,
+    { offer_type: 0, category: 1, property_type: 1,
       name: 'Продам квартиру-студию. Евроремонт. Торг.', phone: '8919123314512', price_from: 25000,
       region_id: Location.where(location_type: 2).first.id, adv_type: 0, currency: 1, sales_agent: 'test agent',
       city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id },
