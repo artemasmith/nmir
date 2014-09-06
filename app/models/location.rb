@@ -7,9 +7,11 @@
 #  translit          :string(255)
 #  location_type     :integer
 #  location_id       :integer
+#  children_count    :integer          default(0)
 #  admin_area_id     :integer
 #  non_admin_area_id :integer
 #  city_id           :integer
+
 
 class Location < ActiveRecord::Base
   has_many :sublocations, class_name: 'Location', foreign_key: "location_id"
@@ -66,9 +68,10 @@ class Location < ActiveRecord::Base
     #cond = parent.to_i == 0 ? { parent_title: parent } : { parent_id: parent }
     #Location.search(conditions: cond)
     id = parent.to_i
-    if parent.to_i == 0
-      id = Location.find_by_title(parent).id
-    end
+
+    #if parent.to_i == 0
+    #  id = Location.find_by_title(parent).id
+    #end
     Location.where('location_id = ?', id)
   end
 

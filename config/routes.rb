@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :advertisements do
     collection do
       post 'search'
+      post 'get_attributes'
     end
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'

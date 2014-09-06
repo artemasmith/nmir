@@ -9,9 +9,9 @@ module AdvValidation
   included do
 
     validates_presence_of AdvValidation::PRESENCE_FIELDS
-
+    #:space_unit,
     validates_numericality_of :floor_from, :floor_to, :floor_cnt_from, :floor_cnt_to,
-      :space_from, :space_to, :space_unit, :outdoors_space_from,
+      :space_from, :space_to,  :outdoors_space_from,
       :outdoors_space_to, :outdoors_space_unit, 
       :room_from, :room_to, :price_from, :price_to,
       :unit_price_from, :unit_price_to, :outdoors_unit_price_from, :outdoors_unit_price_to,

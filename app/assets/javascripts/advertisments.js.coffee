@@ -1,69 +1,45 @@
-#oid - hid of the element, multi - bool flag of multi value saving, oval - originan value we've setted up
-@set_property = (oid, multi, oval) ->
+#hid - hid of the element, multi - bool flag of multi value saving, oval - originan value we've setted up
+@set_property = (hid, multi, oval) ->
   val = ''
   sid = ''
-  if (oid == 'category-value')
-    sid = '#property-type-value'
-    if parseInt( oval, 10 ) <= 5 then val = 1 else val = 0
-  if (oid == 'offer-type-value')
-    sid = '#adv-type-value'
-    if oval == '0' || oval == '2' || oval == '3' then val = 1 else val = 0
-  if multi
-    val = $(sid)[0].getAttribute('value') + ' ' + val
+  if (hid == 'category')
+    sid = '.property-type-value'
+    if parseInt( oval, 10 ) <= 5 then val = 'residental' else val = 'commerce'
+  if (hid == 'offer')
+    sid = '.adv-type-value'
+    if oval == '0' || oval == '2' || oval == '3' then val = 'offer' else val = 'demand'
+  if multi == "multi"
+    val = 0
+    val = 1 if val == "offer" || val == "residental"
+    val = $(sid)[0].getAttribute('value').replace(val,'') + ' ' + val
   $(sid)[0].setAttribute('value', val)
   return
 
-@set_hidden_multi = ->
-  cn = this.className
-  hid = this.getAttribute("hid")
-  value = this.getAttribute("value")
-  rv = ""
-  current_value = $("#" + hid)[0].getAttribute("value")
-  unless cn.match("active")
-    rv = current_value + " " + value
-  else
-    rv = current_value.replace(value, "")
-  $("#" + hid)[0].setAttribute "value", rv
-  set_property(hid, true, value)
+@prepare_allowed_attributes = ->
+  hid = this.getAttribute('hid')
+  multi = this.getAttribute('multi')
+  value = this.getAttribute('value')
+  set_property(hid, multi, value)
+  adv_type = $('.adv-type-value')[0].value
+  property = $('.property-type-value')[0].value
+  if adv_type && property
+    category = $(':input:checked[name="advertisement[category]"]')[0].value
+    pdata =
+      category: category,
+      adv_type: adv_type
+    $.ajax
+      type: 'POST',
+      url: "get_attributes",
+      data: pdata
+
   return
 
-@set_hidden_one =  ->
-  hid = this.getAttribute("hid")
-  value = this.getAttribute("value")
-  $("#" + hid)[0].setAttribute "value", value
-  set_property(hid, false, value)
+@set_adv_property = ->
+  hid = this.getAttribute('hid')
+  multi = this.getAttribute('multi')
+  value = this.getAttribute('value')
+  set_property(hid, multi, value)
   return
-
-@click_region =  ->
-  cn = this.className
-  rg = this.getAttribute("region")
-  city_value = this.getAttribute("city")
-  selected_regions = $("#region-select")[0].getAttribute("value")
-  selected_cities = $("#city-select")[0].getAttribute("value")
-  unless cn.match("active")
-    rg = selected_regions + " " + rg
-    city_value = selected_cities + " " + city_value
-  else
-    rg = selected_regions.replace(rg, "")
-    city_value = selected_cities.replace(city_value, "")
-
-  #Do I need to save region?
-  $("#region-select")[0].setAttribute "value", rg
-  $("#city-select")[0].setAttribute "value", city_value
-  return
-
-
-@click_district = (e) ->
-  cn = e.className
-  district = e.getAttribute("district")
-  selected_cities = $("#district-select")[0].getAttribute("value")
-  unless cn.match("active")
-    district = selected_cities + " " + district
-  else
-    district = selected_cities.replace(district, "")
-  $("#district-select")[0].setAttribute("value", district)
-  return
-
 
 @select_district = ->
   mv = this.getAttribute("mv")
@@ -77,9 +53,19 @@
   $("#city-select-button")[0].textContent = rescity
   return
 
+@get_name = (radio) ->
+  if radio == 'checkbox'
+    return 'district[]'
+  else
+    return 'advertisement[district_id]'
 
-@select_region = ->
-  selected_regions = $("#city-select")[0].getAttribute("value")
+@select_region =(radio) ->
+  #selected_regions = $("#city-select")[0].getAttribute("value")
+  selected_regions = ''
+  regions = $(':input:checked[name*="city_id"]')
+  $.each regions, (i,rg) ->
+    selected_regions += ' ' + rg.value
+    return
   cities = ""
   $.ajax
     dataType: "json"
@@ -89,50 +75,18 @@
       regions = ""
       resulthtml = ""
       for region of data
-        resulthtml += "<span>" + region + "</span><p>"
+        resulthtml += "<span>" + region + "</span><p><div class=\"btn-group\" data-toggle=\"buttons\">"
         regions += region + " "
         cities = data[region]
         i = 0
         while i < cities.length
-          resulthtml += "<span><button  district=\"" + cities[i][1] + "\" class=\"btn btn-default ClickDistrict\" onclick=\"click_district(this);\"data-toggle=\"buttons\" \">" + cities[i][0] + "</button></span>"
+          resulthtml += "<button type=\"button\" district=\"" + cities[i][1] + "\" class=\"btn btn-default ClickDistrict\" \" ><input name=\"" + get_name(radio) + "\" type=\"" + radio + "\" value=\"" + cities[i][1] + "\">" + cities[i][0] + "</input></button>"
           i++
-        resulthtml += "<p>"
+        resulthtml += "</div><p>"
       $("#cities-list").html resulthtml
       $("#region-select-button")[0].textContent = regions
       return
 
-  return
-
-#REFACTOR and DRY it
-@select_only_region = ->
-  selected_regions = $("#city-select")[0].getAttribute("value")
-  cities = ""
-  $.ajax
-    dataType: "json"
-    url: "/locations?parents=" + selected_regions
-    success: (data) ->
-      $("#region-select-modal").modal "hide"
-      regions = ""
-      resulthtml = ""
-      for region of data
-        resulthtml += "<span>" + region + "</span><p>"
-        regions += region + " "
-        cities = data[region]
-        i = 0
-        while i < cities.length
-          resulthtml += "<span class=\"btn-group \" data-toggle=\"buttons\"><button  district=\"" + cities[i][1] + "\" class=\"btn btn-default ClickDistrict\"></button><input type=\"radio\"></input>" + cities[i][0] + "</span>"
-          i++
-        resulthtml += "<p>"
-      $("#cities-list").html resulthtml
-      $("#region-select-button")[0].textContent = regions
-      return
-  return
-
-@select_only_district = ->
-  mv = this.getAttribute("mv")
-  $("#" + mv).modal "hide"
-  dts = $('.active.ClickDistrict')[0]
-  $('#district-select')[0].setAttribute('value', dts.getAttribute('district'))
   return
 
 
@@ -144,23 +98,11 @@
 
 #selectors
 
-@selectors =
-  SetHideMulti: set_hidden_multi,
-  SetHideOne: set_hidden_one,
-  ClickRegion: click_region,
-  ClickDistrict: click_district,
-  SelectDistrict: select_district,
-  SelectRegion: select_region,
-  SelectOnlyRegion: select_only_region,
-  SelectOnlyDistrict: select_only_district
-
 @ready = ->
-  $('.SetHideMulti').on('click', set_hidden_multi)
-  $('.SetHideOne').on('click', set_hidden_one)
-  $('.ClickRegion').on('click', click_region)
-  #$('.ClickDistrict').on('click', click_district)
   $('.SelectRegion').on('click', select_region)
   $('.SelectDistrict').on('click', select_district)
+  $('.AdvProperty').on('change', prepare_allowed_attributes)
+  $('.AdvPropertySearch').on('change', set_adv_property)
   return
 
 $(document).on('ready page:load', @ready());

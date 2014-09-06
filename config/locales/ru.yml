@@ -293,6 +293,40 @@ ru:
       other: '%{count} товаров'
   
   advertisement:
+    new:
+      floor_from: 'Этаж'
+      floor_cnt_from: 'странный этаж?'
+      room_from: 'Количество комнат'
+      landmark: 'Ориентир'
+      space_from: 'Площадь'
+      space_unit: 'Единица площади'
+      outdoors_space_from: 'Площадь наружной зоны'
+      price_from: 'Цена'
+      unit_price_from: 'Цена за'
+      currency: 'Валюта'
+      not_for_agents: 'Не для агентов'
+      mortgage: 'Ипотека'
+      comment: 'Комментаиий'
+      private_comment: 'Сррытый комментарий(для биржи)'
+    offer:
+      buy: 'куплю'
+      sale: 'продажы'
+      rent: 'сниму'
+      for_rent: 'аренда'
+      day: 'посуточно'
+    category:
+      flat: 'квартиры'
+      newbuild: 'новостройки'
+      house: 'дома, дачи, коттеджи'
+      ijs: 'участки под ИЖС'
+      room: 'комнаты'
+      garage: 'гаражи'
+      office: 'офисы'
+      trade: 'торговля и сервис'
+      storage: 'склад и пр-во'
+      cafe: 'бары, рестораны, кафе'
+      land: 'земля, площадки'
+      free_appointment: 'другого и свободного назначения'
     quantity:
       few: '%{count} объявлений'
       many: '%{count} объявления'
@@ -303,4 +337,5 @@ ru:
     previous_label: "&larr;"
     next_label: "&rarr;"
     page_gap: "&hellip;"
+
 

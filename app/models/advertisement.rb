@@ -16,7 +16,6 @@
 #  floor_to                 :integer
 #  floor_cnt_from           :integer
 #  floor_cnt_to             :integer
-#  expire_date              :datetime
 #  payed_adv                :boolean          default(FALSE)
 #  manually_added           :boolean
 #  not_for_agents           :boolean
@@ -54,6 +53,7 @@
 #  landmark_id              :integer
 #  room_from                :integer
 #  room_to                  :integer
+#  status_type              :integer          default(0), not null
 #
 
 class Advertisement < ActiveRecord::Base
@@ -66,6 +66,7 @@ class Advertisement < ActiveRecord::Base
   belongs_to :street, class_name: 'Location', foreign_key: 'street_id'
   belongs_to :address, class_name: 'Location', foreign_key: 'address_id'
   belongs_to :landmark, class_name: 'Location', foreign_key: 'landmark_id'
+  belongs_to :user
 
   # validators
   include AdvValidation
@@ -78,6 +79,7 @@ class Advertisement < ActiveRecord::Base
   include AdvRailsAdmin
 
   before_create :set_locations
+  before_validation :check_attributes
   after_create :generate_sections
   
   def allowed_attributes
@@ -118,6 +120,14 @@ class Advertisement < ActiveRecord::Base
   end
 
   private
+
+  def check_attributes
+    self.name ||= comment[0..15]
+    self.currency ||= Advertisement::CURRENCIES[0]
+    self.sales_agent ||= user.name || 'no agent'
+    self.phone ||= user.phones.first.number || '123'
+    self.space_unit ||= 'м2'
+  end
 
   # set all location nodes from one, that submited
   def set_locations

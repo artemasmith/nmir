@@ -1,36 +1,30 @@
+=@adv.errors.messages if !@adv.errors.blank?
 h1 Новое объявление
 .well.well-sm
-  = form_tag advertisements_path, method: :post, class: 'super-form' do |f|
-    = hidden_field_tag :city, '', id: 'city-select'
-    = hidden_field_tag :district, '', id: 'district-select'
-    = hidden_field_tag :category, '', id: 'category-value'
-    = hidden_field_tag :offer_type, '', id: 'offer-type-value'
-    = hidden_field_tag :region, '', id: 'region-select'
-    = hidden_field_tag :currency, '', id: 'currency-value'
-    = hidden_field_tag :space_unit, '', id: 'space-unit-value'
-    = hidden_field_tag :date_from, '', id: 'date-from-value'
-    = hidden_field_tag :date_to, '', id: 'date-to-value'
-    = hidden_field_tag :room_from, '', id: 'rooms-value'
-    = hidden_field_tag :adv_type, '', id: 'adv-type-value'
-    = hidden_field_tag :property_type, '', id: 'property-type-value'
+  = form_for @adv, class: 'super-form' do |f|
+
+    = f.hidden_field :adv_type, value: '', class: 'adv-type-value'
+    = f.hidden_field :property_type, value: '', class: 'property-type-value'
     legend Раздел
     .form.form-horizontal role="form"
       .form-group
-        label.col-sm-3.control-label for="offer-type-value"  Вид сделки
-        .col-sm-9.btn-group data-toggle="buttons"
-          - AdvEnums::OFFER_TYPES.each_with_index do |type, index|
-            label.btn.btn-default.SetHideOne hid="offer-type-value" value=index
-              input type="radio"
-                = SectionGenerator.enum_title(type)
-      .form-group
-        label.col-sm-3.control-label for="category-value"  Тип недвижимости
-        .col-sm-9.btn-group data-toggle="buttons"
-          - AdvEnums::CATEGORIES.each_with_index do |type, index|
-            label.btn.btn-default.SetHideOne value=index hid="category-value"
-                input type="radio"
-                  = SectionGenerator.enum_title(type)
 
-      legend Местоположение
+        label.col-sm-3.control-label for="inputEmail3"  Вид сделки
+        .col-sm-9.btn-group.btn-group data-toggle="buttons"
+          - AdvEnums::OFFER_TYPES.each do |offer|
+            label.btn.btn-default.AdvProperty hid="offer" multi="one" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
+              = f.radio_button :offer_type,  "#{offer}"
+              = t("advertisement.offer.#{offer}")
+
+      .form-group
+        label.col-sm-3.control-label for="inputEmail3"  Тип недвижимости
+        .col-sm-9.btn-toolbar
+          .btn-group.btn-group data-toggle="buttons"
+            -AdvEnums::CATEGORIES.each do |category|
+              label.btn.btn-default.AdvProperty hid="category" multi="one" value="#{AdvEnums::CATEGORIES.index(category)}"
+                = f.radio_button :category,  "#{category}"
+                = t "advertisement.category.#{category}"
+    legend Местоположение
     .form.form-horizontal role="form"
       .form-group
         label.col-sm-3.control-label
@@ -48,19 +42,22 @@ h1 Новое объявление
                     button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
                     h4.modal-title Выберите местоположение
                   .row.modal-body
-                    - @regions.each do |region|
-                      = region.title
-                      p
+                    .btn-group data-toggle="buttons"
+                      - @regions.each do |region|
+                        .row.col-sm-12
+                          label= region.title
                         - Location.children_of(region.id).each do |city|
-                          span
-                            button.btn.btn-default.ClickRegion data-toggle="buttons"  id="city-#{region.id}" region="#{region.id}" city="#{city.id}"   =city.title
+                          label.btn.btn-default type="button"
+                            /input type="radio" name="city_id" value="#{city.id}" class="region" =city.title
+                            = f.radio_button :city_id, city.id
+                            =city.title
 
                   .modal-footer
                     span.pull-left
                       span.small для уточнений:
                       a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
                     button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-                    button.btn.btn-primary.SelectRegion  type="button"  Выбрать
+                    button.btn.btn-primary onclick="select_region('radio');"  type="button"  Выбрать
           .btn-group.btn-group
             .btn-group.btn-group
               #city-select-button.button.btn.btn-default data-target=".bs-example-modal-lg" data-toggle="modal"
@@ -81,20 +78,8 @@ h1 Новое объявление
                       button.btn.btn-primary.SelectDistrict mv='city-select-modal'  type="button"  Выбрать
             button.btn.btn-default type="button"
               span.fa.fa-times
-                |x
     .form.form-horizontal role="form"
-      .form-group
-        label.col-sm-3.control-label for="street-input"  Улица
-        .col-sm-4
-          input#street-input.form-control name="street"
-      .form-group
-        label.col-sm-3.control-label for="house-input"  Номер дома
-        .col-sm-2
-          input#house-input.form-control name="address"
-      .form-group
-        label.control-label.col-sm-3 for="appendedtext"  Ориентир
-        .col-sm-4
-          input.form-control name="landmark" required="" type="text"
+      .attributes
       .form-group
         label.control-label.col-sm-3 for="appendedtext"  На карте
         .col-sm-7
@@ -129,7 +114,7 @@ h1 Новое объявление
       .form-group
         label.control-label.col-sm-3 for="appendedtext"  Площадь
         .col-sm-2
-          input.form-control name="space_from" required="" type="text"
+          input.form-control name="space_from"  type="text"
       .form-group
         label.col-sm-3.control-label for="inputPassword3"  Этаж
         .col-sm-1
@@ -148,7 +133,7 @@ h1 Новое объявление
       .form-group
         label.control-label.col-sm-3 for="appendedtext"  Телефон
         .col-sm-4
-          input.form-control required="" type="text"
+          input.form-control  type="text"
             p
               button.btn.btn-link.btn-xs
                 i.fa.fa-plus ещё один

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140903212248) do
+ActiveRecord::Schema.define(version: 20140905064146) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20140903212248) do
     t.integer  "room_from"
     t.integer  "room_to"
     t.integer  "status_type",                                       default: 0,     null: false
+    t.integer  "user_id"
   end
 
   create_table "locations", force: true do |t|

@@ -53,6 +53,8 @@
 #  landmark_id              :integer
 #  room_from                :integer
 #  room_to                  :integer
+#  status_type              :integer          default(0), not null
+#  user_id                  :integer
 #
 
 require 'rails_helper'

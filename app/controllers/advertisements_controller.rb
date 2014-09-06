@@ -1,5 +1,5 @@
 class AdvertisementsController < ApplicationController
-
+  before_action :authenticate_user!, only: [:new, :create]
   before_action :set_location, except: [:new, :create]
   before_action :find_adv, only: [:show, :edit]
 
@@ -26,60 +26,37 @@ class AdvertisementsController < ApplicationController
     @regions = Location.where(location_type: 0)
   end
 
-  #Awfull chuck of code. Needs to be refactored
+  def get_attributes
+    @allowed_attributes = Advertisement.new(category: params[:category].to_i, adv_type: params[:adv_type].to_i).allowed_attributes
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def create
-    cond = {}
-    #What a hell???? cond
-    #advertisement_params.each do |k,v|
-    #  puts "k= #{k} v=#{v}"
-    #  cond[k] = v.to_i if (k == 'category' || k == 'offer_type')
-    #  cond[k] = v if (k != 'city' || k != 'region' || k != 'district' || k != 'street' || k != 'address' ) && !v.blank?
-    #end
-    cond[:comment] = advertisement_params[:comment] if advertisement_params[:comment]
-    cond[:private_comment] = advertisement_params[:private_comment] if advertisement_params[:private_comment]
-    cond[:city_id] = advertisement_params[:city].to_i if Location.find(advertisement_params[:city].to_i)
-    cond[:region_id] = advertisement_params[:region].to_i if Location.find(advertisement_params[:region].to_i)
-    cond[:district_id] = advertisement_params[:district].to_i if  Location.find(advertisement_params[:district].to_i)
-    street =  Location.find_by_title(advertisement_params[:street])
-    cond[:street_id] = street.id if !street.blank?
-    address = Location.find_by_title(advertisement_params[:address])
-    #Is it right understanding of addres type of locatuion?
-    #cond[:address_id] = address.id if !address.blank?
-    cond[:currency] = advertisement_params[:currency].blank? ? 0 : advertisement_params[:currency]
-    cond[:category] = advertisement_params[:category].to_i
-    cond[:offer_type] = advertisement_params[:offer_type].to_i
-    cond[:adv_type] = advertisement_params[:adv_type].to_i
-    cond[:property_type] = advertisement_params[:property_type].to_i
-    cond[:phone] = advertisement_params[:phone] || '12345678'
-    cond[:price_from] = advertisement_params[:price_from] || 100000
-
-    #TODO: Solve this!
-    cond[:name] = cond[:comment][0..15]
-    cond[:sales_agent] = @current_user.name || @current_user.email
-
-
-    puts("cond=#{cond}")
-    log = Logger.new STDOUT
-    log.fatal "CONDITIONS= #{cond}"
-
-    @adv = Advertisement.new cond
+    @regions = Location.where(location_type: 0)
+    @adv = @current_user.advertisements.new advertisement_params
 
     if @adv.save
       respond_to do |format|
         format.html { redirect_to advertisement_path(@adv) }
       end
     else
-      render 'new'
+      render :new
     end
-
-
   end
 
   def search
     search_cond = {}
 
-    advertisement_params.each do |k,v|
-      search_cond[k] = v.squish.gsub(' ', ' | ') if !v.blank?
+    search_params.each do |k,v|
+      if v.class == Array
+        search_cond[k] = v.map{|i| i = i.squish.gsub(' ',' | ')}.join(' | ')
+      else
+        search_cond[k] = v.squish.gsub(' ', ' | ') if !v.blank?
+      end
+
     end
 
     @search_results = Advertisement.search(conditions: search_cond)
@@ -100,11 +77,20 @@ class AdvertisementsController < ApplicationController
     @adv = Advertisement.find(params[:id])
   end
 
+  def search_params
+    params.permit(:category, :offer_type, :currency, :space_unit, :price_from,
+                  :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house,
+                  :floor_from, :unit_price_from, :space, :room_from, :comment, :private_comment, :phone,
+                  :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
+                  offer_type: [], category: [])
+  end
+
   def advertisement_params
-    params.permit(:city, :region, :category, :offer_type, :currency, :space_unit, :price_from,
-                  :price_to, :date_from, :date_to, :district, :street, :house, :landmark,
-                  :floor_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type,
-                  :property_type, :address, :space_from, :floor_max)
+    params.require(:advertisement).permit(:city_id, :region_id, :district_id, :category, :offer_type, :currency, :space_unit, :price_from,
+                  :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house,
+                  :floor_from, :unit_price_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type,
+                  :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
+                  offer_type: [], category: [])
   end
 
 

@@ -1,52 +1,39 @@
 = form_tag search_advertisements_path, remote: true, class: 'form-inline super-form'
-  = hidden_field_tag :city, '', id: 'city-select'
-  = hidden_field_tag :district, '', id: 'district-select'
-  = hidden_field_tag :category, '', id: 'category-value'
-  = hidden_field_tag :offer_type, '', id: 'offer-type-value'
-  = hidden_field_tag :region, '', id: 'region-select'
-  = hidden_field_tag :currency, '', id: 'currency-value'
-  = hidden_field_tag :space_unit, '', id: 'space-unit-value'
-  = hidden_field_tag :date_from, '', id: 'date-from-value'
-  = hidden_field_tag :date_to, '', id: 'date-to-value'
-  = hidden_field_tag :adv_type, '', id: 'adv-type-value'
-  = hidden_field_tag :property_type, '', id: 'property-type-value'
+
+  = hidden_field_tag 'adv_type[]', '', class: 'adv-type-value'
+  = hidden_field_tag 'property_type[]', '', class: 'property-type-value'
   label.control-label for="prependedtext"
     i.fa.fa-share.fa-lg
     | предложение
   .btn-group.queue-one data-toggle="buttons"
-    button.btn.btn-default.SetHideMulti value="#{AdvEnums::OFFER_TYPES.index(:sale)}"    hid="offer-type-value"  продажа
-    button.btn.btn-default.SetHideMulti value="#{AdvEnums::OFFER_TYPES.index(:for_rent)}"    hid="offer-type-value"   аренда
-    button.btn.btn-default.SetHideMulti value="#{AdvEnums::OFFER_TYPES.index(:day)}"    hid="offer-type-value"   посуточно
+    - [:sale, :for_rent, :day].each do |offer|
+      label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
+        input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
   label.control-label for="prependedtext"
     i.fa.fa-reply.fa-lg
     | спрос
   .btn-group data-toggle="buttons"
-    button.btn.btn-default.SetHideMulti value="#{AdvEnums::OFFER_TYPES.index(:buy)}"    hid="offer-type-value"  куплю
-    button.btn.btn-default.SetHideMulti value="#{AdvEnums::OFFER_TYPES.index(:rent)}"    hid="offer-type-value"  сниму
+    - [:buy, :rent].each do |offer|
+      label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
+        input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
   .form.form-inline.queue-two
     label.control-label for="prependedtext"
       i.fa.fa-home.fa-lg
       | жилая
     .btn-group data-toggle="buttons"
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:flat)}"    hid="category-value"  квартиры
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:newbuild)}"    hid="category-value"  новостройки
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:house)}"    hid="category-value"  дома, дачи, коттеджи
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:ijs)}"    hid="category-value"  участки под ИЖС
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:room)}"    hid="category-value"  гостинки
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:room)}"    hid="category-value"  комнаты
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:garage)}"    hid="category-value"  гаражи
+      - [:flat, :newbuild, :house, :ijs, :room, :garage].each do |category|
+        label.btn.btn-default.AdvPropertySearch hid="category" multi="multi" value="#{AdvEnums::CATEGORIES.index(category)}"
+          input type="checkbox" name="category[]" value="#{AdvEnums::CATEGORIES.index(category)}" = t("advertisement.category.#{category}")
+
   .form.form-inline.queue-two
     label.control-label for="prependedtext"
       i.fa.fa-briefcase.fa-lg
       | коммерческая
     | &nbsp;
     span.btn-group.btn-group data-toggle="buttons"
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:office)}" hid="category-value"   офисы
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:trade)}" hid="category-value"   торговля и сервис
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:storage)}" hid="category-value"   склад и пр-во
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:cafe)}" hid="category-value"   бары, рестораны, кафе
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:land)}" hid="category-value"   земля, площадки
-      button.btn.btn-default.SetHideMulti value="#{AdvEnums::CATEGORIES.index(:free_appointment)}" hid="category-value"   другого и свободного назначения
+      - [:office, :trade, :storage, :cafe, :land, :free_appointment].each do |category|
+        label.btn.btn-default.AdvPropertySearch hid="category" multi="multi" value="#{AdvEnums::CATEGORIES.index(category)}"
+          input type="checkbox" name="category[]" value="#{AdvEnums::CATEGORIES.index(category)}" = t("advertisement.category.#{category}")
 
   /! тип недвижа
   .form.form-inline.queue-tree
@@ -55,7 +42,7 @@
       | место
     span
       #region-select-button.button.btn.btn-default data-target=".lbs-example-modal-lg" data-toggle="modal"
-        = @location.blank? ? 'Выберите город' : @location.title
+        |'Выберите город'
         i.caret
       #region-select-modal.modal.fade.lbs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel1" role="dialog" tabindex="-2"
         .modal-dialog
@@ -64,19 +51,20 @@
               button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
               h4.modal-title Выберите местоположение
             .row.modal-body
-              - @regions.each do |region|
-                = region.title
-                p
-                - Location.children_of(region.id).each do |city|
-                  span
-                    button.btn.btn-default.ClickRegion data-toggle="buttons"  id="city-#{region.id}" region="#{region.id}" city="#{city.id}"   =city.title
+              .btn-group data-toggle="buttons"
+                - @regions.each do |region|
+                  .row.col-sm-12
+                    = region.title
+                  - Location.children_of(region.id).each do |city|
+                    label.btn.btn-default type="button"
+                      input type="checkbox" name="city_id[]" value="#{city.id}" class="region" =city.title   =city.title
                 p
             .modal-footer
               span.pull-left
                 span.small для уточнений:
                 a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
               button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-              button.btn.btn-primary.SelectRegion  type="button"  Выбрать
+              button.btn.btn-primary onclick="select_region('checkbox');"  type="button"  Выбрать
     .btn-group.btn-group
       .btn-group.btn-group
         #city-select-button.button.btn.btn-default data-target=".bs-example-modal-lg" data-toggle="modal"
@@ -97,7 +85,6 @@
                 button.btn.btn-primary.SelectDistrict mv='city-select-modal'  type="button"  Выбрать
       button.btn.btn-default type="button"
         span.fa.fa-times
-          |x
   div
     .form.form-group.form-inline.queue-four role="form"
       .form.form-group.form-inline
