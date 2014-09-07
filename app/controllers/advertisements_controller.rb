@@ -9,13 +9,20 @@ class AdvertisementsController < ApplicationController
   end
 
   def show
-    search_cond = { region: @adv.region.id, city: @adv.city.id,
-                    adv_type: AdvEnums::ADV_TYPES.index(@adv.adv_type.to_sym),
-                    offer_type: AdvEnums::OFFER_TYPES.index(@adv.offer_type.to_sym),
-                    category: AdvEnums::CATEGORIES.index(@adv.category.to_sym) }
-    @alt_adv = Advertisement.search conditions: search_cond
-    @alt_adv.delete_if { |a| a.id == @adv.id }
-    @regions = Location.where(location_type: 0)
+    @photos = @adv.photos
+    @today_counter, @all_days_counter = AdvertisementCounter.get_and_increase_count_for_adv(@adv.id)
+    @allowed_attributes =  @adv.allowed_attributes
+
+    # search_cond = { region: @adv.region.id,
+    #                 city: @adv.city.id,
+    #                 adv_type: AdvEnums::ADV_TYPES.index(@adv.adv_type.to_sym),
+    #                 offer_type: AdvEnums::OFFER_TYPES.index(@adv.offer_type.to_sym),
+    #                 category: AdvEnums::CATEGORIES.index(@adv.category.to_sym)
+    # }
+    # search_cond = {}
+    # @alt_adv = Advertisement.search conditions: search_cond
+    # @alt_adv.delete_if { |adv| adv.id == @adv.id }
+    # @regions = Location.where(location_type: 0)
   end
 
   def edit

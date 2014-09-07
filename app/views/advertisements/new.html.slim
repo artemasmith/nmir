@@ -2,7 +2,6 @@
 h1 Новое объявление
 .well.well-sm
   = form_for @adv, class: 'super-form' do |f|
-
     = f.hidden_field :adv_type, value: '', class: 'adv-type-value'
     = f.hidden_field :property_type, value: '', class: 'property-type-value'
     legend Раздел

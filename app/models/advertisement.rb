@@ -67,6 +67,7 @@ class Advertisement < ActiveRecord::Base
   belongs_to :address, class_name: 'Location', foreign_key: 'address_id'
   belongs_to :landmark, class_name: 'Location', foreign_key: 'landmark_id'
   belongs_to :user
+  has_many   :photos
 
   # validators
   include AdvValidation
@@ -86,18 +87,36 @@ class Advertisement < ActiveRecord::Base
     AdvConformity::ATTR_VISIBILITY[adv_type][category] rescue []
   end
 
+  def sorted_allowed_attributes
+    group = []
+    allowed_attributes.sub.each do |attr|
+      if match = attr.match(/(.+)_to|_from$/i)
+        match.first
+      else
+        group << attr
+      end
+    end
+  end
+
   # define methods like :price, from pirce_from attr
   attribute_names.grep(/_from/).each do |from_method|
     method_name = from_method.match(/(\w+)_from/)[1].to_sym
-
     define_method(method_name) { return self[from_method] }
   end
 
+
+
   def locations
     HashWithIndifferentAccess.new({
-      non_admin_area: non_admin_area, admin_area: admin_area, region: region, city: city,
-      district: district, street: street, address: address, landmark: landmark
-    }).delete_if {|k, v| v.blank? }
+      region: region,
+      district: district,
+      city: city,
+      admin_area: admin_area,
+      non_admin_area: non_admin_area,
+      street: street,
+      address: address,
+      landmark: landmark
+    }).delete_if {|_, v| v.blank? }
   end
 
   def locations_array
@@ -119,13 +138,17 @@ class Advertisement < ActiveRecord::Base
     end
   end
 
+  def title
+    'объявление'
+  end
+
   private
 
   def check_attributes
-    self.name ||= comment[0..15]
+    self.name ||= comment[0..15] #это имя человека который размещает объявление
     self.currency ||= Advertisement::CURRENCIES[0]
     self.sales_agent ||= user.name || 'no agent'
-    self.phone ||= user.phones.first.number || '123'
+    self.phone ||= user.phones.first.number || '123' #это номер человека который размещает объявление
     self.space_unit ||= 'м2'
   end
 
@@ -169,7 +192,6 @@ class Advertisement < ActiveRecord::Base
       errors.add :base, "Неверный тип ???"
     end
   end
-
 
 
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140905064146) do
+ActiveRecord::Schema.define(version: 20140906232136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,16 @@ ActiveRecord::Schema.define(version: 20140905064146) do
     t.integer "counter"
   end
 
+  create_table "advertisement_counters", force: true do |t|
+    t.integer  "advertisement_id"
+    t.integer  "counter_type"
+    t.integer  "count",            default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "advertisement_counters", ["advertisement_id"], name: "index_advertisement_counters_on_advertisement_id", using: :btree
+
   create_table "advertisements", force: true do |t|
     t.integer  "offer_type",                                                        null: false
     t.integer  "property_type",                                                     null: false
@@ -132,6 +142,8 @@ ActiveRecord::Schema.define(version: 20140905064146) do
     t.integer  "room_to"
     t.integer  "status_type",                                       default: 0,     null: false
     t.integer  "user_id"
+    t.float    "latitude"
+    t.float    "longitude"
   end
 
   create_table "locations", force: true do |t|
@@ -168,6 +180,17 @@ ActiveRecord::Schema.define(version: 20140905064146) do
 
   add_index "phones", ["user_id"], name: "index_phones_on_user_id", using: :btree
 
+  create_table "photos", force: true do |t|
+    t.integer  "advertisement_id"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "advertisement_photo_file_name"
+    t.string   "advertisement_photo_content_type"
+    t.integer  "advertisement_photo_file_size"
+    t.datetime "advertisement_photo_updated_at"
+  end
+
   create_table "sections", force: true do |t|
     t.integer "advertisements_count", default: 0
     t.string  "url"
@@ -185,17 +208,25 @@ ActiveRecord::Schema.define(version: 20140905064146) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                  default: "",    null: false
-    t.string   "encrypted_password",     default: "",    null: false
+    t.string   "email",                            default: "",    null: false
+    t.string   "encrypted_password",               default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.boolean  "blocked",                default: false
-    t.boolean  "from_admin",             default: false
+    t.boolean  "blocked",                          default: false
+    t.boolean  "from_admin",                       default: false
     t.integer  "role"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
+    t.string   "advertisement_photo_file_name"
+    t.string   "advertisement_photo_content_type"
+    t.integer  "advertisement_photo_file_size"
+    t.datetime "advertisement_photo_updated_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

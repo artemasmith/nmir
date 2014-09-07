@@ -16,6 +16,8 @@
 class Location < ActiveRecord::Base
   has_many :sublocations, class_name: 'Location', foreign_key: "location_id"
   has_many :sublocations_for_city, class_name: 'Location', primary_key: "city_id"
+  belongs_to :parent_location, class_name: 'Location', foreign_key: "location_id"
+
 
   before_save :transliterate_title
   before_create :adress_initialize

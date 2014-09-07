@@ -96,13 +96,60 @@
   $(".super-form").trigger "submit.rails"
   return
 
+@show_adv_phone = ->
+  console.log('fire')
+  $.ajax(
+      url: Routes.api_advertisement_path($('.ShowAdvPhone').data('id'))
+      dataType: 'json'
+    ).done (data)->
+      span =
+      $('.ShowAdvPhone').replaceWith("<span>#{data.name} #{data.phone}</span>")
+      return
+    .error ->
+      $(".top-right").notify(
+        type: "danger"
+        message:
+          text: "Ошибка сети("
+        fadeOut:
+          delay: 5000
+      ).show()
+
+  return
+
+
+
+@render_map = (el)->
+  url = "http://api-maps.yandex.ru/2.1/?lang=ru_RU"
+  $.getScript url, ->
+    init = ->
+      new ymaps.Map("map",
+        center: [
+          el.data('latitude')
+          el.data('longitude')
+        ]
+        zoom: 7
+      )
+      return
+    ymaps.ready init
+
+
+
+
 #selectors
 
 @ready = ->
+  $('.dropdown-menu').find('form').click ->
+    e.stopPropagation()
   $('.SelectRegion').on('click', select_region)
   $('.SelectDistrict').on('click', select_district)
   $('.AdvProperty').on('change', prepare_allowed_attributes)
   $('.AdvPropertySearch').on('change', set_adv_property)
   return
+
+$('.ShowAdvPhone').livequery ->
+  $(this).click show_adv_phone
+
+$('#map').livequery ->
+  render_map($(this))
 
 $(document).on('ready page:load', @ready());

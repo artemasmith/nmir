@@ -16,9 +16,6 @@ gem "slim-rails"
 gem 'therubyracer',  platforms: :ruby
 
 gem 'rails_admin'
-#group :development, :test do
-#  gem 'factory_girl'
-#end
 
 #sphinx
 gem 'mysql2'
@@ -72,6 +69,7 @@ end
 group :development, :test do
   gem 'faker'
   gem 'rspec-rails', '~> 3.0.0'
+  gem 'factory_girl_rails', '~> 4.0'
 end
 
 group :test do
@@ -87,4 +85,13 @@ gem 'dbf'
 
 #Whenever is a Ruby gem that provides a clear syntax for writing and deploying cron jobs.
 gem 'whenever', '~> 0.9.0', :require => false
+
+
+#Paperclip is intended as an easy file attachment library for Active Record.
+gem "paperclip", "~> 4.2"
+gem 'jquery-fileupload-rails'
+
+
+#Generates javascript file that defines all Rails named routes as javascript helpers
+gem "js-routes"
 

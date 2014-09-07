@@ -20,5 +20,6 @@ module Nmir
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.autoload_paths += Dir[File.join(Rails.root, "lib", "extensions", "*.rb")].each {|l| require l }
     config.i18n.default_locale = :ru
+    config.assets.initialize_on_precompile = true
   end
 end

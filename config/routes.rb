@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   resources :locations, only: [:index, :show]
 
-  resources :advertisements do
+  resources :advertisements, :path => 'entity' do
     collection do
       post 'search'
       post 'get_attributes'
@@ -10,6 +10,11 @@ Rails.application.routes.draw do
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'
   devise_for :users
+
+  namespace :api do
+    resources :advertisements, :path => '/entity'
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
