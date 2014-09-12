@@ -1,9 +1,10 @@
 =@adv.errors.messages if !@adv.errors.blank?
 h1 Новое объявление
 .well.well-sm
-  = form_for @adv, class: 'super-form' do |f|
+  = nested_form_for @adv, html: {class: 'super-form'} do |f|
     = f.hidden_field :adv_type, value: '', class: 'adv-type-value'
     = f.hidden_field :property_type, value: '', class: 'property-type-value'
+    = f.hidden_field :user_id, value: '', class: 'user-id'
     legend Раздел
     .form.form-horizontal role="form"
       .form-group
@@ -78,165 +79,90 @@ h1 Новое объявление
             button.btn.btn-default type="button"
               span.fa.fa-times
     .form.form-horizontal role="form"
-      .attributes
       .form-group
         label.control-label.col-sm-3 for="appendedtext"  На карте
         .col-sm-7
           script charset="utf-8" src="//api-maps.yandex.ru/services/constructor/1.0/js/?sid=xW1xorCoYr-xI6cCciqN5E8zGSs_rB4x&width=auto&height=250" type="text/javascript"
-    legend Подробности
-    .form.form-horizontal role="form"
+    .modal.fade.show-phones aria-hidden="true" aria-labelledby="OtherAdvsByPhone" role="dialog" tabindex="-2"
+      .modal-dialog
+        .row.modal-content
+          .modal-header
+            button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
+            h4.modal-title Другие объявленяя с тем же телефоном
+          .row.modal-body
+            .advertisements-duplicate
+              /Здесь будут рисоваться обьявления с этим ее номером
+          .modal-footer
+            span.pull-left
+              span.small для уточнений:
+              a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
+            button.btn.btn-primary data-dismiss="modal" type="button"  Ок
+    - if current_user.admin?
+      legend Контакт
+      .form.form-horizontal role="form"
+        - resource.phones.build() unless params.has_key? :user
+        = nested_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |user_form|
+          .form-group
+            label.col-sm-3.control-label for="inputEmail3"  Имя
+            .col-sm-4
+              = user_form.text_field :name, class: 'form-control'
+          .form-group
+            label.col-sm-3.control-label for="inputEmail3"  E-mail
+            .col-sm-4
+              = user_form.text_field :email, class: 'form-control'
+          .form-group
+            label.control-label.col-sm-3 for="appendedtext"  Телефон
+            .input-group.col-sm-4#reg-phones
+              = user_form.fields_for :phones do |phone_form|
+                .input-group
+                  span.input-group-addon
+                    i.fa.fa-phone
+                  = phone_form.text_field :original, class: 'form-control'
+                  span.input-group-btn
+                    = phone_form.link_to_remove class: 'btn btn-default' do
+                      i.fa.fa-minus
+          .form-group
+            label.control-label.col-sm-4
+            .input-group.col-sm-4
+              = user_form.link_to_add 'Добавить нормер', :phones, :data => { :target => "#reg-phones" }
+            .form-group
+              .col-sm-offset-3.col-sm-10
+                .checkbox
+                  label
+                    input type="checkbox"
+                      | согласен с
+                      a href="#"  правилами
+            .form-group
+              .col-sm-offset-3.col-sm-10
+                label.btn.btn-primary.checkPhone Далее
+    div class="#{@show} other-info"
+      .well.well-sm.col-xs-12
+      legend О недвижимости
+      .row
+        .form.form-horizontal
+          /fast bugofix
+          = render partial: 'advertisements/attributes', locals: {allowed_attributes:  @allowed_attributes}
+          .attributes
+      .well.well-sm.col-xs-12
+      legend Фото, видео
+      .row
+        .form-group.col-xs-4.col-sm-3.col-md-2
+          label &nbsp;
+          .button
+            a.btn.btn-sm.btn-success
+              i.fa.fa-camera
+              | добавить фото
+        .form-group.col-xs-7.col-sm-6.col-md-5.col-lg-4
+          label for="exampleInputPassword2"  описание
+          input#exampleInputPassword2.form-control.input-sm type="text"
       .form-group
-        label.col-sm-3.control-label for="rooms"  Комнат
-        .col-sm-4
-          span
-            label.radio-inline
-              input#inlineCheckbox1 hid="rooms-value" name="room_from"  type="radio" value="1"  1
-            label.radio-inline
-              input#inlineCheckbox2 hid="rooms-value" name="room_from" type="radio" value="2"  2
-            label.radio-inline
-              input#inlineCheckbox3 hid="rooms-value" name="room_from" type="radio" value="3"  3
-            label.radio-inline
-              input#inlineCheckbox3 hid="rooms-value" name="room_from" type="radio" value="4"  4
-            label.radio-inline
-              input#inlineCheckbox3 hid="rooms-value" name="room_from" type="radio" value="5"  5+
       .form-group
-        label.col-sm-3.control-label for="inputEmail3"  Материал стен
-        .col-sm-8
-          label.radio-inline
-            input#inlineCheckbox1 type="radio" value="option1"  кирпич
-          label.radio-inline
-            input#inlineCheckbox2 type="radio" value="option2"  панель
-          label.radio-inline
-            input#inlineCheckbox3 type="radio" value="option3"  каркас-монолит
-          label.radio-inline
-            input#inlineCheckbox3 type="radio" value="option3"  остальное
-      .form-group
-        label.control-label.col-sm-3 for="appendedtext"  Площадь
-        .col-sm-2
-          input.form-control name="space_from"  type="text"
-      .form-group
-        label.col-sm-3.control-label for="inputPassword3"  Этаж
-        .col-sm-1
-          input.form-control name="floor_from" type="text"
-      .form-group
-    legend Контакт
-    .form.form-horizontal role="form"
-      .form-group
-        label.col-sm-3.control-label for="inputEmail3"  Имя
-        .col-sm-4
-          input#inputEmail3.form-control type="email"
-      .form-group
-        label.col-sm-3.control-label for="inputEmail3"  E-mail
-        .col-sm-4
-          input#inputEmail3.form-control type="email"
-      .form-group
-        label.control-label.col-sm-3 for="appendedtext"  Телефон
-        .col-sm-4
-          input.form-control  type="text"
-            p
-              button.btn.btn-link.btn-xs
-                i.fa.fa-plus ещё один
-      .form-group
-        label.col-sm-3.control-label for="inputPassword3"  Пароль два раза
-        .col-sm-4
-          input#inputPassword3.form-control type="password"
-            input#inputPassword3.form-control type="password"
-      .form-group
-        .col-sm-offset-3.col-sm-10
-          .checkbox
-            label
-              input type="checkbox"
-                | согласен с
-                a href="#"  правилами
-    .well.well-sm.col-xs-12
-    legend О недвижимости
-    .row
-      .form.form-inline.form-sm role="form"
-        .form.form-group.form-inline.col-xs-12.col-sm-4.col-md-3
-          label комнат:
-          br
-        .form.form-group.form-inline.col-xs-12.col-sm-8.col-md-6.col-lg-5
-          label материал стен:
-          br
-        .form-group.col-xs-4.col-sm-4.col-md-3
-          label площадь:
-          br
-            input#space-result.form-control.input-sm name="space_from" style=("width: 70px")
-              label &nbsp;м&sup2;
-        .form-group.col-xs-3.col-sm-3.col-md-2
-          label этаж:
-          br
-            input#floor-result.form-control.input-sm name="floor-max" style=("width: 35px")
-        .form-group.col-xs-3.col-sm-3.col-md-2
-          label этажей:
-          br
-            input#price-result.form-control.input-sm style=("width: 35px")
-        .form-group.col-xs-12.col-sm-8.col-md-6.col-lg-5
-          label for="exampleInputEmail2"  цена:
-          br
-            input#exampleInputEmail2.form-control.input-sm name="price_from" style=("width: 110px")
-              .btn-group
-                .btn-group
-                  button#button1id.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown" name="button1id"
-                    i.fa.fa-rouble.fa-lg
-                    span.caret
-                  ul.dropdown-menu role="menu"
-                    li
-                      a href="#"
-                        i.fa.fa-euro
-                    li
-                      a href="#"
-                        i.fa.fa-dollar
-                    li
-                      label.SetHideOne value="#{AdvEnums::CURRENCIES.index(:RUR)}" hid="currency-value"  ₴
-                    /! это ебать её в сраку гривна
-                    li
-                      label.SetHideOne value="#{AdvEnums::CURRENCIES.index(:RUR)}" hid="currency-value"  ₸
-                    /! а это блять тэнге
-                    li
-                      label.SetHideOne value="#{AdvEnums::CURRENCIES.index(:RUR)}" hid="currency-value"  BYR
-                .btn-group
-                  button#button1id.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown" name="button1id"
-                    | за всё
-                    span.caret
-                  ul.dropdown-menu role="menu"
-                    li
-                      a href="#"  за м&sup2;
-                    li
-                      a href="#"  за сотку
-              | \&nbsp;&nbsp;
-              label.checkbox-inline
-                input#inlineCheckbox1 type="checkbox" value="option1"  ипотека
-    p
-    .form-group
-      label.control-label for="textarea"  комментарий, который пойдёт на сайт
-      div
-        textarea#textarea.form-control name="comment"
-        span.help-block.small пишите зажигательно, пишите много
-    p
-    .form-group
-      label.control-label for="textarea"  комментарий, который виден только в базе агентства
-      div
-        textarea#textarea.form-control name="private_comment"
-    .well.well-sm.col-xs-12
-    legend Фото, видео
-    .row
-      .form-group.col-xs-4.col-sm-3.col-md-2
-        label &nbsp;
-        .button
-          a.btn.btn-sm.btn-success
-            i.fa.fa-camera
-            | добавить фото
-      .form-group.col-xs-7.col-sm-6.col-md-5.col-lg-4
-        label for="exampleInputPassword2"  описание
-        input#exampleInputPassword2.form-control.input-sm type="text"
-    .form-group
-    .form-group
-      label.control-label for="textarea"  ссылка(?) или код видеохостинга
-      div
-        textarea#textarea.form-control name="textarea"
-        span.help-block.small
-          a youtube.com
-          a rutube.ru
-          a vimeo.com
-    button.btn.btn-primary onclick="submit_form();" Добавить
+        label.control-label for="textarea"  ссылка(?) или код видеохостинга
+        div
+          textarea#textarea.form-control name="textarea"
+          span.help-block.small
+            a youtube.com
+            a rutube.ru
+            a vimeo.com
+      = f.submit 'Create'
+      button.btn.btn-primary onclick="submit_form();" Добавить

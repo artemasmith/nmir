@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: advertisement_counters
+#
+#  id               :integer          not null, primary key
+#  advertisement_id :integer
+#  counter_type     :integer
+#  count            :integer          default(0)
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 require 'rails_helper'
 
 RSpec.describe AdvertisementCounter, :type => :model do

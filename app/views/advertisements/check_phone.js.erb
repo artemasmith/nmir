@@ -1,0 +1,8 @@
+$('.user-id')[0].setAttribute('value',"<%= @user %>");
+<% if !@advertisements.blank? %>
+    $('.advertisements-duplicate').html("<%= j render 'advertisements/search_results', search_results:  @advertisements %>" );
+    $('.show-phones').modal('show');
+    $('.other-info')[0].className='other-info hidden';
+<% else %>
+    $('.other-info')[0].className='other-info';
+<% end %>
