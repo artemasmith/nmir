@@ -6,13 +6,18 @@ Rails.application.routes.draw do
     collection do
       post 'search'
       post 'get_attributes'
+
     end
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'
   devise_for :users
 
   namespace :api do
-    resources :advertisements, :path => '/entity'
+    resources :advertisements, :path => '/entity' do
+      collection do
+        post 'check_phone'
+      end
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

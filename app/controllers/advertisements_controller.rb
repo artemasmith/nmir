@@ -31,6 +31,9 @@ class AdvertisementsController < ApplicationController
   def new
     @adv = Advertisement.new
     @regions = Location.where(location_type: 0)
+    @show = current_user.admin? ? 'hidden' : ''
+    #fast bugofix
+    @allowed_attributes = Advertisement.new(category: 0, adv_type: 0).allowed_attributes
   end
 
   def get_attributes
@@ -43,8 +46,15 @@ class AdvertisementsController < ApplicationController
 
   def create
     @regions = Location.where(location_type: 0)
-    @adv = @current_user.advertisements.new advertisement_params
+    @adv = ''
 
+    if current_user.admin? && advertisement_params[:user_id].blank?
+      @adv = Advertisement.new advertisement_params
+    elsif current_user.admin?
+      @adv = User.find(advertisement_params[:user_id].to_i).advertisements.new advertisement_params
+    else
+      @adv = current_user.advertisements.new advertisement_params
+    end
     if @adv.save
       respond_to do |format|
         format.html { redirect_to advertisement_path(@adv) }
@@ -56,22 +66,28 @@ class AdvertisementsController < ApplicationController
 
   def search
     search_cond = {}
-
-    search_params.each do |k,v|
-      if v.class == Array
-        search_cond[k] = v.map{|i| i = i.squish.gsub(' ',' | ')}.join(' | ')
-      else
-        search_cond[k] = v.squish.gsub(' ', ' | ') if !v.blank?
-      end
-
+    with_cond = {}
+    from = search_params[:price_from].to_i
+    to = search_params[:price_to].to_i
+    if !from.blank?
+      with_cond[:price_from] = to.blank? ? from..99990000 : from..to
     end
 
-    @search_results = Advertisement.search(conditions: search_cond)
+    search_params.each do |k,v|
+      if k != 'price_from' && k != 'price_to'
+        if v.class == Array
+          search_cond[k] = v.map{|i| i = i.squish.gsub(' ',' | ')}.join(' | ')
+        else
+          search_cond[k] = v.squish.gsub(' ', ' | ') unless v.blank?
+        end
+      end
+    end
+
+    @search_results =  with_cond.blank? ? Advertisement.search(conditions: search_cond) : Advertisement.search(conditions: search_cond, with: with_cond)
     respond_to do |format|
       format.js
     end
   end
-
 
 
   protected
@@ -94,10 +110,10 @@ class AdvertisementsController < ApplicationController
 
   def advertisement_params
     params.require(:advertisement).permit(:city_id, :region_id, :district_id, :category, :offer_type, :currency, :space_unit, :price_from,
-                  :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house,
+                  :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house, :user_id,
                   :floor_from, :unit_price_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type,
                   :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
-                  offer_type: [], category: [])
+                  offer_type: [], category: [], user: [])
   end
 
 

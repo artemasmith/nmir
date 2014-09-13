@@ -16,7 +16,7 @@ class Phone < ActiveRecord::Base
 
   before_validation :normalize
 
-  private 
+  protected
 
   def convert_city_phones(num)
     case num

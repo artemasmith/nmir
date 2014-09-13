@@ -402,7 +402,14 @@
 // user_session => /users/sign_in(.:format)
   user_session_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_in",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// api_advertisement => /api/api/entity/:id(.:format)
+  api_check_phone_path: function(_id, options) {
+  return '/api/entity/check_phone?' + _id
+  //fast bugofix
+  //return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false]],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"check_phone",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   }}
+
 ;
 
   window.Routes.options = defaults;

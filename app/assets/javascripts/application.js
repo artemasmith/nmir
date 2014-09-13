@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 //= require bootstrap/modal
-//= require js-routes
+//= require routes
 //= require vendor/bootstrap.min
 //= require vendor/jquery.livequery
 //= require vendor/bootstrap-notify

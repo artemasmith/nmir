@@ -15,9 +15,10 @@ ol.breadcrumb
         label.control-label.col-sm-4 for="radios"  Я регистрируюсь как
         .col-sm-4
           - User.roles.each do |role, id|
-            = label_tag "user_role_#{role}", class: 'radio' do
-              = t "activerecord.attributes.user.role.#{role}"
-              = f.radio_button :role, role.to_sym
+            - if role != 'admin'
+              = label_tag "user_role_#{role}", class: 'radio' do
+                = t "activerecord.attributes.user.role.#{role}"
+                = f.radio_button :role, role.to_sym
       .form-group
         label.control-label.col-sm-4 for="textinput"  имя
         .input-group.col-sm-4

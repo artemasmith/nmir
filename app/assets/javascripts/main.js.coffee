@@ -91,7 +91,6 @@
 
 
 @submit_form = (e) ->
-
   #Do required stuff for setting up search credentials (we are looking for .active elements)
   $(".super-form").trigger "submit.rails"
   return
@@ -133,9 +132,21 @@
     ymaps.ready init
 
 
+@check_phones = ->
+  pphones = $(':input[name*="original"]')
+  phones = ''
+  $.each pphones, (i,p) ->
+    phones += p.value + ','
+  phones = phones.substring(0, phones.length - 1)
+  #check phone is phone
+  $.ajax(
+    type: 'POST'
+    url: Routes.api_check_phone_path('phones='+phones)
+    dataType: 'script'
+  )
+  return
 
 
-#selectors
 
 @ready = ->
   $('.dropdown-menu').find('form').click ->
@@ -144,6 +155,7 @@
   $('.SelectDistrict').on('click', select_district)
   $('.AdvProperty').on('change', prepare_allowed_attributes)
   $('.AdvPropertySearch').on('change', set_adv_property)
+  $('.checkPhone').on('click', check_phones)
   return
 
 $('.ShowAdvPhone').livequery ->
@@ -152,4 +164,4 @@ $('.ShowAdvPhone').livequery ->
 $('#map').livequery ->
   render_map($(this))
 
-$(document).on('ready page:load', @ready());
+$(document).on('ready page:load', ready);

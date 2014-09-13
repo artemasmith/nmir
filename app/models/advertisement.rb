@@ -54,6 +54,9 @@
 #  room_from                :integer
 #  room_to                  :integer
 #  status_type              :integer          default(0), not null
+#  user_id                  :integer
+#  latitude                 :float
+#  longitude                :float
 #
 
 class Advertisement < ActiveRecord::Base
@@ -67,6 +70,7 @@ class Advertisement < ActiveRecord::Base
   belongs_to :address, class_name: 'Location', foreign_key: 'address_id'
   belongs_to :landmark, class_name: 'Location', foreign_key: 'landmark_id'
   belongs_to :user
+  accepts_nested_attributes_for :user
   has_many   :photos
 
   # validators

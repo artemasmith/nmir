@@ -2,12 +2,15 @@
 #
 # Table name: locations
 #
-#  id             :integer          not null, primary key
-#  title          :string(255)
-#  translit       :string(255)
-#  location_type  :integer
-#  location_id    :integer
-#  children_count :integer          default(0)
+#  id                :integer          not null, primary key
+#  title             :string(255)
+#  translit          :string(255)
+#  location_type     :integer
+#  location_id       :integer
+#  children_count    :integer          default(0)
+#  admin_area_id     :integer
+#  non_admin_area_id :integer
+#  city_id           :integer
 #
 
 require 'rails_helper'
