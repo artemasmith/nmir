@@ -1,6 +1,6 @@
 h1 = @adv.title
 ol.breadcrumb
-  - @adv.locations.each do |k, v|
+  - @adv.locations.each do |_, v|
     li
       a = v.title
   li.active
@@ -49,20 +49,35 @@ ol.breadcrumb
       - @photos.each do |photo|
         = image_tag photo.advertisement_photo, class: 'col-xs-2 thumbnail'
   .col-lg-5.clearfix
-    p
-      = @adv.comment
-    p
-      label цена:
-      '
-      span.lead = @adv.price_from.to_s
-      '
-      i.fa.fa-rub
-      - if @adv.price_to.present?
-        | -
-        '
-        = @adv.price_to
-        '
-        i.fa.fa-rub
+    - if @adv.comment.present?
+      p
+        = @adv.comment
+    - @grouped_allowed_attributes.each do |group|
+      - attr_from = group[0]
+      - attr_to = group[1]
+      - value_from = @adv.send(attr_from)
+      - value_to = @adv.send(attr_to) if attr_to.present?
+      - if value_from.present? || value_to.present?
+        p
+          label
+            = t("advertisement.attributes.#{attr_from}")
+          | :
+          - if value_from.present?
+            - if value_to.present?
+            '
+            | от
+            '
+            span.lead
+              = value_from
+            '
+            = t("advertisement.units.#{attr_from}")
+          - if value_to.present?
+            - if value_from.present?
+              | до
+              '
+            = value_to
+            '
+            = t("advertisement.units.#{attr_from}")
     p
       i.fa.fa-life-ring.fa-lg
       '
@@ -79,14 +94,4 @@ ol.breadcrumb
     .col-lg-8.clearfix
       #map style="width: auto; height: 400px" data-latitude=@adv.latitude data-longitude=@adv.longitude
 
-  /p.h4.col-sm-12
-  /  | Больше вариантов недвижимости:
-  /  a.btn.btn-default.btn-xs переулок Газетный
-  /  a.btn.btn-default.btn-xs улица Горького
-  /  a.btn.btn-default.btn-xs ЖК Чебурашка
-  /  a.btn.btn-default.btn-xs Ленина
-  /  a.btn.btn-default.btn-xs Нахичевань
-  /  a.btn.btn-default.btn-xs Левый берег
-  /= render partial: 'advertisements/search_results', locals: {search_results: @alt_adv}
-/.well.well-sm.col-sm-12.clearfix
-/ = render partial: 'advertisements/search_form'
+

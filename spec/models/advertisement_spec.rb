@@ -7,7 +7,6 @@
 #  property_type            :integer          not null
 #  category                 :integer          not null
 #  agent_category           :integer
-#  currency                 :integer
 #  distance                 :integer
 #  time_on_transport        :integer
 #  time_on_foot             :integer
@@ -24,10 +23,8 @@
 #  sales_agent              :string(255)
 #  phone                    :string(255)
 #  organization             :string(255)
-#  space_unit               :string(255)
 #  outdoors_space_from      :decimal(15, 2)
 #  outdoors_space_to        :decimal(15, 2)
-#  outdoors_space_unit      :string(255)
 #  price_from               :integer
 #  price_to                 :integer
 #  unit_price_from          :decimal(15, 2)

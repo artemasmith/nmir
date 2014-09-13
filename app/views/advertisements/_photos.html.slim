@@ -1,0 +1,128 @@
+legend Фото
+/.row
+/  .form-group.col-xs-4.col-sm-3.col-md-2
+/    = f.fields_for :photos do |photo|
+/      - if photo.object.new_record?
+/        = photo.file_field :image, id: "fileupload"
+/        = photo.hidden_field :id
+/        = photo.hidden_field :attachable_id
+/        = photo.hidden_field :attachable_type
+/      - else
+/        = image_tag(photo.object.image.url(:thumb))
+/        = photo.check_box :_destroy
+
+
+.row.fileupload-buttonbar
+  .col-lg-7
+    span.btn.btn-success.fileinput-button
+      i.glyphicon.glyphicon-plus
+      span Add files...
+      input multiple="" name="files[]" type="file"
+    button.btn.btn-primary.start type="submit"
+      i.glyphicon.glyphicon-upload
+      span Start upload
+    button.btn.btn-warning.cancel type="reset"
+      i.glyphicon.glyphicon-ban-circle
+      span Cancel upload
+    button.btn.btn-danger.delete type="button"
+      i.glyphicon.glyphicon-trash
+      span Delete
+    input.toggle type="checkbox"
+      span.fileupload-process
+  .col-lg-5.fileupload-progress.fade
+    .progress.progress-striped.active aria-valuemax="100" aria-valuemin="0" role="progressbar"
+      .progress-bar.progress-bar-success style="width:0%;"
+    .progress-extended &nbsp;
+table.table.table-striped role="presentation"
+  tbody.files
+    = f.fields_for :photos do |photo|
+      tr.template-upload.fade.in
+        td
+          span.preview
+            canvas height="80" width="80"
+        td
+          p.name
+            = "123"
+          strong.error.text-danger
+        td
+          p.size 145.48 KB
+          .progress.progress-striped.active aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" role="progressbar"
+            .progress-bar.progress-bar-success style="width:0%;"
+        td
+          button.btn.btn-primary.start
+            i.glyphicon.glyphicon-upload
+            span Start
+          button.btn.btn-warning.cancel
+            i.glyphicon.glyphicon-ban-circle
+            span Cancel
+
+
+script#template-upload type="text/x-tmpl"
+  | {% for (var i=0, file; file=o.files[i]; i++) { %}
+  tr.template-upload.fade
+    td
+      span.preview
+    td
+      p.name
+        | {%= file.name %}
+      strong.error.text-danger
+    td
+      p.size Processing...
+      .progress.progress-striped.active aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" role="progressbar"
+        .progress-bar.progress-bar-success style="width:0%;"
+    td
+      | {% if (!i && !o.options.autoUpload) { %}
+      button.btn.btn-primary.start
+        i.glyphicon.glyphicon-upload
+        span Start
+      | {% } %}
+      | {% if (!i) { %}
+      button.btn.btn-warning.cancel
+        i.glyphicon.glyphicon-ban-circle
+        span Cancel
+      | {% } %}
+  | {% } %}
+
+/! The template to display files available for download
+script#template-download type="text/x-tmpl"
+  | {% for (var i=0, file; file=o.files[i]; i++) { %}
+  tr.template-download.fade
+    td
+      span.preview
+        | {% if (file.thumbnailUrl) { %}
+        a data-gallery="" download="{%=file.name%}" href="{%=file.url%}" title="{%=file.name%}"
+          img src="{%=file.thumbnailUrl%}" /
+        | {% } %}
+    td
+      p.name
+        | {% if (file.url) { %}
+        | <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}
+        | {% } else { %}
+        span
+          | {%= file.name %}
+        | {% } %}
+      | {% if (file.error) { %}
+      div
+        span.label.label-danger Error
+        | {%=file.error%}
+      | {% } %}
+    td
+      span.size
+        | {%=o.formatFileSize(file.size)%}
+    td
+      | {% if (file.deleteUrl) { %}
+      | <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}
+      i.glyphicon.glyphicon-trash
+      span Delete
+      input.toggle name="delete" type="checkbox" value="1"
+        | {% } else { %}
+        button.btn.btn-warning.cancel
+          i.glyphicon.glyphicon-ban-circle
+          span Cancel
+        | {% } %}
+  | {% } %}
+
+
+
+
+

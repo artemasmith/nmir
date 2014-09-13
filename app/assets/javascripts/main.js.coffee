@@ -132,6 +132,34 @@
       return
     ymaps.ready init
 
+@render_pointed_map = (el)->
+  url = "http://api-maps.yandex.ru/2.1/?lang=ru_RU"
+  $.getScript url, ->
+    init = ->
+      start = null
+
+      map = new ymaps.Map("pointed_map"
+        center: [55.76, 37.64]
+        zoom: 7
+      )
+
+      map.events.add "click", (e) ->
+        coords = e.get("coords")
+        console.log coords
+        $('.latitude-value').val(coords[0].toPrecision(6))
+        $('.longitude-value').val(coords[1].toPrecision(6))
+
+        if(start)
+          start.geometry.setCoordinates(coords)
+        else
+          start = new ymaps.Placemark(coords, { iconContent: 'А' }, { draggable: false });
+#          start.events.add('dragend', this._onDragEnd, this);
+
+        return
+    ymaps.ready init
+    return
+  return
+
 
 
 
@@ -152,4 +180,45 @@ $('.ShowAdvPhone').livequery ->
 $('#map').livequery ->
   render_map($(this))
 
-$(document).on('ready page:load', @ready());
+$('#pointed_map').livequery ->
+  render_pointed_map($(this))
+
+$('form').livequery ->
+  $(this).bootstrapValidator({
+    feedbackIcons: {
+      valid: 'glyphicon glyphicon-ok'
+      invalid: 'glyphicon glyphicon-remove'
+      validating: 'glyphicon glyphicon-refresh'
+    }
+  })
+
+
+$('.fileupload').livequery ->
+  $(this).fileupload
+    url: Routes.photos_path()
+    dataType: 'json'
+    disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent)
+    maxFileSize: 5000000
+    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
+
+  $(this).addClass "fileupload-processing"
+
+  $.ajax(
+    url: $(".fileupload").fileupload("option", "url")
+    dataType: "json"
+    context: $("#fileupload")[0]
+  ).always(->
+    $(this).removeClass "fileupload-processing"
+    return
+  ).done (result) ->
+    $(this).fileupload("option", "done").call this, $.Event("done"),
+      result: result
+
+    return
+
+
+
+
+
+
+$(document).on('ready page:load', ready);

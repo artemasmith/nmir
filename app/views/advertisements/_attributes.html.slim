@@ -1,6 +1,8 @@
-- allowed_attributes.each do |atr|
-  - if !atr.match('to')
-    .form-group
-      label.col-sm-3.control-label for="street-input"  = t("advertisement.new.#{atr}")
-      .col-sm-4
-        input.form-control name="advertisement[#{atr}]"
+- @grouped_allowed_attributes.each do |group|
+  .form-group
+    - attr_from = group[0]
+    - attr_to = group[1]
+    = render_input attr_from.to_sym, attr_from.to_sym, attr_to ? attr_to.to_sym : nil, attr_to ? attr_to.to_sym : nil
+
+
+
