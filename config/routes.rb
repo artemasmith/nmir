@@ -4,8 +4,9 @@ Rails.application.routes.draw do
   resources :photos
   resources :advertisements, :path => 'entity' do
     collection do
-      post 'search'
-      post 'get_attributes'
+      match 'search', via: [:get, :post]
+      get 'get_attributes'
+      get 'check_phone'
     end
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'

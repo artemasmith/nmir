@@ -10,60 +10,62 @@
 
 class Phone < ActiveRecord::Base
   belongs_to :user
+  has_many :advertisements, through: :user
+
 
   validates_presence_of :original
   validates_uniqueness_of :number
 
   before_validation :normalize
 
-  private 
+  def normalize
+    self.number = Phone.normalize(original)
+  end
 
-  def convert_city_phones(num)
-    case num
+  def self.convert_city_phones(phone)
+    case phone
       # Megaphone
       when /^\+7863226/
-        num.gsub /863/, '928'
+        phone.gsub /863/, '928'
       when /^\+7863229/
-        num.gsub /863/, '928'
+        phone.gsub /863/, '928'
       when /^\+7863296/
-        num.gsub /863/, '928'
+        phone.gsub /863/, '928'
       when /^\+7863270/
-        num.gsub /863/, '928'
+        phone.gsub /863/, '928'
       when /^\+7863279/
-        num.gsub /863/, '928'
+        phone.gsub /863/, '928'
       #MTS
       when /^\+7863275/
-        num.gsub /863275/, '918555'
+        phone.gsub /863275/, '918555'
       when /^\+7863294/
-        num.gsub /863294/, '918554'
+        phone.gsub /863294/, '918554'
       when /^\+7863298/
-        num.gsub /863298/, '918558'
+        phone.gsub /863298/, '918558'
       #Beeline
       when /^\+7863256/
-        num.gsub /863256/, '903406'
+        phone.gsub /863256/, '903406'
       when /^\+7863221/
-        num.gsub /863221/, '903401'
+        phone.gsub /863221/, '903401'
       else
-        self.number
+        phone
     end
   end
 
-  def normalize
-    self.number = original.gsub(/[\(\)\-_ ]+/, '')
-    self.number.gsub!(/^8/, '+7')
+  def self.normalize(phone)
+    number = phone.gsub(/[\(\)\-_ ]+/, '')
+    number.gsub!(/^8/, '+7')
 
-    if self.number.length == 6
-      self.number = "2#{self.number}"
+    number = "2#{number}" if number.length == 6
+
+    if number.length == 7
+      number = "+7863#{self.number}"
+    elsif number.length == 10
+      number = "+7#{self.number}"
     end
 
-    if self.number.length == 7
-      self.number = "+7863#{self.number}"
-    elsif self.number.length == 10
-      self.number = "+7#{self.number}"
-    end
-
-    self.number = convert_city_phones(self.number)
-
+    convert_city_phones(number)
   end
+
 
 end

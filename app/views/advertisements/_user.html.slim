@@ -1,0 +1,34 @@
+- if can?(:create_from_admin, @adv)
+  .user-params
+    legend Контакт
+    .form.form-horizontal role="form"
+      - resource.phones.build() unless params.has_key? :user
+      = f.fields_for @adv.user do |f|
+        .form-group
+          label.col-sm-3.control-label for="name"  Имя
+          .col-sm-4
+            = f.text_field :name, class: 'form-control'
+        .form-group
+          label.col-sm-3.control-label for="inputEmail3"  E-mail
+          .col-sm-4
+            = f.text_field :email, class: 'form-control'
+        .form-group
+          label.control-label.col-sm-3 for="appendedtext"  Телефон
+          .col-sm-4#reg-phones
+            = f.fields_for :phones do |f|
+              .input-group
+                span.input-group-addon
+                  i.fa.fa-phone
+                = f.text_field :original, class: 'form-control'
+                span.input-group-btn
+                  = f.link_to_remove class: 'btn btn-default' do
+                    i.fa.fa-minus
+        .form-group
+          label.control-label.col-sm-3
+          .col-sm-4
+            = f.link_to_add 'Добавить нормер', :phones, :data => { :target => "#reg-phones" }
+            span.help-block
+              | например: +7(863) 2-12-85-06
+        .form-group
+          .col-sm-offset-3.col-sm-4
+            label.btn.btn-primary.checkPhone Далее

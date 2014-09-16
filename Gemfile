@@ -41,7 +41,7 @@ gem 'spring',        group: :development
 
 gem 'devise'
 
-gem 'cancan'
+gem 'cancancan', '~> 1.9'
 
 # uploaders
 gem 'carrierwave'

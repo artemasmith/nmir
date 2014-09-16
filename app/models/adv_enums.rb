@@ -27,6 +27,7 @@ module AdvEnums
 
   STATUSES = [:active, :expired]
 
+
   included do
 
     # enums - add values to the end of array!
@@ -39,6 +40,7 @@ module AdvEnums
     enum adv_type: AdvEnums::ADV_TYPES
 
     enum status_type: AdvEnums::STATUSES
+
 
   end
 end

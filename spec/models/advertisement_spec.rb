@@ -52,6 +52,8 @@
 #  room_to                  :integer
 #  status_type              :integer          default(0), not null
 #  user_id                  :integer
+#  latitude                 :float
+#  longitude                :float
 #
 
 require 'rails_helper'

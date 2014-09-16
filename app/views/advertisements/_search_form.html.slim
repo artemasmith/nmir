@@ -1,4 +1,4 @@
-= form_tag search_advertisements_path, remote: true, class: 'form-inline super-form'
+= form_tag search_advertisements_path, remote: true, class: 'form-inline'
 
   = hidden_field_tag 'adv_type[]', '', class: 'adv-type-value'
   = hidden_field_tag 'property_type[]', '', class: 'property-type-value'
@@ -52,7 +52,7 @@
     '
     span
       #region-select-button.button.btn.btn-default data-target=".lbs-example-modal-lg" data-toggle="modal"
-        |'Выберите город'
+        |Выберите город
         i.caret
       #region-select-modal.modal.fade.lbs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel1" role="dialog" tabindex="-2"
         .modal-dialog

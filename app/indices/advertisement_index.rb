@@ -3,12 +3,12 @@ ThinkingSphinx::Index.define :advertisement, :with => :active_record do
   indexes :id, sortable: true
   indexes name, sortable: true
   indexes phone, sortable: true
-  indexes price_from, type: :integer, sortable: true
-  indexes price_to, type: :integer, sortable: true
-  indexes floor_from, type: :integer, sortable: true
-  indexes floor_to, type: :integer, sortable: true
-  indexes space_from, type: :decimal, sortable: true
-  indexes space_to, type: :decimal, sortable: true
+  #indexes price_from, type: :integer, sortable: true
+  #indexes price_to, type: :integer, sortable: true
+  #indexes floor_from, type: :integer, sortable: true
+  #indexes floor_to, type: :integer, sortable: true
+  #indexes space_from, type: :decimal, sortable: true
+  #indexes space_to, type: :decimal, sortable: true
   #indexes expire_date, type: :datetime, sortable: true
   indexes adv_type, sortable: true
   indexes property_type, sortable: true
@@ -29,5 +29,5 @@ ThinkingSphinx::Index.define :advertisement, :with => :active_record do
   indexes landmark.title, as: :landmark
 
   # attributes
-  has created_at, updated_at
+  has created_at, updated_at, price_from, price_to, floor_from, floor_to, space_from, space_to
 end

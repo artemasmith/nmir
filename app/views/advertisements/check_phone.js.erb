@@ -1,0 +1,8 @@
+$('.user-id').prop('value',"<%= @user_id %>");
+<% if @advertisements.present? %>
+$('.advertisements-duplicate').html("<%= j render 'advertisements/search_results', search_results:  @advertisements %>" );
+$('.show-phones').modal('show');
+<% else %>
+$('.adv-params').removeClass('hidden');
+$('.user-params').addClass('hidden');
+<% end %>

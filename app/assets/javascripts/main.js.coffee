@@ -28,7 +28,7 @@
       category: category,
       adv_type: adv_type
     $.ajax
-      type: 'POST',
+      type: 'GET',
       url: "get_attributes",
       data: pdata
 
@@ -90,14 +90,7 @@
   return
 
 
-@submit_form = (e) ->
-
-  #Do required stuff for setting up search credentials (we are looking for .active elements)
-  $(".super-form").trigger "submit.rails"
-  return
-
 @show_adv_phone = ->
-  console.log('fire')
   $.ajax(
       url: Routes.api_advertisement_path($('.ShowAdvPhone').data('id'))
       dataType: 'json'
@@ -117,53 +110,69 @@
   return
 
 
+@map = (el, latitude = null, longitude = null, editable = true)->
 
-@render_map = (el)->
-  url = "http://api-maps.yandex.ru/2.1/?lang=ru_RU"
-  $.getScript url, ->
-    init = ->
-      new ymaps.Map("map",
-        center: [
-          el.data('latitude')
-          el.data('longitude')
-        ]
-        zoom: 7
-      )
+  create_start = (map, x, y) ->
+    start = new ymaps.Placemark([x, y],
+      {hintContent: 'Местоположение объекта'},
+      {draggable: true});
+    start.events.add 'dragend', (e) ->
+      coords = e.get('target').geometry.getCoordinates()
+      $('.latitude-value').val(coords[0].toPrecision(6))
+      $('.longitude-value').val(coords[1].toPrecision(6))
       return
-    ymaps.ready init
+    map.geoObjects.add start
+    return start
 
-@render_pointed_map = (el)->
-  url = "http://api-maps.yandex.ru/2.1/?lang=ru_RU"
-  $.getScript url, ->
-    init = ->
+  create_map = (center)->
       start = null
-
-      map = new ymaps.Map("pointed_map"
-        center: [55.76, 37.64]
-        zoom: 7
+      map = new ymaps.Map("map"
+        center: center
+        zoom: 12
       )
 
-      map.events.add "click", (e) ->
-        coords = e.get("coords")
-        console.log coords
-        $('.latitude-value').val(coords[0].toPrecision(6))
-        $('.longitude-value').val(coords[1].toPrecision(6))
+      if latitude and longitude
+        start = create_start(map, parseFloat(latitude), parseFloat(longitude))
 
-        if(start)
-          start.geometry.setCoordinates(coords)
-        else
-          start = new ymaps.Placemark(coords, { iconContent: 'А' }, { draggable: false });
-#          start.events.add('dragend', this._onDragEnd, this);
 
-        return
+      if editable
+        map.events.add "click", (e) ->
+          coords = e.get("coords")
+          $('.latitude-value').val(coords[0].toPrecision(6))
+          $('.longitude-value').val(coords[1].toPrecision(6))
+
+          if(start)
+            start.geometry.setCoordinates(coords)
+          else
+            start = create_start(map, coords[0].toPrecision(6), coords[1].toPrecision(6))
+          return
+
+
+  $.getScript "http://api-maps.yandex.ru/2.1/?lang=ru_RU", ->
+    init = ->
+      if !latitude or !longitude
+        ymaps.geocode("Ростов-на-Дону").then (res) ->
+          center = res.geoObjects.get(0).geometry.getCoordinates()
+          create_map(center)
+          return
+      else
+        create_map [latitude, longitude]
+      return
     ymaps.ready init
     return
   return
 
 
+@check_phones = ->
+  $.ajax(
+    type: 'GET'
+    url: Routes.check_phone_advertisements_path
+      phones: $('input[name="original"]').map( ->
+        $(this).val()).get().join(',')
+    dataType: 'script'
+  )
+  return
 
-
-#selectors
 
 @ready = ->
   $('.dropdown-menu').find('form').click ->
@@ -172,16 +181,20 @@
   $('.SelectDistrict').on('click', select_district)
   $('.AdvProperty').on('change', prepare_allowed_attributes)
   $('.AdvPropertySearch').on('change', set_adv_property)
+  $('.checkPhone').on('click', check_phones)
   return
 
 $('.ShowAdvPhone').livequery ->
   $(this).click show_adv_phone
 
 $('#map').livequery ->
-  render_map($(this))
+  map($(this),
+      $(this).data('latitude'),
+      $(this).data('longitude'),
+      $(this).prop('editable')
+  )
 
-$('#pointed_map').livequery ->
-  render_pointed_map($(this))
+
 
 $('form').livequery ->
   $(this).bootstrapValidator({
@@ -191,32 +204,6 @@ $('form').livequery ->
       validating: 'glyphicon glyphicon-refresh'
     }
   })
-
-
-$('.fileupload').livequery ->
-  $(this).fileupload
-    url: Routes.photos_path()
-    dataType: 'json'
-    disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent)
-    maxFileSize: 5000000
-    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
-
-  $(this).addClass "fileupload-processing"
-
-  $.ajax(
-    url: $(".fileupload").fileupload("option", "url")
-    dataType: "json"
-    context: $("#fileupload")[0]
-  ).always(->
-    $(this).removeClass "fileupload-processing"
-    return
-  ).done (result) ->
-    $(this).fileupload("option", "done").call this, $.Event("done"),
-      result: result
-
-    return
-
-
 
 
 

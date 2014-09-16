@@ -1,8 +1,7 @@
 class PhotosController < ApplicationController
-  before_filter :load_resouces
 
   def create
-    @photo = Photo.new(photo_params)
+    @photo = Photo.new(photo_params.photos)
 
     if @photo.save
       respond_to do |format|
@@ -21,10 +20,9 @@ class PhotosController < ApplicationController
     render :json => true
   end
 
-  private
-
-  def load_resouces
-    @adv = Advertisement.find(params['advertisement_id'])
+  def photo_params
+    params.require(:advertisement)
   end
+
 
 end
