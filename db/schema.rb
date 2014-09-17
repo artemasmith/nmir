@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140906232136) do
+ActiveRecord::Schema.define(version: 20140915164428) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,9 +27,9 @@ ActiveRecord::Schema.define(version: 20140906232136) do
   add_index "advertisement_counters", ["advertisement_id"], name: "index_advertisement_counters_on_advertisement_id", using: :btree
 
   create_table "advertisements", force: true do |t|
-    t.integer  "offer_type",                                                        null: false
-    t.integer  "property_type",                                                     null: false
-    t.integer  "category",                                                          null: false
+    t.integer  "offer_type",                                                                  null: false
+    t.integer  "property_type",                                                               null: false
+    t.integer  "category",                                                                    null: false
     t.integer  "agent_category"
     t.integer  "currency"
     t.integer  "distance"
@@ -40,26 +40,26 @@ ActiveRecord::Schema.define(version: 20140906232136) do
     t.integer  "floor_to"
     t.integer  "floor_cnt_from"
     t.integer  "floor_cnt_to"
-    t.boolean  "payed_adv",                                         default: false
+    t.boolean  "payed_adv",                                                   default: false
     t.boolean  "manually_added"
     t.boolean  "not_for_agents"
-    t.boolean  "mortgage",                                          default: false
+    t.boolean  "mortgage",                                                    default: false
     t.string   "name"
     t.string   "sales_agent"
     t.string   "phone"
     t.string   "organization"
     t.string   "space_unit"
-    t.decimal  "outdoors_space_from",      precision: 15, scale: 2
-    t.decimal  "outdoors_space_to",        precision: 15, scale: 2
+    t.decimal  "outdoors_space_from",                precision: 15, scale: 2
+    t.decimal  "outdoors_space_to",                  precision: 15, scale: 2
     t.string   "outdoors_space_unit"
-    t.integer  "price_from"
-    t.integer  "price_to"
-    t.decimal  "unit_price_from",          precision: 15, scale: 2
-    t.decimal  "unit_price_to",            precision: 15, scale: 2
+    t.integer  "price_from",               limit: 8
+    t.integer  "price_to",                 limit: 8
+    t.decimal  "unit_price_from",                    precision: 15, scale: 2
+    t.decimal  "unit_price_to",                      precision: 15, scale: 2
     t.integer  "outdoors_unit_price_from"
     t.integer  "outdoors_unit_price_to"
-    t.decimal  "space_from",               precision: 15, scale: 2
-    t.decimal  "space_to",                 precision: 15, scale: 2
+    t.decimal  "space_from",                         precision: 15, scale: 2
+    t.decimal  "space_to",                           precision: 15, scale: 2
     t.text     "keywords"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 20140906232136) do
     t.integer  "landmark_id"
     t.integer  "room_from"
     t.integer  "room_to"
-    t.integer  "status_type",                                       default: 0,     null: false
+    t.integer  "status_type",                                                 default: 0,     null: false
     t.integer  "user_id"
     t.float    "latitude"
     t.float    "longitude"

@@ -70,8 +70,8 @@ class Advertisement < ActiveRecord::Base
   belongs_to :address, class_name: 'Location', foreign_key: 'address_id'
   belongs_to :landmark, class_name: 'Location', foreign_key: 'landmark_id'
   belongs_to :user
-  accepts_nested_attributes_for :user
   has_many   :photos
+  accepts_nested_attributes_for :user
 
   # validators
   include AdvValidation
@@ -86,7 +86,9 @@ class Advertisement < ActiveRecord::Base
   before_create :set_locations
   before_validation :check_attributes
   after_create :generate_sections
-  
+  after_create :set_phone
+
+
   def allowed_attributes
     AdvConformity::ATTR_VISIBILITY[adv_type][category] rescue []
   end
@@ -151,10 +153,17 @@ class Advertisement < ActiveRecord::Base
   def check_attributes
     self.name ||= comment[0..15] #это имя человека который размещает объявление
     self.currency ||= Advertisement::CURRENCIES[0]
-    self.sales_agent ||= user.name || 'no agent'
-    self.phone ||= user.phones.first.number || '123' #это номер человека который размещает объявление
+    if self.user.blank?
+      self.sales_agent ||=  'no agent'
+      self.phone ||=  '123' #это номер человека который размещает объявление
+    else
+      self.sales_agent ||= self.user.name
+      self.phone ||= self.user.phones.map{ |p| p.original }.join(',')
+    end
+    self.phone = '123' if self.phone.blank?
     self.space_unit ||= 'м2'
   end
+
 
   # set all location nodes from one, that submited
   def set_locations
@@ -195,6 +204,11 @@ class Advertisement < ActiveRecord::Base
     unless AdvConformity::TYPE_CONFORMITY[self.property_type].try(:include?, offer_type)
       errors.add :base, "Неверный тип ???"
     end
+  end
+
+  def set_phone
+    phones = self.user.phones.map{ |p| p.number }.join(',')
+    Advertisement.find(self.id).update(phone: phones)
   end
 
 

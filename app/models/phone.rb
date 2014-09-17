@@ -17,6 +17,7 @@ class Phone < ActiveRecord::Base
   before_validation :normalize
 
   protected
+  after_save :update_advs
 
   def convert_city_phones(num)
     case num
@@ -64,6 +65,13 @@ class Phone < ActiveRecord::Base
 
     self.number = convert_city_phones(self.number)
 
+  end
+
+  def update_advs
+    phones = self.user.phones.map{ |p| p.number }.join(',')
+    self.user.advertisements.each do |a|
+      Advertisement.find(a.id).update(phone: phones)
+    end
   end
 
 end

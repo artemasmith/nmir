@@ -134,6 +134,7 @@
 
 @check_phones = ->
   pphones = $(':input[name*="original"]')
+  email = $(':input[name*="email"]')[0].value
   phones = ''
   $.each pphones, (i,p) ->
     phones += p.value + ','
@@ -141,7 +142,7 @@
   #check phone is phone
   $.ajax(
     type: 'POST'
-    url: Routes.api_check_phone_path('phones='+phones)
+    url: Routes.api_check_phone_path('phones=' + phones + '&email=' + email)
     dataType: 'script'
   )
   return

@@ -5,7 +5,7 @@
       .col-sm-4
         - case atr
           - when 'currency'
-            = select_tag "advertisement[#{atr}]", options_for_select([['Руб',0], ['Грн',1]]), class: 'form-control', name: "advertisement[#{atr}]"
+            = select_tag "advertisement[#{atr}]", options_for_select([['Руб',AdvEnums::CURRENCIES[0]], ['Грн',AdvEnums::CURRENCIES[1]]]), class: 'form-control', name: "advertisement[#{atr}]"
           - when /comment/
             = text_area_tag "advertisement[#{atr}]", nil, class: 'form-control', name: "advertisement[#{atr}]"
           - when /not_for_agents|mortgage/

@@ -18,6 +18,7 @@ class Api::AdvertisementsController < ApplicationController
           @user = phonei.user.id
         end
       end
+      @user = User.where('email = ?', params[:email]).first if !params[:email].blank?
       @users.each { |u| u.advertisements.each{ |a| @advertisements << a } }
 
       render  'advertisements/check_phone.js.erb'

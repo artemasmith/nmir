@@ -30,6 +30,8 @@ class AdvertisementsController < ApplicationController
 
   def new
     @adv = Advertisement.new
+    @user = @adv.build_user
+    @user.phones.build
     @regions = Location.where(location_type: 0)
     @show = current_user.admin? ? 'hidden' : ''
     #fast bugofix
@@ -49,18 +51,25 @@ class AdvertisementsController < ApplicationController
     @adv = ''
 
     if current_user.admin? && advertisement_params[:user_id].blank?
+      #@adv = User.create(advertisement_params[:user]).advertisements.new advertisement_params
       @adv = Advertisement.new advertisement_params
+      #@adv.phone = advertisement_params[:user_attributes][:phones_attributes].each{ |k,v| }
     elsif current_user.admin?
+      user = User.find(advertisement_params[:user_id])
+      advertisement_params[:user_attributes][:phones_attributes].each do |k,v|
+        user.phones.find_or_create_by(original: v['original'])
+      end
       @adv = User.find(advertisement_params[:user_id].to_i).advertisements.new advertisement_params
     else
       @adv = current_user.advertisements.new advertisement_params
     end
+    @adv.phone = @adv.user.phones.map{ |p| p.number }.join(',')
     if @adv.save
       respond_to do |format|
         format.html { redirect_to advertisement_path(@adv) }
       end
     else
-      render :new
+      render 'advertisements/new'
     end
   end
 
@@ -113,7 +122,7 @@ class AdvertisementsController < ApplicationController
                   :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house, :user_id,
                   :floor_from, :unit_price_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type,
                   :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
-                  offer_type: [], category: [], user: [])
+                  offer_type: [], category: [], user_attributes: [:name,:password, :email, phones_attributes: [:id, :original, :_destroy] ])
   end
 
 

@@ -1,4 +1,4 @@
-$('.user-id')[0].setAttribute('value',"<%= @user %>");
+$('.user-id')[0].setAttribute('value',"<%= @user.id %>");
 <% if !@advertisements.blank? %>
     $('.advertisements-duplicate').html("<%= j render 'advertisements/search_results', search_results:  @advertisements %>" );
     $('.show-phones').modal('show');
