@@ -11,18 +11,7 @@ class AdvertisementsController < ApplicationController
   def show
     @photos = @adv.photos
     @today_counter, @all_days_counter = AdvertisementCounter.get_and_increase_count_for_adv(@adv.id)
-    @allowed_attributes =  @adv.allowed_attributes
-
-    # search_cond = { region: @adv.region.id,
-    #                 city: @adv.city.id,
-    #                 adv_type: AdvEnums::ADV_TYPES.index(@adv.adv_type.to_sym),
-    #                 offer_type: AdvEnums::OFFER_TYPES.index(@adv.offer_type.to_sym),
-    #                 category: AdvEnums::CATEGORIES.index(@adv.category.to_sym)
-    # }
-    # search_cond = {}
-    # @alt_adv = Advertisement.search conditions: search_cond
-    # @alt_adv.delete_if { |adv| adv.id == @adv.id }
-    # @regions = Location.where(location_type: 0)
+    @grouped_allowed_attributes =  @adv.grouped_allowed_attributes
   end
 
   def edit
@@ -30,47 +19,44 @@ class AdvertisementsController < ApplicationController
 
   def new
     @adv = Advertisement.new
-    @user = @adv.build_user
-    @user.phones.build
+    @adv.photos.build
+    user = @adv.build_user
+    user.phones.build
     @regions = Location.where(location_type: 0)
-    @show = current_user.admin? ? 'hidden' : ''
-    #fast bugofix
-    @allowed_attributes = Advertisement.new(category: 0, adv_type: 0).allowed_attributes
   end
 
   def get_attributes
-    @allowed_attributes = Advertisement.new(category: params[:category].to_i, adv_type: params[:adv_type].to_i).allowed_attributes
-
-    respond_to do |format|
-      format.js
-    end
+    adv = Advertisement.new(category: params[:category].to_sym, adv_type: params[:adv_type].to_sym)
+    @grouped_allowed_attributes = adv.grouped_allowed_attributes
+    @allowed_attributes = adv.allowed_attributes
   end
 
   def create
     @regions = Location.where(location_type: 0)
-    @adv = ''
-
-    if current_user.admin? && advertisement_params[:user_id].blank?
-      #@adv = User.create(advertisement_params[:user]).advertisements.new advertisement_params
-      @adv = Advertisement.new advertisement_params
-      #@adv.phone = advertisement_params[:user_attributes][:phones_attributes].each{ |k,v| }
-    elsif current_user.admin?
-      user = User.find(advertisement_params[:user_id])
-      advertisement_params[:user_attributes][:phones_attributes].each do |k,v|
-        user.phones.find_or_create_by(original: v['original'])
+    if can? :create_from_admin, Advertisement
+      if advertisement_params[:user_id].blank?
+        @adv = Advertisement.new advertisement_params
+      else
+        @adv = User.find(advertisement_params[:user_id].to_i).advertisements.new advertisement_params
       end
-      @adv = User.find(advertisement_params[:user_id].to_i).advertisements.new advertisement_params
     else
       @adv = current_user.advertisements.new advertisement_params
     end
-    @adv.phone = @adv.user.phones.map{ |p| p.number }.join(',')
+
     if @adv.save
-      respond_to do |format|
-        format.html { redirect_to advertisement_path(@adv) }
-      end
+      redirect_to advertisement_path(@adv)
     else
       render 'advertisements/new'
     end
+  end
+
+  def check_phone
+    @advertisements = Advertisement.
+        joins('INNER JOIN "phones" ON "advertisements"."user_id" = "phones"."user_id"').
+        where('phones.number' => params[:phones].split(',').map{|phone| Phone.normalize(phone)}).
+        all
+    @user_id = User.where('email = ?', params[:email]).first.try :id if params[:email].present?
+    @user_id ||= @advertisements.first.try :user_id
   end
 
   def search
@@ -110,19 +96,20 @@ class AdvertisementsController < ApplicationController
   end
 
   def search_params
-    params.permit(:category, :offer_type, :currency, :space_unit, :price_from,
+    params.permit(:category, :offer_type, :price_from,
                   :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house,
-                  :floor_from, :unit_price_from, :space, :room_from, :comment, :private_comment, :phone,
+                  :floor_from, :space, :room_from, :comment, :private_comment, :phone,
                   :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
                   offer_type: [], category: [])
   end
 
   def advertisement_params
-    params.require(:advertisement).permit(:city_id, :region_id, :district_id, :category, :offer_type, :currency, :space_unit, :price_from,
-                  :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house, :user_id,
-                  :floor_from, :unit_price_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type,
-                  :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
-                  offer_type: [], category: [], user_attributes: [:name,:password, :email, phones_attributes: [:id, :original, :_destroy] ])
+    params.require(:advertisement).permit(:city_id, :region_id, :district_id, :category, :offer_type, :price_from,
+    :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house, :user_id,
+    :floor_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type, :latitude, :longitude,
+    :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
+    offer_type: [], category: [], photos_attributes: [:id, :description, :filename, :file],
+    user_attributes: [:name, :password, :email, phones_attributes: [:id, :original, :_destroy] ])
   end
 
 

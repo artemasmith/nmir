@@ -65,8 +65,6 @@ module AdvSpecHelper
       agent_category    	
       organization
       agency_id
-      currency
-      space_unit
       not_for_agents
       comment
       private_comment
@@ -77,10 +75,8 @@ module AdvSpecHelper
       floor_cnt_to
       space_from
       space_to
-      space_unit
       outdoors_space_from
       outdoors_space_to
-      outdoors_space_unit
       room_from
       room_to
       price_from
@@ -105,7 +101,6 @@ module AdvSpecHelper
       offer_type: 1,
       property_type: 1,
       category: 1,
-      currency: 1,
       adv_type: 1,
 
       distance: 100,
@@ -117,7 +112,6 @@ module AdvSpecHelper
       agent_category: 1,    	
       organization: 'asd',
       agency_id: 1,
-      space_unit: 'sd',
       not_for_agents: true,
       comment: 'afss',
       private_comment: 'asd',
@@ -128,10 +122,8 @@ module AdvSpecHelper
       floor_cnt_to: 6,
       space_from: 50,
       space_to: 100,
-      space_unit: 7,
       outdoors_space_from: 100,
       outdoors_space_to: 500,
-      outdoors_space_unit: 10, 
       room_from: 1,
       room_to: 4,
       price_from: 100,

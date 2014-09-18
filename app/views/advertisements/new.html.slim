@@ -2,169 +2,33 @@
   = @adv.errors.messages if !@adv.errors.blank?
 h1 Новое объявление
 .well.well-sm
-  = nested_form_for @adv, html: {class: 'super-form'} do |f|
+  = nested_form_for @adv, html: {multipart: true, class: 'fileupload'} do |f|
     = f.hidden_field :adv_type, value: '', class: 'adv-type-value'
     = f.hidden_field :property_type, value: '', class: 'property-type-value'
+    = f.hidden_field :latitude, class: 'latitude-value'
+    = f.hidden_field :longitude, class: 'longitude-value'
     = f.hidden_field :user_id, value: '', class: 'user-id'
-    legend Раздел
-    .form.form-horizontal role="form"
-      .form-group
-
-        label.col-sm-3.control-label for="inputEmail3"  Вид сделки
-        .col-sm-9.btn-group.btn-group data-toggle="buttons"
-          - AdvEnums::OFFER_TYPES.each do |offer|
-            label.btn.btn-default.AdvProperty hid="offer" multi="one" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
-              = f.radio_button :offer_type,  "#{offer}"
-              = t("advertisement.offer.#{offer}")
-
-      .form-group
-        label.col-sm-3.control-label for="inputEmail3"  Тип недвижимости
-        .col-sm-9.btn-toolbar
-          .btn-group.btn-group data-toggle="buttons"
-            -AdvEnums::CATEGORIES.each do |category|
-              label.btn.btn-default.AdvProperty hid="category" multi="one" value="#{AdvEnums::CATEGORIES.index(category)}"
-                = f.radio_button :category,  "#{category}"
-                = t "advertisement.category.#{category}"
-    legend Местоположение
-    .form.form-horizontal role="form"
-      .form-group
-        label.col-sm-3.control-label
-          i.fa.fa-map-marker.fa-lg
-          | место
-        .col-sm-9.form.form-horizontal
-          span.button-toolbar
-            #region-select-button.button.btn.btn-default data-target=".lbs-example-modal-lg" data-toggle="modal"
-              | Выберите город
-              i.caret
-            #region-select-modal.modal.fade.lbs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel1" role="dialog" tabindex="-2"
-              .modal-dialog
-                .row.modal-content
-                  .modal-header
-                    button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
-                    h4.modal-title Выберите местоположение
-                  .row.modal-body
-                    .btn-group data-toggle="buttons"
-                      - @regions.each do |region|
-                        .row.col-sm-12
-                          label= region.title
-                        - Location.children_of(region.id).each do |city|
-                          label.btn.btn-default type="button"
-                            /input type="radio" name="city_id" value="#{city.id}" class="region" =city.title
-                            = f.radio_button :city_id, city.id
-                            =city.title
-
-                  .modal-footer
-                    span.pull-left
-                      span.small для уточнений:
-                      a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
-                    button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-                    button.btn.btn-primary onclick="select_region('radio');"  type="button"  Выбрать
-          .btn-group.btn-group
-            .btn-group.btn-group
-              #city-select-button.button.btn.btn-default data-target=".bs-example-modal-lg" data-toggle="modal"
-                | Выберите район
-                i.caret
-              #city-select-modal.modal.fade.bs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel2" role="dialog" tabindex="-1"
-                .modal-dialog
-                  .row.modal-content
-                    .modal-header
-                      button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
-                      h4.modal-title Выберите район
-                    #cities-list.row.modal-body
-                    .modal-footer
-                      span.pull-left
-                        span.small для уточнений:
-                        a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
-                      button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-                      button.btn.btn-primary.SelectDistrict mv='city-select-modal'  type="button"  Выбрать
-            button.btn.btn-default type="button"
-              span.fa.fa-times
-    .form.form-horizontal role="form"
-      .form-group
-        label.control-label.col-sm-3 for="appendedtext"  На карте
-        .col-sm-7
-          script charset="utf-8" src="//api-maps.yandex.ru/services/constructor/1.0/js/?sid=xW1xorCoYr-xI6cCciqN5E8zGSs_rB4x&width=auto&height=250" type="text/javascript"
-    .modal.fade.show-phones aria-hidden="true" aria-labelledby="OtherAdvsByPhone" role="dialog" tabindex="-2"
-      .modal-dialog
-        .row.modal-content
-          .modal-header
-            button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
-            h4.modal-title Другие объявленяя с тем же телефоном
-          .row.modal-body
-            .advertisements-duplicate
-              /Здесь будут рисоваться обьявления с этим ее номером
-          .modal-footer
-            span.pull-left
-              span.small для уточнений:
-              a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
-            button.btn.btn-primary data-dismiss="modal" type="button"  Ок
-    - if current_user.admin?
-      legend Контакт
+    = render '/advertisements/user', f: f
+    .adv-params class="#{can?(:create_from_admin, @adv) ? 'hidden' : ''}"
+      legend Раздел
       .form.form-horizontal role="form"
-        /- resource.phones.build() unless params.has_key? :user
-        /= f.fields_for(resource, as: :user_attributes, url: registration_path(resource_name)) do |user_form|
-        = f.fields_for(:user, url: registration_path(resource_name)) do |user_form|
-          =user_form.hidden_field :password, value: "#{Digest::MD5.hexdigest (Time.now.to_s)}"
-          .form-group
-            label.col-sm-3.control-label for="inputEmail3"  Имя
-            .col-sm-4
-              = user_form.text_field :name, class: 'form-control'
-          .form-group
-            label.col-sm-3.control-label for="inputEmail3"  E-mail
-            .col-sm-4
-              = user_form.text_field :email, class: 'form-control'
-          .form-group
-            label.control-label.col-sm-3 for="appendedtext"  Телефон
-            .input-group.col-sm-4#reg-phones
-              = user_form.fields_for :phones do |phone_form|
-                .input-group
-                  span.input-group-addon
-                    i.fa.fa-phone
-                  = phone_form.text_field :original, class: 'form-control'
-                  span.input-group-btn
-                    = phone_form.link_to_remove class: 'btn btn-default' do
-                      i.fa.fa-minus
-          .form-group
-            label.control-label.col-sm-4
-            .input-group.col-sm-4
-              = user_form.link_to_add 'Добавить нормер', :phones, :data => { :target => "#reg-phones" }
-            .form-group
-              .col-sm-offset-3.col-sm-10
-                .checkbox
-                  label
-                    input type="checkbox"
-                      | согласен с
-                      a href="#"  правилами
-            .form-group
-              .col-sm-offset-3.col-sm-10
-                label.btn.btn-primary.checkPhone Далее
-    div class="#{@show} other-info"
-      .well.well-sm.col-xs-12
-      legend О недвижимости
-      .row
-        .form.form-horizontal
-
-          .attributes
-      .well.well-sm.col-xs-12
-      legend Фото, видео
-      .row
-        .form-group.col-xs-4.col-sm-3.col-md-2
-          label &nbsp;
-          .button
-            a.btn.btn-sm.btn-success
-              i.fa.fa-camera
-              | добавить фото
-        .form-group.col-xs-7.col-sm-6.col-md-5.col-lg-4
-          label for="exampleInputPassword2"  описание
-          input#exampleInputPassword2.form-control.input-sm type="text"
-      .form-group
-      .form-group
-        label.control-label for="textarea"  ссылка(?) или код видеохостинга
-        div
-          textarea#textarea.form-control name="textarea"
-          span.help-block.small
-            a youtube.com
-            a rutube.ru
-            a vimeo.com
+        .form-group
+          label.col-sm-3.control-label for="offer_type" Вид сделки
+          .col-sm-9.btn-group.btn-group data-toggle="buttons"
+            - AdvEnums::OFFER_TYPES.each_with_index do |offer|
+              label.btn.btn-default.AdvProperty hid="offer" multi="one" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
+                = f.radio_button :offer_type,  "#{offer}"
+                = t("advertisement.offer.#{offer}")
+        .form-group
+          label.col-sm-3.control-label for="category" Тип недвижимости
+          .col-sm-9.btn-toolbar
+            .btn-group.btn-group data-toggle="buttons"
+              - AdvEnums::CATEGORIES.each do |category|
+                label.btn.btn-default.AdvProperty hid="category" multi="one" value="#{AdvEnums::CATEGORIES.index(category)}"
+                  = f.radio_button :category,  "#{category}"
+                  = t "advertisement.category.#{category}"
+      = render '/advertisements/locations', f: f
+      = render '/advertisements/map', f: f
+      = render '/advertisements/photos', f: f
       = f.submit 'Create'
-      button.btn.btn-primary onclick="submit_form();" Добавить
+

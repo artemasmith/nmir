@@ -20,15 +20,15 @@
   multi = this.getAttribute('multi')
   value = this.getAttribute('value')
   set_property(hid, multi, value)
-  adv_type = $('.adv-type-value')[0].value
-  property = $('.property-type-value')[0].value
+  adv_type = $('.adv-type-value').val()
+  property = $('.property-type-value').val()
   if adv_type && property
-    category = $(':input:checked[name="advertisement[category]"]')[0].value
+    category = $('input:checked[name*="category"]').val()
     pdata =
-      category: category,
+      category: category
       adv_type: adv_type
     $.ajax
-      type: 'POST',
+      type: 'GET',
       url: "get_attributes",
       data: pdata
 
@@ -90,13 +90,7 @@
   return
 
 
-@submit_form = (e) ->
-  #Do required stuff for setting up search credentials (we are looking for .active elements)
-  $(".super-form").trigger "submit.rails"
-  return
-
 @show_adv_phone = ->
-  console.log('fire')
   $.ajax(
       url: Routes.api_advertisement_path($('.ShowAdvPhone').data('id'))
       dataType: 'json'
@@ -116,53 +110,114 @@
   return
 
 
+@map = (el, latitude = null, longitude = null, editable = true)->
 
-@render_map = (el)->
-  url = "http://api-maps.yandex.ru/2.1/?lang=ru_RU"
-  $.getScript url, ->
-    init = ->
-      new ymaps.Map("map",
-        center: [
-          el.data('latitude')
-          el.data('longitude')
-        ]
-        zoom: 7
+  create_start = (map, x, y) ->
+    start = new ymaps.Placemark([x, y],
+      {hintContent: 'Местоположение объекта'},
+      {draggable: true});
+    start.events.add 'dragend', (e) ->
+      coords = e.get('target').geometry.getCoordinates()
+      $('.latitude-value').val(coords[0].toPrecision(6))
+      $('.longitude-value').val(coords[1].toPrecision(6))
+      return
+    map.geoObjects.add start
+    return start
+
+  create_map = (center)->
+      start = null
+      map = new ymaps.Map("map"
+        center: center
+        zoom: 12
       )
+
+      if latitude and longitude
+        start = create_start(map, parseFloat(latitude), parseFloat(longitude))
+
+
+      if editable
+        map.events.add "click", (e) ->
+          coords = e.get("coords")
+          $('.latitude-value').val(coords[0].toPrecision(6))
+          $('.longitude-value').val(coords[1].toPrecision(6))
+
+          if(start)
+            start.geometry.setCoordinates(coords)
+          else
+            start = create_start(map, coords[0].toPrecision(6), coords[1].toPrecision(6))
+          return
+
+
+  $.getScript "http://api-maps.yandex.ru/2.1/?lang=ru_RU", ->
+    init = ->
+      if !latitude or !longitude
+        ymaps.geocode("Ростов-на-Дону").then (res) ->
+          center = res.geoObjects.get(0).geometry.getCoordinates()
+          create_map(center)
+          return
+      else
+        create_map [latitude, longitude]
       return
     ymaps.ready init
+    return
+  return
 
 
 @check_phones = ->
-  pphones = $(':input[name*="original"]')
-  email = $(':input[name*="email"]')[0].value
-  phones = ''
-  $.each pphones, (i,p) ->
-    phones += p.value + ','
-  phones = phones.substring(0, phones.length - 1)
-  #check phone is phone
   $.ajax(
-    type: 'POST'
-    url: Routes.api_check_phone_path('phones=' + phones + '&email=' + email)
+    type: 'GET'
+    url: Routes.check_phone_advertisements_path()
+    data:
+      phones: $('input[name="original"]').map( ->
+        $(this).val()).get().join(',')
+      email: $('input[name*="email"]').val()
     dataType: 'script'
   )
   return
 
 
 
-@ready = ->
-  $('.dropdown-menu').find('form').click ->
-    e.stopPropagation()
-  $('.SelectRegion').on('click', select_region)
-  $('.SelectDistrict').on('click', select_district)
-  $('.AdvProperty').on('change', prepare_allowed_attributes)
-  $('.AdvPropertySearch').on('change', set_adv_property)
-  $('.checkPhone').on('click', check_phones)
-  return
+$('.SelectRegion').livequery ->
+  $(this).click select_region
+
+$('.SelectDistrict').livequery ->
+  $(this).click select_district
+
+$('.AdvProperty').livequery ->
+  $(this).change prepare_allowed_attributes
+
+$('.AdvPropertySearch').livequery ->
+  $(this).change set_adv_property
+
+$('.checkPhone').livequery ->
+  $(this).click check_phones
 
 $('.ShowAdvPhone').livequery ->
   $(this).click show_adv_phone
 
-$('#map').livequery ->
-  render_map($(this))
+$('.dropdown-menu').find('form').livequery ->
+  $(this).click ->
+    e.stopPropagation()
 
-$(document).on('ready page:load', ready);
+$('#map').livequery ->
+  map($(this),
+      $(this).data('latitude'),
+      $(this).data('longitude'),
+      $(this).prop('editable')
+  )
+
+
+
+$('form').livequery ->
+  $(this).bootstrapValidator({
+    feedbackIcons: {
+      valid: 'glyphicon glyphicon-ok'
+      invalid: 'glyphicon glyphicon-remove'
+      validating: 'glyphicon glyphicon-refresh'
+    }
+  })
+
+
+
+
+

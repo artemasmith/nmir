@@ -1,7 +1,7 @@
 require 'rails_helper'
 RSpec.describe Api::AdvertisementsController, :type => :controller do
   describe "GET 'show'" do
-    it "returns http success" do
+    it 'returns http success' do
       sign_in
       @adv = create :advertisement
       xhr :get, :show, :id => @adv.id

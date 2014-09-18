@@ -27,11 +27,6 @@ module AdvRailsAdmin
             AdvEnums::OFFER_TYPES
           end
         end
-        field :currency, :enum do
-          enum do
-            AdvEnums::CURRENCIES
-          end
-        end
         field :distance, :integer
         field :time_on_transport, :integer
         field :time_on_foot, :integer

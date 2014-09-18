@@ -18,6 +18,9 @@
 //= require vendor/bootstrap.min
 //= require vendor/jquery.livequery
 //= require vendor/bootstrap-notify
+//= require vendor/bootstrapValidator.min
+//= require vendor/ru_RU
+//= require jquery-fileupload
 
 //= require main
 

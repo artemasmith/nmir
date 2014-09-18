@@ -1,6 +1,8 @@
 (function() {
-  var NodeTypes, ParameterMissing, Utils, defaults,
+  var NodeTypes, ParameterMissing, Utils, createGlobalJsRoutesObject, defaults, root,
     __hasProp = {}.hasOwnProperty;
+
+  root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
   ParameterMissing = function(message) {
     this.message = message;
@@ -18,6 +20,7 @@
   Utils = {
     serialize: function(object, prefix) {
       var element, i, key, prop, result, s, _i, _len;
+
       if (prefix == null) {
         prefix = null;
       }
@@ -27,8 +30,8 @@
       if (!prefix && !(this.get_object_type(object) === "object")) {
         throw new Error("Url parameters should be a javascript hash");
       }
-      if (window.jQuery) {
-        result = window.jQuery.param(object);
+      if (root.jQuery) {
+        result = root.jQuery.param(object);
         return (!result ? "" : result);
       }
       s = [];
@@ -64,26 +67,27 @@
     },
     clean_path: function(path) {
       var last_index;
+
       path = path.split("://");
       last_index = path.length - 1;
-      path[last_index] = path[last_index].replace(/\/+/g, "/").replace(/.\/$/m, "");
+      path[last_index] = path[last_index].replace(/\/+/g, "/");
       return path.join("://");
     },
     set_default_url_options: function(optional_parts, options) {
       var i, part, _i, _len, _results;
+
       _results = [];
       for (i = _i = 0, _len = optional_parts.length; _i < _len; i = ++_i) {
         part = optional_parts[i];
         if (!options.hasOwnProperty(part) && defaults.default_url_options.hasOwnProperty(part)) {
           _results.push(options[part] = defaults.default_url_options[part]);
-        } else {
-          _results.push(void 0);
         }
       }
       return _results;
     },
     extract_anchor: function(options) {
       var anchor;
+
       anchor = "";
       if (options.hasOwnProperty("anchor")) {
         anchor = "#" + options.anchor;
@@ -91,16 +95,35 @@
       }
       return anchor;
     },
-    extract_options: function(number_of_params, args) {
-      var ret_value;
-      ret_value = {};
-      if (args.length > number_of_params) {
-        ret_value = args.pop();
+    extract_trailing_slash: function(options) {
+      var trailing_slash;
+
+      trailing_slash = false;
+      if (defaults.default_url_options.hasOwnProperty("trailing_slash")) {
+        trailing_slash = defaults.default_url_options.trailing_slash;
       }
-      return ret_value;
+      if (options.hasOwnProperty("trailing_slash")) {
+        trailing_slash = options.trailing_slash;
+        delete options.trailing_slash;
+      }
+      return trailing_slash;
+    },
+    extract_options: function(number_of_params, args) {
+      var last_el;
+
+      last_el = args[args.length - 1];
+      if (args.length > number_of_params || ((last_el != null) && "object" === this.get_object_type(last_el) && !this.look_like_serialized_model(last_el))) {
+        return args.pop();
+      } else {
+        return {};
+      }
+    },
+    look_like_serialized_model: function(object) {
+      return "id" in object || "to_param" in object;
     },
     path_identifier: function(object) {
       var property;
+
       if (object === 0) {
         return "0";
       }
@@ -109,7 +132,13 @@
       }
       property = object;
       if (this.get_object_type(object) === "object") {
-        property = object.to_param || object.id || object;
+        if ("to_param" in object) {
+          property = object.to_param;
+        } else if ("id" in object) {
+          property = object.id;
+        } else {
+          property = object;
+        }
         if (this.get_object_type(property) === "function") {
           property = property.call(object);
         }
@@ -118,6 +147,7 @@
     },
     clone: function(obj) {
       var attr, copy, key;
+
       if ((obj == null) || "object" !== this.get_object_type(obj)) {
         return obj;
       }
@@ -131,15 +161,19 @@
     },
     prepare_parameters: function(required_parameters, actual_parameters, options) {
       var i, result, val, _i, _len;
+
       result = this.clone(options) || {};
       for (i = _i = 0, _len = required_parameters.length; _i < _len; i = ++_i) {
         val = required_parameters[i];
-        result[val] = actual_parameters[i];
+        if (i < actual_parameters.length) {
+          result[val] = actual_parameters[i];
+        }
       }
       return result;
     },
     build_path: function(required_parameters, optional_parts, route, args) {
-      var anchor, opts, parameters, result, url, url_params;
+      var anchor, opts, parameters, result, trailing_slash, url, url_params;
+
       args = Array.prototype.slice.call(args);
       opts = this.extract_options(required_parameters.length, args);
       if (args.length > required_parameters.length) {
@@ -148,8 +182,12 @@
       parameters = this.prepare_parameters(required_parameters, args, opts);
       this.set_default_url_options(optional_parts, parameters);
       anchor = this.extract_anchor(parameters);
+      trailing_slash = this.extract_trailing_slash(parameters);
       result = "" + (this.get_prefix()) + (this.visit(route, parameters));
       url = Utils.clean_path("" + result);
+      if (trailing_slash === true) {
+        url = url.replace(/(.*?)[\/]?$/, "$1/");
+      }
       if ((url_params = this.serialize(parameters)).length) {
         url += "?" + url_params;
       }
@@ -158,6 +196,7 @@
     },
     visit: function(route, parameters, optional) {
       var left, left_part, right, right_part, type, value;
+
       if (optional == null) {
         optional = false;
       }
@@ -196,6 +235,7 @@
     },
     visit_globbing: function(route, parameters, optional) {
       var left, right, type, value;
+
       type = route[0], left = route[1], right = route[2];
       if (left.replace(/^\*/i, "") !== left) {
         route[1] = left = left.replace(/^\*/i, "");
@@ -216,6 +256,7 @@
     },
     get_prefix: function() {
       var prefix;
+
       prefix = defaults.prefix;
       if (prefix !== "") {
         prefix = (prefix.match("/$") ? prefix : "" + prefix + "/");
@@ -225,11 +266,12 @@
     _classToTypeCache: null,
     _classToType: function() {
       var name, _i, _len, _ref;
+
       if (this._classToTypeCache != null) {
         return this._classToTypeCache;
       }
       this._classToTypeCache = {};
-      _ref = "Boolean Number String Function Array Date RegExp Undefined Null".split(" ");
+      _ref = "Boolean Number String Function Array Date RegExp Object Error".split(" ");
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         name = _ref[_i];
         this._classToTypeCache["[object " + name + "]"] = name.toLowerCase();
@@ -237,28 +279,36 @@
       return this._classToTypeCache;
     },
     get_object_type: function(obj) {
-      var strType;
-      if (window.jQuery && (window.jQuery.type != null)) {
-        return window.jQuery.type(obj);
+      if (root.jQuery && (root.jQuery.type != null)) {
+        return root.jQuery.type(obj);
       }
-      strType = Object.prototype.toString.call(obj);
-      return this._classToType()[strType] || "object";
-    },
-    namespace: function(root, namespaceString) {
+      if (obj == null) {
+        return "" + obj;
+      }
+      if (typeof obj === "object" || typeof obj === "function") {
+        return this._classToType()[Object.prototype.toString.call(obj)] || "object";
+      } else {
+        return typeof obj;
+      }
+    }
+  };
+
+  createGlobalJsRoutesObject = function() {
+    var namespace;
+
+    namespace = function(mainRoot, namespaceString) {
       var current, parts;
+
       parts = (namespaceString ? namespaceString.split(".") : []);
       if (!parts.length) {
         return;
       }
       current = parts.shift();
-      root[current] = root[current] || {};
-      return Utils.namespace(root[current], parts.join("."));
-    }
-  };
-
-  Utils.namespace(window, "Routes");
-
-  window.Routes = {
+      mainRoot[current] = mainRoot[current] || {};
+      return namespace(mainRoot[current], parts.join("."));
+    };
+    namespace(root, "Routes");
+    root.Routes = {
 // advertisement => /entity/:id(.:format)
   advertisement_path: function(_id, options) {
   return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
@@ -267,17 +317,21 @@
   advertisements_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
-// api_advertisement => /api/api/entity/:id(.:format)
+// api_advertisement => /api/entity/:id(.:format)
   api_advertisement_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
-// api_advertisements => /api/api/entity(.:format)
+// api_advertisements => /api/entity(.:format)
   api_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // cancel_user_registration => /users/cancel(.:format)
   cancel_user_registration_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"cancel",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// check_phone_advertisements => /entity/check_phone(.:format)
+  check_phone_advertisements_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"check_phone",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // destroy_user_session => /users/sign_out(.:format)
   destroy_user_session_path: function(options) {
@@ -287,9 +341,13 @@
   edit_advertisement_path: function(_id, options) {
   return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
-// edit_api_advertisement => /api/api/entity/:id/edit(.:format)
+// edit_api_advertisement => /api/entity/:id/edit(.:format)
   edit_api_advertisement_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// edit_photo => /photos/:id/edit(.:format)
+  edit_photo_path: function(_id, options) {
+  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // edit_user_password => /users/password/edit(.:format)
   edit_user_password_path: function(options) {
@@ -315,9 +373,13 @@
   new_advertisement_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
-// new_api_advertisement => /api/api/entity/new(.:format)
+// new_api_advertisement => /api/entity/new(.:format)
   new_api_advertisement_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// new_photo => /photos/new(.:format)
+  new_photo_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // new_user_password => /users/password/new(.:format)
   new_user_password_path: function(options) {
@@ -330,6 +392,14 @@
 // new_user_session => /users/sign_in(.:format)
   new_user_session_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_in",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// photo => /photos/:id(.:format)
+  photo_path: function(_id, options) {
+  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// photos => /photos(.:format)
+  photos_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"photos",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // rails_admin.dashboard => /management/
   rails_admin_dashboard_path: function(options) {
@@ -402,16 +472,18 @@
 // user_session => /users/sign_in(.:format)
   user_session_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_in",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
-// api_advertisement => /api/api/entity/:id(.:format)
-  api_check_phone_path: function(_id, options) {
-  return '/api/entity/check_phone?' + _id
-  //fast bugofix
-  //return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false]],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"check_phone",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   }}
-
 ;
+    root.Routes.options = defaults;
+    return root.Routes;
+  };
 
-  window.Routes.options = defaults;
+  if (typeof define === "function" && define.amd) {
+    define([], function() {
+      return createGlobalJsRoutesObject();
+    });
+  } else {
+    createGlobalJsRoutesObject();
+  }
 
 }).call(this);

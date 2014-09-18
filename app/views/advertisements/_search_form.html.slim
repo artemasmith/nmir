@@ -1,45 +1,55 @@
-= form_tag search_advertisements_path, remote: true, class: 'form-inline super-form'
+= form_tag search_advertisements_path, remote: true, class: 'form-inline'
 
   = hidden_field_tag 'adv_type[]', '', class: 'adv-type-value'
   = hidden_field_tag 'property_type[]', '', class: 'property-type-value'
-  label.control-label for="prependedtext"
-    i.fa.fa-share.fa-lg
-    | предложение
-  .btn-group.queue-one data-toggle="buttons"
-    - [:sale, :for_rent, :day].each do |offer|
-      label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
-        input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
-  label.control-label for="prependedtext"
-    i.fa.fa-reply.fa-lg
-    | спрос
-  .btn-group data-toggle="buttons"
-    - [:buy, :rent].each do |offer|
-      label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
-        input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
-  .form.form-inline.queue-two
+  .row-fluid
+    label.control-label for="prependedtext"
+      i.fa.fa-share.fa-lg
+      '
+      | предложение
+    '
+    .btn-group.queue-one data-toggle="buttons"
+      - [:sale, :for_rent, :day].each do |offer|
+        label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
+          input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
+    '
+    label.control-label for="prependedtext"
+      i.fa.fa-reply.fa-lg
+      '
+      | спрос
+    '
+    .btn-group data-toggle="buttons"
+      - [:buy, :rent].each do |offer|
+        label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
+          input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
+  .row-fluid
     label.control-label for="prependedtext"
       i.fa.fa-home.fa-lg
+      '
       | жилая
+    '
     .btn-group data-toggle="buttons"
       - [:flat, :newbuild, :house, :ijs, :room, :garage].each do |category|
         label.btn.btn-default.AdvPropertySearch hid="category" multi="multi" value="#{AdvEnums::CATEGORIES.index(category)}"
           input type="checkbox" name="category[]" value="#{AdvEnums::CATEGORIES.index(category)}" = t("advertisement.category.#{category}")
 
-  .form.form-inline.queue-two
+  .row-fluid
     label.control-label for="prependedtext"
       i.fa.fa-briefcase.fa-lg
+      '
       | коммерческая
-    | &nbsp;
+    '
     span.btn-group.btn-group data-toggle="buttons"
       - [:office, :trade, :storage, :cafe, :land, :free_appointment].each do |category|
         label.btn.btn-default.AdvPropertySearch hid="category" multi="multi" value="#{AdvEnums::CATEGORIES.index(category)}"
           input type="checkbox" name="category[]" value="#{AdvEnums::CATEGORIES.index(category)}" = t("advertisement.category.#{category}")
 
-  /! тип недвижа
-  .form.form-inline.queue-tree
+  .row-fluid
     label.control-label for="prependedtext"
       i.fa.fa-map-marker.fa-lg
+      '
       | место
+    '
     span
       #region-select-button.button.btn.btn-default data-target=".lbs-example-modal-lg" data-toggle="modal"
         |Выберите город
@@ -66,91 +76,68 @@
               button.btn.btn-default data-dismiss="modal" type="button"  Отмена
               button.btn.btn-primary onclick="select_region('checkbox');"  type="button"  Выбрать
     .btn-group.btn-group
-      .btn-group.btn-group
-        #city-select-button.button.btn.btn-default data-target=".bs-example-modal-lg" data-toggle="modal"
-          | Выберите район
-          i.caret
-        #city-select-modal.modal.fade.bs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel" role="dialog" tabindex="-1"
-          .modal-dialog
-            .row.modal-content
-              .modal-header
-                button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
-                h4.modal-title Выберите местоположение
-              #cities-list.row.modal-body
-              .modal-footer
-                span.pull-left
-                  span.small для уточнений:
-                  a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
-                button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-                button.btn.btn-primary.SelectDistrict mv='city-select-modal'  type="button"  Выбрать
+      #city-select-button.button.btn.btn-default data-target=".bs-example-modal-lg" data-toggle="modal"
+        | Выберите район
+        i.caret
+      #city-select-modal.modal.fade.bs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel" role="dialog" tabindex="-1"
+        .modal-dialog
+          .row.modal-content
+            .modal-header
+              button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
+              h4.modal-title Выберите местоположение
+            #cities-list.row.modal-body
+            .modal-footer
+              span.pull-left
+                span.small для уточнений:
+                a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
+              button.btn.btn-default data-dismiss="modal" type="button"  Отмена
+              button.btn.btn-primary.SelectDistrict mv='city-select-modal'  type="button"  Выбрать
       button.btn.btn-default type="button"
         span.fa.fa-times
-  div
-    .form.form-group.form-inline.queue-four role="form"
-      .form.form-group.form-inline
-        label for="exampleInputEmail2"  цена
-        input#exampleInputEmail2.form-control.input-sm name="price_from" style=("width: 110px")
-
-          label for="exampleInputPassword2"  &nbsp;—&nbsp;
-          input#exampleInputPassword2.form-control.input-sm name='price_to' style=("width: 110px")
-            .btn-group
-              .btn-group
-                button#button1id.btn.btn-default.dropdown-toggle.btn-sm data-toggle="dropdown" name="button1id"
-                  i.fa.fa-rouble.fa-lg
-                  span.caret
-                ul.dropdown-menu role="menu"
-                  li
-                    a href="#"
-                      i.fa.fa-euro
-                  li
-                    a href="#"
-                      i.fa.fa-dollar
-                  li
-                    label.SetHideOne value="#{AdvEnums::CURRENCIES.index(:RUR)}" hid="currency-value"   ₴
-                    /a href="#"  ₴
-                  /! это ебать её в сраку гривна
-                  li
-                    label.SetHideOne value="#{AdvEnums::CURRENCIES.index(:RUR)}" hid="currency-value"   ₸
-                  /! а это блять тэнге
-                  li
-                    label.SetHideOne value="#{AdvEnums::CURRENCIES.index(:RUR)}" hid="currency-value"   BYR
-              .btn-group
-                button#button1id.btn.btn-default.dropdown-toggle.btn-sm data-toggle="dropdown" name="button1id"
-                  | за всё
-                  span.caret
-                ul.dropdown-menu role="menu"
-                  li
-                    label.SetHideOne value="m2" hid="space-unit-value"   за м&sup2;
-                  li
-                    label.SetHideOne value="100" hid="space-unit-value" за сотку
-              .btn-group
-                button#button1id.btn.btn-default.dropdown-toggle.btn-sm data-toggle="dropdown" name="button1id"
-                  | в месяц
-                  span.caret
-                ul.dropdown-menu role="menu"
-                  li
-                    label.SetHideOne value="m2" hid="space-unit-value"  за м&sup2;
-                  li
-                    label.SetHideOne value="100" hid="space-unit-value"  за сотку
-            button#button1id.btn.btn-default.btn-sm data-toggle="buttons" name="button1id"
-              i.fa.fa-bank.fa-lg
-              | в ипотеку
-            button.btn.btn-default.btn-sm data-toggle="buttons"
-              i.fa.fa-minus-circle.fa-lg
-              | без агентов
-            a.btn.btn-default.btn-sm href="http://www.dangrossman.info/2012/08/20/a-date-range-picker-for-twitter-bootstrap/"
-              i.fa.fa-calendar.fa-lg
-              | за всё время
-              span.caret
+  .row-fluid
+    .form.form-group.form-inline
+      label for="exampleInputEmail2"  цена
+      '
+      input#exampleInputEmail2.form-control.input-sm name="price_from" style=("width: 110px")
+      label for="exampleInputPassword2"  &nbsp;—&nbsp;
+      input#exampleInputPassword2.form-control.input-sm name='price_to' style=("width: 110px")
+      '
+      .btn-group
+        .btn-group
+          button#button1id.btn.btn-default.dropdown-toggle.btn-sm data-toggle="dropdown" name="button1id"
+            | за всё
+            span.caret
+          ul.dropdown-menu role="menu"
+            li
+              label.SetHideOne value="m2" hid="space-unit-value"   за м&sup2;
+            li
+              label.SetHideOne value="100" hid="space-unit-value" за сотку
+        .btn-group
+          button#button1id.btn.btn-default.dropdown-toggle.btn-sm data-toggle="dropdown" name="button1id"
+            | в месяц
+            span.caret
+          ul.dropdown-menu role="menu"
+            li
+              label.SetHideOne value="m2" hid="space-unit-value"  за м&sup2;
+            li
+              label.SetHideOne value="100" hid="space-unit-value"  за сотку
+        button#button1id.btn.btn-default.btn-sm data-toggle="buttons" name="button1id"
+          i.fa.fa-bank.fa-lg
+          | в ипотеку
+        button.btn.btn-default.btn-sm data-toggle="buttons"
+          i.fa.fa-minus-circle.fa-lg
+          | без агентов
+        a.btn.btn-default.btn-sm href="http://www.dangrossman.info/2012/08/20/a-date-range-picker-for-twitter-bootstrap/"
+          i.fa.fa-calendar.fa-lg
+          | за всё время
+          span.caret
   .row
     .col-md-push-4.col-lg-push-3.col-sm-9.col-md-7.col-lg-6
-      form.small
-        input.form-control
-          p.help-block.small style=("margin-top: 0px; padding-left: 1em")  искать недвижимость по названию улицы, ключевым словам, номеру телефона или объявления
+      input.form-control
+        p.help-block.small  искать недвижимость по названию улицы, ключевым словам, номеру телефона или объявления
     .col-md-pull-7.col-lg-pull-6.col-lg-3.col-md-4.col-sm-5.col-xs-8
       = submit_tag 'Найти', class: 'btn btn-primary btn-lg btn-block'
-      /a.btn.btn-primary.btn-lg.btn-block
-        i.fa.fa-search.fa-lg
-        | Найти
       a.btn.btn-link.btn-xs
-        i.fa.fa-times очистить
+        i.fa.fa-times
+        '
+        |очистить

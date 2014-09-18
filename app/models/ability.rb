@@ -7,6 +7,7 @@ class Ability
       can :manage, :all
       can :access, :rails_admin
       can :dashboard
+      can :create_from_admin, Advertisement
     elsif user.owner?
       can :read, :all
     elsif user.agent?

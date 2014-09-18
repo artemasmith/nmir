@@ -48,10 +48,8 @@ ActiveRecord::Schema.define(version: 20140915164428) do
     t.string   "sales_agent"
     t.string   "phone"
     t.string   "organization"
-    t.string   "space_unit"
     t.decimal  "outdoors_space_from",                precision: 15, scale: 2
     t.decimal  "outdoors_space_to",                  precision: 15, scale: 2
-    t.string   "outdoors_space_unit"
     t.integer  "price_from",               limit: 8
     t.integer  "price_to",                 limit: 8
     t.decimal  "unit_price_from",                    precision: 15, scale: 2
@@ -106,6 +104,16 @@ ActiveRecord::Schema.define(version: 20140915164428) do
   end
 
   add_index "neighborhoods", ["location_id", "neighbor_id"], name: "by_location_neighbor", using: :btree
+
+  create_table "notepads", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "advertisement_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "notepads", ["advertisement_id"], name: "index_notepads_on_advertisement_id", using: :btree
+  add_index "notepads", ["user_id"], name: "index_notepads_on_user_id", using: :btree
 
   create_table "phones", force: true do |t|
     t.string  "number"

@@ -3,11 +3,8 @@ offer:
     - floor_from
     - floor_cnt_from
     - space_from
-    - space_unit
     - room_from
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -18,11 +15,8 @@ offer:
     - floor_from
     - floor_cnt_from
     - space_from
-    - space_unit
     - room_from
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -31,12 +25,8 @@ offer:
 
   house:
     - space_from
-    - space_unit
     - outdoors_space_from
-    - outdoors_space_unit
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -46,10 +36,7 @@ offer:
 
   ijs:
     - outdoors_space_from
-    - outdoors_space_unit
     - price_from
-    - outdoors_unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -60,11 +47,8 @@ offer:
     - floor_from
     - floor_cnt_from
     - space_from
-    - space_unit
     - room_from
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -73,8 +57,6 @@ offer:
 
   garage:
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -83,10 +65,7 @@ offer:
 
   office:
     - space_from
-    - space_unit
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -95,10 +74,7 @@ offer:
 
   trade:
     - space_from
-    - space_unit
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -107,12 +83,8 @@ offer:
 
   storage:
     - space_from
-    - space_unit
     - outdoors_space_from
-    - outdoors_space_unit
     - price_from
-    - unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -121,11 +93,8 @@ offer:
 
   cafe:
     - space_from
-    - space_unit
     - outdoors_space_from
-    - outdoors_space_unit
     - price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -134,10 +103,7 @@ offer:
 
   land:
     - outdoors_space_from
-    - outdoors_space_unit
     - price_from
-    - outdoors_unit_price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -146,9 +112,7 @@ offer:
 
   free_appointment:
     - space_from
-    - space_unit
     - price_from
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -163,14 +127,10 @@ demand:
     - floor_cnt_to
     - space_from
     - space_to
-    - space_unit
     - room_from
     - room_to
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -183,14 +143,10 @@ demand:
     - floor_cnt_to
     - space_from
     - space_to
-    - space_unit
     - room_from
     - room_to
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -199,15 +155,10 @@ demand:
   house:
     - space_from
     - space_to
-    - space_unit
     - outdoors_space_from
     - outdoors_space_to
-    - outdoors_space_unit
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -217,12 +168,8 @@ demand:
   ijs:
     - outdoors_space_from
     - outdoors_space_to
-    - outdoors_space_unit
     - price_from
     - price_to
-    - outdoors_unit_price_from
-    - outdoors_unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -235,14 +182,10 @@ demand:
     - floor_cnt_to
     - space_from
     - space_to
-    - space_unit
     - room_from
     - room_to
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -251,9 +194,6 @@ demand:
   garage:
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -262,12 +202,8 @@ demand:
   office:
     - space_from
     - space_to
-    - space_unit
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -276,12 +212,8 @@ demand:
   trade:
     - space_from
     - space_to
-    - space_unit
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -290,15 +222,10 @@ demand:
   storage:
     - space_from
     - space_to
-    - space_unit
     - outdoors_space_from
     - outdoors_space_to
-    - outdoors_space_unit
     - price_from
     - price_to
-    - unit_price_from
-    - unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -307,13 +234,10 @@ demand:
   cafe:
     - space_from
     - space_to
-    - space_unit
     - outdoors_space_from
     - outdoors_space_to
-    - outdoors_space_unit
     - price_from
     - price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -322,12 +246,8 @@ demand:
   land:
     - outdoors_space_from
     - outdoors_space_to
-    - outdoors_space_unit
     - price_from
     - price_to
-    - outdoors_unit_price_from
-    - outdoors_unit_price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment
@@ -336,10 +256,8 @@ demand:
   free_appointment:
     - space_from
     - space_to
-    - space_unit
     - price_from
     - price_to
-    - currency
     - not_for_agents
     - mortgage
     - comment

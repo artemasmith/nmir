@@ -1,14 +1,8 @@
-- allowed_attributes.each do |atr|
-  - if !atr.match('to')
-    .form-group
-      label.col-sm-3.control-label for="street-input"  = t("advertisement.new.#{atr}")
-      .col-sm-4
-        - case atr
-          - when 'currency'
-            = select_tag "advertisement[#{atr}]", options_for_select([['Руб',AdvEnums::CURRENCIES[0]], ['Грн',AdvEnums::CURRENCIES[1]]]), class: 'form-control', name: "advertisement[#{atr}]"
-          - when /comment/
-            = text_area_tag "advertisement[#{atr}]", nil, class: 'form-control', name: "advertisement[#{atr}]"
-          - when /not_for_agents|mortgage/
-            = check_box_tag "advertisement[#{atr}]",  nil, class: 'form-control', name: "advertisement[#{atr}]"
-          - else
-            input.form-control name="advertisement[#{atr}]"
+- @grouped_allowed_attributes.each do |group|
+  .form-group
+    - attr_from = group[0]
+    - attr_to = group[1]
+    = render_input attr_from.to_sym, attr_from.to_sym, attr_to ? attr_to.to_sym : nil, attr_to ? attr_to.to_sym : nil
+
+
+

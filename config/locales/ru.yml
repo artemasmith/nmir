@@ -293,21 +293,30 @@ ru:
       other: '%{count} товаров'
   
   advertisement:
-    new:
+    units:
+      floor_from: ''
+      floor_cnt_from: ''
+      room_from: ''
+      landmark: ''
+      space_from: 'м.кв.'
+      outdoors_space_from: 'г.кв.'
+      price_from: 'руб.'
+      not_for_agents: ''
+      mortgage: ''
+      comment: ''
+      private_comment: ''
+    attributes:
       floor_from: 'Этаж'
-      floor_cnt_from: 'странный этаж?'
+      floor_cnt_from: 'Этажность'
       room_from: 'Количество комнат'
       landmark: 'Ориентир'
       space_from: 'Площадь'
-      space_unit: 'Единица площади'
-      outdoors_space_from: 'Площадь наружной зоны'
+      outdoors_space_from: 'Площадь участка'
       price_from: 'Цена'
-      unit_price_from: 'Цена за'
-      currency: 'Валюта'
       not_for_agents: 'Не для агентов'
       mortgage: 'Ипотека'
       comment: 'Комментаиий'
-      private_comment: 'Сррытый комментарий(для биржи)'
+      private_comment: 'Скрытый комментарий'
     offer:
       buy: 'куплю'
       sale: 'продажы'

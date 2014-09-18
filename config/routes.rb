@@ -1,23 +1,19 @@
 Rails.application.routes.draw do
 
   resources :locations, only: [:index, :show]
-
+  resources :photos
   resources :advertisements, :path => 'entity' do
     collection do
-      post 'search'
-      post 'get_attributes'
-
+      match 'search', via: [:get, :post]
+      get 'get_attributes'
+      get 'check_phone'
     end
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'
   devise_for :users
 
   namespace :api do
-    resources :advertisements, :path => '/entity' do
-      collection do
-        post 'check_phone'
-      end
-    end
+    resources :advertisements, :path => '/entity'
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

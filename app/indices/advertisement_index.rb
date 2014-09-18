@@ -14,8 +14,6 @@ ThinkingSphinx::Index.define :advertisement, :with => :active_record do
   indexes property_type, sortable: true
   indexes category, sortable: true
   indexes offer_type, sortable: true
-  indexes space_unit
-  indexes currency
   indexes keywords
   indexes comment
   indexes region.id, as: :region, sortable: true

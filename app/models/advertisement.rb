@@ -24,10 +24,8 @@
 #  sales_agent              :string(255)
 #  phone                    :string(255)
 #  organization             :string(255)
-#  space_unit               :string(255)
 #  outdoors_space_from      :decimal(15, 2)
 #  outdoors_space_to        :decimal(15, 2)
-#  outdoors_space_unit      :string(255)
 #  price_from               :integer
 #  price_to                 :integer
 #  unit_price_from          :decimal(15, 2)
@@ -70,8 +68,10 @@ class Advertisement < ActiveRecord::Base
   belongs_to :address, class_name: 'Location', foreign_key: 'address_id'
   belongs_to :landmark, class_name: 'Location', foreign_key: 'landmark_id'
   belongs_to :user
-  has_many   :photos
+  has_many   :photos, :dependent => :destroy
+  accepts_nested_attributes_for :photos, :allow_destroy => true
   accepts_nested_attributes_for :user
+
 
   # validators
   include AdvValidation
@@ -86,22 +86,35 @@ class Advertisement < ActiveRecord::Base
   before_create :set_locations
   before_validation :check_attributes
   after_create :generate_sections
+
   after_create :set_phone
 
 
-  def allowed_attributes
-    AdvConformity::ATTR_VISIBILITY[adv_type][category] rescue []
-  end
 
-  def sorted_allowed_attributes
-    group = []
-    allowed_attributes.sub.each do |attr|
-      if match = attr.match(/(.+)_to|_from$/i)
-        match.first
+  
+  def grouped_allowed_attributes
+    return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)
+    @grouped_allowed_attributes = []
+    allowed_attributes.each do |attr|
+      if match = attr.match(/(.+)(_to|_from)$/i)
+        prefix = match[1]
+        suffix = match[2]
+        next if suffix == '_to'
+        if allowed_attributes.find{|e| e == "#{prefix}_to"}
+          @grouped_allowed_attributes << %W(#{prefix}_from #{prefix}_to)
+        else
+          @grouped_allowed_attributes << %W(#{prefix}_from)
+        end
       else
-        group << attr
+        @grouped_allowed_attributes << [attr]
       end
     end
+    return @grouped_allowed_attributes
+  end
+
+  def allowed_attributes
+    return @allowed_attributes if defined?(@allowed_attributes)
+    @allowed_attributes = AdvConformity::ATTR_VISIBILITY[adv_type][category] rescue []
   end
 
   # define methods like :price, from pirce_from attr
@@ -151,17 +164,15 @@ class Advertisement < ActiveRecord::Base
   private
 
   def check_attributes
-    self.name ||= comment[0..15] #это имя человека который размещает объявление
+    self.name ||= self.comment[0..15]
     self.currency ||= Advertisement::CURRENCIES[0]
     if self.user.blank?
       self.sales_agent ||=  'no agent'
-      self.phone ||=  '123' #это номер человека который размещает объявление
     else
       self.sales_agent ||= self.user.name
       self.phone ||= self.user.phones.map{ |p| p.original }.join(',')
     end
     self.phone = '123' if self.phone.blank?
-    self.space_unit ||= 'м2'
   end
 
 
@@ -202,7 +213,7 @@ class Advertisement < ActiveRecord::Base
 
   def propery_type_conformity
     unless AdvConformity::TYPE_CONFORMITY[self.property_type].try(:include?, offer_type)
-      errors.add :base, "Неверный тип ???"
+      errors.add :base, 'Неверный тип объекта'
     end
   end
 
@@ -210,6 +221,7 @@ class Advertisement < ActiveRecord::Base
     phones = self.user.phones.map{ |p| p.number }.join(',')
     Advertisement.find(self.id).update(phone: phones)
   end
+
 
 
 
