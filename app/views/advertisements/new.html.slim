@@ -29,5 +29,7 @@ h1 Новое объявление
       = render '/advertisements/locations', f: f
       = render '/advertisements/map', f: f
       = render '/advertisements/photos', f: f
-      = f.submit 'Create'
+      .fields
+        .form.form-horizontal
+          = f.submit 'Create', class: 'btn btn-primary'
 
