@@ -31,4 +31,5 @@ ejabberdctl
 /config/database.yml
 /config/secrets.yml
 /public/assets/
+/public/system/
 /lib/fias_db/
