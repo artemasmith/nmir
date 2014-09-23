@@ -1,27 +1,31 @@
 class PhotosController < ApplicationController
+  layout false
 
   def create
-    @photo = Photo.new(photo_params.photos)
-
-    if @photo.save
-      respond_to do |format|
-        format.html { render :json => [@photo.to_jq_upload].to_json, :content_type => 'text/html', :layout => false }
-        format.json { render :json => {files: [@photo.to_jq_upload]}.to_json }
+    json = []
+    photo_params.each do |advertisement_photo|
+      photo = Photo.new
+      photo.advertisement_photo = advertisement_photo
+      if photo.save
+        json << photo.to_jq_upload
+      else
+        json << { :error => "custom_failure "}
       end
-    else
-      render :json => [{ :error => "custom_failure "}], :status => 304
+    end
+    respond_to do |format|
+      format.html { render :json => {files: json}.to_json }
+      format.json { render :json => {files: json}.to_json }
     end
   end
 
   def destroy
     @photo = Photo.find(params[:id])
     @photo.destroy
-
     render :json => true
   end
 
   def photo_params
-    params.require(:advertisement)
+    params.require(:advertisement_photo)
   end
 
 

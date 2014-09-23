@@ -22,9 +22,10 @@ class Photo < ActiveRecord::Base
 
   def to_jq_upload
     {
-        'name' => read_attribute(file),
-        'url' => file.url,
-        'size' => file.size,
+        'thumbnail_url' => advertisement_photo.url(:thumb),
+        'name' => advertisement_photo_file_name,
+        'url' => advertisement_photo.url,
+        'size' => advertisement_photo.size,
         'delete_url' => photo_path(id: id),
         'delete_type' => 'DELETE'
     }

@@ -1,42 +1,28 @@
 <legend>Фото</legend>
-<%= f.fields_for :photos do |f| %>
-  <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-  <div class="form form-horizontal">
-    <div class="col-sm-9">
-      <!-- The fileinput-button span is used to style the file input field as button -->
+<div class="fileupload_context">
     <span class="btn btn-success fileinput-button">
-      <i class="icon-plus icon-white"></i>
-      <span>Добавить файлы</span>
-      <%= f.file_field :advertisement_photo %>
+          <i class="icon-plus icon-white"></i>
+          <span>Добавить файлы</span>
+      <%= file_field_tag 'advertisement_photo[]', multiple: true%>
     </span>
-      <button type="submit" class="btn btn-primary start">
-        <i class="icon-upload icon-white"></i>
-        <span>Начать загрузку</span>
-      </button>
-      <button type="reset" class="btn btn-warning cancel">
-        <i class="icon-ban-circle icon-white"></i>
-        <span>Отменить загрузку</span>
-      </button>
-      <button type="button" class="btn btn-danger delete">
-        <i class="icon-trash icon-white"></i>
-        <span>Удалить</span>
-      </button>
-      <input type="checkbox" class="toggle">
-    </div>
-    <div class="col-sm-9">
-      <!-- The global progress bar -->
-      <div class="progress progress-success progress-striped active fade">
-        <div class="bar" style="width:0%;"></div>
+    <%= f.fields_for :photos do |f| %>
+      <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+      <div class="form form-horizontal">
+
+        <div class="col-sm-9">
+          <!-- The global progress bar -->
+          <div class="progress progress-success progress-striped active fade">
+            <div class="bar" style="width:0%;"></div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <!-- The loading indicator is shown during image processing -->
-  <div class="fileupload-loading"></div>
-  <br>
-  <!-- The table listing the files available for upload/download -->
-  <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
-  </table>
-<% end %>
+      <!-- The loading indicator is shown during image processing -->
+      <div class="fileupload-loading"></div>
+      <!-- The table listing the files available for upload/download -->
+      <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
+      </table>
+    <% end %>
+</div>
 
 <script>
     var fileUploadErrors = {
@@ -60,7 +46,11 @@
     <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
     {% } else if (o.files.valid && !i) { %}
     <td>
-      <div class="progress progress-success progress-striped active"><div class="bar" style="width:0%;"></div></div>
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+        <span class="sr-only">0%</span>
+      </div>
+    </div>
     </td>
     <td class="start">{% if (!o.options.autoUpload) { %}
       <button class="btn btn-primary">
@@ -102,9 +92,8 @@
       <td class="delete">
         <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
           <i class="icon-trash icon-white"></i>
-          <span>{%=locale.fileupload.destroy%}</span>
+          <span>Удалить</span>
         </button>
-        <input type="checkbox" name="delete" value="1">
       </td>
     </tr>
     {% } %}
@@ -115,15 +104,21 @@
 
         $('.fileupload').fileupload({
             url: Routes.photos_path(),
-            autoUpload: false,
+            autoUpload: true,
             dataType: 'json',
             disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
             maxFileSize: 5000000,
             acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
             previewMaxWidth: 100,
             previewMaxHeight: 100,
-            previewCrop: true
+            previewCrop: true,
+            progress: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                data.context.find('.progress-bar').css('width',progress + '%').text(progress + '%').attr('aria-valuenow', progress);
+            }
         });
+
+
 
 
     });
