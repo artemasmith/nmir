@@ -1,0 +1,2 @@
+$('.selected-locations-list').remove();
+$('.all-selected-locations').append('<%= j render partial: 'advertisements/selected_locations', locals: { locations: @locations }%>');

@@ -1,33 +1,10 @@
-.form.form-horizontal role="form"
-  .form-group
-    label.col-sm-3.control-label
-      i.fa.fa-map-marker.fa-lg
-      | место
-    .col-sm-9.form.form-horizontal
-      span.button-toolbar
-        button.btn.btn-default id="button-#{locations.first.location_type}" data-target=".lbs-example-modal-lg" data-toggle="modal"
-          = "Выберите #{t locations.first.location_type}"
-          i.caret
-        #region-select-modal.modal.fade.lbs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel1" role="dialog" tabindex="-2"
-          .modal-dialog
-            .row.modal-content
-              .modal-header
-                button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
-                h4.modal-title Выберите местоположение
-              .row.modal-body
-                .btn-group data-toggle="buttons"
-                  - locations.each do |location|
-                    .row.col-sm-12
-                      label= region.title
-                    - location.children_location.each do |chl_loc|
-                      label.btn.btn-default type="button"
-                        input type="#{type}" name="city_id" value="#{chl_loc.id}" class="#{chl_loc.location_type}" =chl_loc.title
-                        /= f.radio_button :city_id, city.id
-                        /=city.title
+.form.form-inline
+  label.control-label for="prependedtext"
+    i.fa.fa-map-marker.fa-lg
+    | место
 
-              .modal-footer
-                span.pull-left
-                  span.small для уточнений:
-                  a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
-                button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-                button.btn.btn-primary onclick="select_region('radio');"  type="button"  Выбрать
+    .all-selected-locations
+
+    .location-select-button.button.btn.btn-default.GetChildren lid="#{id}" multi="#{multi}"
+      | Выберите местоположение
+      i.caret

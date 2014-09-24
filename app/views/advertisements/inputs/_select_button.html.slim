@@ -1,0 +1,10 @@
+/if has_children - render caret and set data-target to modal
+.btn-group.location-button name="#{type}"  lid="#{id}"
+  .btn.btn-default = title
+  input type="#{multi}" name="#{type}" value="#{id}" class="#{cls} hidden location-button" checked="true"
+  - if has_children
+    .btn.btn-default.GetChildren name="#{type}" class="#{cls}" lid="#{id}" multi="#{multi}"
+      i.caret
+  .btn.btn-default.DeleteElem lid="#{id}" multi="#{multi}"
+    i.fa.fa-times
+/add close btn

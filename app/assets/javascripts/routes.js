@@ -309,6 +309,10 @@
     };
     namespace(root, "Routes");
     root.Routes = {
+// add_child_locations_advertisements => /entity/add_child_locations(.:format)
+  add_child_locations_advertisements_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"add_child_locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
 // advertisement => /entity/:id(.:format)
   advertisement_path: function(_id, options) {
   return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
@@ -360,6 +364,10 @@
 // get_attributes_advertisements => /entity/get_attributes(.:format)
   get_attributes_advertisements_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_attributes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// get_locations_advertisements => /entity/get_locations(.:format)
+  get_locations_advertisements_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // location => /locations/:id(.:format)
   location_path: function(_id, options) {

@@ -29,7 +29,7 @@
       adv_type: adv_type
     $.ajax
       type: 'GET',
-      url: "get_attributes",
+      url: Routes.get_attributes_advertisements_path(),
       data: pdata
 
   return
@@ -39,54 +39,6 @@
   multi = this.getAttribute('multi')
   value = this.getAttribute('value')
   set_property(hid, multi, value)
-  return
-
-@select_district = ->
-  mv = this.getAttribute("mv")
-  cities = $(".active.ClickDistrict")
-  rescity = ""
-  $("#" + mv).modal "hide"
-  i = 0
-  while i < cities.length
-    rescity += cities[i].textContent + " "
-    i++
-  $("#city-select-button")[0].textContent = rescity
-  return
-
-@get_name = (radio) ->
-  if radio == 'checkbox'
-    return 'district[]'
-  else
-    return 'advertisement[district_id]'
-
-@select_region =(radio) ->
-  #selected_regions = $("#city-select")[0].getAttribute("value")
-  selected_regions = ''
-  regions = $(':input:checked[name*="city_id"]')
-  $.each regions, (i,rg) ->
-    selected_regions += ' ' + rg.value
-    return
-  cities = ""
-  $.ajax
-    dataType: "json"
-    url: "/locations?parents=" + selected_regions
-    success: (data) ->
-      $("#region-select-modal").modal "hide"
-      regions = ""
-      resulthtml = ""
-      for region of data
-        resulthtml += "<span>" + region + "</span><p><div class=\"btn-group\" data-toggle=\"buttons\">"
-        regions += region + " "
-        cities = data[region]
-        i = 0
-        while i < cities.length
-          resulthtml += "<button type=\"button\" district=\"" + cities[i][1] + "\" class=\"btn btn-default ClickDistrict\" \" ><input name=\"" + get_name(radio) + "\" type=\"" + radio + "\" value=\"" + cities[i][1] + "\">" + cities[i][0] + "</input></button>"
-          i++
-        resulthtml += "</div><p>"
-      $("#cities-list").html resulthtml
-      $("#region-select-button")[0].textContent = regions
-      return
-
   return
 
 
@@ -175,7 +127,93 @@
   )
   return
 
+####LOCATION HADLING
 
+@set_location = (hid, value, multi) ->
+  if multi=='checkbox'
+    res = $(hid).val().replace(value,'')
+    $(hid).val(res + ' ' + value)
+  else
+    $(hid).val(value)
+  return
+
+@delete_child = ->
+  lid = this.getAttribute('lid')
+  $('.btn-group[lid=' + lid + ']').html('')
+  $('.check-button[lid=' + lid + ']').html('')
+  $.ajax(
+    type: 'GET'
+    dataType: 'script'
+    url: Routes.add_child_locations_advertisements_path()
+    data:
+      locations: $(".location-button:checked").map( ->
+        $(this).val()).get().join(',')
+      multi: this.getAttribute('multi')
+  )
+  return
+
+@select_locations = ->
+  ltype = this.getAttribute('ltype')
+  locations = $(".location-button:checked")
+  multi = locations[0].getAttribute('type')
+  $.ajax(
+    type: 'GET'
+    dataType: 'script'
+    url: Routes.add_child_locations_advertisements_path()
+    data:
+      locations: $(".location-button:checked").map( ->
+        $(this).val()).get().join(',')
+      multi: this.getAttribute('multi')
+  )
+  $('.location-select-modal').modal('hide')
+  #set location_id in hidden fields
+
+  for i in [0..locations.length-1]
+    hid = '.'+locations[i].getAttribute('name')+'-id'
+    if multi == 'checkbox'
+      old_val = $(hid).val().replace($(locations[i]).val())
+      $(hid).val(old_val + ' ' + $(locations[i]).val())
+    else
+      $(hid).val($(locations[i]).val())
+
+  return
+
+@get_children = ->
+  $.ajax(
+    type: 'GET'
+    dataType: 'script'
+    url: Routes.get_locations_advertisements_path()
+    data:
+      parent_id: this.getAttribute('lid')
+      multi: this.getAttribute('multi')
+  )
+  return
+
+
+@set_auto_location =(elem) ->
+  $('.autocomplete.location-button').val($(elem.val()))
+  $('.autocomplete.location-button')[0].setAttribute('checked', true)
+  return
+
+####ENDOF LOCATION HANDLING
+
+$('.autocomplete-search-location').livequery ->
+  $(this).autocomplete
+    source: Routes.api_advertisements_path()
+    minChars: 2
+    params: ->
+      parent_id: $(this)[0].getAttribute('parent_id')
+    select: ->
+      set_auto_location(this)
+
+$('.GetChildren').livequery ->
+  $(this).click get_children
+
+$('.DeleteElem').livequery ->
+  $(this).click delete_child
+
+$('.SelectLocation').livequery ->
+  $(this).click select_locations
 
 $('.SelectRegion').livequery ->
   $(this).click select_region
@@ -205,7 +243,6 @@ $('#map').livequery ->
       $(this).data('longitude'),
       $(this).prop('editable')
   )
-
 
 
 $('form').livequery ->

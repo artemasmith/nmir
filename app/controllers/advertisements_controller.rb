@@ -23,6 +23,51 @@ class AdvertisementsController < ApplicationController
     user = @adv.build_user
     user.phones.build
     @regions = Location.where(location_type: 0)
+    @locations = Location.where(location_type: 0).map{ |l| { title: l.title, id: l.id, multi: 'radio', type: l.location_type } }
+  end
+
+  #returns array of children locations and render it in the modal by js
+  def get_locations
+    if params[:parent_id].to_i != 0
+      @children = Location.find(params[:parent_id].to_i).children_locations
+    else
+      @children = Location.where('location_type =?',0)
+    end
+    @children = @children.map{ |l| { id: l.id, title: l.title, multi: params[:multi],  type: l.location_type } }
+  end
+
+  #returns array of hashed children location to render when we selected parent location
+  def add_child_locations
+    #TODO make tree check before rendering - and delete will be remove location and re-rendering buttons
+    #multi = params[:multi]
+    @locations = []
+    log = Logger.new STDOUT
+    ungrouped_locations = []
+    params[:locations].split(',').each do |l|
+      loc = Location.find(l.to_i)
+      ungrouped_locations << loc if loc.present?
+    end
+    ungrouped_locations.sort_by{|l| l.location_type}.reverse!
+    grouped_locations = []
+    ungrouped_locations.each { |l| Location.group_location(l, ungrouped_locations, grouped_locations) }
+
+    grouped_locations.each do |loc|
+      h_c = loc.children_locations.present?
+      cls = h_c ? 'ShowChildren' : 'location'
+      @locations << { type: loc.location_type, id: loc.id, title: loc.title, has_children: h_c,
+                      cls: cls, multi: params[:multi], parent_id: loc.location_id, can_delete: true }
+    end
+
+    params[:locations].split(',').each do |l|
+      loc = Location.find(l.to_i)
+      if loc.present?
+        h_c = loc.children_locations.present?
+        cls = h_c ? 'ShowChildren' : 'location'
+        @locations << { type: loc.location_type, id: loc.id, title: loc.title, has_children: h_c,
+                        cls: cls, multi: params[:multi], parent_id: loc.location_id, can_delete: true }
+      end
+    end
+    @locations.uniq!
   end
 
   def get_attributes
@@ -32,7 +77,7 @@ class AdvertisementsController < ApplicationController
   end
 
   def create
-    @regions = Location.where(location_type: 0)
+    @locations = Location.where(location_type: 0)
     if can? :create_from_admin, Advertisement
       if advertisement_params[:user_id].blank?
         @adv = Advertisement.new advertisement_params
@@ -68,6 +113,8 @@ class AdvertisementsController < ApplicationController
       with_cond[:price_from] = to.blank? ? from..99990000 : from..to
     end
 
+    #locations = ['region_id','admin_area_id', 'non_admin_area_id', 'city_id','district_id', 'street_id', 'address_id', 'landmark_id']
+
     search_params.each do |k,v|
       if k != 'price_from' && k != 'price_to'
         if v.class == Array
@@ -97,9 +144,9 @@ class AdvertisementsController < ApplicationController
 
   def search_params
     params.permit(:category, :offer_type, :price_from,
-                  :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house,
-                  :floor_from, :space, :room_from, :comment, :private_comment, :phone,
-                  :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
+                  :price_to, :not_for_agents, :date_from, :date_to, :district_id, :street_id, :house_id,
+                  :floor_from, :space, :room_from, :comment, :private_comment, :phone, :landmark_id,
+                  :property_type, :floor_cnt_from, :address_id, :space_from, :floor_max, :mortgage, :district_id, :city_id, adv_type: [],
                   offer_type: [], category: [])
   end
 
