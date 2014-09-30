@@ -4,6 +4,22 @@ module AdvertisementsHelper
     Location.find_by_id(location.to_i).neighbors
   end
 
+  def generate_ac_source src
+    src.map{ |s| { "#{s[:title]}" => s[:id] }}.to_json
+  end
+
+  def render_button cond
+    cls = cond[:cls] || 'location'
+    #type = cond[:multi]=='checkbox' ? "#{cond[:type]}[]" : cond[:type]
+    if cls == 'location'
+      render 'advertisements/inputs/check_button', title: cond[:title], id: cond[:id], multi: cond[:multi],
+             type: cond[:type], cls: cls, can_delete: cond[:can_delete]
+    else
+      render 'advertisements/inputs/select_button', type: cond[:type], cls: cls, has_children: cond[:has_children],
+             id: cond[:id],  title: cond[:title], multi: cond[:multi], parent_id: cond[:parent_id]
+    end
+  end
+
   #cond[ :tag, :class, :text]
   def render_html_tag cond
     "<#{ cond[:tag] } class=\"#{ cond[:class] }\">#{ cond[:text] }<\/#{cond[:tag]}>".html_safe

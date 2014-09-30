@@ -1,0 +1,7 @@
+//render buttons-location in modal form
+$('.location-select-modal').modal('hide');
+$('.location-select-modal').remove();
+
+$('.modal-form-here').append('<%= escape_javascript(render partial: "advertisements/modal_select_location", locals: { locations: @children })%>');
+//$('.autocomplete-search-location').autocomplete( 'options', 'source', <%= @children.map{ |l| ["#{l[:title]}", "#{l[:id]}"] } %> );
+$('.location-select-modal').modal('show');

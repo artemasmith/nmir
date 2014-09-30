@@ -2,6 +2,8 @@ $('.user-id').prop('value',"<%= @user_id %>");
 <% if @advertisements.present? %>
 $('.advertisements-duplicate').html("<%= j render 'advertisements/search_results', search_results:  @advertisements %>" );
 $('.show-phones').modal('show');
+<% elsif @user_id.present? %>
+alert('Пользователь с таким email уже есть в базе');
 <% else %>
 $('.adv-params').removeClass('hidden');
 $('.user-params').addClass('hidden');

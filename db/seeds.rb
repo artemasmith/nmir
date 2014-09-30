@@ -75,94 +75,116 @@ non_admin_area = rc.sublocations.find_or_create_by(title: 'Западный', lo
 street = rc.sublocations.find_or_create_by(title: 'Ворошиловский', location_type: 5 )
 street.sublocations.find_or_create_by(title: '1 дом', location_type:  6, admin_area_id: admin_area.id, non_admin_area_id: non_admin_area.id)
 rc.sublocations.find_or_create_by(title: 'Каменка', location_type: 1)
-tc.sublocations.find_or_create_by(title: 'Центр', location_type: 1)
-tc.sublocations.find_or_create_by(title: 'Заречный', location_type: 1)
-tc.sublocations.find_or_create_by(title: 'Восточный', location_type: 1)
-tc.sublocations.find_or_create_by(title: 'Восточный 2', location_type: 1)
-tc.sublocations.find_or_create_by(title: 'Войновка', location_type: 1)
-tc.sublocations.find_or_create_by(title: 'Мыс', location_type: 1)
-tc.sublocations.find_or_create_by(title: 'Маяк', location_type: 1)
-
+tc.sublocations.find_or_create_by(title: 'Центр', location_type: 'admin_area')
+tc.sublocations.find_or_create_by(title: 'Заречный', location_type: 'admin_area')
+tc.sublocations.find_or_create_by(title: 'Восточный', location_type: 'admin_area')
+tc.sublocations.find_or_create_by(title: 'Восточный 2', location_type: 'admin_area')
+tc.sublocations.find_or_create_by(title: 'Войновка', location_type: 'admin_area')
+tc.sublocations.find_or_create_by(title: 'Мыс', location_type: 'admin_area')
+tc.sublocations.find_or_create_by(title: 'Маяк', location_type: 'admin_area')
+tc.sublocations.find_or_create_by(title: 'Ленина', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Республики', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Комсомольская', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Железнодорожная', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Первомайская', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Кузнецова', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Немцова', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Минская', location_type: 'street')
+tc.sublocations.find_or_create_by(title: '50 лет Октября', location_type: 'street')
+tc.sublocations.find_or_create_by(title: '50 лет ВЛКСМ', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Салтыкова-Щедрина', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Горького', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Московский тракт', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Червишевский тракт', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Самарцева', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Салаирский тракт', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Старотобольский тракт', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Карла Маркса', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Калинина', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Зои Космодемьянской', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Мориса Тореза', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Профсоюзная', location_type: 'street')
+tc.sublocations.find_or_create_by(title: 'Щербакова', location_type: 'street')
 
 
 [
     { offer_type: 1, category: 1, property_type: 1,  name: 'Сдам однушку',
       phone: '891912332122', price_from: 100, region_id: Location.where(location_type: 2).first.id,
-      adv_type: 0, currency: 1, sales_agent: 'test agent', city_id: Location.find_by_title('Ялуторовск').id },
+      adv_type: 0, currency: 1, sales_agent: 'test agent', city_id: Location.find_by_title('Ялуторовск'), user_id: 1 },
     { offer_type: 1, category: 1, property_type: 1,
       name: 'Сдам Двухкомнттную',      phone: '891912332133', price_from: 200,
       region_id: Location.where(location_type: 2).first.id , adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id, user_id: 1 },
     { offer_type: 1, category: 1, property_type: 1,  name: 'Сдам хрущевку',
       phone: '891912332162', price_from: 50, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Заречный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Заречный').id, user_id: 1 },
     { offer_type: 0, category: 1, property_type: 1,
       name: 'Продам однушку', phone: '8919123312311', price_from: 55000,
       region_id: Location.where(location_type: 2).first.id, adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('ЖД').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('ЖД').id, user_id: 1 },
     { offer_type: 0, category: 1, property_type: 1,
       name: 'Продам квартиру-студию. Евроремонт. Торг.', phone: '8919123314512', price_from: 25000,
       region_id: Location.where(location_type: 2).first.id, adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id, user_id: 1 },
     { offer_type: 0, category: 6, property_type: 0,
       name: 'Продам офис',
       phone: '892912332122', price_from: 9000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Центр').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Центр').id, user_id: 1 },
     { offer_type: 0, category: 6, property_type: 0,
       name: 'Продам офисное помещение в районе кривоаанов',
       phone: '892912332122', price_from: 120000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id, user_id: 1 },
     { offer_type: 4, category: 1, property_type: 1,
       name: 'Куплю хату с краю',
       phone: '896912332122', price_from: 1000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Заречный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Заречный').id, user_id: 1 },
     { offer_type: 4, category: 2, property_type: 1,
       name: 'Куплю дом',
       phone: '541322', price_from: 100000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('ЖД').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('ЖД').id, user_id: 1 },
     { offer_type: 2, category: 2, property_type: 1,
       name: 'Сниму дом или апартаменты',
       phone: '892200120042', price_from: 1000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id, user_id: 1 },
     { offer_type: 2, category: 2, property_type: 1,
       name: 'Сниму коттедж',
       phone: '892200122942', price_from: 10000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('ЖД').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('ЖД').id, user_id: 1 },
     { offer_type: 2, category: 2, property_type: 1,
       name: 'Сниму коттедж у реки',
       phone: '892200120064', price_from: 25000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Заречный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Заречный').id, user_id: 1 },
     { offer_type: 0, category: 5, property_type: 0,
       name: 'Продам гараж, отапливаемый',
       phone: '892912334451', price_from: 150000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Восточный').id, user_id: 1 },
     { offer_type: 0, category: 5, property_type: 0,
       name: 'Продам гараж, с ямой',
       phone: '892912334457', price_from: 200000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Центр').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Центр').id, user_id: 1 },
     { offer_type: 0, category: 5, property_type: 0,
       name: 'Продам гараж, в центре, охраняемый',
       phone: '892912334459', price_from: 1500000, region_id: Location.where(location_type: 2).first.id,
       adv_type: 0, currency: 1, sales_agent: 'test agent',
-      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Центр').id },
+      city_id: Location.find_by_title('Тюмень').id, district_id: Location.find_by_title('Центр').id, user_id: 1 },
     { offer_type: 0, category: 5, property_type: 0,
       name: 'Продам гараж, в центре, неотапиив',
       phone: '892912334459', price_from: 100000, region_id: Location.where(location_type: 2).first.id,
-      adv_type: 0, currency: 1, sales_agent: 'test agent', city_id: 4, district_id: Location.find_by_title('Восточный').id },
+      adv_type: 0, currency: 1, sales_agent: 'test agent', city_id: 4, district_id: Location.find_by_title('Восточный').id, user_id: 1 },
     { offer_type: 0, category: 5, property_type: 0,
       name: 'Продам гараж, в за бугром, охраняемый',
       phone: '892912334459', price_from: 1990000, region_id: Location.where(location_type: 2).first.id,
-      adv_type: 0, currency: 1, sales_agent: 'test agent', city_id: 4, district_id: Location.find_by_title('Центр').id }
+      adv_type: 0, currency: 1, sales_agent: 'test agent', city_id: 4, district_id: Location.find_by_title('Центр').id, user_id: 1 }
 
 ].each do |advertisement|
   a = Advertisement.find_or_create_by(advertisement)

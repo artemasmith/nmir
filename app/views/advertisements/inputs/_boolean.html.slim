@@ -3,5 +3,5 @@
   .col-sm-2
     .checkbox
       label
-        = check_box_tag(name_from, value_from)
+        = check_box_tag("advertisement[#{name_from}]", value_from)
         = t("advertisement.attributes.#{name_from}")

@@ -7,6 +7,8 @@ Rails.application.routes.draw do
       match 'search', via: [:get, :post]
       get 'get_attributes'
       get 'check_phone'
+      get 'get_locations'
+      get 'add_child_locations'
     end
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'

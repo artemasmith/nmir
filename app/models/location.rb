@@ -104,6 +104,17 @@ class Location < ActiveRecord::Base
     end
   end
 
+  def self.group_location(elem, array, res)
+    res << elem if !res.include?(elem)
+    children=[]
+    array.each do |el|
+      children << el if el.parent_location == elem
+    end
+    children.each do |child|
+      group_location(child, array, res)
+    end
+  end
+
   private
 
   def adress_initialize

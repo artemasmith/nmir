@@ -7,6 +7,7 @@
 #  property_type            :integer          not null
 #  category                 :integer          not null
 #  agent_category           :integer
+#  currency                 :integer
 #  distance                 :integer
 #  time_on_transport        :integer
 #  time_on_foot             :integer
@@ -27,6 +28,10 @@
 #  outdoors_space_to        :decimal(15, 2)
 #  price_from               :integer
 #  price_to                 :integer
+#  unit_price_from          :decimal(15, 2)
+#  unit_price_to            :decimal(15, 2)
+#  outdoors_unit_price_from :integer
+#  outdoors_unit_price_to   :integer
 #  space_from               :decimal(15, 2)
 #  space_to                 :decimal(15, 2)
 #  keywords                 :text
@@ -63,7 +68,6 @@ class Advertisement < ActiveRecord::Base
   belongs_to :address, class_name: 'Location', foreign_key: 'address_id'
   belongs_to :landmark, class_name: 'Location', foreign_key: 'landmark_id'
   belongs_to :user
-
   has_many   :photos, :dependent => :destroy
   accepts_nested_attributes_for :photos, :allow_destroy => true
   accepts_nested_attributes_for :user
@@ -82,6 +86,11 @@ class Advertisement < ActiveRecord::Base
   before_create :set_locations
   before_validation :check_attributes
   after_create :generate_sections
+
+  after_create :set_phone
+
+
+
   
   def grouped_allowed_attributes
     return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)
@@ -155,10 +164,17 @@ class Advertisement < ActiveRecord::Base
   private
 
   def check_attributes
-    self.name ||= comment[0..15] #это имя человека который размещает объявление
-    self.sales_agent ||= user.name || 'no agent'
-    self.phone ||= user.phones.first.number || '123' #это номер человека который размещает объявление
+    self.name ||= self.comment[0..15]
+    self.currency ||= Advertisement::CURRENCIES[0]
+    if self.user.blank?
+      self.sales_agent ||=  'no agent'
+    else
+      self.sales_agent ||= self.user.name
+      self.phone ||= self.user.phones.map{ |p| p.original }.join(',')
+    end
+    self.phone = '123' if self.phone.blank?
   end
+
 
   # set all location nodes from one, that submited
   def set_locations
@@ -199,6 +215,11 @@ class Advertisement < ActiveRecord::Base
     unless AdvConformity::TYPE_CONFORMITY[self.property_type].try(:include?, offer_type)
       errors.add :base, 'Неверный тип объекта'
     end
+  end
+
+  def set_phone
+    phones = self.user.phones.map{ |p| p.number }.join(',')
+    Advertisement.find(self.id).update(phone: phones)
   end
 
 

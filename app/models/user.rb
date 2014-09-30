@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
 
   has_many :phones, dependent: :destroy
   accepts_nested_attributes_for :phones, allow_destroy: true
+  accepts_nested_attributes_for :advertisements
 
   enum :role => [:owner, :agent, :admin]
 end

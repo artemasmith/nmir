@@ -18,6 +18,7 @@ class Phone < ActiveRecord::Base
 
   before_validation :normalize
 
+  after_save :update_advs
   def normalize
     self.number = Phone.normalize(original)
   end
@@ -59,13 +60,19 @@ class Phone < ActiveRecord::Base
     number = "2#{number}" if number.length == 6
 
     if number.length == 7
-      number = "+7863#{self.number}"
+      number = "+7863#{number}"
     elsif number.length == 10
-      number = "+7#{self.number}"
+      number = "+7#{number}"
     end
 
     convert_city_phones(number)
   end
 
+  def update_advs
+    phones = self.user.phones.map{ |p| p.number }.join(',')
+    self.user.advertisements.each do |a|
+      Advertisement.find(a.id).update(phone: phones)
+    end
+  end
 
 end

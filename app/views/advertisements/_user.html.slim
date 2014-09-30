@@ -3,7 +3,8 @@
     legend Контакт
     .form.form-horizontal role="form"
       - resource.phones.build() unless params.has_key? :user
-      = f.fields_for @adv.user do |f|
+      = f.fields_for :user, @adv.user do |f|
+        =f.hidden_field :password, value: Digest::MD5.hexdigest(Time.now.to_s)
         .form-group
           label.col-sm-3.control-label for="name"  Имя
           .col-sm-4

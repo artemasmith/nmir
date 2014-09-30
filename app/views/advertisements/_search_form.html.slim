@@ -2,6 +2,14 @@
 
   = hidden_field_tag 'adv_type[]', '', class: 'adv-type-value'
   = hidden_field_tag 'property_type[]', '', class: 'property-type-value'
+  = hidden_field_tag :region_id,  '', class: 'region-id'
+  = hidden_field_tag :city_id, '', class: 'city-id'
+  = hidden_field_tag :district_id,  '', class: 'district-id'
+  = hidden_field_tag :admin_area_id,  '', class: 'admin_aria-id'
+  = hidden_field_tag :non_admin_area_id,  '', class: 'non_admin_area-id'
+  = hidden_field_tag :street_id,  '', class: 'street-id'
+  = hidden_field_tag :address_id,  '', class: 'address-id'
+  = hidden_field_tag :landmark_id,  '', class: 'landmark-id'
   .row-fluid
     label.control-label for="prependedtext"
       i.fa.fa-share.fa-lg
@@ -45,55 +53,11 @@
           input type="checkbox" name="category[]" value="#{AdvEnums::CATEGORIES.index(category)}" = t("advertisement.category.#{category}")
 
   .row-fluid
-    label.control-label for="prependedtext"
-      i.fa.fa-map-marker.fa-lg
-      '
-      | место
-    '
+
     span
-      #region-select-button.button.btn.btn-default data-target=".lbs-example-modal-lg" data-toggle="modal"
-        |Выберите город
-        i.caret
-      #region-select-modal.modal.fade.lbs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel1" role="dialog" tabindex="-2"
-        .modal-dialog
-          .row.modal-content
-            .modal-header
-              button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
-              h4.modal-title Выберите местоположение
-            .row.modal-body
-              .btn-group data-toggle="buttons"
-                - @regions.each do |region|
-                  .row.col-sm-12
-                    = region.title
-                  - Location.children_of(region.id).each do |city|
-                    label.btn.btn-default type="button"
-                      input type="checkbox" name="city_id[]" value="#{city.id}" class="region" =city.title   =city.title
-                p
-            .modal-footer
-              span.pull-left
-                span.small для уточнений:
-                a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
-              button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-              button.btn.btn-primary onclick="select_region('checkbox');"  type="button"  Выбрать
-    .btn-group.btn-group
-      #city-select-button.button.btn.btn-default data-target=".bs-example-modal-lg" data-toggle="modal"
-        | Выберите район
-        i.caret
-      #city-select-modal.modal.fade.bs-example-modal-lg aria-hidden="true" aria-labelledby="myLargeModalLabel" role="dialog" tabindex="-1"
-        .modal-dialog
-          .row.modal-content
-            .modal-header
-              button.close aria-hidden="true" data-dismiss="modal" type="button"  &times;
-              h4.modal-title Выберите местоположение
-            #cities-list.row.modal-body
-            .modal-footer
-              span.pull-left
-                span.small для уточнений:
-                a.btn.btn-link.btn-sm href="mailto:mesto@multilisting.su"  mesto@multilisting.su
-              button.btn.btn-default data-dismiss="modal" type="button"  Отмена
-              button.btn.btn-primary.SelectDistrict mv='city-select-modal'  type="button"  Выбрать
-      button.btn.btn-default type="button"
-        span.fa.fa-times
+      = render partial: 'advertisements/select_location', locals: { id: 0, multi: 'checkbox' }
+      .modal-form-here
+        = render 'advertisements/modal_select_location', locations: @regions
   .row-fluid
     .form.form-group.form-inline
       label for="exampleInputEmail2"  цена

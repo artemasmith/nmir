@@ -1,0 +1,9 @@
+- if can_delete
+  .check-button.btn-group  name="#{type}" lid="#{id}" data-toggle="buttons"
+    label.btn.active.btn-default  type="button"
+      input.location-button type="#{multi}" name="#{type}" value="#{id}" class="#{cls}" checked="true" =title
+    .btn.btn-default.DeleteElem lid="#{id}" multi="#{multi}"
+      i.fa.fa-times
+-else
+  label.btn.btn-default name="#{type}"  type="button"
+    input.location-button type="#{multi}" name="#{type}" value="#{id}" class="#{cls}" =title

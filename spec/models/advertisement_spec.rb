@@ -7,6 +7,7 @@
 #  property_type            :integer          not null
 #  category                 :integer          not null
 #  agent_category           :integer
+#  currency                 :integer
 #  distance                 :integer
 #  time_on_transport        :integer
 #  time_on_foot             :integer
