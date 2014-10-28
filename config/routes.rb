@@ -1,22 +1,22 @@
 Rails.application.routes.draw do
 
-  resources :locations, only: [:index, :show]
   resources :photos
   resources :advertisements, :path => 'entity' do
     collection do
-      match 'search', via: [:get, :post]
       get 'get_attributes'
       get 'check_phone'
       get 'get_locations'
-      get 'add_child_locations'
     end
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'
+  match '/' => 'advertisements#index', via: [:get, :post]
   devise_for :users
 
   namespace :api do
     resources :advertisements, :path => '/entity'
   end
+
+  get '/:url', :to => "advertisements#index", :constraints => { :url => /.*/ }
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

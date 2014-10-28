@@ -1,9 +1,8 @@
 module SectionGenerator
-  def self.by_offer_category(offer_type, category, location, loc_chain_url)
-    url = "#{loc_chain_url}/#{chain_url([offer_type, category])}"
-    STDERR.puts url
+  def self.by_offer_category(offer_type, category, location, loc_chain_url, loc_chain_title)
+    url = "/#{loc_chain_url}/#{chain_url([offer_type, category])}"
     Section.create_with(
-      url: url
+        generate_attributes(url, offer_type, category, nil, loc_chain_title)
     )
     .find_or_create_by(
       offer_type: Section.offer_types[offer_type], 
@@ -12,12 +11,10 @@ module SectionGenerator
     ).increment!(:advertisements_count)
   end
 
-  def self.by_property_offer(property_type, offer_type, location, loc_chain_url)
-    url = "#{loc_chain_url}/#{chain_url([offer_type, property_type])}"
-
-    STDERR.puts url
+  def self.by_property_offer(property_type, offer_type, location, loc_chain_url, loc_chain_title)
+    url = "/#{loc_chain_url}/#{chain_url([offer_type, property_type])}"
     Section.create_with(
-      url: url
+        generate_attributes(url, offer_type, nil, property_type, loc_chain_title)
     )
     .find_or_create_by(
       property_type: Section.property_types[property_type], 
@@ -26,20 +23,25 @@ module SectionGenerator
     ).increment!(:advertisements_count)
   end
 
-  def self.by_location(location, loc_chain_url)
-    STDERR.puts loc_chain_url
-
-
+  def self.by_location(location, loc_chain_url, loc_chain_title)
+    url = "/#{loc_chain_url}"
     Section.create_with(
-      url: loc_chain_url
+        generate_attributes(url, nil, nil, nil, loc_chain_title)
     )
     .find_or_create_by(location_id: location.id, offer_type: nil, property_type: nil, category: nil ).increment!(:advertisements_count)
   end
 
-  def self.chain_url(locations)
+  def self.empty
+    Section.create_with(
+        url: '/'
+    )
+    .find_or_create_by(location_id:  nil, offer_type: nil, property_type: nil, category: nil ).increment!(:advertisements_count)
+  end
+
+  def self.chain_url(params)
     url = []
-    locations.each do |loc|
-      url << loc.parameterize
+    params.each do |param|
+      url << param.parameterize
     end
 
     if url.empty?
@@ -49,15 +51,56 @@ module SectionGenerator
     end
   end
 
+  def self.generate_attributes(url, offer_type, category, property_type, loc_chain_title)
+    {
+        url: url,
+        description: generate_description(offer_type, category, property_type, loc_chain_title),
+        keywords: generate_keywords(offer_type, category, property_type, loc_chain_title),
+        title: generate_title(offer_type, category, property_type, loc_chain_title),
+        p: nil,
+        h1: generate_title(offer_type, category, property_type, loc_chain_title),
+        h2: nil,
+        h3: nil
+    }
+  end
+
+  def self.generate_title(offer_type, category, property_type, loc_chain_title)
+    if(offer_type && category)
+      return "#{enum_title(offer_type)} #{enum_title(category)} #{loc_chain_title}"
+    elsif(offer_type && property_type)
+      return "#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость #{loc_chain_title}"
+    elsif(offer_type.blank? && property_type.blank? && category.blank?)
+      return "Недвижимость #{loc_chain_title}"
+    end
+  end
+
+  def self.generate_keywords(offer_type, category, property_type, loc_chain_title)
+    if(offer_type && category)
+      return "#{enum_title(offer_type)} #{enum_title(category)}, #{loc_chain_title}"
+    elsif(offer_type && property_type)
+      return "#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость, #{loc_chain_title}"
+    elsif(offer_type.blank? && property_type.blank? && category.blank?)
+      return "Недвижимость, #{loc_chain_title}"
+    end
+  end
+
+  def self.generate_description(offer_type, category, property_type, loc_chain_title)
+    if(offer_type && category)
+      return "#{loc_chain_title} #{enum_title(offer_type)} #{enum_title(category)}"
+    elsif(offer_type && property_type)
+      return "#{loc_chain_title} #{enum_title(offer_type)} #{enum_title(property_type)} недвижимость"
+    elsif(offer_type.blank? && property_type.blank? && category.blank?)
+      return "#{loc_chain_title} недвижимость"
+    end
+  end
+
   # returns translated enum value 
   def self.enum_title(type)
     I18n.t("activerecord.attributes.section.enum_title.#{type}")
   end
-
-
   
   # returns translated & translited enum value
   def self.enum_url(type)
-    Russian::translit Section.enum_title(type)
+    Russian::translit enum_title(type)
   end
 end

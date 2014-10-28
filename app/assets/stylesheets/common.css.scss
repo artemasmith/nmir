@@ -1,6 +1,29 @@
-// Place all the styles related to the Common controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.popover {
+  max-width: 600px;
+  width: auto;
+}
+
+.location-group {
+  display: inline-block;
+}
+
+#reg-phones i.glyphicon{
+  margin-right: 40px;
+}
+
+.row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.adv_item{
+  margin-top: 2px; background-color: ghostwhite; padding-top: 10px;
+}
+
+.adv_item.adv_item_even {
+  background-color: ivory;
+}
+
 
 
 

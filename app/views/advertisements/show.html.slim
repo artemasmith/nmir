@@ -1,8 +1,15 @@
-h1 = @adv.title
+= content_for :title
+  = @adv.title
+= content_for :meta
+  meta name="description" content=@adv.description
+  meta name="keywords" content=@adv.keywords
+h1 = @adv.h1
 ol.breadcrumb
-  - @adv.locations.each do |_, v|
-    li
-      a = v.title
+  - @sorted_locations.each do |location|
+    - section = @sections.find {|section| section.location_id == location.id}
+    - if section.present?
+      li
+        = link_to location.title, section.url
   li.active
     span
       = "Объявление № #{@adv.id}"
@@ -43,16 +50,17 @@ ol.breadcrumb
         | добавить в блокнот
   - if @photos.present?
     .col-xs-12.col-lg-7.pull-right.clearfix
-      = image_tag @photos.first.advertisement_photo, class: 'img-responsive'
-      p.text-center
+      = image_tag @photos.first.advertisement_photo, class: 'img-responsive first_photo_img_action', style: 'width: 600px; height: 400px;'
+      p.text-center.first_photo_comment_action
         = @photos.first.comment
       - @photos.each do |photo|
-        = image_tag photo.advertisement_photo, class: 'col-xs-2 thumbnail'
+        a.show_photo_action href="#" full_scr=photo.advertisement_photo comment=photo.comment
+          = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail'
   .col-lg-5.clearfix
-    - if @adv.comment.present?
-      p
-        = @adv.comment
+    p
+      = @adv.comment
     - @grouped_allowed_attributes.each do |group|
+      - next if group[0] == 'comment'
       - attr_from = group[0]
       - attr_to = group[1]
       - value_from = @adv.send(attr_from)
@@ -63,10 +71,10 @@ ol.breadcrumb
             = t("advertisement.attributes.#{attr_from}")
           | :
           - if value_from.present?
+            '
             - if value_to.present?
-            '
-            | от
-            '
+              | от
+              '
             span.lead
               = value_from
             '
@@ -93,5 +101,13 @@ ol.breadcrumb
   - if @adv.latitude.present? && @adv.longitude.present?
     .col-lg-8.clearfix
       #map style="width: auto; height: 400px" data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable=true
+  - if @near_sections.present? || @search_results.present?
+    p.h4.col-sm-12
+      | Больше вариантов недвижимости:
+      '
+      - @near_sections.each do |near_section|
+        = link_to near_section.title, near_section.url, class: 'btn btn-default btn-xs'
+    = render 'advertisements/search_results'
+
 
 

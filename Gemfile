@@ -20,13 +20,14 @@ gem 'rails_admin'
 #sphinx
 gem 'mysql2'
 gem 'thinking-sphinx'
+gem 'ts-datetime-delta', :require => 'thinking_sphinx/deltas/datetime_delta'
 gem 'joiner', '0.3.1'
 #gem 'will_paginate'
 gem 'sanitize-rails', require: 'sanitize/rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-gem 'jquery-ui-rails'
+# gem 'jquery-ui-rails'
 gem 'nested_form'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -95,4 +96,8 @@ gem 'jquery-fileupload-rails'
 
 #Generates javascript file that defines all Rails named routes as javascript helpers
 gem "js-routes"
+
+gem "nokogiri"
+
+
 

@@ -23,8 +23,6 @@ module AdvEnums
 
   PROPERTY_TYPES = [:commerce, :residental]
 
-  CURRENCIES = [:RUR, :RUB]
-
   STATUSES = [:active, :expired]
 
 

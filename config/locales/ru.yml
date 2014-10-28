@@ -319,7 +319,7 @@ ru:
       private_comment: 'Скрытый комментарий'
     offer:
       buy: 'куплю'
-      sale: 'продажы'
+      sale: 'продажа'
       rent: 'сниму'
       for_rent: 'аренда'
       day: 'посуточно'

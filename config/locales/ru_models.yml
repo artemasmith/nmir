@@ -18,6 +18,34 @@ ru:
 
         enum_title:
           # offer_type
+          sale: продажа
+          rent: сдача
+          for_rent: аренда
+          day: посуточно аренда
+          buy: покупка
+
+          #category
+          newbuild: новостроек
+          flat: квартир
+          house: домов
+          ijs: участков
+          room: комнат
+          garage: гаражей
+          office: офисов
+          trade: для торговли
+          storage: под склад
+          cafe: кафе
+          land: земли
+          free_appointment: общего назначения
+
+          #property_type
+          residental: жилой недвижимости
+          commerce: нежилой недвижимости
+
+      advertisement:
+
+        enum_title:
+          # offer_type
           sale: продам
           rent: сниму
           for_rent: сдаю

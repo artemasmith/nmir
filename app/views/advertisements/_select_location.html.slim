@@ -3,8 +3,7 @@
     i.fa.fa-map-marker.fa-lg
     | место
 
-    .all-selected-locations
-
-    .location-select-button.button.btn.btn-default.GetChildren lid="#{id}" multi="#{multi}"
-      | Выберите местоположение
-      i.caret
+    .location-group multi="#{multi}"
+      .button.btn.btn-default.GetChildren lid="#{id}" multi="#{multi}" data-toggle="dropdown"
+        | Местоположение
+        i.caret

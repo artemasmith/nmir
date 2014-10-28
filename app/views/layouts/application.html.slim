@@ -2,7 +2,14 @@ doctype html
 html
   head
     title
-      | Multilisting
+      - if content_for?(:title)
+        = yield :title
+      - else
+        | Multilisting
+
+    - if content_for?(:meta)
+      = yield :meta
+
     meta charset="utf-8" 
     meta content="IE=edge" http-equiv="X-UA-Compatible"
     meta content="width=device-width, initial-scale=1" name="viewport"

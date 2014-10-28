@@ -3,11 +3,12 @@ legend Местоположение
   .form-group
     label.col-sm-3.control-label
       i.fa.fa-map-marker.fa-lg
+      '
       | место
     .col-sm-9.form.form-horizontal
       span.button-toolbar
-        .all-selected-locations
-
-        .location-select-button.button.btn.btn-default.GetChildren lid="#{id}" multi="#{multi}"
-          | Выберите местоположение
-          i.caret
+        .location-group multi="#{multi}" state="#{@location_state}"
+          .button.btn.btn-default.GetChildren lid="#{id}" data-toggle="dropdown"
+            | Выбрать
+            '
+            i.caret

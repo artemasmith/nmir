@@ -32,6 +32,10 @@ class Location < ActiveRecord::Base
 
 
 
+  def self.locations_list
+    %w(region district city admin_area non_admin_area street address landmark)
+  end
+
 
 
 
@@ -55,12 +59,16 @@ class Location < ActiveRecord::Base
 
   # recursively collect all parent location nodes and return them in array
   def self.parent_locations(l, memo = [])
+    memo << l
     if l.parent_location
-      memo << l.parent_location
       Location.parent_locations(l.parent_location, memo)
     else
       return memo
     end
+  end
+
+  def has_children?
+    children_locations.count > 0
   end
 
   #parent - title or id of parent location
@@ -101,17 +109,6 @@ class Location < ActiveRecord::Base
         self.sublocations_for_city.where(location_type: 5)
       else
         raise "Type error"
-    end
-  end
-
-  def self.group_location(elem, array, res)
-    res << elem if !res.include?(elem)
-    children=[]
-    array.each do |el|
-      children << el if el.parent_location == elem
-    end
-    children.each do |child|
-      group_location(child, array, res)
     end
   end
 

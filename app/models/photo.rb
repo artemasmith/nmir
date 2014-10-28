@@ -15,7 +15,7 @@
 
 class Photo < ActiveRecord::Base
   belongs_to :advertisement
-  has_attached_file :advertisement_photo, :styles => { :medium => "800x600>", :thumb => "200x150>" }, :default_url => "/images/:style/missing.png"
+  has_attached_file :advertisement_photo, :styles => { :medium => "1024x720", :thumb => "168x104" }, :default_url => "/images/:style/missing.png"
   validates_attachment_content_type :advertisement_photo, :content_type => /\Aimage\/.*\Z/
 
   include Rails.application.routes.url_helpers
@@ -27,7 +27,8 @@ class Photo < ActiveRecord::Base
         'url' => advertisement_photo.url,
         'size' => advertisement_photo.size,
         'delete_url' => photo_path(id: id),
-        'delete_type' => 'DELETE'
+        'delete_type' => 'DELETE',
+        'id' => id
     }
   end
 end
