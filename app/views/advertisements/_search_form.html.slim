@@ -1,4 +1,4 @@
-.well
+.well.well-sm
   = form_tag root_path, method: :get, class: 'form form-inline', role:'form'
     .row
       span.h2
@@ -38,7 +38,7 @@
       .input-prepend.input-group
         span.add-on.input-group-addon
           i.glyphicon.glyphicon-calendar.fa.fa-calendar
-        input.range_date_picker_action.form-control name="advertisement[date_interval]" type="text" value=(params[:advertisement][:date_interval].presence || "#{(DateTime.now - 7.days).strftime('%d/%m/%Y')} - #{DateTime.now.strftime('%d/%m/%Y')}")
+        input.range_date_picker_action.form-control name="advertisement[date_interval]" type="text" value=params[:advertisement][:date_interval].presence
 
     .row
       label.control-label
@@ -48,7 +48,7 @@
       '
       .btn-group data-toggle="buttons"
         - [:flat, :newbuild, :house, :ijs, :room, :garage].each do |category|
-          - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s)
+          - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.residental?)
           label.btn.btn-default class="#{'active' if active}"
             input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     .row
@@ -59,7 +59,7 @@
       '
       .btn-group data-toggle="buttons"
         - [:office, :trade, :storage, :cafe, :land, :free_appointment].each do |category|
-          - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s)
+          - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
           label.btn.btn-default class="#{'active' if active}"
             input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     .row

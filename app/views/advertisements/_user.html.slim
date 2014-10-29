@@ -1,4 +1,4 @@
-- if can?(:create_from_admin, @adv)
+- if can?(:create_from_admin, @adv) && @adv.new_record?
   .user-params
     legend Контакт
     .form.form-horizontal role="form"

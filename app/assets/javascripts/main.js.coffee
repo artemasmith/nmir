@@ -60,7 +60,7 @@
 
   create_map = (center)->
       start = null
-      map = new ymaps.Map("map"
+      window.map = new ymaps.Map("map"
         center: center
         zoom: 12
       )
@@ -98,13 +98,14 @@
 
 
 @check_phones = ->
-  phones = $('input[name*="[original]"]').map( ->
-    $(this).val()).get().join(',')
-  if phones.length is 0
+  name = $('input[name="advertisement[user_attributes][name]"]').val()
+  phones = $.grep($('input[name*="[original]"]').map( -> $.trim($(this).val()) ).get(), (n) -> n).join(',')
+
+  if phones.length is 0 or name.length is 0
     $(".top-right").notify(
       type: "danger"
       message:
-        text: "Необходимо заполнить хоть один номер телефона"
+        text: "Необходимо заполнить имя и хоть один номер телефона"
       fadeOut:
         delay: 5000
     ).show()
@@ -224,7 +225,7 @@ $('.ShowAdvPhone').livequery ->
       dataType: 'json'
     ).done (data)->
       span =
-        $this.replaceWith("<span>#{data.name} #{data.phone}</span>")
+        $this.replaceWith("<span>#{data.phone}</span>")
       return
     .error ->
       $(".top-right").notify(
@@ -298,6 +299,32 @@ $('.range_date_picker_action').livequery ->
       locale: 'ru'
     }
   )
+
+$('.use_user_action').livequery ->
+  $(this).click ->
+    $('.adv-params').removeClass('hidden');
+    $('.user-params').addClass('hidden');
+    $('#dublicate_modal').modal('hide');
+$('.new_entity_action').livequery ->
+  $(this).click ->
+    location.href = Routes.new_advertisement_path()
+
+$('.SelectLocation, .DelChildren').livequery ->
+  $(this).click ->
+    position = $.grep($("div:not(.SelectLocation)[lid]").map(->
+        $.trim $(this).text()
+    ), (n) ->
+        n isnt "Выбрать" and n
+    ).join " "
+    if position and window.map
+      ymaps.geocode(position).then (res) ->
+        first = res.geoObjects.get(0)
+        if first
+          center = first.geometry.getCoordinates()
+          map.panTo(center)
+          return
+
+
 
 
 

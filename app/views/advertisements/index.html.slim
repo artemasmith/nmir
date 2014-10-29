@@ -7,29 +7,23 @@
       meta name="description" content=@root_section.description
       meta name="keywords" content=@root_section.keywords
 = render 'advertisements/neighbors', locale: { neighbors: @neigbors } if @neighbors.present?
-.jumbotron
-  h1
-    i.fa.fa-database
-    '
-    - if @root_section.present? && @root_section.h1.present?
-      = @root_section.h1
-  p.lead
-    | Ежедневные поступления от собственников и риэлторов.
-  p
-    = link_to render_html_tag(tag: 'i', class: 'fa fa-plus fa-lg', text: 'Добавить объявление'), new_advertisement_path, class: 'btn btn-primary btn-lg'
 = render 'advertisements/search_form'
-.well.well-sm.clearfix
-  span
-    i.fa.fa-list.fa-lg
-    '
-    | Найдено
-    '
-    b = @search_result_count
-    '
-    = Russian.p(@search_result_count.to_i, "объявление", "объявления", "объявлений")
-    '
-    | недвижимости
 
+.well.well-sm
+  - if @root_section.present?
+    - if @root_section.h1.present?
+      h1 style="margin: 0em; font-size: 1.8em"
+        == @root_section.h1
+    - if @root_section.p.present?
+      p
+        == @root_section.p
   = render 'advertisements/search_results'
+  - if @root_section.present?
+    - if @root_section.h2.present?
+      h2 style="margin: 0em; font-size: 1.8em"
+        == @root_section.h2
+    - if @root_section.p2.present?
+      p
+        == @root_section.p2
   = render 'shared/pagination', :pages => @pages, :current_page => params[:page].to_i, :url_path => method(:root_path), :url_params => params
 

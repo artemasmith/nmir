@@ -58,6 +58,7 @@ module SectionGenerator
         keywords: generate_keywords(offer_type, category, property_type, loc_chain_title),
         title: generate_title(offer_type, category, property_type, loc_chain_title),
         p: nil,
+        p2: nil,
         h1: generate_title(offer_type, category, property_type, loc_chain_title),
         h2: nil,
         h3: nil

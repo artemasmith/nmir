@@ -36,9 +36,9 @@ module AdvGenerator
           AdvGenerator.enum_title(self.offer_type),
           AdvGenerator.enum_text(self, :room, 'к'), #без пробела
           AdvGenerator.enum_title(self.category),
-          AdvGenerator.enum_text(self, :space, 'м²'),
-          AdvGenerator.enum_text(self, :outdoors_space, 'сот'), #todo участок 10 сот, доваить этаж и этажность
-          self.locations_title # убрать
+          AdvGenerator.enum_text(self, :space, ' м²'),
+          AdvGenerator.enum_text(self, :floor, ' этаж'),
+          AdvGenerator.enum_text(self, :floor_cnt, ' этажей')
       ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.anchor.present?
 
       self.title = [
@@ -76,13 +76,13 @@ module AdvGenerator
     end
   end
 
-  def self.enum_text(adv, attr, units)
+  def self.enum_text(adv, attr, units, prefix = nil)
     value_from = adv.send("#{attr}_from".to_sym)
     value_to = adv.send("#{attr}_to".to_sym)
     if value_from.present? && value_to.present?
-      "от #{value_from} до #{value_to} #{units}"
+      "#{prefix}от #{value_from} до #{value_to}#{units}"
     elsif value_from.present?
-      "#{value_from} #{units}"
+      "#{prefix}#{value_from}#{units}"
     else
       nil
     end

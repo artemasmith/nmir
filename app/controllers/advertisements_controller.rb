@@ -1,7 +1,7 @@
 class AdvertisementsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :set_location, except: [:new, :create]
-  before_action :find_adv, only: [:show, :edit]
+  before_action :find_adv, only: [:show, :edit, :update]
 
 
   def index
@@ -12,6 +12,9 @@ class AdvertisementsController < ApplicationController
       offer_type = search_params[:offer_type].first if search_params[:offer_type].present? && search_params[:offer_type].size == 1
       category = search_params[:category].first if search_params[:category].present? && search_params[:category].size == 1
 
+      property_type = AdvEnums::PROPERTY_TYPES.index(:residental) if search_params[:category].present? && ('0'..'5').to_a.sort == search_params[:category].sort
+      property_type = AdvEnums::PROPERTY_TYPES.index(:commerce) if search_params[:category].present? && ('6'..'11').to_a.sort == search_params[:category].sort
+
       load_location_state!()
 
       child_location_ids = []
@@ -20,12 +23,12 @@ class AdvertisementsController < ApplicationController
       end
 
       location_id = child_location_ids.first if child_location_ids.size == 1
-      @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: nil).first
+      @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first
 
       if @section.present?
         if @section.url != '/'
           [:action, :controller].each { |m| params.delete(m) }
-          [:offer_type, :category, :location_ids].each { |m| params[:advertisement].delete(m) }
+          [:offer_type, :category, :location_ids, :property_type].each { |m| params[:advertisement].delete(m) }
 
           redirect_to "#{@section.url}?#{Rack::Utils.build_nested_query(params)}" and return
         end
@@ -60,6 +63,7 @@ class AdvertisementsController < ApplicationController
       [:offer_type, :category].each do |m|
         with[m] =  [@section.attributes[m.to_s]] if @section.attributes[m.to_s].present?
       end
+      with[:property_type] =  AdvEnums::PROPERTY_TYPES.index(@section.property_type.to_sym) if @section.property_type.present?
     else
       [:offer_type, :category].each do |m|
         with[m] = search_params[m].map{|e| e.to_i} if search_params[m].present?
@@ -149,8 +153,8 @@ class AdvertisementsController < ApplicationController
   end
 
   def edit
-    @adv = Advertisement.find(params[:id])
     @grouped_allowed_attributes = @adv.grouped_allowed_attributes
+    load_location_state!(@adv.locations)
   end
 
   def new
@@ -164,11 +168,12 @@ class AdvertisementsController < ApplicationController
 
   def create
     if can? :create_from_admin, Advertisement
-      if advertisement_params[:user_id].blank?
+      user = Phone.where(number: advertisement_params[:user_attributes][:phones_attributes].map{|_, e| Phone.normalize(e[:original])}).first.try :user
+      if user.blank?
         @adv = Advertisement.new advertisement_params
         @adv.user.from_admin = true
       else
-        @adv = User.find(advertisement_params[:user_id].to_i).advertisements.new advertisement_params
+        @adv = user.advertisements.new advertisement_params
       end
     else
       @adv = current_user.advertisements.new advertisement_params
@@ -182,6 +187,17 @@ class AdvertisementsController < ApplicationController
       @save_with_errors = true and render 'advertisements/new'
     end
   end
+
+  def update
+    if @adv.update_attributes(advertisement_params)
+      redirect_to advertisement_path(@adv)
+    else
+      load_location_state!
+      @grouped_allowed_attributes = @adv.grouped_allowed_attributes
+      @save_with_errors = true and render 'advertisements/form'
+    end
+  end
+
 
   def get_locations
     if params[:parent_id].to_i != 0
@@ -215,9 +231,6 @@ class AdvertisementsController < ApplicationController
       .joins('INNER JOIN "phones" ON "advertisements"."user_id" = "phones"."user_id"')
       .where('phones.number' => params[:phones].split(',').map{|phone| Phone.normalize(phone)})
       .all
-
-    # @search_results = Advertisement.limit(10).all
-    @user_id ||= @search_results.first.try :user_id
   end
 
 
@@ -253,7 +266,7 @@ class AdvertisementsController < ApplicationController
   end
 
   def advertisement_params
-    params.require(:advertisement).permit(:category, :offer_type, :price_from,
+    params.require(:advertisement).permit(:category, :offer_type, :price_from, :landmark,
     :price_to, :not_for_agents, :district, :user_id,
     :floor_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type, :latitude, :longitude,
     :property_type, :floor_cnt_from, :space_from, :floor_max, :mortgage, adv_type: [],

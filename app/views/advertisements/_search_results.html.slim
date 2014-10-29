@@ -1,36 +1,44 @@
-- @search_results.each_with_index do |adv, index|
-  .col-xs-12.media.adv_item class="#{'adv_item_even' if index % 2 == 0}"
-    p.col-xs-12.col-md-1
-      span.text-muted.small
+ul style="padding: 0px"
+  - @search_results.each_with_index do |adv, index|
+    li.media.adv_item class="#{'adv_item_even' if index % 2 == 0}"
+      span.col-xs-12.col-md-1.text-muted.small
         = Russian::strftime adv.created_at.to_date
-      span
         a.btn-link href="#"
           i.fa.fa-star-o.fa-lg
         '
         a.btn-link href=edit_advertisement_path(adv)
           i.fa.fa-edit.fa-lg
-    .media-object.pull-left style="width: 168px; height: 104px;"
-      - if adv.preview_url.present?
-        a href="#{advertisement_path(adv)}_#{adv.url}"
-          img.col-xs-12 src=adv.preview_url  alt=adv.preview_alt
-    .media-body.col-md-6.col-lg-5.col-sm-8.pull-left
-      h4.media-heading
-        a href="#{advertisement_path(adv)}_#{adv.url}"
-          = adv.anchor
-      p
-        = adv.price_from
-        - if adv.price_to.present?
-          '
-          | -
-          '
-          = adv.price_to
+
+      .media-object.pull-left style="width: 168px; height: 104px;"
+        - if adv.preview_url.present?
+          a href="#{advertisement_path(adv)}_#{adv.url}"
+            img.col-xs-12 src=adv.preview_url  alt=adv.preview_alt
+
+      span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
+        span.h4.media-heading
+          a href="#{advertisement_path(adv)}_#{adv.url}"
+            = adv.anchor
+            br
+            span style="color: #333333;"
+              span.lead
+                = adv.price_from
+                - if adv.price_to.present?
+                  '
+                  | -
+                  '
+                  = adv.price_to
+                '
+              i.fa.fa-rub
+              br
+              = adv.locations_title
+      span.h5.media-heading.col-xs-12.col-md-2.col-lg-3
+        i.fa.fa-cube
         '
-        i.fa.fa-rub
-      p.h5
-        = adv.locations_title
-    p.col-xs-12.col-md-2.col-lg-3
-      button.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
-        i.fa.fa-phone.fa-lg
-        '
-        | показать телефон
+        = adv.name
+        br
+        a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
+          | показать телефон
+
+
+
 

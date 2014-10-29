@@ -12,7 +12,6 @@ h1
     = f.hidden_field :property_type, class: 'property-type-value'
     = f.hidden_field :latitude, class: 'latitude-value'
     = f.hidden_field :longitude, class: 'longitude-value'
-    = f.hidden_field :user_id, value: '', class: 'user-id'
     = render '/advertisements/user', f: f
     .adv-params class="#{(can?(:create_from_admin, @adv) && !@save_with_errors && @adv.new_record?)  ? 'hidden' : ''}"
       legend Раздел
@@ -38,5 +37,5 @@ h1
       = render '/advertisements/photos', f: f
       .fields
         .form.form-horizontal
-          = f.submit 'Создать', class: 'btn btn-primary'
+          = f.submit "#{@adv.new_record? ? 'Создать' : 'Обновить'}", class: 'btn btn-primary'
 

@@ -3,7 +3,8 @@
 = content_for :meta
   meta name="description" content=@adv.description
   meta name="keywords" content=@adv.keywords
-h1 = @adv.h1
+h1
+  = @adv.h1
 ol.breadcrumb
   - @sorted_locations.each do |location|
     - section = @sections.find {|section| section.location_id == location.id}
@@ -102,12 +103,14 @@ ol.breadcrumb
     .col-lg-8.clearfix
       #map style="width: auto; height: 400px" data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable=true
   - if @near_sections.present? || @search_results.present?
-    p.h4.col-sm-12
-      | Больше вариантов недвижимости:
-      '
-      - @near_sections.each do |near_section|
-        = link_to near_section.title, near_section.url, class: 'btn btn-default btn-xs'
-    = render 'advertisements/search_results'
+    .col-sm-12
+      p.h4
+        | Больше вариантов недвижимости:
+        '
+        - @near_sections.each do |near_section|
+          = link_to near_section.title, near_section.url, class: 'btn btn-default btn-xs'
+          '
+      = render 'advertisements/search_results'
 
 
 

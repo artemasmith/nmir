@@ -1,4 +1,4 @@
-.modal#mymodal
+.modal#dublicate_modal
   .modal-dialog.modal-lg
     .modal-content
       .modal-header
@@ -9,5 +9,5 @@
       .modal-body
         = render 'advertisements/search_results'
       .modal-footer
-        button.btn.btn-default data-dismiss="modal" type="button"  Использовать
-        button.btn.btn-primary type="button"  Пропустить
+        button.btn.btn-default.use_user_action type="button"  Использовать
+        button.btn.btn-primary.new_entity_action type="button"  Пропустить

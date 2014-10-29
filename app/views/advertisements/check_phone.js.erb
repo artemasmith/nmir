@@ -1,9 +1,5 @@
-$('.user-id').prop('value', "<%= @user_id %>");
 <% if @search_results.present? %>
     $('<%= j (render('advertisements/form_duplicate')) %>').modal('show');
-    $('#myModal').on('hidden.bs.modal', function (e) {
-        // do something...
-    })
 <% else %>
     $('.adv-params').removeClass('hidden');
     $('.user-params').addClass('hidden');
