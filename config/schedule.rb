@@ -24,6 +24,6 @@ every 1.day, :at => '0:00 am' do
   rake 'advertisement:status'
 end
 
-every 15.minutes do
+every 5.minutes do
   rake 'ts:in:delta'
 end
