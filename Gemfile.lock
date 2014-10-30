@@ -326,7 +326,7 @@ DEPENDENCIES
   spring
   therubyracer
   thinking-sphinx
-  ts-datetime-delta
+  ts-datetime-delta (~> 2.0.0)
   uglifier (>= 1.3.0)
   unicorn
   whenever (~> 0.9.0)

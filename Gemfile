@@ -20,7 +20,8 @@ gem 'rails_admin'
 #sphinx
 gem 'mysql2'
 gem 'thinking-sphinx'
-gem 'ts-datetime-delta', :require => 'thinking_sphinx/deltas/datetime_delta'
+gem 'ts-datetime-delta', '~> 2.0.0',
+    :require => 'thinking_sphinx/deltas/datetime_delta'
 gem 'joiner', '0.3.1'
 #gem 'will_paginate'
 gem 'sanitize-rails', require: 'sanitize/rails'

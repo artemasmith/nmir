@@ -38,6 +38,7 @@ class AdvertisementsController < ApplicationController
 
     else
       @root_section = @section = Section.where(url: "/#{params[:url]}").first
+      raise ActionController::RoutingError if @root_section.blank?
       load_location_state!(@section.present? && @section.location_id ? Location.parent_locations(Location.find(@section.location_id)) : nil)
     end
 
