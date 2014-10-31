@@ -1,107 +1,116 @@
-= form_tag search_advertisements_path, remote: true, class: 'form-inline'
+.well.well-sm
+  = form_tag root_path, method: :get, class: 'form form-inline', role:'form'
+    .row
+      span.h2
+        i.fa.fa-crosshairs.fa-lg
+        '
+        | Удобный поиск точно в цель
+    .row
+      label.control-label
+        i.fa.fa-share.fa-lg
+        '
+        | предложение
+      '
+      .btn-group data-toggle="buttons"
+         - [:sale, :for_rent, :day].each do |offer|
+          - active = ((@section.present? ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
+          label.btn.btn-default class="#{'active' if active}"
+            input type="checkbox" name="advertisement[offer_type][]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" checked=active = t("advertisement.offer.#{offer}")
+      '
+      label.control-label
+        i.fa.fa-reply.fa-lg
+        '
+        | спрос
+      '
+      .btn-group data-toggle="buttons"
+        - [:buy, :rent].each do |offer|
+          - active = ((@section.present? ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
+          label.btn.btn-default class="#{'active' if active}"
+            input type="checkbox" name="advertisement[offer_type][]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" checked=active = t("advertisement.offer.#{offer}")
+      '
+      .btn-group data-toggle="buttons"
+        label.btn.btn-success class="#{('active' if params[:advertisement][:not_for_agents]=='1')}"
+          i.fa.fa-ban.fa-lg
+          '
+          input type="checkbox" name="advertisement[not_for_agents]" value="1" checked=(params[:advertisement][:not_for_agents]=='1')
+            | без агентов
+      '
+      .input-prepend.input-group
+        span.add-on.input-group-addon
+          i.glyphicon.glyphicon-calendar.fa.fa-calendar
+        input.range_date_picker_action.form-control name="advertisement[date_interval]" type="text" value=params[:advertisement][:date_interval].presence
 
-  = hidden_field_tag 'adv_type[]', '', class: 'adv-type-value'
-  = hidden_field_tag 'property_type[]', '', class: 'property-type-value'
-  = hidden_field_tag :region_id,  '', class: 'region-id'
-  = hidden_field_tag :city_id, '', class: 'city-id'
-  = hidden_field_tag :district_id,  '', class: 'district-id'
-  = hidden_field_tag :admin_area_id,  '', class: 'admin_aria-id'
-  = hidden_field_tag :non_admin_area_id,  '', class: 'non_admin_area-id'
-  = hidden_field_tag :street_id,  '', class: 'street-id'
-  = hidden_field_tag :address_id,  '', class: 'address-id'
-  = hidden_field_tag :landmark_id,  '', class: 'landmark-id'
-  .row-fluid
-    label.control-label for="prependedtext"
-      i.fa.fa-share.fa-lg
+    .row
+      label.control-label
+        i.fa.fa-building
+        '
+        | жилая
       '
-      | предложение
-    '
-    .btn-group.queue-one data-toggle="buttons"
-      - [:sale, :for_rent, :day].each do |offer|
-        label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
-          input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
-    '
-    label.control-label for="prependedtext"
-      i.fa.fa-reply.fa-lg
+      .btn-group data-toggle="buttons"
+        - [:flat, :newbuild, :house, :ijs, :room, :garage].each do |category|
+          - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.residental?)
+          label.btn.btn-default class="#{'active' if active}"
+            input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
+    .row
+      label.control-label
+        i.fa.fa-briefcase
+        '
+        | коммерческая
       '
-      | спрос
-    '
-    .btn-group data-toggle="buttons"
-      - [:buy, :rent].each do |offer|
-        label.btn.btn-default.AdvPropertySearch hid="offer" multi="multi" value="#{AdvEnums::OFFER_TYPES.index(offer)}"
-          input type="checkbox" name="offer_type[]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" = t("advertisement.offer.#{offer}")
-  .row-fluid
-    label.control-label for="prependedtext"
-      i.fa.fa-home.fa-lg
+      .btn-group data-toggle="buttons"
+        - [:office, :trade, :storage, :cafe, :land, :free_appointment].each do |category|
+          - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
+          label.btn.btn-default class="#{'active' if active}"
+            input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
+    .row
+      label.control-label
+        i.fa.fa-map-marker.fa-lg
+        '
+        | место
       '
-      | жилая
-    '
-    .btn-group data-toggle="buttons"
-      - [:flat, :newbuild, :house, :ijs, :room, :garage].each do |category|
-        label.btn.btn-default.AdvPropertySearch hid="category" multi="multi" value="#{AdvEnums::CATEGORIES.index(category)}"
-          input type="checkbox" name="category[]" value="#{AdvEnums::CATEGORIES.index(category)}" = t("advertisement.category.#{category}")
+      span.button-toolbar
+        .location-group multi=true state="#{@location_state}"
+          .button.btn.btn-default.GetChildren lid="#{0}" data-toggle="dropdown"
+            i.fa.fa-globe.fa-lg
+            '
+            | выберите местоположение
+            '
+            i.caret
+          - if @root_section.present?
+            - Section.child_for(@root_section.location_id).not_empty.each do |section|
+              = link_to section.title, section.url, class: 'button btn btn-default location_hide_action'
 
-  .row-fluid
-    label.control-label for="prependedtext"
-      i.fa.fa-briefcase.fa-lg
+    .row
+      label
+        i.fa.fa-rouble.fa-lg
+        '
+        | цена
       '
-      | коммерческая
-    '
-    span.btn-group.btn-group data-toggle="buttons"
-      - [:office, :trade, :storage, :cafe, :land, :free_appointment].each do |category|
-        label.btn.btn-default.AdvPropertySearch hid="category" multi="multi" value="#{AdvEnums::CATEGORIES.index(category)}"
-          input type="checkbox" name="category[]" value="#{AdvEnums::CATEGORIES.index(category)}" = t("advertisement.category.#{category}")
+      input.form-control style="width: 110px" placeholder="от" name="advertisement[price_from]" type="text" value=params[:advertisement][:price_from]
+      '
+      label —
+      '
+      input.form-control style="width: 110px" placeholder="до" name="advertisement[price_to]" type="text" value=params[:advertisement][:price_to]
+      '
+      .btn-group data-toggle="buttons"
+        label.btn.btn.btn-default class="#{('active' if params[:advertisement][:mortgage]=='1')}"
+          i.fa.fa-bank
+          '
+          input type="checkbox" name="advertisement[mortgage]" value="1" checked=(params[:advertisement][:mortgage]=='1')
+            | в ипотеку
+      '
 
-  .row-fluid
+      input.form-control placeholder="ключевые слова, № телефона или объявления" style="width: 340px" type="text" name="advertisement[description]" value=params[:advertisement][:description]
+      '
+      button.btn.btn-primary.btn-lg type="submit"
+        i.fa.fa-search.fa-lg
+        '
+        | Найти
 
-    span
-      = render partial: 'advertisements/select_location', locals: { id: 0, multi: 'checkbox' }
-      .modal-form-here
-        = render 'advertisements/modal_select_location', locations: @regions
-  .row-fluid
-    .form.form-group.form-inline
-      label for="exampleInputEmail2"  цена
-      '
-      input#exampleInputEmail2.form-control.input-sm name="price_from" style=("width: 110px")
-      label for="exampleInputPassword2"  &nbsp;—&nbsp;
-      input#exampleInputPassword2.form-control.input-sm name='price_to' style=("width: 110px")
-      '
-      .btn-group
-        .btn-group
-          button#button1id.btn.btn-default.dropdown-toggle.btn-sm data-toggle="dropdown" name="button1id"
-            | за всё
-            span.caret
-          ul.dropdown-menu role="menu"
-            li
-              label.SetHideOne value="m2" hid="space-unit-value"   за м&sup2;
-            li
-              label.SetHideOne value="100" hid="space-unit-value" за сотку
-        .btn-group
-          button#button1id.btn.btn-default.dropdown-toggle.btn-sm data-toggle="dropdown" name="button1id"
-            | в месяц
-            span.caret
-          ul.dropdown-menu role="menu"
-            li
-              label.SetHideOne value="m2" hid="space-unit-value"  за м&sup2;
-            li
-              label.SetHideOne value="100" hid="space-unit-value"  за сотку
-        button#button1id.btn.btn-default.btn-sm data-toggle="buttons" name="button1id"
-          i.fa.fa-bank.fa-lg
-          | в ипотеку
-        button.btn.btn-default.btn-sm data-toggle="buttons"
-          i.fa.fa-minus-circle.fa-lg
-          | без агентов
-        a.btn.btn-default.btn-sm href="http://www.dangrossman.info/2012/08/20/a-date-range-picker-for-twitter-bootstrap/"
-          i.fa.fa-calendar.fa-lg
-          | за всё время
-          span.caret
-  .row
-    .col-md-push-4.col-lg-push-3.col-sm-9.col-md-7.col-lg-6
-      input.form-control
-        p.help-block.small  искать недвижимость по названию улицы, ключевым словам, номеру телефона или объявления
-    .col-md-pull-7.col-lg-pull-6.col-lg-3.col-md-4.col-sm-5.col-xs-8
-      = submit_tag 'Найти', class: 'btn btn-primary btn-lg btn-block'
       a.btn.btn-link.btn-xs
         i.fa.fa-times
         '
-        |очистить
+        | очистить
+
+
+

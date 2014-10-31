@@ -46,6 +46,9 @@ namespace :deploy do
     on roles(:all) do
       execute "cp #{shared_path}/config/database.yml #{release_path}/config/database.yml"
       execute "cp #{shared_path}/config/secrets.yml #{release_path}/config/secrets.yml"
+      execute "cp #{shared_path}/config/thinking_sphinx.yml #{current_path}/config/"
+      execute :ln, '-s', "#{shared_path}", "#{release_path}/db/sphinx"
+      execute :ln, '-s', "#{shared_path}", "#{release_path}/public/system/photos"
     end
   end
 

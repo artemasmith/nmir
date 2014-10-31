@@ -75,9 +75,11 @@
             '
             | Добавить
 
-        /li
-        /  a href="#"
-        /    i.fa.fa-book.fa-lg
-        /    '
-        /    | Блокнот
+        -if @root_section.present?
+          li
+            a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
+              i.fa.fa-tag.fa-lg
+              '
+              | Сео
+
 

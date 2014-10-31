@@ -1,7 +1,10 @@
-//render buttons-location in modal form
-$('.location-select-modal').modal('hide');
-$('.location-select-modal').remove();
+var el = $('.GetChildren[lid="' + <%= j params[:parent_id] %> + '"]');
+el.popover({
+    content: '<%= j render('advertisements/popover_select_location') %>',
+    title: '<%= j @title %>',
+    html: true,
+    placement: 'bottom'
+}).popover("show");
 
-$('.modal-form-here').append('<%= escape_javascript(render partial: "advertisements/modal_select_location", locals: { locations: @children })%>');
-//$('.autocomplete-search-location').autocomplete( 'options', 'source', <%= @children.map{ |l| ["#{l[:title]}", "#{l[:id]}"] } %> );
-$('.location-select-modal').modal('show');
+
+

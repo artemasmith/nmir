@@ -59,19 +59,15 @@
 
 class Advertisement < ActiveRecord::Base
 
-  belongs_to :region,   class_name: 'Location', foreign_key: 'region_id'
-  belongs_to :district, class_name: 'Location', foreign_key: 'district_id'
-  belongs_to :city,     class_name: 'Location', foreign_key: 'city_id'
-  belongs_to :admin_area,   class_name: 'Location', foreign_key: 'admin_area_id'
-  belongs_to :non_admin_area, class_name: 'Location', foreign_key: 'non_admin_area_id'
-  belongs_to :street, class_name: 'Location', foreign_key: 'street_id'
-  belongs_to :address, class_name: 'Location', foreign_key: 'address_id'
-  belongs_to :landmark, class_name: 'Location', foreign_key: 'landmark_id'
   belongs_to :user
   has_many   :photos, :dependent => :destroy
-  accepts_nested_attributes_for :photos, :allow_destroy => true
+  accepts_nested_attributes_for :photos, :allow_destroy => true, :reject_if => :check_photos
+  has_and_belongs_to_many :locations, join_table: 'advertisement_locations'
+
+
   accepts_nested_attributes_for :user
 
+  include AdvGenerator
 
   # validators
   include AdvValidation
@@ -83,14 +79,8 @@ class Advertisement < ActiveRecord::Base
   #rails_admin
   include AdvRailsAdmin
 
-  before_create :set_locations
   before_validation :check_attributes
   after_create :generate_sections
-
-  after_create :set_phone
-
-
-
   
   def grouped_allowed_attributes
     return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)
@@ -125,24 +115,6 @@ class Advertisement < ActiveRecord::Base
 
 
 
-  def locations
-    HashWithIndifferentAccess.new({
-      region: region,
-      district: district,
-      city: city,
-      admin_area: admin_area,
-      non_admin_area: non_admin_area,
-      street: street,
-      address: address,
-      landmark: landmark
-    }).delete_if {|_, v| v.blank? }
-  end
-
-  def locations_array
-    [region, district, city, admin_area, non_admin_area, street, address, landmark].delete_if do |l|
-      l.blank?
-    end
-  end
 
   def yandex_valid?
     time_now = Time.now
@@ -157,52 +129,54 @@ class Advertisement < ActiveRecord::Base
     end
   end
 
-  def title
-    'объявление'
-  end
-
-  private
-
-  def check_attributes
-    self.name ||= self.comment[0..15]
-    self.currency ||= Advertisement::CURRENCIES[0]
-    if self.user.blank?
-      self.sales_agent ||=  'no agent'
-    else
-      self.sales_agent ||= self.user.name
-      self.phone ||= self.user.phones.map{ |p| p.original }.join(',')
+  def location_ids=(location_ids)
+    return if (location_ids || []).empty?
+    l = Location.where(id: location_ids).all
+    valid = true
+    l.each do |location|
+      valid &&= location.location_id.blank? || l.find{|item| item.id == location.location_id}.present?
     end
-    self.phone = '123' if self.phone.blank?
-  end
-
-
-  # set all location nodes from one, that submited
-  def set_locations
-    self.locations.each do |loc_title, loc|
-      break if loc_title == :region
-
-      location_nodes = Location.parent_locations(loc)
-
-      location_nodes.each do |node|
-        self[ "#{node.location_type}_id" ] = node.id
+    if valid
+      locations.delete_all
+      l.each do |location|
+        locations << location
       end
     end
   end
 
-  def generate_sections
-    locations_chain_url = SectionGenerator.chain_url(locations_array.map(&:title))
 
-    self.locations.each do |loc_title, loc|
-      # find or create by offer_type + category + each location node, setted in this advertisement
-      SectionGenerator.by_offer_category(offer_type, category, loc, locations_chain_url)
 
-      # find or create by property_type + offer_type + each location node, setted in this advertisement
-      SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url)
+  private
 
-      # find or create by location node
-      SectionGenerator.by_location(loc, locations_chain_url)
 
+  def check_attributes
+    if self.user.present?
+      self.phone = self.user.phones.map{ |p| p.original }.join(', ')
+      self.name = self.user.name
     end
+  end
+
+  def locations_chain_array_from(location)
+    ls = self.locations.all
+    result = []
+    while location.present?
+      result << location
+      location_id = location.location_id
+      location = ls.find{|l| l.id == location_id}
+    end
+    result.reverse
+  end
+
+  def generate_sections
+    self.locations.each do |loc|
+      locations_chain_array = locations_chain_array_from(loc)
+      locations_chain_url = SectionGenerator.chain_url(locations_chain_array.map(&:title))
+      locations_chain_title = locations_chain_array.map(&:title).join(' ')
+      SectionGenerator.by_offer_category(offer_type, category, loc, locations_chain_url, locations_chain_title)
+      SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url, locations_chain_title)
+      SectionGenerator.by_location(loc, locations_chain_url, locations_chain_title)
+    end
+    SectionGenerator.empty
   end
 
   def category_conformity
@@ -217,13 +191,13 @@ class Advertisement < ActiveRecord::Base
     end
   end
 
-  def set_phone
-    phones = self.user.phones.map{ |p| p.number }.join(',')
-    Advertisement.find(self.id).update(phone: phones)
+  def check_photos(photo_attr)
+    if photo = Find.find(photo_attr['id'])
+      self.photos << photo
+      return true
+    end
+    return false
   end
-
-
-
 
 end
 

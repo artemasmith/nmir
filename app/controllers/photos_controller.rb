@@ -1,6 +1,18 @@
 class PhotosController < ApplicationController
   layout false
 
+  def index
+    photos = Photo.where(id: params[:ids])
+    json = []
+    photos.each do |photo|
+      json << photo.to_jq_upload
+    end
+    respond_to do |format|
+      format.html { render :json => {files: json}.to_json }
+      format.json { render :json => {files: json}.to_json }
+    end
+  end
+
   def create
     json = []
     photo_params.each do |advertisement_photo|

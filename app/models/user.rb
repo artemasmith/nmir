@@ -28,6 +28,15 @@ class User < ActiveRecord::Base
   has_many :phones, dependent: :destroy
   accepts_nested_attributes_for :phones, allow_destroy: true
   accepts_nested_attributes_for :advertisements
-
+  before_validation :set_params, :on => :create
   enum :role => [:owner, :agent, :admin]
+
+  def set_params
+    o =  [('a'..'z'), ('A'..'Z'), (0..9)].map{|i| i.to_a}.flatten
+    self.email = "#{(0..16).map{ o[rand(o.length)] }.join}@gmail.com" if self.email.blank?
+    self.password = self.password_confirmation = (0..16).map{ o[rand(o.length)] }.join if self.password.blank?
+  end
+
+
+
 end

@@ -5,7 +5,7 @@
           <span>Добавить файлы</span>
       <%= file_field_tag 'advertisement_photo[]', multiple: true%>
     </span>
-    <%= f.fields_for :photos do |f| %>
+
       <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
       <div class="form form-horizontal">
 
@@ -21,7 +21,6 @@
       <!-- The table listing the files available for upload/download -->
       <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
       </table>
-    <% end %>
 </div>
 
 <script>
@@ -64,7 +63,7 @@
     <td class="cancel">{% if (!i) { %}
       <button class="btn btn-warning">
         <i class="icon-ban-circle icon-white"></i>
-        <span>{%=locale.fileupload.cancel%}</span>
+        <span>Отмена</span>
       </button>
       {% } %}</td>
   </tr>
@@ -81,6 +80,7 @@
         <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
         {% } else { %}
         <td class="preview">{% if (file.thumbnail_url) { %}
+          <input type="hidden" name="advertisement[photo_ids][]" value="{%= file.id %}">
           <a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
           {% } %}</td>
         <td class="name">
@@ -117,6 +117,17 @@
                 data.context.find('.progress-bar').css('width',progress + '%').text(progress + '%').attr('aria-valuenow', progress);
             }
         });
+
+        <% if @adv.photos.present? %>
+        $.ajax({
+            url: Routes.photos_path({ids:[<%= (@adv.photos || @adv.photos.build).map(&:id).join(',') %>]}),
+            dataType: 'json',
+            context: $('.fileupload')[0]
+        }).done(function (result) {
+            $(this).fileupload('option', 'done')
+                    .call(this, null, {result: result});
+        });
+        <% end %>
 
 
 

@@ -12,7 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.all
 //= require jquery_nested_form
 //= require bootstrap/modal
 //= require routes
@@ -21,8 +20,16 @@
 //= require vendor/bootstrap-notify
 //= require vendor/bootstrapValidator.min
 //= require vendor/ru_RU
-//= require jquery-fileupload
 
+
+
+//= require jquery-fileupload
+//= require vendor/moment
+//= require vendor/daterangepicker
+
+
+
+//= require extend
 //= require main
 
 

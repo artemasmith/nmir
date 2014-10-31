@@ -1,7 +1,7 @@
 = label_tag name_from, t("advertisement.attributes.#{name_from}"), class:'col-sm-3 control-label'
 .controls
   .col-sm-2
-    = text_field_tag("advertisement[#{name_from}]", value_from, class: 'form-control', type: 'integer', min: 0, placeholder: 0)
+    = text_field_tag("advertisement[#{name_from}]", value_from, class: 'form-control', type: 'integer', min: 0, placeholder: 0, required:AdvValidation::PRESENCE_FIELDS.include?(name_from))
   - if name_to.present?
     .col-sm-2
-      = text_field_tag("advertisement[#{name_to}]", value_to, class: 'form-control', type: 'integer', min: 0, placeholder: 0)
+      = text_field_tag("advertisement[#{name_to}]", value_to, class: 'form-control', type: 'integer', min: 0, placeholder: 0, required:AdvValidation::PRESENCE_FIELDS.include?(name_to))

@@ -1,138 +1,258 @@
 class AdvertisementsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :set_location, except: [:new, :create]
-  before_action :find_adv, only: [:show, :edit]
+  before_action :find_adv, only: [:show, :edit, :update]
+
 
   def index
-    @neighbors = params[:location] ? get_neighbors(params[:location]) : nil
-    @regions = Location.where(location_type: 0)
+
+    params[:advertisement] = {} if params[:advertisement].blank?
+
+    if params[:url].blank?
+      offer_type = search_params[:offer_type].first if search_params[:offer_type].present? && search_params[:offer_type].size == 1
+      category = search_params[:category].first if search_params[:category].present? && search_params[:category].size == 1
+
+      property_type = AdvEnums::PROPERTY_TYPES.index(:residental) if search_params[:category].present? && ('0'..'5').to_a.sort == search_params[:category].sort
+      property_type = AdvEnums::PROPERTY_TYPES.index(:commerce) if search_params[:category].present? && ('6'..'11').to_a.sort == search_params[:category].sort
+
+      load_location_state!()
+
+      child_location_ids = []
+      @locations.each do |m|
+        child_location_ids << m if @locations.find{|n| n.location_id == m.id}.blank?
+      end
+
+      location_id = child_location_ids.first if child_location_ids.size == 1
+      @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first
+
+      if @section.present?
+        if @section.url != '/'
+          [:action, :controller].each { |m| params.delete(m) }
+          [:offer_type, :category, :location_ids, :property_type].each { |m| params[:advertisement].delete(m) }
+
+          redirect_to "#{@section.url}?#{Rack::Utils.build_nested_query(params)}" and return
+        end
+      end
+
+      @root_section = @section.presence || Section.where(offer_type: nil, category: nil, location_id: nil, property_type: nil).first
+
+    else
+      @root_section = @section = Section.where(url: "/#{params[:url]}").first
+      raise ActionController::RoutingError if @root_section.blank?
+      load_location_state!(@section.present? && @section.location_id ? Location.parent_locations(Location.find(@section.location_id)) : nil)
+    end
+
+    @neighbors = nil
+
+    with = {}
+    conditions = {}
+    options = {
+        :conditions => conditions,
+        :with => with,
+        :order => 'updated_at DESC',
+        :classes => [Advertisement]
+    }
+
+    @limit = (params[:per_page].presence || 10).to_i
+
+    params[:page] ||= 1
+    options[:page] = (params[:page] || 1).to_i
+    options[:per_page] = @limit
+
+
+    if @section.present?
+      [:offer_type, :category].each do |m|
+        with[m] =  [@section.attributes[m.to_s]] if @section.attributes[m.to_s].present?
+      end
+      with[:property_type] =  AdvEnums::PROPERTY_TYPES.index(@section.property_type.to_sym) if @section.property_type.present?
+    else
+      [:offer_type, :category].each do |m|
+        with[m] = search_params[m].map{|e| e.to_i} if search_params[m].present?
+      end
+    end
+
+
+    [:price].each do |m|
+      if search_params["#{m}_from"].present?
+        from = search_params["#{m}_from"].to_i
+        to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_i : 999999999
+        from, to = to, from if to < from
+        with["#{m}_from"] = from..to
+        with["#{m}_to"] = from..to if search_params["#{m}_to"].present?
+      end
+    end
+
+    [:not_for_agents, :mortgage].each do |m|
+      with[m] = search_params[m] == '1' if search_params[m].present?
+    end
+
+    if search_params[:date_interval].present?
+      date_from = (Date.parse(search_params[:date_interval].split('-').first.strip) - 1.day) rescue (DateTime.now - 1.day).to_date
+      date_to = (Date.parse(search_params[:date_interval].split('-').last.strip) + 1.day) rescue (DateTime.now + 1.day).to_date
+      date_from, date_to = date_to, date_from if date_to < date_from
+      with[:updated_at] = date_from .. date_to
+    end
+
+    with[:location_ids] = @locations.map{|l| l.id}
+    @search_result_ids = ThinkingSphinx.search_for_ids(search_params[:description].presence, options)
+    @search_result_count = @search_result_ids.total_entries
+    @pages = (@search_result_count.to_f / @limit.to_f).ceil
+    @search_results = Advertisement.where(id: @search_result_ids).order('updated_at DESC')
   end
 
   def show
+    @sections = Section.where(location_id: @adv.location_ids).
+        where(offer_type: Section.offer_types[@adv.offer_type]).
+        where(category: Section.categories[@adv.category])
     @photos = @adv.photos
     @today_counter, @all_days_counter = AdvertisementCounter.get_and_increase_count_for_adv(@adv.id)
     @grouped_allowed_attributes =  @adv.grouped_allowed_attributes
+    @sorted_locations = @adv.locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}
+
+    with = {}
+    conditions = {}
+    options = {
+        :conditions => conditions,
+        :with => with,
+        :order => 'updated_at DESC',
+        :classes => [Advertisement]
+    }
+    options[:per_page] = 10
+
+    [:offer_type, :category].each do |m|
+      with[m] =  [@adv.attributes[m.to_s]]
+    end
+    [:price].each do |m|
+      if @adv.price_from.present?
+        from = @adv.price_from.to_i / 100 * 90
+        to = @adv.price_to.present? ? (@adv.price_to.to_i / 100 * 110) : 999999999
+        from, to = to, from if to < from
+        with['price_from'] = from..to
+        with['price_to'] = from..to if @adv.price_to.present?
+      end
+    end
+
+    list = [
+        @adv.locations.find_all{|n| n.location_type.to_sym == :district},
+        @adv.locations.find_all{|n| n.location_type.to_sym == :city},
+        @adv.locations.find_all{|n| n.location_type.to_sym== :non_admin_area},
+        @adv.locations.find_all{|n| n.location_type.to_sym == :street},
+        @adv.locations.find_all{|n| n.location_type.to_sym == :address}
+    ].delete_if{|e| e.empty?}
+    list.pop
+    list.flatten!
+
+    location_ids = list.map{|l| l.id}
+    with[:location_ids] = location_ids
+    @search_result_ids = ThinkingSphinx.search_for_ids('', options)
+    @search_result_ids.delete_if{|result| result == @adv.id}
+    @search_results = Advertisement.where(id: @search_result_ids)
+
+    @near_sections = Section.where(location_id: location_ids).
+        where(offer_type: Section.offer_types[@adv.offer_type]).
+        where(category: Section.categories[@adv.category]).limit(10)
   end
 
   def edit
+    @grouped_allowed_attributes = @adv.grouped_allowed_attributes
+    load_location_state!(@adv.locations)
   end
 
   def new
     @adv = Advertisement.new
-    @adv.photos.build
-    user = @adv.build_user
-    user.phones.build
-    @regions = Location.where(location_type: 0)
-    @locations = Location.where(location_type: 0).map{ |l| { title: l.title, id: l.id, multi: 'radio', type: l.location_type } }
-  end
-
-  #returns array of children locations and render it in the modal by js
-  def get_locations
-    if params[:parent_id].to_i != 0
-      @children = Location.find(params[:parent_id].to_i).children_locations
-    else
-      @children = Location.where('location_type =?',0)
-    end
-    @children = @children.map{ |l| { id: l.id, title: l.title, multi: params[:multi],  type: l.location_type } }
-  end
-
-  #returns array of hashed children location to render when we selected parent location
-  def add_child_locations
-    #TODO make tree check before rendering - and delete will be remove location and re-rendering buttons
-    #multi = params[:multi]
-    @locations = []
-    log = Logger.new STDOUT
-    ungrouped_locations = []
-    params[:locations].split(',').each do |l|
-      loc = Location.find(l.to_i)
-      ungrouped_locations << loc if loc.present?
-    end
-    ungrouped_locations.sort_by{|l| l.location_type}.reverse!
-    grouped_locations = []
-    ungrouped_locations.each { |l| Location.group_location(l, ungrouped_locations, grouped_locations) }
-
-    grouped_locations.each do |loc|
-      h_c = loc.children_locations.present?
-      cls = h_c ? 'ShowChildren' : 'location'
-      @locations << { type: loc.location_type, id: loc.id, title: loc.title, has_children: h_c,
-                      cls: cls, multi: params[:multi], parent_id: loc.location_id, can_delete: true }
-    end
-
-    params[:locations].split(',').each do |l|
-      loc = Location.find(l.to_i)
-      if loc.present?
-        h_c = loc.children_locations.present?
-        cls = h_c ? 'ShowChildren' : 'location'
-        @locations << { type: loc.location_type, id: loc.id, title: loc.title, has_children: h_c,
-                        cls: cls, multi: params[:multi], parent_id: loc.location_id, can_delete: true }
-      end
-    end
-    @locations.uniq!
-  end
-
-  def get_attributes
-    adv = Advertisement.new(category: params[:category].to_sym, adv_type: params[:adv_type].to_sym)
-    @grouped_allowed_attributes = adv.grouped_allowed_attributes
-    @allowed_attributes = adv.allowed_attributes
+    @adv.offer_type = 0
+    @adv.category = 0
+    @adv.adv_type = :offer
+    @adv.property_type = :residental
+    @grouped_allowed_attributes = @adv.grouped_allowed_attributes
   end
 
   def create
-    @locations = Location.where(location_type: 0)
     if can? :create_from_admin, Advertisement
-      if advertisement_params[:user_id].blank?
+      user = Phone.where(number: advertisement_params[:user_attributes][:phones_attributes].map{|_, e| Phone.normalize(e[:original])}).first.try :user
+      if user.blank?
         @adv = Advertisement.new advertisement_params
+        @adv.user.from_admin = true
       else
-        @adv = User.find(advertisement_params[:user_id].to_i).advertisements.new advertisement_params
+        @adv = user.advertisements.new advertisement_params
       end
     else
       @adv = current_user.advertisements.new advertisement_params
     end
 
-    if @adv.save
+    if @adv.valid?
+      @adv.save and redirect_to advertisement_path(@adv)
+    else
+      load_location_state!
+      @grouped_allowed_attributes = @adv.grouped_allowed_attributes
+      @save_with_errors = true and render 'advertisements/new'
+    end
+  end
+
+  def update
+    if @adv.update_attributes(advertisement_params)
       redirect_to advertisement_path(@adv)
     else
-      render 'advertisements/new'
+      load_location_state!
+      @grouped_allowed_attributes = @adv.grouped_allowed_attributes
+      @save_with_errors = true and render 'advertisements/form'
     end
+  end
+
+
+  def get_locations
+    if params[:parent_id].to_i != 0
+      @location = Location.find(params[:parent_id])
+      @locations = @location.children_locations
+    else
+      @locations = Location.where(location_type: 0)
+    end
+    @locations = @locations.limit(20)
+    @locations = @locations.map do |l| { id: l.id,
+                                         location_type: l.location_type,
+                                         title: l.title,
+                                         has_children: l.has_children?}
+    end
+    @title = @location.present? ? @location.title : 'Местоположение'
+  end
+
+
+  def get_attributes
+    adv = Advertisement.new(category: params[:category].to_sym, adv_type: params[:adv_type].to_sym)
+    @grouped_allowed_attributes = adv.grouped_allowed_attributes
+  end
+
+  def get_search_attributes
+    adv = Advertisement.new(category: params[:category].to_sym, adv_type: params[:adv_type].to_sym)
+    @grouped_allowed_attributes = adv.grouped_allowed_attributes
   end
 
   def check_phone
-    @advertisements = Advertisement.
-        joins('INNER JOIN "phones" ON "advertisements"."user_id" = "phones"."user_id"').
-        where('phones.number' => params[:phones].split(',').map{|phone| Phone.normalize(phone)}).
-        all
-    @user_id = User.where('email = ?', params[:email]).first.try :id if params[:email].present?
-    @user_id ||= @advertisements.first.try :user_id
-  end
-
-  def search
-    search_cond = {}
-    with_cond = {}
-    from = search_params[:price_from].to_i
-    to = search_params[:price_to].to_i
-    if !from.blank?
-      with_cond[:price_from] = to.blank? ? from..99990000 : from..to
-    end
-
-    #locations = ['region_id','admin_area_id', 'non_admin_area_id', 'city_id','district_id', 'street_id', 'address_id', 'landmark_id']
-
-    search_params.each do |k,v|
-      if k != 'price_from' && k != 'price_to'
-        if v.class == Array
-          search_cond[k] = v.map{|i| i = i.squish.gsub(' ',' | ')}.join(' | ')
-        else
-          search_cond[k] = v.squish.gsub(' ', ' | ') unless v.blank?
-        end
-      end
-    end
-
-    @search_results =  with_cond.blank? ? Advertisement.search(conditions: search_cond) : Advertisement.search(conditions: search_cond, with: with_cond)
-    respond_to do |format|
-      format.js
-    end
+    @search_results = Advertisement
+      .joins('INNER JOIN "phones" ON "advertisements"."user_id" = "phones"."user_id"')
+      .where('phones.number' => params[:phones].split(',').map{|phone| Phone.normalize(phone)})
+      .all
   end
 
 
   protected
+
+  def load_location_state!(locations = nil)
+    @locations = locations.is_a?(Array) && locations.size > 0 && locations.first.is_a?(Location) ? locations : Location.where(id: locations || params[:advertisement][:location_ids] || []).all
+    @location_state  = @locations.map do |l|
+      {
+          id: l.id,
+          location_id: l.location_id,
+          location_type: l.location_type,
+          title: l.title,
+          has_children: l.has_children?
+      }
+    end.to_json
+  end
+
+  def parameterize(params)
+    params.collect{|k,v| "#{k}=#{v}"}.join('&')
+  end
 
   def set_location
     @location = params[:location] ? Location.search(conditions: { title: params[:location] }).first : nil
@@ -143,20 +263,16 @@ class AdvertisementsController < ApplicationController
   end
 
   def search_params
-    params.permit(:category, :offer_type, :price_from,
-                  :price_to, :not_for_agents, :date_from, :date_to, :district_id, :street_id, :house_id,
-                  :floor_from, :space, :room_from, :comment, :private_comment, :phone, :landmark_id,
-                  :property_type, :floor_cnt_from, :address_id, :space_from, :floor_max, :mortgage, :district_id, :city_id, adv_type: [],
-                  offer_type: [], category: [])
+    params[:advertisement]
   end
 
   def advertisement_params
-    params.require(:advertisement).permit(:city_id, :region_id, :district_id, :category, :offer_type, :price_from,
-    :price_to, :not_for_agents, :date_from, :date_to, :district, :street, :house, :user_id,
+    params.require(:advertisement).permit(:category, :offer_type, :price_from, :landmark,
+    :price_to, :not_for_agents, :district, :user_id,
     :floor_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type, :latitude, :longitude,
-    :property_type, :floor_cnt_from, :address, :space_from, :floor_max, :mortgage, district: [], city: [], adv_type: [],
-    offer_type: [], category: [], photos_attributes: [:id, :description, :filename, :file],
-    user_attributes: [:name, :password, :email, phones_attributes: [:id, :original, :_destroy] ])
+    :property_type, :floor_cnt_from, :space_from, :floor_max, :mortgage, adv_type: [],
+    offer_type: [], category: [], photo_ids: [], location_ids: [],
+    user_attributes: [:name, :password, :email, phones_attributes: [:id, :original, :_destroy]])
   end
 
 

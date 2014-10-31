@@ -1,41 +1,44 @@
-- search_results.each do |adv|
-  .col-xs-12 style=("background-color: ivory; padding-top: 5px; padding-bottom: 5px")
-    .col-lg-2.col-md-3
-      input.small style=("position: relative; top: 2px;") type="checkbox" value="true"
-        span= adv.created_at
-        a.btn.btn-default.btn-xs title="редактировать"
+ul style="padding: 0px"
+  - @search_results.each_with_index do |adv, index|
+    li.media.adv_item class="#{'adv_item_even' if index % 2 == 0}"
+      span.col-xs-12.col-md-1.text-muted.small
+        = Russian::strftime adv.created_at.to_date
+        a.btn-link href="#"
+          i.fa.fa-star-o.fa-lg
+        '
+        a.btn-link href=edit_advertisement_path(adv)
           i.fa.fa-edit.fa-lg
-          | ред.
-        a.btn.btn-default.btn-xs title=("в закладки")
-          i.fa.fa-bookmark-o.fa-lg
-          | в блокнот
-        a.btn.btn-default.btn-xs title="обновить"
-          i.fa.fa-level-up.fa-lg
-          | обновить
-        span.label.label-warning неактивное
-    .col-sm-4.col-lg-2.col-md-3
-      img src="http://www.domowoi.com/system/images/000/026/914/b7bc9112e29318fe7e6ea0436d7d4953.thumb.jpg" style=("height: 96px; width: 155px")
-    .col-lg-5.col-md-6
-      span.h4
-        = link_to adv.name, advertisement_path(adv)
-      br
-        span.lead 25 010
-        span
-          | 000
-          i.fa.fa-rub ;
-        span
-          | 145 000
-          '
-          i.fa.fa-rub
+
+      .media-object.pull-left style="width: 168px; height: 104px;"
+        - if adv.preview_url.present?
+          a href="#{advertisement_path(adv)}_#{adv.url}"
+            img.col-xs-12 src=adv.preview_url  alt=adv.preview_alt
+
+      span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
+        span.h4.media-heading
+          a href="#{advertisement_path(adv)}_#{adv.url}"
+            = adv.anchor
+            br
+            span style="color: #333333;"
+              span.lead
+                = adv.price_from
+                - if adv.price_to.present?
+                  '
+                  | -
+                  '
+                  = adv.price_to
+                '
+              i.fa.fa-rub
+              br
+              = adv.locations_title
+      span.h5.media-heading.col-xs-12.col-md-2.col-lg-3
+        i.fa.fa-cube
+        '
+        = adv.name
         br
-          span.h5= "#{ adv.region.title if adv.region }, #{ adv.city.title if adv.city }, #{ adv.district.title if adv.district }"
-    .col-lg-3.col-sm-12
-      span
-        i.fa.fa-life-ring
-        a href="#"  = adv.organization
-      span
-        a href="#" = adv.sales_agent
-      span
-        button.btn.btn-default.btn-xs id="show-phone-#{adv.id}" onclick="show_phone(this);"
-          i.fa.fa-phone.fa-lg
+        a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
           | показать телефон
+
+
+
+

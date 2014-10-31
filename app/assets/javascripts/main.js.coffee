@@ -1,4 +1,3 @@
-#hid - hid of the element, multi - bool flag of multi value saving, oval - originan value we've setted up
 @set_property = (hid, multi, oval) ->
   val = ''
   sid = ''
@@ -42,24 +41,7 @@
   return
 
 
-@show_adv_phone = ->
-  $.ajax(
-      url: Routes.api_advertisement_path($('.ShowAdvPhone').data('id'))
-      dataType: 'json'
-    ).done (data)->
-      span =
-      $('.ShowAdvPhone').replaceWith("<span>#{data.name} #{data.phone}</span>")
-      return
-    .error ->
-      $(".top-right").notify(
-        type: "danger"
-        message:
-          text: "Ошибка сети("
-        fadeOut:
-          delay: 5000
-      ).show()
 
-  return
 
 
 @map = (el, latitude = null, longitude = null, editable = true)->
@@ -78,7 +60,7 @@
 
   create_map = (center)->
       start = null
-      map = new ymaps.Map("map"
+      window.map = new ymaps.Map("map"
         center: center
         zoom: 12
       )
@@ -116,110 +98,115 @@
 
 
 @check_phones = ->
+  name = $('input[name="advertisement[user_attributes][name]"]').val()
+  phones = $.grep($('input[name*="[original]"]').map( -> $.trim($(this).val()) ).get(), (n) -> n).join(',')
+
+  if phones.length is 0 or name.length is 0
+    $(".top-right").notify(
+      type: "danger"
+      message:
+        text: "Необходимо заполнить имя и хоть один номер телефона"
+      fadeOut:
+        delay: 5000
+    ).show()
+    return
   $.ajax(
     type: 'GET'
     url: Routes.check_phone_advertisements_path()
     data:
-      phones: $('input[name="original"]').map( ->
-        $(this).val()).get().join(',')
-      email: $('input[name*="email"]').val()
+      phones: phones
     dataType: 'script'
   )
   return
 
-####LOCATION HADLING
-
-@set_location = (hid, value, multi) ->
-  if multi=='checkbox'
-    res = $(hid).val().replace(value,'')
-    $(hid).val(res + ' ' + value)
-  else
-    $(hid).val(value)
-  return
-
-@delete_child = ->
-  lid = this.getAttribute('lid')
-  $('.btn-group[lid=' + lid + ']').html('')
-  $('.check-button[lid=' + lid + ']').html('')
-  $.ajax(
-    type: 'GET'
-    dataType: 'script'
-    url: Routes.add_child_locations_advertisements_path()
-    data:
-      locations: $(".location-button:checked").map( ->
-        $(this).val()).get().join(',')
-      multi: this.getAttribute('multi')
+@getChildren = ->
+  $.getScript(
+    Routes.get_locations_advertisements_path
+      parent_id: $(this).attr('lid')
   )
   return
-
-@select_locations = ->
-  ltype = this.getAttribute('ltype')
-  locations = $(".location-button:checked")
-  multi = locations[0].getAttribute('type')
-  $.ajax(
-    type: 'GET'
-    dataType: 'script'
-    url: Routes.add_child_locations_advertisements_path()
-    data:
-      locations: $(".location-button:checked").map( ->
-        $(this).val()).get().join(',')
-      multi: this.getAttribute('multi')
-  )
-  $('.location-select-modal').modal('hide')
-  #set location_id in hidden fields
-
-  for i in [0..locations.length-1]
-    hid = '.'+locations[i].getAttribute('name')+'-id'
-    if multi == 'checkbox'
-      old_val = $(hid).val().replace($(locations[i]).val())
-      $(hid).val(old_val + ' ' + $(locations[i]).val())
-    else
-      $(hid).val($(locations[i]).val())
-
-  return
-
-@get_children = ->
-  $.ajax(
-    type: 'GET'
-    dataType: 'script'
-    url: Routes.get_locations_advertisements_path()
-    data:
-      parent_id: this.getAttribute('lid')
-      multi: this.getAttribute('multi')
-  )
-  return
-
-
-@set_auto_location =(elem) ->
-  $('.autocomplete.location-button').val($(elem.val()))
-  $('.autocomplete.location-button')[0].setAttribute('checked', true)
-  return
-
-####ENDOF LOCATION HANDLING
-
-$('.autocomplete-search-location').livequery ->
-  $(this).autocomplete
-    source: Routes.api_advertisements_path()
-    minChars: 2
-    params: ->
-      parent_id: $(this)[0].getAttribute('parent_id')
-    select: ->
-      set_auto_location(this)
 
 $('.GetChildren').livequery ->
-  $(this).click get_children
+  $(this).click getChildren
+  return
 
-$('.DeleteElem').livequery ->
-  $(this).click delete_child
+drop_down_button = (multi, lid, value)->
+  "<div class='location-group' multi='#{multi}'><div class='button btn dropdown-toggle btn-default GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span>&nbsp;<span class='fa fa-times DelChildren'></span><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div></div>"
+
+easy_button = (multi, lid, value)->
+  "<div class='location-group' multi='#{multi}'><div class='button btn btn-default active btn-xs'  lid='#{lid}'> #{value} <span class='fa fa-times DelChildren'></span><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div></div>"
+
+sort_button_list = (context)->
+  parent = context.parent()
+  list = parent.children('.location-group').sort (a, b) ->
+    parseInt($(a).children('[lid]').attr('lid')) > parseInt($(b).children('[lid]').attr('lid'))
+  $.each list, (_, value) ->
+    parent.append(value)
 
 $('.SelectLocation').livequery ->
-  $(this).click select_locations
+  $(this).click ->
+    lid = $(this).attr('lid')
+    group = $(this).closest('.location-group')
+    value = $(this).text()
+    multi = group.attr('multi')
+    if group.find("input[value=#{lid}]").length is 0
+      if $(this).attr('has_children') is 'true'
+        button = drop_down_button(multi, lid, value)
+      else
+        button = easy_button(multi, lid, value)
+      template = group.append(button)
+      sort_button_list(group.children('.GetChildren'))
+    else
+      group.find("input[value=#{lid}]").closest('.location-group').remove()
+    if (multi is 'false')
+      $(".location-button.active[lid!=#{lid}]").click()
+      group.find('.GetChildren').popover "destroy"
+      getChildren.apply template.find(".GetChildren[lid=#{lid}]") if template
+$('.location_hide_action').livequery ->
+  $(this).addClass('hidden')
 
-$('.SelectRegion').livequery ->
-  $(this).click select_region
+$('.DelChildren').livequery ->
+  $(this).click ->
+    group = $(this).closest('.location-group')
+    group.remove()
 
-$('.SelectDistrict').livequery ->
-  $(this).click select_district
+$('.location-group[state]').livequery ->
+  attr = $(this).attr('state')
+  multi = $(this).attr('multi')
+  $this = $(this)
+  return unless attr
+  list = JSON.parse(attr)
+  return unless list
+
+  childElements = (element) ->
+    return $.grep list, (e) ->
+      e.location_id is element.id
+
+  renderElement = (element, context)->
+    if element.has_children
+      button = $(drop_down_button(multi, element.id, element.title))
+    else
+      button = $(easy_button(multi, element.id, element.title))
+
+    context.append(button)
+    return button
+
+  processElement = (element, context) ->
+    new_context = renderElement(element, context)
+    if element.has_children
+      $.each childElements(element), (index, value) ->
+        processElement(value, new_context)
+    sort_button_list(context)
+
+  root_list = $.grep list, (e) ->
+    e.location_id is null
+
+  $.each root_list, (_, value) ->
+    processElement(value, $this)
+
+
+
+  return
 
 $('.AdvProperty').livequery ->
   $(this).change prepare_allowed_attributes
@@ -231,7 +218,25 @@ $('.checkPhone').livequery ->
   $(this).click check_phones
 
 $('.ShowAdvPhone').livequery ->
-  $(this).click show_adv_phone
+  $this = $(this)
+  $this.click ->
+    $.ajax(
+      url: Routes.api_advertisement_path($('.ShowAdvPhone').data('id'))
+      dataType: 'json'
+    ).done (data)->
+      span =
+        $this.replaceWith("<span>#{data.phone}</span>")
+      return
+    .error ->
+      $(".top-right").notify(
+        type: "danger"
+        message:
+          text: "Ошибка сети("
+        fadeOut:
+          delay: 5000
+      ).show()
+    return
+  return
 
 $('.dropdown-menu').find('form').livequery ->
   $(this).click ->
@@ -253,6 +258,81 @@ $('form').livequery ->
       validating: 'glyphicon glyphicon-refresh'
     }
   })
+
+$("html").on "mouseup", (e) ->
+  unless $(e.target).closest(".popover").length
+    $(".popover").each ->
+      $(@previousSibling).popover "destroy"
+      return
+  return
+
+$(".location-button").livequery ->
+  $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
+  return
+
+$('form .attributes input, form .attributes textarea').livequery ->
+  $this = $(this)
+  unless $this.attr('data-bv-field')
+    $(this).closest('form').bootstrapValidator('addField', $(this))
+
+cancelEvent = (event) ->
+  event = (event or window.event)
+  return false  unless event
+  event = event.originalEvent  while event.originalEvent
+  event.preventDefault()  if event.preventDefault
+  event.stopPropagation()  if event.stopPropagation
+  event.cancelBubble = true
+  event.returnValue = false
+  false
+
+$('a.show_photo_action').livequery ->
+  $this = $(this)
+  $this.click (e)->
+    $('.first_photo_comment_action').text($this.attr('comment'))
+    $('.first_photo_img_action').attr('src', $this.attr('full_scr'))
+    cancelEvent(e)
+
+$('.range_date_picker_action').livequery ->
+  $(this).daterangepicker(
+    {
+      format: 'DD/MM/YYYY'
+      locale: 'ru'
+    }
+  )
+
+$('.use_user_action').livequery ->
+  $(this).click ->
+    $('.adv-params').removeClass('hidden');
+    $('.user-params').addClass('hidden');
+    $('#dublicate_modal').modal('hide');
+$('.new_entity_action').livequery ->
+  $(this).click ->
+    location.href = Routes.new_advertisement_path()
+
+$('.SelectLocation, .DelChildren').livequery ->
+  $(this).click ->
+    position = $.grep($("div:not(.SelectLocation)[lid]").map(->
+        $.trim $(this).text()
+    ), (n) ->
+        n isnt "Выбрать" and n
+    ).join " "
+    if position and window.map
+      ymaps.geocode(position).then (res) ->
+        first = res.geoObjects.get(0)
+        if first
+          center = first.geometry.getCoordinates()
+          map.panTo(center)
+          return
+
+
+
+
+
+
+
+
+
+
 
 
 

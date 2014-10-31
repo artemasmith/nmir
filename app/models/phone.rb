@@ -69,10 +69,8 @@ class Phone < ActiveRecord::Base
   end
 
   def update_advs
-    phones = self.user.phones.map{ |p| p.number }.join(',')
-    self.user.advertisements.each do |a|
-      Advertisement.find(a.id).update(phone: phones)
-    end
+    phones = self.user.phones.map{ |p| p.number }.join(', ')
+    Advertisement.where(user_id: self.user_id).update_all(phone: phones)
   end
 
 end
