@@ -315,7 +315,7 @@ ru:
       price_from: 'Цена'
       not_for_agents: 'Не для агентов'
       mortgage: 'Ипотека'
-      comment: 'Комментаиий'
+      comment: 'Комментарий'
       private_comment: 'Скрытый комментарий'
     offer:
       buy: 'куплю'
