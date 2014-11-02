@@ -90,7 +90,7 @@ ol.breadcrumb
     p
       i.fa.fa-life-ring.fa-lg
       '
-      | агентство
+      = (@adv.user_role == 'agent') ? t('activerecord.attributes.user.role.agent') :  t('activerecord.attributes.user.role.owner')
       '
       span
         a href="#" = @adv.sales_agent

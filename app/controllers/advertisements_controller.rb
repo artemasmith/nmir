@@ -272,7 +272,7 @@ class AdvertisementsController < ApplicationController
     :floor_from, :space, :room_from, :comment, :private_comment, :phone, :adv_type, :latitude, :longitude,
     :property_type, :floor_cnt_from, :space_from, :floor_max, :mortgage, adv_type: [],
     offer_type: [], category: [], photo_ids: [], location_ids: [],
-    user_attributes: [:name, :password, :email, phones_attributes: [:id, :original, :_destroy]])
+    user_attributes: [:name, :role, :password, :email, phones_attributes: [:id, :original, :_destroy]])
   end
 
 

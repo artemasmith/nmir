@@ -25,6 +25,8 @@ module AdvEnums
 
   STATUSES = [:active, :expired]
 
+  USER_ROLES = [:owner, :agent, :admin]
+
 
   included do
 
@@ -39,6 +41,7 @@ module AdvEnums
 
     enum status_type: AdvEnums::STATUSES
 
+    enum user_role: AdvEnums::USER_ROLES
 
   end
 end

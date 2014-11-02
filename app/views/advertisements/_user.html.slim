@@ -8,6 +8,16 @@
           .col-sm-4
             = f.text_field :name, class: 'form-control', required: true
         .form-group
+          label.col-sm-3.control-label for="name"  Роль
+          .col-sm-4
+            .btn-group data-toggle="buttons"
+              .btn.btn-default type="button"
+                = f.radio_button :role, :agent
+                label Агент
+              .btn.btn-default type="button"
+                = f.radio_button :role, :owner
+                label Владелец
+        .form-group
           label.control-label.col-sm-3 for="appendedtext"  Телефон
           .col-sm-4#reg-phones
             = f.fields_for :phones, (@adv.user.phones.presence || @adv.user.phones.build) do |f|
