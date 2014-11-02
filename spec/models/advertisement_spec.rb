@@ -146,6 +146,29 @@ RSpec.describe Advertisement, :type => :model do
     end
   end
 
+  describe 'user role fields updates/creates correctly' do
+    #before do
+    #  @u = FactoryGirl.create(:user, email: 'teasdasdsar@ttt.ru', role: :owner)
+    #end
+    it 'after creation adv role eq user role' do
+      u = FactoryGirl.create(:user, email: 'teeweweasdasdsar@ttt.ru', role: :owner)
+      adv = FactoryGirl.create(:advertisement, user_id: u.id)
+      expect(adv.user_role).to eq (u.role)
+    end
+    it 'after user role update all adv update roles' do
+      u = FactoryGirl.create(:user, email: 'teasdwdwdasdsar@ttt.ru', role: :owner)
+      adv1 = FactoryGirl.create(:advertisement, user_id: u.id).id
+      adv2 = FactoryGirl.create(:advertisement, user_id: u.id).id
+      expect{u.agent!}.to change{Advertisement.find(adv1).user_role}.to('agent')
+      #u.agent!
+      #puts "user role #{u.role}"
+      #puts "adv role #{adv1.user_role}"
+      #expect(adv2.user_role).to eq(:agent)
+      #expect(adv1.user_role).to eq(:agent)
+    end
+
+  end
+
   describe 'is binded to locations and' do
 
     before do 

@@ -153,6 +153,7 @@ class Advertisement < ActiveRecord::Base
     if self.user.present?
       self.phone = self.user.phones.map{ |p| p.original }.join(', ')
       self.name = self.user.name
+      self.user_role = self.user.role
     end
   end
 
