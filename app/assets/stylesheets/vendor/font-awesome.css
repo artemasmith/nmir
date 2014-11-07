@@ -429,6 +429,9 @@
 .fa-chevron-right:before {
   content: "\f054";
 }
+.fa-plug:before {
+    content: "\f1e6";
+}
 .fa-plus-circle:before {
   content: "\f055";
 }
