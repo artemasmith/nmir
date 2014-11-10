@@ -2,7 +2,7 @@ ul.no-padding
   - @search_results.each_with_index do |adv, index|
     li.media.adv_item class="#{'adv_item_even' if index % 2 == 0}"
       span.col-xs-12.col-md-1.text-muted.small
-        = l adv.created_at, format: :long
+        = l adv.created_at
         a.btn-link href="#"
           i.fa.fa-star-o.fa-lg
         '
