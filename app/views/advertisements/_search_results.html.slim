@@ -1,15 +1,15 @@
-ul style="padding: 0px"
+ul.no-padding
   - @search_results.each_with_index do |adv, index|
     li.media.adv_item class="#{'adv_item_even' if index % 2 == 0}"
       span.col-xs-12.col-md-1.text-muted.small
-        = Russian::strftime adv.created_at.to_date
+        = l adv.created_at
         a.btn-link href="#"
           i.fa.fa-star-o.fa-lg
         '
         a.btn-link href=edit_advertisement_path(adv)
           i.fa.fa-edit.fa-lg
 
-      .media-object.pull-left style="width: 168px; height: 104px;"
+      .media-object.pull-left.preview-url
         - if adv.preview_url.present?
           a href="#{advertisement_path(adv)}_#{adv.url}"
             img.col-xs-12 src=adv.preview_url  alt=adv.preview_alt
@@ -19,7 +19,7 @@ ul style="padding: 0px"
           a href="#{advertisement_path(adv)}_#{adv.url}"
             = adv.anchor
             br
-            span style="color: #333333;"
+            span.price-color
               span.lead
                 = adv.price_from
                 - if adv.price_to.present?

@@ -52,6 +52,7 @@ gem 'mini_magick'
 
 # tools
 gem 'russian', '~> 0.6.0'
+gem 'tzinfo'
 
 group :production do
   # Use unicorn as the app server

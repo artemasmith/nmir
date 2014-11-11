@@ -10,10 +10,13 @@ class Ability
       can :create_from_admin, Advertisement
     elsif user.owner?
       can :read, :all
+      can :manage, Advertisement, user_id: user.id
     elsif user.agent?
       can :read, :all
+      can :manage, Advertisement, user_id: user.id
     else
       can :read, :all
+      can :get_location, Advertisement
     end
     # Define abilities for the passed in user here. For example:
     #

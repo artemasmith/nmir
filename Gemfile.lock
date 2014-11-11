@@ -326,6 +326,7 @@ DEPENDENCIES
   therubyracer
   thinking-sphinx
   ts-datetime-delta (~> 2.0.0)
+  tzinfo
   uglifier (>= 1.3.0)
   unicorn
   whenever (~> 0.9.0)

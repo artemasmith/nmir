@@ -20,8 +20,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 ru:
-
-
+  time:
+    am: утра
+    formats:
+      default: ! '%a, %d %b %Y, %H:%M:%S'
+      long: ! '%d %B %Y, %H:%M'
+      short: ! '%d %b, %H:%M'
+    pm: вечера
   date:
     abbr_day_names: [Вс,Пн,Вт,Ср,Чт,Пт,Сб]
     abbr_month_names: ["",янв.,фев.,мар.,апр.,мая,июн.,июл.,авг.,сент.,окт.,нояб.,дек.]
@@ -267,14 +272,6 @@ ru:
       last_word_connector: ! ' и '
       two_words_connector: ! ' и '
       words_connector: ! ', '
-
-  time:
-    am: утра
-    formats:
-      default: ! '%a, %d %b %Y, %H:%M:%S %z'
-      long: ! '%d %B %Y, %H:%M'
-      short: ! '%d %b, %H:%M'
-    pm: вечера
 
   # remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository
   activemodel:

@@ -12,7 +12,7 @@
 .well.well-sm
   - if @root_section.present?
     - if @root_section.h1.present?
-      h1 style="margin: 0em; font-size: 1.8em"
+      h1.header-font
         == @root_section.h1
     - if @root_section.p.present?
       p
@@ -20,7 +20,7 @@
   = render 'advertisements/search_results'
   - if @root_section.present?
     - if @root_section.h2.present?
-      h2 style="margin: 0em; font-size: 1.8em"
+      h2.header-font
         == @root_section.h2
     - if @root_section.p2.present?
       p

@@ -51,7 +51,7 @@ ol.breadcrumb
         | добавить в блокнот
   - if @photos.present?
     .col-xs-12.col-lg-7.pull-right.clearfix
-      = image_tag @photos.first.advertisement_photo, class: 'img-responsive first_photo_img_action', style: 'width: 600px; height: 400px;'
+      = image_tag @photos.first.advertisement_photo, class: 'img-responsive first_photo_img_action search-photo-size'
       p.text-center.first_photo_comment_action
         = @photos.first.comment
       - @photos.each do |photo|
@@ -101,7 +101,7 @@ ol.breadcrumb
         | показать телефон
   - if @adv.latitude.present? && @adv.longitude.present?
     .col-lg-8.clearfix
-      #map style="width: auto; height: 400px" data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable=true
+      .map#map  data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable=true
   - if @near_sections.present? || @search_results.present?
     .col-sm-12
       p.h4
