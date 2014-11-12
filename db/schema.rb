@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141102053502) do
+ActiveRecord::Schema.define(version: 20141112025950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,7 +144,6 @@ ActiveRecord::Schema.define(version: 20141102053502) do
     t.string   "locations_title"
     t.string   "landmark"
     t.boolean  "delta",                                                       default: true,  null: false
-    t.datetime "changed_at"
     t.text     "description"
     t.text     "p"
     t.string   "title"
