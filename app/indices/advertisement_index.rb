@@ -1,8 +1,6 @@
-
 ThinkingSphinx::Index.define :advertisement,
                              :with => :active_record,
-                             :delta => ThinkingSphinx::Deltas::DatetimeDelta,
-                             :delta_options => {:threshold => 1.hour, :column => :changed_at} do
+                             :delta => ThinkingSphinx::Deltas::DatetimeDelta do
   # fields
   indexes :id, sortable: true
   indexes name, sortable: true
