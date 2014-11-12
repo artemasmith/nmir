@@ -23,7 +23,7 @@ ru:
   time:
     am: утра
     formats:
-      default: ! '%a, %d %b %Y, %H:%M:%S'
+      default: ! '%d.%m.%Y в %H:%M'
       long: ! '%d %B %Y, %H:%M'
       short: ! '%d %b, %H:%M'
     pm: вечера
@@ -321,17 +321,18 @@ ru:
       for_rent: 'аренда'
       day: 'посуточно'
     category:
+      hotel: 'гостинки'
       flat: 'квартиры'
       newbuild: 'новостройки'
-      house: 'дома, дачи, коттеджи'
-      ijs: 'участки под ИЖС'
+      house: 'дома'
+      ijs: 'участки'
       room: 'комнаты'
       garage: 'гаражи'
       office: 'офисы'
-      trade: 'торговля и сервис'
-      storage: 'склад и пр-во'
-      cafe: 'бары, рестораны, кафе'
-      land: 'земля, площадки'
+      trade: 'торговля, сервис'
+      storage: 'склад, пр-во'
+      cafe: 'общепит'
+      land: 'земля'
       free_appointment: 'другого и свободного назначения'
     quantity:
       few: '%{count} объявлений'
