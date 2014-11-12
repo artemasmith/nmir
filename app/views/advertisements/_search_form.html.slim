@@ -94,6 +94,7 @@
             a.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown"
               | за всё
               span.caret
+            '
             ul.dropdown-menu role="menu"
               li
                 a href="#"  за м&sup2;
@@ -104,6 +105,7 @@
             .btn.btn-success.btn-xs
               i.fa.fa-check.fa-lg
               | частные
+            '
             .btn.btn.btn-xs.bc-white class="#{('active' if params[:advertisement][:mortgage]=='1')}"
               i.fa.fa-bank
               input type="checkbox" name="advertisement[mortgage]" value="1" checked=(params[:advertisement][:mortgage]=='1')
@@ -111,6 +113,7 @@
         '
         .form-group
           label комнат
+          '
           span.btn-group data-toggle="buttons"
             a.btn.btn-default.btn-sm 1
             a.btn.btn-default.btn-sm 2
@@ -119,6 +122,7 @@
         '
         .form-group
           label площадь
+          '
           input.text-input-m#example2  /
           label for="exampleInputPassword2"  —
           input.text-input-m#exampleInputPassword2  type="text" /
@@ -128,12 +132,14 @@
         '
         .form-group
           label этаж
+          '
           input.text-input-sx#example2  /
           label for="exampleInputPassword2"  —
           input.text-input-sx#exampleInputPassword2  type="text" /
         '
         .form-group
           label этажей
+          '
           input.text-input-sx#example2  /
           label for="exampleInputPassword2"  —
           input.text-input-sx#exampleInputPassword2  type="text" /
@@ -141,6 +147,7 @@
         .form-group
           label
             i.fa.fa-calendar
+          '
           .btn.btn-default.btn-xs.range_date_picker_action
             input.range_date_picker_input name="advertisement[date_interval]" type="hidden" value=params[:advertisement][:date_interval].presence
             | за всё время
@@ -155,6 +162,7 @@
         .form-group
           label
             i.fa.fa-sort-amount-desc
+          '
           .btn-group
             .button-dropdown
               a.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown" href="#"
@@ -167,7 +175,8 @@
         .form-group
           label
             i.fa.fa-file-text-o
-          input.text-input-xl.form-control placeholder="текст или №" type="text" name="advertisement[description]" value=params[:advertisement][:description]
+          '
+          input placeholder="текст или №" type="text" name="advertisement[description]" value=params[:advertisement][:description]
       .col-sm-3
         button.btn.btn-primary.btn-lg.pull-left type="submit"
           i.fa.fa-search.fa-lg

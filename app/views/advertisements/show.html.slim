@@ -88,10 +88,16 @@ ol.breadcrumb
             '
             = t("advertisement.units.#{attr_from}")
     p
-      i.fa.fa-life-ring.fa-lg
-      '
-      = (@adv.user_role == 'agent') ? t('activerecord.attributes.user.role.agent') :  t('activerecord.attributes.user.role.owner')
-      '
+      - if @adv.user_role == 'owner'
+        i.fa.fa-check
+        '
+        = t('activerecord.attributes.user.role.owner')
+        '
+      -else
+        i.fa.fa-cube
+        '
+        =t('activerecord.attributes.user.role.agent')
+        '
       span
         a href="#" = @adv.sales_agent
     p

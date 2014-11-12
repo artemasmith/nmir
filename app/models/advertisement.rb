@@ -79,7 +79,6 @@ class Advertisement < ActiveRecord::Base
   #rails_admin
   include AdvRailsAdmin
 
-  before_validation :check_attributes
   after_create :generate_sections
   
   def grouped_allowed_attributes
@@ -147,15 +146,6 @@ class Advertisement < ActiveRecord::Base
 
 
   private
-
-
-  def check_attributes
-    if self.user.present?
-      self.phone = self.user.phones.map{ |p| p.original }.join(', ')
-      self.name = self.user.name
-      self.user_role = self.user.role
-    end
-  end
 
   def locations_chain_array_from(location)
     ls = self.locations.all

@@ -16,69 +16,6 @@ ActiveRecord::Schema.define(version: 20141112025950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "ADDROBJ", force: true do |t|
-    t.integer "actstatus"
-    t.string  "aoguid",     limit: 36
-    t.string  "aoid",       limit: 36
-    t.integer "aolevel"
-    t.string  "areacode",   limit: 3
-    t.string  "autocode",   limit: 1
-    t.integer "centstatus"
-    t.string  "citycode",   limit: 3
-    t.string  "code",       limit: 17
-    t.integer "currstatus"
-    t.date    "enddate"
-    t.string  "formalname", limit: 120
-    t.string  "ifnsfl",     limit: 4
-    t.string  "ifnsul",     limit: 4
-    t.string  "nextid",     limit: 36
-    t.string  "offname",    limit: 120
-    t.string  "okato",      limit: 11
-    t.string  "oktmo",      limit: 8
-    t.integer "operstatus"
-    t.string  "parentguid", limit: 36
-    t.string  "placecode",  limit: 3
-    t.string  "plaincode",  limit: 15
-    t.string  "postalcode", limit: 6
-    t.string  "previd",     limit: 36
-    t.string  "regioncode", limit: 2
-    t.string  "shortname",  limit: 10
-    t.date    "startdate"
-    t.string  "streetcode", limit: 4
-    t.string  "terrifnsfl", limit: 4
-    t.string  "terrifnsul", limit: 4
-    t.date    "updatedate"
-    t.string  "ctarcode",   limit: 3
-    t.string  "extrcode",   limit: 4
-    t.string  "sextcode",   limit: 3
-    t.integer "livestatus"
-    t.string  "normdoc",    limit: 36
-  end
-
-  create_table "HOUSE61", force: true do |t|
-    t.string  "aoguid",     limit: 36
-    t.string  "buildnum",   limit: 10
-    t.date    "enddate"
-    t.integer "eststatus"
-    t.string  "houseguid",  limit: 36
-    t.string  "houseid",    limit: 36
-    t.string  "housenum",   limit: 10
-    t.integer "statstatus"
-    t.string  "ifnsfl",     limit: 4
-    t.string  "ifnsul",     limit: 4
-    t.string  "okato",      limit: 11
-    t.string  "oktmo",      limit: 8
-    t.string  "postalcode", limit: 6
-    t.date    "startdate"
-    t.string  "strucnum",   limit: 10
-    t.integer "strstatus"
-    t.string  "terrifnsfl", limit: 4
-    t.string  "terrifnsul", limit: 4
-    t.date    "updatedate"
-    t.string  "normdoc",    limit: 36
-    t.integer "counter"
-  end
-
   create_table "advertisement_counters", force: true do |t|
     t.integer  "advertisement_id"
     t.integer  "counter_type"
@@ -162,9 +99,7 @@ ActiveRecord::Schema.define(version: 20141112025950) do
     t.string  "translit"
     t.integer "location_type"
     t.integer "location_id"
-    t.string  "parentguid"
     t.integer "children_count",    default: 0
-    t.string  "aoguid"
     t.integer "admin_area_id"
     t.integer "non_admin_area_id"
     t.integer "city_id"
@@ -230,25 +165,18 @@ ActiveRecord::Schema.define(version: 20141112025950) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                            default: "",    null: false
-    t.string   "encrypted_password",               default: "",    null: false
+    t.string   "email",                  default: "",    null: false
+    t.string   "encrypted_password",     default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.boolean  "blocked",                          default: false
-    t.boolean  "from_admin",                       default: false
+    t.boolean  "blocked",                default: false
+    t.boolean  "from_admin",             default: false
     t.integer  "role"
-    t.string   "avatar_file_name"
-    t.string   "avatar_content_type"
-    t.integer  "avatar_file_size"
-    t.datetime "avatar_updated_at"
-    t.string   "advertisement_photo_file_name"
-    t.string   "advertisement_photo_content_type"
-    t.integer  "advertisement_photo_file_size"
-    t.datetime "advertisement_photo_updated_at"
+    t.decimal  "balance"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

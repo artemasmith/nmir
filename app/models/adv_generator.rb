@@ -9,6 +9,10 @@ module AdvGenerator
     private
     def generate_attributes
 
+      self.user_role ||= self.user.role
+      self.phone ||= self.user.phones.map{ |p| p.original }.join(', ')
+      self.name ||= self.user.name
+
       child_location = []
       self.locations.each do |m|
         child_location << m if self.locations.find{|n| n.location_id == m.id}.blank?

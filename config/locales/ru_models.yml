@@ -3,8 +3,8 @@ ru:
     attributes:
       user:
         role:
-          owner: частное лицо
-          agent: агент, риелтор
+          owner: собственник
+          agent: агентство
         password: Пароль
         password_confirmation: Подтверждение пароля
         name: Имя
