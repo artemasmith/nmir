@@ -32,7 +32,7 @@ namespace :fias do
         time = Time.now
         Location.transaction do
           group.each do |record|
-            next if Location.where(aoguid: record.aoguid).first.present?
+            next if Location.where(aoguid: record.houseguid).first.present?
             location = Location.new
             location.title = "#{ record.housenum }#{record.buildnum.to_s.strip != "" ? (" корп. " + record.buildnum) : ""}#{record.strucnum.to_s.strip != "" ? " стр. " + record.strucnum : ""}"
             location.location_type = :address
