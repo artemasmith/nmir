@@ -27,3 +27,7 @@ end
 every 5.minutes do
   rake 'ts:in:delta'
 end
+
+every :day, :at => '04:30am' do
+  rake 'log:clear'
+end

@@ -13,25 +13,23 @@ namespace :fias do
     Location.find_in_batches(batch_size: slice_count) do |group|
       time = Time.now
       group.each do |record|
-        parent_location = Location.where(aoguid: record.parentguid).first
-        if parent_location.present?
-          record.location_id = parent_location.id
 
-          if record.address? || record.admin_area? || record.non_admin_area?
-            node = record.parent_location
-            while true
-              break if node.nil?
-              if node.city?
-                record.city_id = node.id
-                break
-              else
-                node = node.parent_location
-              end
+        if record.address? || record.admin_area? || record.non_admin_area?
+          node = record.parent_location
+          while node.present?
+            if node.city?
+              record.city_id = node.id
+              break
+            else
+              node = node.parent_location
             end
           end
-
-          record.save
         end
+        
+        parent_location = Location.where(aoguid: record.parentguid).first
+        record.location_id = parent_location.id if parent_location.present?
+
+        record.save
         current_record_count += 1
       end
       time_for_slice = Time.now - time
