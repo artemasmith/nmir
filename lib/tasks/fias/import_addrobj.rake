@@ -37,6 +37,7 @@ namespace :fias do
                             when 91 then :city
                             else next
                           end
+          current_record_count += 1
           next if Location.where(aoguid: record.aoguid).first.present?
           location = Location.new
           location.title = "#{record.shortname} #{record.offname}"
@@ -44,7 +45,7 @@ namespace :fias do
           location.aoguid = record.aoguid
           location.parentguid = record.parentguid
           location.save
-          current_record_count += 1
+
         end
       end
       time_for_slice = Time.now - time

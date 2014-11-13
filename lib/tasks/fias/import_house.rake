@@ -32,6 +32,7 @@ namespace :fias do
         time = Time.now
         Location.transaction do
           group.each do |record|
+            current_record_count += 1
             next if Location.where(aoguid: record.houseguid).first.present?
             location = Location.new
             location.title = "#{ record.housenum }#{record.buildnum.to_s.strip != "" ? (" корп. " + record.buildnum) : ""}#{record.strucnum.to_s.strip != "" ? " стр. " + record.strucnum : ""}"
@@ -39,7 +40,6 @@ namespace :fias do
             location.aoguid = record.houseguid
             location.parentguid = record.aoguid
             location.save
-            current_record_count += 1
           end
         end
         time_for_slice = Time.now - time
