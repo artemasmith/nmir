@@ -15,7 +15,6 @@ namespace :fias do
     Rake::Task["fias:generate_house"].invoke
 
     Rake::Task["fias:link_locations"].invoke
-    Rake::Task["fias:calc_child_count"].invoke
 
   end
 end

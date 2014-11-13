@@ -50,7 +50,6 @@ namespace :deploy do
       execute :ln, '-nfs', "#{shared_path}/sphinx", "#{release_path}/db/sphinx"
       execute :mkdir, "#{release_path}/public/system/"
       execute :ln, '-nfs', "#{shared_path}/photos", "#{release_path}/public/system"
-      execute :ln, '-s', "#{shared_path}/config/production.sphinx.conf", "#{release_path}/config/production.sphinx.conf"
 
     end
   end
@@ -59,6 +58,7 @@ namespace :deploy do
   desc 'Restart unicorn'
   task :restart do
     on roles(:all) do
+
       if test "[ -f #{fetch(:unicorn_pid)} ]"
         execute :kill, "-QUIT `cat #{fetch(:unicorn_pid)}` 2>/dev/null; true"
         execute :rm, fetch(:unicorn_pid)
@@ -74,6 +74,7 @@ before 'deploy:compile_assets', 'deploy:symlink'
 
 after "deploy", "deploy:migrate"
 after 'deploy', 'deploy:restart'
+
 
 end
 

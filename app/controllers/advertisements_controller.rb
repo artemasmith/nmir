@@ -9,6 +9,8 @@ class AdvertisementsController < ApplicationController
 
     params[:advertisement] = {} if params[:advertisement].blank?
 
+    #clear
+
     if params[:url].blank?
       offer_type = search_params[:offer_type].first if search_params[:offer_type].present? && search_params[:offer_type].size == 1
       category = search_params[:category].first if search_params[:category].present? && search_params[:category].size == 1
@@ -28,10 +30,13 @@ class AdvertisementsController < ApplicationController
 
       if @section.present?
         if @section.url != '/'
+          params[:advertisement].delete_if{|e| params[:advertisement][e].blank?}
+          params.delete :utf8
           [:action, :controller].each { |m| params.delete(m) }
           [:offer_type, :category, :location_ids, :property_type].each { |m| params[:advertisement].delete(m) }
-
-          redirect_to "#{@section.url}?#{Rack::Utils.build_nested_query(params)}" and return
+          params.delete :advertisement if params[:advertisement].empty?
+          build_nested_query = Rack::Utils.build_nested_query(params)
+          redirect_to "#{@section.url}#{build_nested_query.present? ? "?#{build_nested_query}" : ''}" and return
         end
       end
 
@@ -105,8 +110,8 @@ class AdvertisementsController < ApplicationController
 
   def show
     @sections = Section.where(location_id: @adv.location_ids).
-        where(offer_type: Section.offer_types[@adv.offer_type]).
-        where(category: Section.categories[@adv.category])
+        where(offer_type: nil).
+        where(category: nil)
     @photos = @adv.photos
     @today_counter, @all_days_counter = AdvertisementCounter.get_and_increase_count_for_adv(@adv.id)
     @grouped_allowed_attributes =  @adv.grouped_allowed_attributes

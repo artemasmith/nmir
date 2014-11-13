@@ -75,6 +75,12 @@
                 i.fa.fa-bullhorn.fa-lg
                 '
                 |Разместить объявление
+        - if @root_section.present? && (can? :access, :rails_admin)
+          li
+            a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
+              i.fa.fa-tag.fa-lg
+              '
+              | Сео
 
       /ul.nav.navbar-nav.navbar-left
         li
@@ -84,11 +90,6 @@
               '
               | Разместить объявление
 
-        /-if @root_section.present?
-          li
-            a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
-              i.fa.fa-tag.fa-lg
-              '
-              | Сео
+
 
 

@@ -68,8 +68,19 @@ class Location < ActiveRecord::Base
   end
 
   def has_children?
-    children_locations.count > 0
+    self.children_count > 0
   end
+
+  def children_count
+    value = read_attribute(:children_count)
+    if value.nil?
+      value = children_locations.count
+      write_attribute(:children_count, value)
+      self.save
+    end
+    value
+  end
+
 
   #parent - title or id of parent location
   # to_i of string always returns zero, and there is no zero ids
@@ -101,14 +112,14 @@ class Location < ActiveRecord::Base
           when :street
             self.sublocations.where(location_type: 5)
           else
-            raise "Invalide type"
+            raise 'Invalid type'
         end
       when :admin_area
         self.sublocations_for_city.where(admin_area_id: self.id)
       when :non_admin_area
         self.sublocations_for_city.where(location_type: 5)
       else
-        raise "Type error"
+        raise 'Type error'
     end
   end
 

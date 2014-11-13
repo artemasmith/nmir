@@ -37,6 +37,7 @@ namespace :fias do
                             when 91 then :city
                             else next
                           end
+          next if Location.where(aoguid: record.aoguid).first.present?
           location = Location.new
           location.title = "#{record.shortname} #{record.offname}"
           location.location_type = location_type

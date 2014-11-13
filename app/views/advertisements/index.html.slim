@@ -17,22 +17,7 @@
     - if @root_section.p.present?
       p
         == @root_section.p
-  h1.search-result-header
-    i.fa.fa-home
-      '
-      | База недвижимости №1
-  p
-    i.fa.fa-list
-      '
-      | Сайт на котором
-      b
-        ="  #{Advertisement.count}  "
-      | объявлений недвижимости профильтрованы от повторов и заманух с помощью рейтинга:
-      '
-      a href="#"
-        | принцип работы
-        '
-        i.fa.fa-info-circle .
+
   = render 'advertisements/search_results'
   - if @root_section.present?
     - if @root_section.h2.present?
@@ -41,5 +26,5 @@
     - if @root_section.p2.present?
       p
         == @root_section.p2
-  = render 'shared/pagination', :pages => @pages, :current_page => params[:page].to_i, :url_path => method(:root_path), :url_params => params
+  = advertisements_pagination
 
