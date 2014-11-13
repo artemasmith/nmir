@@ -20,7 +20,6 @@ class Location < ActiveRecord::Base
 
 
   before_save :transliterate_title
-  before_create :adress_initialize
 
 
   # neighbors
@@ -125,19 +124,7 @@ class Location < ActiveRecord::Base
 
   private
 
-  def adress_initialize
-    if self.address? || self.admin_area? || self.non_admin_area?
-      node = self.parent_location
-      while true
-        if node.city?
-          self.city_id = node.id
-          return
-        else
-          node = node.parent_location
-        end
-      end
-    end
-  end
+
 
   def transliterate_title
     self.translit = Russian::translit(self.title).downcase

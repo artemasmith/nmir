@@ -2,6 +2,9 @@ namespace :fias do
   desc "Link locations from fias"
 
   task link_locations: :environment do
+
+
+
     record_count = Location.count
     current_record_count = 0
     slice_count = 300
@@ -13,6 +16,20 @@ namespace :fias do
         parent_location = Location.where(aoguid: record.parentguid).first
         if parent_location.present?
           record.location_id = parent_location.id
+
+          if record.address? || record.admin_area? || record.non_admin_area?
+            node = record.parent_location
+            while true
+              break if node.nil?
+              if node.city?
+                record.city_id = node.id
+                break
+              else
+                node = node.parent_location
+              end
+            end
+          end
+
           record.save
         end
         current_record_count += 1
