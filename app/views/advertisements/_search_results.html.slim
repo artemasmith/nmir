@@ -1,18 +1,21 @@
-ul.no-padding
+ul.list-unstyled
   - @search_results.each_with_index do |adv, index|
     li.media.adv_item class="#{'adv_item_even' if index % 2 == 0}"
       span.col-xs-12.col-md-1.text-muted.small
         = l adv.created_at
-        a.btn-link href="#"
-          i.fa.fa-star-o.fa-lg
-        '
-        a.btn-link href=edit_advertisement_path(adv)
-          i.fa.fa-edit.fa-lg
+        -if can? :manage, adv
+          a.btn-link href="#"
+            i.fa.fa-star-o.fa-lg
+          '
+          a.btn-link href=edit_advertisement_path(adv)
+            i.fa.fa-edit.fa-lg
 
       .media-object.pull-left.preview-url
         - if adv.preview_url.present?
           a href="#{advertisement_path(adv)}_#{adv.url}"
             img.col-xs-12 src=adv.preview_url  alt=adv.preview_alt
+        -else
+          img.col-xs-12 src="http://placehold.it/145x90.jpg" /
 
       span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
         span.h4.media-heading
@@ -32,9 +35,14 @@ ul.no-padding
               br
               = adv.locations_title
       span.h5.media-heading.col-xs-12.col-md-2.col-lg-3
-        i.fa.fa-cube
+        - if adv.user_role == 'owner'
+          i.fa.fa-check
+
+        - else
+          i.fa.fa-cube
         '
-        = adv.name
+        = t "activerecord.attributes.user.role.#{adv.user_role}"
+        = " " + adv.name
         br
         a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
           | показать телефон

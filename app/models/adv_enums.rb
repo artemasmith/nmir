@@ -14,7 +14,8 @@ module AdvEnums
       :storage,
       :cafe,
       :land,
-      :free_appointment
+      :free_appointment,
+      :hotel
     ]
 
   ADV_TYPES = [:demand, :offer]

@@ -297,7 +297,10 @@ $('.range_date_picker_action').livequery ->
     {
       format: 'DD/MM/YYYY'
       locale: 'ru'
-    }
+    },
+    (dstart, dend) ->
+      $('.range_date_picker_input').val(dstart.format('DD/MM/YYYY')  + ' - ' + dend.format('DD/MM/YYYY'))
+
   )
 
 $('.use_user_action').livequery ->
