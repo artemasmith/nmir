@@ -50,9 +50,7 @@ namespace :deploy do
       execute :ln, '-nfs', "#{shared_path}/sphinx", "#{release_path}/db/sphinx"
       execute :mkdir, "#{release_path}/public/system/"
       execute :ln, '-nfs', "#{shared_path}/photos", "#{release_path}/public/system"
-      execute :mkdir, "#{release_path}/public/xml/"
-      execute :ln, '-nfs', "#{shared_path}/xml/", "#{release_path}/public/"
-
+      execute :ln, '-nfs', "#{shared_path}/public/xml", "#{release_path}/public/xml" rescue nil
     end
   end
 
