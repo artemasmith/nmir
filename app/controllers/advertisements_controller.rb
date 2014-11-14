@@ -217,7 +217,7 @@ class AdvertisementsController < ApplicationController
     else
       @locations = Location.where(location_type: 0)
     end
-    @locations = @locations.limit(20)
+    @locations = @locations
     @locations = @locations.map do |l| { id: l.id,
                                          location_type: l.location_type,
                                          title: l.title,
