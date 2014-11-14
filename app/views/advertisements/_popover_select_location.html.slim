@@ -1,12 +1,11 @@
 /- if @locations.count < 25
-- @locations.each_value do |value|
-  .row
+- @locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}.each_value do |value|
+  .row.top-buffer
     .col-md-12
       .btn-group data-toggle="buttons"
         - value.sort_by{ |l| l[:title] }.each do |location|
           .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}"  class="button btn btn-default SelectLocation"
             = location[:title]
-    br
 /- else
 /  .row
 /    .col-md-12
