@@ -124,6 +124,8 @@
     Routes.get_locations_advertisements_path(parent_id: $(this).attr('lid'))
     ,
     =>
+      console.log $(this)
+      console.log $(this).next().find('.btn-group')
       sort_li_list($(this).next().find('.btn-group'))
   )
 
