@@ -1,5 +1,5 @@
 /- if @locations.count < 25
-- @locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}.each_value do |value|
+- @locations.each_value do |value|
   .row.top-buffer
     .col-md-12
       .btn-group data-toggle="buttons"
