@@ -51,7 +51,7 @@ namespace :deploy do
       execute :mkdir, "#{release_path}/public/system/"
       execute :ln, '-nfs', "#{shared_path}/photos", "#{release_path}/public/system"
       execute :mkdir, "#{release_path}/public/xml/"
-      execute :ln, '-nfs', "#{shared_path}/xml/", "#{release_path}/public/xml/"
+      execute :ln, '-nfs', "#{shared_path}/xml/", "#{release_path}/public/"
 
     end
   end
