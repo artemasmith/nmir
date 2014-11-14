@@ -15,7 +15,11 @@ Rails.application.routes.draw do
   devise_for :users
 
   namespace :api do
-    resources :advertisements, :path => '/entity'
+    resources :advertisements, :path => '/entity' do
+      collection do
+        get 'streets_houses'
+      end
+    end
   end
 
   get '/:url', :to => "advertisements#index", :constraints => { :url => /[^\.]*/ }
