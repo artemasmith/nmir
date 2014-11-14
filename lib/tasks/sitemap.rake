@@ -46,7 +46,7 @@ namespace :sitemap do
         end
       end
       File.open(Rails.root.join('tmp',"sitemap_section#{index}.xml"), 'w'){|f| f.write doc.to_xml}
-      FileUtils.cp "tmp/sitemap_section#{index}.xml", '../../shared/xml/'
+      FileUtils.cp "tmp/sitemap_section#{index}.xml", '../../shared/public/xml/'
     end
     #
     # main sitemap
