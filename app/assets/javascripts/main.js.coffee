@@ -121,9 +121,12 @@
 
 @getChildren = ->
   $.getScript(
-    Routes.get_locations_advertisements_path
-      parent_id: $(this).attr('lid')
+    Routes.get_locations_advertisements_path(parent_id: $(this).attr('lid'))
+    ,
+    =>
+      sort_li_list($(this).next().find('.btn-group'))
   )
+
   return
 
 $('.GetChildren').livequery ->
@@ -139,9 +142,33 @@ easy_button = (multi, lid, value)->
 sort_button_list = (context)->
   parent = context.parent()
   list = parent.children('.location-group').sort (a, b) ->
-    parseInt($(a).children('[lid]').attr('lid')) > parseInt($(b).children('[lid]').attr('lid'))
+    name1 = $(a).children('[lid]').attr('name')
+    name2 = $(b).children('[lid]').attr('name')
+    console.log name1, name2
+    if name1 != name2
+      name1 >  name2
+    else
+      text1 = $(a).children('[lid]').text()
+      text2 = $(b).children('[lid]').text()
+      console.log text1, text2
+      text1 > text2
   $.each list, (_, value) ->
     parent.append(value)
+
+sort_li_list = (context)->
+  list = context.children('[lid]').sort (a, b) ->
+    name1 = $(a).attr('name')
+    name2 = $(b).attr('name')
+    console.log name1, name2
+    if name1 != name2
+      name1 >  name2
+    else
+      text1 = $(a).text()
+      text2 = $(b).text()
+      console.log text1, text2
+      text1 > text2
+  $.each list, (_, value) ->
+    context.append(value)
 
 $('.SelectLocation').livequery ->
   $(this).click ->
@@ -196,7 +223,10 @@ $('.location-group[state]').livequery ->
     if element.has_children
       $.each childElements(element), (index, value) ->
         processElement(value, new_context)
-    sort_button_list(context)
+    sort_button_list(context.children('.GetChildren'))
+
+
+    console.log context
 
   root_list = $.grep list, (e) ->
     e.location_id is null
@@ -319,7 +349,7 @@ $('.SelectLocation, .DelChildren').livequery ->
     ), (n) ->
         n isnt "Выбрать" and n
     ).join " "
-    if position and window.map
+    if position and window.map and window.ymaps
       ymaps.geocode(position).then (res) ->
         first = res.geoObjects.get(0)
         if first
