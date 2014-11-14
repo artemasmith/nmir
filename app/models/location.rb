@@ -20,6 +20,7 @@ class Location < ActiveRecord::Base
 
 
   before_save :transliterate_title
+  after_find :load_resources
 
 
   # neighbors
@@ -70,15 +71,7 @@ class Location < ActiveRecord::Base
     self.children_count > 0
   end
 
-  def children_count
-    value = read_attribute(:children_count)
-    if value.nil?
-      value = children_locations.count
-      write_attribute(:children_count, value)
-      self.save
-    end
-    value
-  end
+
 
 
   #parent - title or id of parent location
@@ -123,6 +116,26 @@ class Location < ActiveRecord::Base
   end
 
   private
+  def load_resources
+    return if self.loaded_resource
+
+    self.children_count = children_locations.count
+
+    if self.address? || self.admin_area? || self.non_admin_area?
+      node = self.parent_location
+      while node.present?
+        if node.city?
+          self.city_id = node.id
+          break
+        else
+          node = node.parent_location
+        end
+      end
+    end
+    self.loaded_resource = true
+    self.save
+  end
+
 
 
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141113025350) do
+ActiveRecord::Schema.define(version: 20141113025352) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,7 +157,8 @@ ActiveRecord::Schema.define(version: 20141113025350) do
     t.integer  "user_role"
   end
 
-  add_index "advertisements", ["adv_type"], name: "index_advertisements_on_adv_type", using: :btree
+  add_index "advertisements", ["offer_type", "category", "property_type", "status_type"], name: "index_advertisements_on_ot_c_li_pt_st", using: :btree
+  add_index "advertisements", ["status_type"], name: "index_advertisements_on_status_type", using: :btree
 
   create_table "locations", force: true do |t|
     t.string  "title"
@@ -170,6 +171,7 @@ ActiveRecord::Schema.define(version: 20141113025350) do
     t.integer "admin_area_id"
     t.integer "non_admin_area_id"
     t.integer "city_id"
+    t.boolean "loaded_resource",   default: false, null: false
   end
 
   add_index "locations", ["admin_area_id"], name: "index_locations_on_admin_area_id", using: :btree

@@ -8,7 +8,7 @@ ThinkingSphinx::Index.define :advertisement,
   indexes comment, sortable: true
   indexes locations.title, :as => :location_titles, sortable: true
   has locations.id, :as => :location_ids
-  %w(created_at updated_at price_from price_to adv_type property_type category offer_type mortgage not_for_agents).each do |m|
+  %w(created_at updated_at price_from price_to adv_type property_type category offer_type mortgage not_for_agents status_type).each do |m|
     has m, as: m
   end
 end

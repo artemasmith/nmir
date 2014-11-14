@@ -140,6 +140,8 @@ class AdvertisementsController < ApplicationController
       end
     end
 
+    with['status_type'] = 0
+
     list = [
         @adv.locations.find_all{|n| n.location_type.to_sym == :district},
         @adv.locations.find_all{|n| n.location_type.to_sym == :city},
