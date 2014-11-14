@@ -31,7 +31,7 @@
         .form-group
           label.control-label.col-sm-3
           .col-sm-4
-            = f.link_to_add 'Добавить нормер', :phones, :data => { :target => "#reg-phones" }
+            = f.link_to_add 'Добавить номер', :phones, :data => { :target => "#reg-phones" }
             span.help-block
               | например: +7(863) 2-12-85-06
         - if !@save_with_errors && @adv.new_record?
