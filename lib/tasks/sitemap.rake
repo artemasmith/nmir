@@ -25,7 +25,6 @@ namespace :sitemap do
     end
 
     index = 0
-    total_count = Section.not_empty.count
     Section.not_empty.find_in_batches(batch_size: 10000) do |group|
       index += 1
       doc =  Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
@@ -34,8 +33,16 @@ namespace :sitemap do
             xml.url do
               if section.url != '/'
                 xml.loc "#{host}#{section.url}"
-                xml.changefreq 'weekly'
-                xml.priority 0.9
+                if section.advertisements_count > 1000
+                  xml.changefreq 'daily'
+                  xml.priority 1.0
+                elsif section.advertisements_count > 100 && section.advertisements_count <= 1000
+                  xml.changefreq 'weekly'
+                  xml.priority 0.9
+                else
+                  xml.changefreq 'monthly'
+                  xml.priority 0.6
+                end
               else
                 xml.loc "#{Rails.application.routes.url_helpers.root_url(host: host)}"
                 xml.changefreq 'daily'
@@ -55,7 +62,7 @@ namespace :sitemap do
         Dir.glob('../../shared/public/xml/*xml').sort.reverse.each do |filename|
           if filename != '../../shared/public/xml/sitemap.xml'
             xml.sitemap do
-              xml.loc "#{Rails.application.routes.url_helpers.root_url(host: host)}#{filename.split('/').last}"
+              xml.loc "#{Rails.application.routes.url_helpers.root_url(host: host)}xml/#{filename.split('/').last}"
               xml.lastmod Date.current.strftime '%Y-%m-%d'
             end
           end
