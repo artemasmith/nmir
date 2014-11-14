@@ -151,6 +151,7 @@ sort_button_list = (context)->
     parent.append(value)
 
 sort_li_list = (context)->
+  console context.children('[lid]')
   list = context.children('[lid]').sort (a, b) ->
     name1 = $(a).attr('name')
     name2 = $(b).attr('name')
