@@ -3,9 +3,10 @@
   .row
     .col-md-12
       .btn-group data-toggle="buttons"
-        - value.each do |location|
+        - value.sort_by{ |l| l[:title] }.each do |location|
           .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}"  class="button btn btn-default SelectLocation"
             = location[:title]
+    br
 /- else
 /  .row
 /    .col-md-12

@@ -223,9 +223,8 @@ class AdvertisementsController < ApplicationController
                                          title: l.title,
                                          has_children: l.has_children?}
     end
-    @locations = @locations.group_by do |l|
-      l[:location_type]
-    end
+    @locations = @locations.group_by { |l| l[:location_type] }
+
   end
 
 
