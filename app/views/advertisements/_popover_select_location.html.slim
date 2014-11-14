@@ -1,18 +1,18 @@
-- if @locations.count < 25
-  .row
-    .col-md-12
-      .btn-group data-toggle="buttons"
-        - @locations.each do |location|
-          .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}"  class="button btn btn-default SelectLocation"
-            = location[:title]
-- else
-  .row
-    .col-md-12
-      form.form-horizontal role="form"
-        .form-group
-          label.col-sm-4.control-label for="autocomplete" Поиск по названию
-          .col-sm-8
-            select.form-control.autocomplete-search-location parent_id="#{@location.id}" multiple=true
+/- if @locations.count < 25
+.row
+  .col-md-12
+    .btn-group data-toggle="buttons"
+      - @locations.each do |location|
+        .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}"  class="button btn btn-default SelectLocation"
+          = location[:title]
+/- else
+/  .row
+/    .col-md-12
+/      form.form-horizontal role="form"
+/        .form-group
+/          label.col-sm-4.control-label for="autocomplete" Поиск по названию
+/          .col-sm-8
+/            select.form-control.autocomplete-search-location parent_id="#{@location.id}" multiple=true
 
 
 
