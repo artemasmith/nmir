@@ -122,11 +122,6 @@
 @getChildren = ->
   $.getScript(
     Routes.get_locations_advertisements_path(parent_id: $(this).attr('lid'))
-    ,
-    =>
-      console.log $(this)
-      console.log $(this).next().find('.btn-group')
-      sort_li_list($(this).next().find('.btn-group'))
   )
 
   return
@@ -152,15 +147,7 @@ sort_button_list = (context)->
   $.each list, (_, value) ->
     parent.append(value)
 
-sort_li_list = (context)->
-  list = context.children('[lid]').sort (a, b) ->
-    name1 = $(a).attr('name')
-    name2 = $(b).attr('name')
-    text1 = $(a).text()
-    text2 = $(b).text()
-    name1 + text1  >  name2 + text2
-  $.each list, (_, value) ->
-    context.append(value)
+
 
 $('.SelectLocation').livequery ->
   $(this).click ->

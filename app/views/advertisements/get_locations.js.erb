@@ -1,7 +1,6 @@
 var el = $('.GetChildren[lid="' + <%= j params[:parent_id] %> + '"]');
 el.popover({
     content: '<%= j render('advertisements/popover_select_location') %>',
-    title: '<%= j @title %>',
     html: true,
     placement: 'bottom'
 }).popover("show");

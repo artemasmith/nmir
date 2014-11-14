@@ -223,7 +223,9 @@ class AdvertisementsController < ApplicationController
                                          title: l.title,
                                          has_children: l.has_children?}
     end
-    @title = @location.present? ? @location.title : 'Местоположение'
+    @locations = @locations.group_by do |l|
+      l[:location_type]
+    end
   end
 
 

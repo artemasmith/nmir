@@ -29,6 +29,7 @@ namespace :fias do
     Фрунзе
     Центр
     Чкаловский'.each_line do |line|
+      next if Location.where(title: line.to_s.strip, location_id: rostov.id).first.present?
       location = Location.new
       location.title = line.to_s.strip
       location.location_type = :non_admin_area
