@@ -101,7 +101,8 @@ class AdvertisementsController < ApplicationController
       with[:updated_at] = date_from .. date_to
     end
 
-    with[:location_ids] = @locations.map{|l| l.id}
+
+    with[:location_ids] = @locations.find_all { |l|  @locations.find{|n| n.location_id == l.id}.blank? }.map{|l| l.id}
     @search_result_ids = ThinkingSphinx.search_for_ids(search_params[:description].presence, options)
     @search_result_count = @search_result_ids.total_entries
     @pages = (@search_result_count.to_f / @limit.to_f).ceil
