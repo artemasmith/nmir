@@ -1,5 +1,12 @@
 module AdvertisementsHelper
 
+  def bb_tags(string, tags)
+    tags.each_pair do |name, value|
+      string.gsub!("[b]#{name.to_s}[/b]", value.to_s)
+    end
+    return string
+  end
+
   def advertisements_pagination
     url_params = params.dup
     url_params[:advertisement].delete_if{|e| url_params[:advertisement][e].blank?}

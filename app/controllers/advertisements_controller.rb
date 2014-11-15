@@ -105,6 +105,7 @@ class AdvertisementsController < ApplicationController
     with[:location_ids] = @locations.find_all { |l|  @locations.find{ |n| n.location_id == l.id}.blank? }.map{|l| l.id}
     @search_result_ids = ThinkingSphinx.search_for_ids(search_params[:description].presence, options)
     @search_result_count = @search_result_ids.total_entries
+    @bbtags = {'total_entries' => @search_result_count}
     @pages = (@search_result_count.to_f / @limit.to_f).ceil
     @search_results = Advertisement.where(id: @search_result_ids).order('updated_at DESC')
   end

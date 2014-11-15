@@ -13,18 +13,18 @@
   - if @root_section.present?
     - if @root_section.h1.present?
       h1.header-font
-        == @root_section.h1
+        == bb_tags(@root_section.h1, @bbtags)
     - if @root_section.p.present?
       p
-        == @root_section.p
+        == bb_tags(@root_section.p, @bbtags)
 
   = render 'advertisements/search_results'
   - if @root_section.present?
     - if @root_section.h2.present?
       h2.header-font
-        == @root_section.h2
+        == bb_tags(@root_section.h2, @bbtags)
     - if @root_section.p2.present?
       p
-        == @root_section.p2
+        == bb_tags(@root_section.p2, @bbtags)
   = advertisements_pagination
 
