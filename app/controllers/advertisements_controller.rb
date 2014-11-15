@@ -102,7 +102,7 @@ class AdvertisementsController < ApplicationController
     end
 
 
-    with[:location_ids] = @locations.find_all { |l|  @locations.find{|n| n.location_id == l.id}.blank? }.map{|l| l.id}
+    with[:location_ids] = @locations.find_all { |l|  @locations.find{ |n| n.location_id == l.id}.blank? }.map{|l| l.id}
     @search_result_ids = ThinkingSphinx.search_for_ids(search_params[:description].presence, options)
     @search_result_count = @search_result_ids.total_entries
     @pages = (@search_result_count.to_f / @limit.to_f).ceil
@@ -250,7 +250,13 @@ class AdvertisementsController < ApplicationController
   protected
 
   def load_location_state!(locations = nil)
-    @locations = locations.is_a?(Array) && locations.size > 0 && locations.first.is_a?(Location) ? locations : Location.where(id: locations || params[:advertisement][:location_ids] || []).all
+    @locations =
+    if locations.is_a?(Array) && locations.size > 0 && locations.first.is_a?(Location)
+      locations
+    else
+      ids = locations || params[:advertisement][:location_ids] || []
+      ids.present? ? Location.where(id: ids).all : []
+    end
     @location_state  = @locations.map do |l|
       {
           id: l.id,

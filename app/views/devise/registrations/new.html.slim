@@ -17,7 +17,7 @@ ol.breadcrumb
           - User.roles.each do |role, id|
             - if role != 'admin'
               = label_tag "user_role_#{role}", class: 'radio' do
-                = t "activerecord.attributes.user.role.#{role}"
+                = t "activerecord.attributes.user.roles.#{role}"
                 = f.radio_button :role, role.to_sym
       .form-group
         label.control-label.col-sm-4 for="textinput"  имя

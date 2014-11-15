@@ -2,9 +2,10 @@ ru:
   activerecord:
     attributes:
       user:
-        role:
+        roles:
           owner: собственник
           agent: агентство
+
         password: Пароль
         password_confirmation: Подтверждение пароля
         name: Имя
