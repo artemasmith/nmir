@@ -336,7 +336,9 @@ $('.SelectLocation, .DelChildren').livequery ->
           map.panTo(center)
           return
 
-
+$('.autocomplete-search-location').livequery ->
+  $(this).autocomplete({source: '/api/entity/streets_houses', autoFocus: true })
+  $(this).focus()
 
 
 
