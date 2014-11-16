@@ -115,6 +115,10 @@ class Location < ActiveRecord::Base
     end
   end
 
+  def set_children_count
+    self.update(children_count: self.children_locations.count)
+  end
+
   private
   def load_resources
     return if self.loaded_resource

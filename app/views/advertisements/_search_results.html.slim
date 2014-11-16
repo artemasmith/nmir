@@ -42,7 +42,7 @@ ul.list-unstyled
           i.fa.fa-cube
         '
         = t "activerecord.attributes.user.roles.#{adv.user_role}"
-        = " " + adv.name
+        = " " + adv.name if adv.name
         br
         a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
           | показать телефон
