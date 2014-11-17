@@ -6,7 +6,7 @@ class Api::AdvertisementsController < ApplicationController
   end
 
   def streets_houses
-    @children = Location.where(location_id: params[:parent_id].to_i).where('title like ?', "%_#{params[:term]}_%")
+    @children = Location.where(location_id: params[:parent_id].to_i).where('title like ?', "%#{params[:term]}%").order(children_count: :desc)
     @children = @children.map{ |l| { label: l.title, value: l.id, has_children: l.has_children? } }
     render json: @children
   end

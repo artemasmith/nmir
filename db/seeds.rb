@@ -97,7 +97,7 @@ tc.sublocations.find_or_create_by(title: '50 лет Октября', location_ty
 tc.sublocations.find_or_create_by(title: '50 лет ВЛКСМ', location_type: 'street')
 tc.sublocations.find_or_create_by(title: 'Салтыкова-Щедрина', location_type: 'street')
 tc.sublocations.find_or_create_by(title: 'Горького', location_type: 'street')
-tc.sublocations.find_or_create_by(title: 'Московский тракт', location_type: 'street')
+sl = tc.sublocations.find_or_create_by(title: 'Московский тракт', location_type: 'street')
 tc.sublocations.find_or_create_by(title: 'Червишевский тракт', location_type: 'street')
 tc.sublocations.find_or_create_by(title: 'Самарцева', location_type: 'street')
 tc.sublocations.find_or_create_by(title: 'Салаирский тракт', location_type: 'street')
@@ -107,7 +107,18 @@ tc.sublocations.find_or_create_by(title: 'Калинина', location_type: 'str
 tc.sublocations.find_or_create_by(title: 'Зои Космодемьянской', location_type: 'street')
 tc.sublocations.find_or_create_by(title: 'Мориса Тореза', location_type: 'street')
 tc.sublocations.find_or_create_by(title: 'Профсоюзная', location_type: 'street')
-tc.sublocations.find_or_create_by(title: 'Щербакова', location_type: 'street')
+sl2 = tc.sublocations.find_or_create_by(title: 'Щербакова', location_type: 'street')
+sl.sublocations.find_or_create_by(title: '12', location_type: 'address')
+sl.sublocations.find_or_create_by(title: '11', location_type: 'address')
+sl.sublocations.find_or_create_by(title: '13', location_type: 'address')
+sl.sublocations.find_or_create_by(title: '14', location_type: 'address')
+sl.sublocations.find_or_create_by(title: '15', location_type: 'address')
+sl.sublocations.find_or_create_by(title: '101', location_type: 'address')
+sl.sublocations.find_or_create_by(title: '102', location_type: 'address')
+sl2.sublocations.find_or_create_by(title: '21', location_type: 'address')
+sl2.sublocations.find_or_create_by(title: '2', location_type: 'address')
+sl2.sublocations.find_or_create_by(title: '23', location_type: 'address')
+sl2.sublocations.find_or_create_by(title: '200', location_type: 'address')
 
 agent = User.find_or_create_by(name: 'agent', email: 'agent@black.com')
 agent.phones.find_or_create_by(original: '89199992233')
@@ -191,7 +202,7 @@ agent.phones.find_or_create_by(original: '89199992233')
 
 ].each do |advertisement|
   a = Advertisement.find_or_create_by(advertisement)
-  puts "created #{a.errors.messages.to_s}"
+  puts "created #{a.errors.full_messages.to_s}" if a.errors.present?
 end
 
 #ADMIN

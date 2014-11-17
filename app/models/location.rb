@@ -15,10 +15,11 @@
 
 class Location < ActiveRecord::Base
   has_many :sublocations, class_name: 'Location', foreign_key: "location_id"
+  #, after_add: :set_children_count, after_remove: :set_children_count
   has_many :sublocations_for_city, class_name: 'Location', primary_key: "city_id"
   belongs_to :parent_location, class_name: 'Location', foreign_key: "location_id"
 
-
+  after_create :set_parent_lc, if: :location_id?
   before_save :transliterate_title
   after_find :load_resources
 
@@ -140,10 +141,11 @@ class Location < ActiveRecord::Base
     self.save
   end
 
-
-
-
   def transliterate_title
     self.translit = Russian::translit(self.title).downcase
+  end
+
+  def set_parent_lc
+    self.parent_location.set_children_count
   end
 end
