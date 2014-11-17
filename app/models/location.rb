@@ -73,7 +73,12 @@ class Location < ActiveRecord::Base
   end
 
 
-
+  def self.suggest_location parent_id, term
+    Rails.cache.fetch(["search-locations", term]) do
+      children = where(location_id: parent_id.to_i).where('title like ?', "%#{term}%").order(children_count: :desc)
+      children = children.map{ |l| { label: l.title, value: l.id, has_children: l.has_children? } }
+    end
+  end
 
   #parent - title or id of parent location
   # to_i of string always returns zero, and there is no zero ids

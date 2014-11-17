@@ -353,14 +353,14 @@ $('.autocomplete-search-location').livequery ->
       )
     select: (event, ui) ->
       group = $("input[value=#{parent_id}]").closest('.location-group')
-      console.log(ui.item)
       if ui.item.has_children == true
         button = drop_down_button('multi',ui.item.value,ui.item.label)
       else
         button = easy_button('no',ui.item.value,ui.item.label)
       template = group.append(button)
       sort_button_list(group.children('.GetChildren'))
-      $.getScript(Routes.get_locations_advertisements_path(parent_id: ui.item.value))
+      if ui.item.has_children == true
+        $.getScript(Routes.get_locations_advertisements_path(parent_id: ui.item.value))
 
       #if (multi is 'false')
       #  $(".location-button.active[lid!=#{parent_id}]").click()
