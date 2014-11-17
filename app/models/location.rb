@@ -74,8 +74,8 @@ class Location < ActiveRecord::Base
 
 
   def self.suggest_location parent_id, term
-    Rails.cache.fetch(["search-locations", term]) do
-      children = where(location_id: parent_id.to_i).where('title like ?', "%#{term}%").order(children_count: :desc)
+    Rails.cache.fetch(["search-locations", term], expires_in: 10.minutes) do
+      children = where(location_id: parent_id.to_i).where('title like ?', "%#{term}%").order(children_count: :desc).limit(15)
       children = children.map{ |l| { label: l.title, value: l.id, has_children: l.has_children? } }
     end
   end

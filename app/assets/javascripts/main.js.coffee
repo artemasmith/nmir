@@ -355,22 +355,14 @@ $('.autocomplete-search-location').livequery ->
       $(".ui-autocomplete").css("z-index", "2147483647")
     select: (event, ui) ->
       group = $("input[value=#{parent_id}]").closest('.location-group')
-      #if group.find("input[value=#{ui.item.value}]").length is 0
       if ui.item.has_children == true
         button = drop_down_button(multi,ui.item.value,ui.item.label)
       else
         button = easy_button(multi,ui.item.value,ui.item.label)
       template = group.append(button)
       sort_button_list(group.children('.GetChildren'))
-      #else
-      #  group.find("input[value=#{ui.item.value}]").closest('.location-group').remove()
       if ui.item.has_children == true
         $.getScript(Routes.get_locations_advertisements_path(parent_id: ui.item.value))
-
-      if (multi is 'false')
-        $(".location-button.active[lid!=#{parent_id}]").click()
-        group.find('.GetChildren').popover "destroy"
-        getChildren.apply template.find(".GetChildren[lid=#{parent_id}]") if template
       return
     })
 
