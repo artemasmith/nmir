@@ -147,6 +147,24 @@ sort_button_list = (context)->
   $.each list, (_, value) ->
     parent.append(value)
 
+@click_select_location = (lid, group, value, multi, has_children, common, parent_id) ->
+  if group.find("input[value=#{lid}]").length is 0
+    if has_children is 'true'
+      button = drop_down_button(multi, lid, value)
+    else
+      button = easy_button(multi, lid, value)
+    template = group.append(button)
+    sort_button_list(group.children('.GetChildren'))
+  else
+    group.find("input[value=#{lid}]").closest('.location-group').remove()
+  if (multi is 'false')
+    if (common == false)
+      $(".GetChildren[lid=#{parent_id}]").closest('.location-group').find('.location-group').remove()
+      group.append(button)
+    else
+      $(".location-button.active[lid!=#{lid}]").click()
+      group.find('.GetChildren').popover "destroy"
+      getChildren.apply template.find(".GetChildren[lid=#{lid}]") if template
 
 
 $('.SelectLocation').livequery ->
@@ -155,19 +173,9 @@ $('.SelectLocation').livequery ->
     group = $(this).closest('.location-group')
     value = $(this).text()
     multi = group.attr('multi')
-    if group.find("input[value=#{lid}]").length is 0
-      if $(this).attr('has_children') is 'true'
-        button = drop_down_button(multi, lid, value)
-      else
-        button = easy_button(multi, lid, value)
-      template = group.append(button)
-      sort_button_list(group.children('.GetChildren'))
-    else
-      group.find("input[value=#{lid}]").closest('.location-group').remove()
-    if (multi is 'false')
-      $(".location-button.active[lid!=#{lid}]").click()
-      group.find('.GetChildren').popover "destroy"
-      getChildren.apply template.find(".GetChildren[lid=#{lid}]") if template
+    has_children = $(this).attr('has_children')
+    click_select_location(lid,group, value, multi, has_children, true, 0)
+
 $('.location_hide_action').livequery ->
   $(this).addClass('hidden')
 
@@ -356,21 +364,10 @@ $('.autocomplete-search-location').livequery ->
     select: (event, ui) ->
       lid = ui.item.value
       group = $("input[value=#{parent_id}]").closest('.location-group')
-      if group.find("input[value=#{lid}]").length is 0
-        if ui.item.has_children == true
-          button = drop_down_button(multi,lid,ui.item.label)
-        else
-          button = easy_button(multi,lid,ui.item.label)
-        group.append(button)
-        sort_button_list(group.children('.GetChildren'))
-      else
-        group.find("input[value=#{lid}]").closest('.location-group').remove()
-      if (multi is 'false')
-        $(".GetChildren[lid=#{parent_id}]").closest('.location-group').find('.location-group').remove()
-        group.append(button)
-      if ui.item.has_children == true
-        $.getScript(Routes.get_locations_advertisements_path(parent_id: ui.item.value))
-      return
+      value = ui.item.label
+      has_children = "#{ui.item.has_children}"
+      common = false
+      click_select_location(lid,group, value, multi, has_children, common, parent_id)
     })
 
 
