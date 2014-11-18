@@ -338,7 +338,7 @@ $('.SelectLocation, .DelChildren').livequery ->
 
 $('.autocomplete-search-location').livequery ->
   parent_id = $(this).attr('parent_id')
-  multi  = $(this).attr('multi')
+  multi  = $("input[value=#{parent_id}]").closest('.location-group').attr('multi')
   $(this).autocomplete({
     source: (request, response) ->
       $.ajax(
@@ -354,13 +354,20 @@ $('.autocomplete-search-location').livequery ->
     open: ->
       $(".ui-autocomplete").css("z-index", "2147483647")
     select: (event, ui) ->
+      lid = ui.item.value
       group = $("input[value=#{parent_id}]").closest('.location-group')
-      if ui.item.has_children == true
-        button = drop_down_button(multi,ui.item.value,ui.item.label)
+      if group.find("input[value=#{lid}]").length is 0
+        if ui.item.has_children == true
+          button = drop_down_button(multi,lid,ui.item.label)
+        else
+          button = easy_button(multi,lid,ui.item.label)
+        group.append(button)
+        sort_button_list(group.children('.GetChildren'))
       else
-        button = easy_button(multi,ui.item.value,ui.item.label)
-      template = group.append(button)
-      sort_button_list(group.children('.GetChildren'))
+        group.find("input[value=#{lid}]").closest('.location-group').remove()
+      if (multi is 'false')
+        $(".GetChildren[lid=#{parent_id}]").closest('.location-group').find('.location-group').remove()
+        group.append(button)
       if ui.item.has_children == true
         $.getScript(Routes.get_locations_advertisements_path(parent_id: ui.item.value))
       return

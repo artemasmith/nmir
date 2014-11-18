@@ -1,4 +1,4 @@
-- if @locations.count < 20 && (@locations['street'].blank? || @locations['address'].blank? )
+- if @locations.count < 20 && @locations['street'].blank?
   - @locations.each_value do |value|
     .row.top-buffer
       .col-md-12
