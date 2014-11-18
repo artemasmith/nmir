@@ -25,5 +25,6 @@ module Nmir
     config.assets.initialize_on_precompile = true
     config.time_zone = 'Moscow'
     config.active_record.default_timezone = :local
+    config.middleware.insert_before 0, "LocationSuggestion"
   end
 end
