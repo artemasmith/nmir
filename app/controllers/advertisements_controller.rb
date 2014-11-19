@@ -72,7 +72,7 @@ class AdvertisementsController < ApplicationController
     adv_types = []
     categories = []
 
-    if @section.present? && @section != @root_section
+    if @section.present?
       [:offer_type, :category].each do |m|
         with[m] =  [@section.attributes[m.to_s]] if @section.attributes[m.to_s].present?
       end
