@@ -1,6 +1,6 @@
 ul.list-unstyled
   - @search_results.each_with_index do |adv, index|
-    li.media.adv_item class="#{'adv_item_even' if index % 2 == 0}"
+    li.media.clearfix.adv-card class="#{'adv_item_even' if index % 2 == 0}"
       span.col-xs-12.col-md-1.text-muted.small
         = l adv.created_at
         '
@@ -8,28 +8,27 @@ ul.list-unstyled
           a.btn-link href=edit_advertisement_path(adv)
             i.fa.fa-edit.fa-lg
 
-      a href="#{advertisement_path(adv)}_#{adv.url}"
-        .media-object.pull-left
-          - if adv.preview_url.present?
-            a href="#{advertisement_path(adv)}_#{adv.url}"
-              img.preview-url src=adv.preview_url  alt=adv.preview_alt
-          -else
-            img.preview-url src="#{image_path("empty_preview.png")}"
+      /a href="#{advertisement_path(adv)}_#{adv.url}"
+      .media-object.pull-left
+        - if adv.preview_url.present?
+          a href="#{advertisement_path(adv)}_#{adv.url}"
+            img.preview-url.col-xs-12 src=adv.preview_url  alt=adv.preview_alt
+        -else
+          img.preview-url.col-xs-12 src="#{image_path("empty_preview.png")}"
 
       span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
         span.h4.media-heading
           a href="#{advertisement_path(adv)}_#{adv.url}"
             = adv.anchor
             br
-            span.price-color
-              span.lead
-                = adv.price_from
-                - if adv.price_to.present?
-                  '
-                  | -
-                  '
-                  = adv.price_to
+            span.lead
+              = adv.price_from
+              - if adv.price_to.present?
                 '
+                | -
+                '
+                = adv.price_to
+              '
               i.fa.fa-rub
               br
               = adv.locations_title
