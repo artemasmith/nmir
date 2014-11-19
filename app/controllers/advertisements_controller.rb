@@ -202,11 +202,8 @@ class AdvertisementsController < ApplicationController
 
   def new
     @adv = Advertisement.new
-    @adv.offer_type = 0
-    @adv.category = 0
-    @adv.adv_type = :offer
-    @adv.adv_type = :offer
-    @adv.property_type = :residental
+    @adv.offer_type = AdvEnums::OFFER_TYPES.first
+    @adv.category = AdvEnums::CATEGORIES.first
     @grouped_allowed_attributes = @adv.grouped_allowed_attributes
   end
 
