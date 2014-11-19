@@ -29,7 +29,7 @@ class AdvertisementsController < ApplicationController
         property_type = AdvEnums::PROPERTY_TYPES.index(:commerce)
       else
         single_section = false
-      end           
+      end
 
       load_location_state!
 
@@ -46,16 +46,14 @@ class AdvertisementsController < ApplicationController
 
       @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first if single_section
 
-      if @section.present?
-        if @section.url != '/'
-          params[:advertisement].delete_if{|e| params[:advertisement][e].blank?}
-          params.delete :utf8
-          [:action, :controller].each { |m| params.delete(m) }
-          [:offer_type, :category, :location_ids, :property_type].each { |m| params[:advertisement].delete(m) }
-          params.delete :advertisement if params[:advertisement].empty?
-          build_nested_query = Rack::Utils.build_nested_query(params)
-          redirect_to "#{@section.url}#{build_nested_query.present? ? "?#{build_nested_query}" : ''}" and return
-        end
+      if @section.present? && @section.url != '/'
+        params[:advertisement].delete_if{|e| params[:advertisement][e].blank?}
+        params.delete :utf8
+        [:action, :controller].each { |m| params.delete(m) }
+        [:offer_type, :category, :location_ids, :property_type].each { |m| params[:advertisement].delete(m) }
+        params.delete :advertisement if params[:advertisement].empty?
+        build_nested_query = Rack::Utils.build_nested_query(params)
+        redirect_to "#{@section.url}#{build_nested_query.present? ? "?#{build_nested_query}" : ''}" and return
       end
 
       @root_section = @section.presence || Section.where(offer_type: nil, category: nil, location_id: nil, property_type: nil).first
@@ -282,7 +280,10 @@ class AdvertisementsController < ApplicationController
   end
 
   def get_search_attributes
-    @search_attributes = Advertisement.grouped_allowed_search_attributes(params[:categories], params[:adv_types])
+    adv_types = params[:offer_types].to_s.split(',').map{|e| Advertisement.adv_type(AdvEnums::OFFER_TYPES[e.to_i]) }.uniq
+    categories = params[:categories].to_s.split(',').map{|e| AdvEnums::CATEGORIES[e.to_i].to_s}.uniq
+
+    @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories)
   end
 
   def check_phone

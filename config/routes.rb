@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :advertisements, :path => 'entity' do
     collection do
       get 'get_attributes'
+      get 'get_search_attributes'
       get 'check_phone'
       get 'get_locations'
     end

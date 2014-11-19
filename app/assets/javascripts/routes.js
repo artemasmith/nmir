@@ -309,10 +309,6 @@
     };
     namespace(root, "Routes");
     root.Routes = {
-// add_child_locations_advertisements => /entity/add_child_locations(.:format)
-  add_child_locations_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"add_child_locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
 // advertisement => /entity/:id(.:format)
   advertisement_path: function(_id, options) {
   return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
@@ -369,13 +365,9 @@
   get_locations_advertisements_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
-// location => /locations/:id(.:format)
-  location_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"locations",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
-// locations => /locations(.:format)
-  locations_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+// get_search_attributes_advertisements => /entity/get_search_attributes(.:format)
+  get_search_attributes_advertisements_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_search_attributes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // new_advertisement => /entity/new(.:format)
   new_advertisement_path: function(options) {
@@ -465,9 +457,9 @@
   root_path: function(options) {
   return Utils.build_path([], [], [7,"/",false], arguments);
   },
-// search_advertisements => /entity/search(.:format)
-  search_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"search",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+// streets_houses_api_advertisements => /api/entity/streets_houses(.:format)
+  streets_houses_api_advertisements_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"streets_houses",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // user_password => /users/password(.:format)
   user_password_path: function(options) {

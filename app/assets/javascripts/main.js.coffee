@@ -348,6 +348,15 @@ $('.SelectLocation, .DelChildren').livequery ->
           map.panTo(center)
           return
 
+
+$('.click_additional_search_params_action').livequery ->
+  $(this).change ->
+    offer_types = $.grep($('[name="advertisement[offer_type][]"]:checked').map( -> $(this).val() ).get(), (n) -> n).join(',')
+    categories = $.grep($('[name="advertisement[category][]"]:checked').map( -> $(this).val() ).get(), (n) -> n).join(',')
+    $.getScript Routes.get_search_attributes_advertisements_path({offer_types: offer_types, categories: categories})
+    return
+  return
+
 $('.autocomplete-search-location').livequery ->
   sp = {}
   sp['parent_id'] = $(this).attr('parent_id')
