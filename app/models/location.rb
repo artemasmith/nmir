@@ -18,7 +18,6 @@ class Location < ActiveRecord::Base
   has_many :sublocations_for_city, class_name: 'Location', primary_key: "city_id"
   belongs_to :parent_location, class_name: 'Location', foreign_key: "location_id"
 
-
   before_save :transliterate_title
   after_find :load_resources
 
@@ -72,7 +71,10 @@ class Location < ActiveRecord::Base
   end
 
 
-
+  def self.suggest_location parent_id, term
+    children = where(location_id: parent_id.to_i).where('title like ?', "%#{term}%").limit(15)
+    children.map{ |l| { label: l.title, value: l.id, has_children: l.has_children? } }
+  end
 
   #parent - title or id of parent location
   # to_i of string always returns zero, and there is no zero ids
@@ -115,6 +117,7 @@ class Location < ActiveRecord::Base
     end
   end
 
+
   private
   def load_resources
     return if self.loaded_resource
@@ -136,10 +139,8 @@ class Location < ActiveRecord::Base
     self.save
   end
 
-
-
-
   def transliterate_title
     self.translit = Russian::translit(self.title).downcase
   end
+
 end

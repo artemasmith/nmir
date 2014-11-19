@@ -147,27 +147,39 @@ sort_button_list = (context)->
   $.each list, (_, value) ->
     parent.append(value)
 
+#lid,group, value, multi, has_children, common, parent_id
+@click_select_location = (sp) ->
+  if sp['group'].find("input[value=#{sp['lid']}]").length is 0
+    if sp['has_children'] is 'true'
+      button = drop_down_button(sp['multi'], sp['lid'], sp['value'])
+    else
+      button = easy_button(sp['multi'], sp['lid'], sp['value'])
+    template = sp['group'].append(button)
+    sort_button_list(sp['group'].children('.GetChildren'))
+  else
+    sp['group'].find("input[value=#{sp['lid']}]").closest('.location-group').remove()
+  if (sp['multi'] is 'false')
+    if (sp['common'] == false)
+      $(".GetChildren[lid=#{sp['parent_id']}]").closest('.location-group').find('.location-group').remove()
+      sp['group'].append(button)
+    else
+      $(".location-button.active[lid!=#{sp['lid']}]").click()
+      sp['group'].find('.GetChildren').popover "destroy"
+      getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
 
 
 $('.SelectLocation').livequery ->
   $(this).click ->
-    lid = $(this).attr('lid')
-    group = $(this).closest('.location-group')
-    value = $(this).text()
-    multi = group.attr('multi')
-    if group.find("input[value=#{lid}]").length is 0
-      if $(this).attr('has_children') is 'true'
-        button = drop_down_button(multi, lid, value)
-      else
-        button = easy_button(multi, lid, value)
-      template = group.append(button)
-      sort_button_list(group.children('.GetChildren'))
-    else
-      group.find("input[value=#{lid}]").closest('.location-group').remove()
-    if (multi is 'false')
-      $(".location-button.active[lid!=#{lid}]").click()
-      group.find('.GetChildren').popover "destroy"
-      getChildren.apply template.find(".GetChildren[lid=#{lid}]") if template
+    sp = {}
+    sp['lid'] = $(this).attr('lid')
+    sp['group'] = $(this).closest('.location-group')
+    sp['value'] = $(this).text()
+    sp['multi'] = sp['group'].attr('multi')
+    sp['has_children'] = $(this).attr('has_children')
+    sp['common'] = true
+    sp['parent_id'] = 0
+    click_select_location(sp)
+
 $('.location_hide_action').livequery ->
   $(this).addClass('hidden')
 
@@ -335,6 +347,33 @@ $('.SelectLocation, .DelChildren').livequery ->
           center = first.geometry.getCoordinates()
           map.panTo(center)
           return
+
+$('.autocomplete-search-location').livequery ->
+  sp = {}
+  sp['parent_id'] = $(this).attr('parent_id')
+  sp['multi']  = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('multi')
+  $(this).autocomplete({
+    source: (request, response) ->
+      $.ajax(
+        url: '/api/entity/streets_houses'
+        dataType: 'json'
+        data:
+          term: request.term
+          parent_id: sp['parent_id']
+        success: (data) ->
+          response(data)
+          return
+      )
+    open: ->
+      $(".ui-autocomplete").css("z-index", "2147483647")
+    select: (event, ui) ->
+      sp['lid'] = ui.item.value
+      sp['group'] = $("input[value=#{sp['parent_id']}]").closest('.location-group')
+      sp['value'] = ui.item.label
+      sp['has_children'] = "#{ui.item.has_children}"
+      sp['common'] = false
+      click_select_location(sp)
+    })
 
 
 
