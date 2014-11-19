@@ -15,7 +15,9 @@
  */
 @import "bootstrap";
 @import "bootstrap/theme";
-@import "vendor/font-awesome";
+//@import "vendor/font-awesome";
+//@import "font-awesome-sprockets";
+@import 'font-awesome';
 @import "vendor/bootstrap-notify";
 @import "vendor/bootstrapValidator.min";
 
