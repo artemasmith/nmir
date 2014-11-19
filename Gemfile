@@ -17,6 +17,8 @@ gem 'therubyracer',  platforms: :ruby
 
 gem 'rails_admin'
 
+gem 'font-awesome-sass', '~> 4.2.0'
+
 #sphinx
 gem 'mysql2'
 gem 'thinking-sphinx'
