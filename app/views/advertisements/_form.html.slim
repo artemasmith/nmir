@@ -31,7 +31,7 @@ h1
                 label.btn.btn-default.AdvProperty hid="category" multi="one" value="#{AdvEnums::CATEGORIES.index(category)}" class="#{@adv.category.to_sym == category.to_sym  ? 'active' : ''}"
                   = f.radio_button :category,  "#{category}"
                   = t "advertisement.category.#{category}"
-      = render partial: 'advertisements/locations', locals: { id: 0, multi: false }
+      = render partial: 'advertisements/locations', locals: { id: 0, multi: true }
       = render '/advertisements/attributes_place', f: f
       = render '/advertisements/map', f: f
       = render '/advertisements/photos', f: f

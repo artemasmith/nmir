@@ -106,6 +106,33 @@ class Advertisement < ActiveRecord::Base
     return @grouped_allowed_attributes
   end
 
+  def self.grouped_allowed_search_attributes(adv_types, categories)
+    attr = []
+    section_count = 0
+    AdvConformity::ATTR_VISIBILITY.each_pair do |key1, value1|
+      if adv_types.blank? || adv_types.include?(key1)
+        value1.each_pair do |key2, value2|
+          if categories.blank? || categories.include?(key2)
+            attr << value2
+            section_count += 1
+          end
+        end
+      end
+    end
+
+    attr.flatten!
+
+    return %w(price_from not_for_agents) + attr.uniq.delete_if do |e|
+      match = e.match(/(.+)(_to|_from)$/i)
+      match ? match[2] == '_to' : false
+    end.delete_if do |e|
+      %w(landmark private_comment comment price_from not_for_agents).include? e
+    end.delete_if do |e|
+      attr.find_all{|n| n == e }.size != section_count
+    end
+  end
+
+
   def allowed_attributes
     return @allowed_attributes if defined?(@allowed_attributes)
     @allowed_attributes = AdvConformity::ATTR_VISIBILITY[adv_type][category] rescue []
@@ -116,9 +143,6 @@ class Advertisement < ActiveRecord::Base
     method_name = from_method.match(/(\w+)_from/)[1].to_sym
     define_method(method_name) { return self[from_method] }
   end
-
-
-
 
   def yandex_valid?
     time_now = Time.now
@@ -148,7 +172,23 @@ class Advertisement < ActiveRecord::Base
     end
   end
 
+  def self.adv_type(offer_type)
+    Advertisement.new(offer_type: offer_type).adv_type
+  end
 
+  def self.property_type(category)
+    Advertisement.new(category: category).property_type
+  end
+
+  def offer_type=(value)
+    self.adv_type = [0, 2, 3].include?(AdvEnums::OFFER_TYPES.index(value.to_sym).to_i) ? :offer: :demand
+    super(value)
+  end
+
+  def category=(value)
+    self.property_type = AdvEnums::CATEGORIES.index(value.to_sym).to_i <= 5 ? :residental : :commerce
+    super(value)
+  end
 
   private
 

@@ -27,9 +27,65 @@ module AdvertisementsHelper
     render 'advertisements/inputs/check_button', location: location
   end
 
-  #cond[ :tag, :class, :text]
-  def render_html_tag cond
-    "<#{ cond[:tag] } class=\"#{ cond[:class] }\">#{ cond[:text] }<\/#{cond[:tag]}>".html_safe
+  def render_search_input(search_attribute)
+    if search_attribute == 'room_from'
+        attr = {
+            name: :room,
+            value: params[:advertisement].try(:[], :room) || {},
+        }
+        return render '/advertisements/search_inputs/interval', attr: attr.merge({class_name: nil})
+    elsif match = search_attribute.match(/(.+)(_from)$/i)
+
+      suffix = match[1]
+
+      attr = {
+          name_from: "#{suffix}_from".to_sym,
+          name_to: "#{suffix}_to".to_sym,
+          value_from: params[:advertisement].try(:[], "#{suffix}_from".to_sym),
+          value_to: params[:advertisement].try(:[], "#{suffix}_to".to_sym),
+      }
+      if suffix == 'price'
+        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: 'fa-rouble'})
+      end
+      if suffix == 'floor' || suffix == 'floor_cnt' || suffix == 'space' || suffix == 'outdoors_space'
+        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil})
+      end
+
+    else
+
+      attr = {
+          name: search_attribute.to_sym,
+          value: params[:advertisement].try(:[], search_attribute.to_sym),
+      }
+
+      if search_attribute == 'not_for_agents'
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'})
+      end
+
+      if search_attribute == 'mortgage'
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-bank'})
+      end
+
+    end
+
+    raise "type not found #{search_attribute}"
+
+    # if (name_from == :space_from) || (name_from == :outdoors_space_from)
+    #   return render '/advertisements/inputs/numeric', attr
+    # end
+    #
+    # if (name_from == :comment) || (name_from == :private_comment)
+    #   return render '/advertisements/inputs/textarea', attr
+    # end
+    #
+    # if (name_from == :not_for_agents) || (name_from == :mortgage)
+    #   return render '/advertisements/inputs/boolean', attr
+    # end
+    #
+    # if (name_from == :landmark)
+    #   return render '/advertisements/inputs/text', attr
+    # end
+
   end
 
   def render_input(name_from, name_to, value_from, value_to)
@@ -54,7 +110,6 @@ module AdvertisementsHelper
     if (name_from == :comment) || (name_from == :private_comment)
       return render '/advertisements/inputs/textarea', attr
     end
-
 
     if (name_from == :not_for_agents) || (name_from == :mortgage)
       return render '/advertisements/inputs/boolean', attr

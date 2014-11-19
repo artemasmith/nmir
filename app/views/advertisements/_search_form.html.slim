@@ -11,7 +11,7 @@
 
         .btn-group data-toggle="buttons"
            - [:sale, :for_rent, :day].each do |offer|
-            - active = ((@section.present? ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
+            - active = ((@section.present? && @root_section != @section ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[offer_type][]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" checked=active = t("advertisement.offer.#{offer}")
       '
@@ -23,17 +23,11 @@
         '
         .btn-group data-toggle="buttons"
           - [:buy, :rent].each do |offer|
-            - active = ((@section.present? ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
+            - active = ((@section.present? && @root_section != @section ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[offer_type][]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" checked=active = t("advertisement.offer.#{offer}")
         '
-      /ARE we seriously do not need this checkbox????
-      /.btn-group data-toggle="buttons"
-        label.btn.btn-success class="#{('active' if params[:advertisement][:not_for_agents]=='1')}"
-          i.fa.fa-ban.fa-lg
-          '
-          input type="checkbox" name="advertisement[not_for_agents]" value="1" checked=(params[:advertisement][:not_for_agents]=='1')
-            | без агентов
+
 
       .form-group
         label.control-label
@@ -43,7 +37,7 @@
         '
         .btn-group data-toggle="buttons"
           - [:flat, :newbuild, :house, :ijs, :hotel, :room, :garage].each do |category|
-            - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.residental?)
+            - active = ((@section.present? && @root_section != @section ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.residental?)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
       .form-group
@@ -54,7 +48,7 @@
         '
         .btn-group data-toggle="buttons"
           - [:office, :trade, :storage, :cafe, :land].each do |category|
-            - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
+            - active = ((@section.present? && @root_section != @section ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     .row
@@ -75,75 +69,9 @@
             - if @root_section.present?
               - Section.child_for(@root_section.location_id).not_empty.each do |section|
                 = link_to section.title, section.url, class: 'button btn btn-default location_hide_action'
+    = render 'advertisements/additional_search_params'
     .row
       .col-sm-9.col-xs-12
-        .form-group
-          label
-            i.fa.fa-rouble.fa-lg
-            '
-            | цена
-          '
-          input.text-input-lg.width-define  placeholder="" name="advertisement[price_from]" type="text" value=params[:advertisement][:price_from]
-          '
-          label —
-          '
-          input.text-input-lg.width-define  placeholder="" name="advertisement[price_to]" type="text" value=params[:advertisement][:price_to]
-          '
-          /MMM... Needs to implement logic here!!
-          .btn-group
-            a.btn.btn-default.dropdown-toggle.btn-xs data-toggle="dropdown"
-              | за всё
-              span.caret
-            '
-            ul.dropdown-menu role="menu"
-              li
-                a href="#"  за м&sup2;
-              li
-                a href="#"  за сотку
-        .form-group
-          .btn-group data-toggle="buttons"
-            .btn.btn-success.btn-xs
-              i.fa.fa-check.fa-lg
-              | частные
-            '
-            .btn.btn.btn-xs.bc-white class="#{('active' if params[:advertisement][:mortgage]=='1')}"
-              i.fa.fa-bank
-              input type="checkbox" name="advertisement[mortgage]" value="1" checked=(params[:advertisement][:mortgage]=='1')
-              | ипотека
-        '
-        .form-group
-          label комнат
-          '
-          span.btn-group data-toggle="buttons"
-            a.btn.btn-default.btn-sm 1
-            a.btn.btn-default.btn-sm 2
-            a.btn.btn-default.btn-sm 3
-            a.btn.btn-default.btn-sm 4+
-        '
-        .form-group
-          label площадь
-          '
-          input.text-input-m#example2  /
-          label for="exampleInputPassword2"  —
-          input.text-input-m#exampleInputPassword2  type="text" /
-          a.btn.btn-default.btn-xs.disabled
-            | м&sup2;
-            span.caret
-        '
-        .form-group
-          label этаж
-          '
-          input.text-input-sx#example2  /
-          label for="exampleInputPassword2"  —
-          input.text-input-sx#exampleInputPassword2  type="text" /
-        '
-        .form-group
-          label этажей
-          '
-          input.text-input-sx#example2  /
-          label for="exampleInputPassword2"  —
-          input.text-input-sx#exampleInputPassword2  type="text" /
-        '
         .form-group
           label
             i.fa.fa-calendar
@@ -154,10 +82,7 @@
             span.caret
 
 
-          /.input-prepend.input-group
-            span.add-on.input-group-addon
-              i.glyphicon.glyphicon-calendar.fa.fa-calendar
-            input.range_date_picker_action.form-control name="advertisement[date_interval]" type="text" value=params[:advertisement][:date_interval].presence
+
         '
         .form-group
           label

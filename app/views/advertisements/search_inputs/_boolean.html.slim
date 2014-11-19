@@ -1,0 +1,7 @@
+.form-group
+  .btn-group data-toggle="buttons"
+    label.btn.btn-default.btn-xs class="#{('active' if attr[:value]=='1')}"
+      i.fa.fa-lg class="#{attr[:class_name]}"
+      '
+      input type="checkbox" name="advertisement[#{attr[:name]}]" value="1" checked=(attr[:value]=='1')
+      = t("advertisement.attributes.#{attr[:name]}")

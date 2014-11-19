@@ -18,7 +18,7 @@ class AdvertisementsController < ApplicationController
       property_type = AdvEnums::PROPERTY_TYPES.index(:residental) if search_params[:category].present? && ('0'..'5').to_a.sort == search_params[:category].sort
       property_type = AdvEnums::PROPERTY_TYPES.index(:commerce) if search_params[:category].present? && ('6'..'11').to_a.sort == search_params[:category].sort
 
-      load_location_state!()
+      load_location_state!
 
       child_location_ids = []
       @locations.each do |m|
@@ -68,25 +68,55 @@ class AdvertisementsController < ApplicationController
     options[:per_page] = @limit
 
 
-    if @section.present?
+
+    adv_types = []
+    categories = []
+
+    if @section.present? && @section != @root_section
       [:offer_type, :category].each do |m|
         with[m] =  [@section.attributes[m.to_s]] if @section.attributes[m.to_s].present?
       end
       with[:property_type] =  AdvEnums::PROPERTY_TYPES.index(@section.property_type.to_sym) if @section.property_type.present?
+
+      adv_types = [Advertisement.adv_type(@section.offer_type)] if @section.offer_type.present?
+      categories = [@section.category] if @section.category.present?
     else
       [:offer_type, :category].each do |m|
         with[m] = search_params[m].map{|e| e.to_i} if search_params[m].present?
       end
+
+      adv_types = search_params[:offer_type].map{|e| Advertisement.adv_type(AdvEnums::OFFER_TYPES[e.to_i]) }.uniq if search_params[:offer_type].present?
+      categories = search_params[:category].map{|e| AdvEnums::CATEGORIES[e.to_i].to_s}.uniq if search_params[:category].present?
     end
 
+    @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories)
 
-    [:price].each do |m|
+    [:price, :floor, :floor_cnt, :space, :outdoors_space].each do |m|
       if search_params["#{m}_from"].present?
         from = search_params["#{m}_from"].to_i
         to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_i : 999999999
         from, to = to, from if to < from
         with["#{m}_from"] = from..to
         with["#{m}_to"] = from..to if search_params["#{m}_to"].present?
+      end
+    end
+
+    [:room].each do |m|
+      if search_params["#{m}"].present?
+        param = []
+        if search_params["#{m}"]['3'] == '1'
+          min = 4
+          [3, 2, 1].each do |e|
+            min = e if search_params["#{m}"][(e - 1).to_s] == '1'
+          end
+          param = (min..999999999)
+        else
+          [1, 2, 3].each do |e|
+            param << e if search_params["#{m}"][(e - 1).to_s] == '1'
+          end
+        end
+
+        with["#{m}_from"] = with["#{m}_to"] = param
       end
     end
 
@@ -100,7 +130,6 @@ class AdvertisementsController < ApplicationController
       date_from, date_to = date_to, date_from if date_to < date_from
       with[:updated_at] = date_from .. date_to
     end
-
 
     with[:location_ids] = @locations.find_all { |l|  @locations.find{ |n| n.location_id == l.id}.blank? }.map{|l| l.id}
     @search_result_ids = ThinkingSphinx.search_for_ids(search_params[:description].presence, options)
@@ -132,6 +161,7 @@ class AdvertisementsController < ApplicationController
     [:offer_type, :category].each do |m|
       with[m] =  [@adv.attributes[m.to_s]]
     end
+
     [:price].each do |m|
       if @adv.price_from.present?
         from = @adv.price_from.to_i / 100 * 90
@@ -174,6 +204,7 @@ class AdvertisementsController < ApplicationController
     @adv = Advertisement.new
     @adv.offer_type = 0
     @adv.category = 0
+    @adv.adv_type = :offer
     @adv.adv_type = :offer
     @adv.property_type = :residental
     @grouped_allowed_attributes = @adv.grouped_allowed_attributes
@@ -236,8 +267,7 @@ class AdvertisementsController < ApplicationController
   end
 
   def get_search_attributes
-    adv = Advertisement.new(category: params[:category].to_sym, adv_type: params[:adv_type].to_sym)
-    @grouped_allowed_attributes = adv.grouped_allowed_attributes
+    @search_attributes = Advertisement.grouped_allowed_search_attributes(params[:categories], params[:adv_types])
   end
 
   def check_phone
@@ -246,7 +276,6 @@ class AdvertisementsController < ApplicationController
       .where('phones.number' => params[:phones].split(',').map{|phone| Phone.normalize(phone)})
       .all
   end
-
 
   protected
 

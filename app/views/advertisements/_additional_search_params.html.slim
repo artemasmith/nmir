@@ -1,0 +1,6 @@
+.row.additional_search_params_action
+  .col-sm-9.col-xs-12
+    - @search_attributes.each do |search_attribute|
+      = render_search_input(search_attribute)
+      '
+      '

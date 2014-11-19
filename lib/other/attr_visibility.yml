@@ -23,6 +23,17 @@ offer:
     - private_comment
     - landmark
 
+  hotel:
+    - floor_from
+    - floor_cnt_from
+    - space_from
+    - price_from
+    - not_for_agents
+    - mortgage
+    - comment
+    - private_comment
+    - landmark
+
   house:
     - space_from
     - outdoors_space_from
@@ -120,6 +131,16 @@ offer:
     - landmark
 
 demand:
+  hotel:
+    - floor_from
+    - floor_cnt_from
+    - space_from
+    - price_from
+    - not_for_agents
+    - mortgage
+    - comment
+    - private_comment
+    - landmark
   newbuild:
     - floor_from
     - floor_to

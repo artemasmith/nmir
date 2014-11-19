@@ -2,7 +2,7 @@
   .user-params
     legend Контакт
     .form.form-horizontal role="form"
-      = f.fields_for :user, (@adv.user.presence || @adv.build_user) do |f|
+      = f.fields_for :user, (@adv.user.presence || @adv.build_user(role: :owner)) do |f|
         .form-group
           label.col-sm-3.control-label for="name"  Имя
           .col-sm-4
@@ -11,14 +11,15 @@
           label.col-sm-3.control-label for="name"  Роль
           .col-sm-4
             .btn-group data-toggle="buttons"
-              .btn.btn-default type="button"
-                = f.radio_button :role, :agent
-                label Агент
-              .btn.btn-default type="button"
+              label.btn.btn-default type="button" class="#{'active' if f.object.role == 'owner'}"
                 = f.radio_button :role, :owner
-                label Владелец
+                | Владелец
+              label.btn.btn-default type="button" class="#{'active' if f.object.role == 'agent'}"
+                = f.radio_button :role, :agent
+                | Агент
+
         .form-group
-          label.control-label.col-sm-3 for="appendedtext"  Телефон
+          label.control-label.col-sm-3 for="reg-phones"  Телефон
           .col-sm-4#reg-phones
             = f.fields_for :phones, (@adv.user.phones.presence || @adv.user.phones.build) do |f|
               .input-group

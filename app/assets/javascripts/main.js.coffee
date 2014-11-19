@@ -234,7 +234,7 @@ $('.ShowAdvPhone').livequery ->
       dataType: 'json'
     ).done (data)->
       span =
-        $this.replaceWith("<span>#{data.phone}</span>")
+        $this.replaceWith("<div class=\"btn btn-default btn-xs\">#{data.phone}</div>")
       return
     .error ->
       $(".top-right").notify(
