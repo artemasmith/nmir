@@ -12,11 +12,24 @@ class AdvertisementsController < ApplicationController
     #clear
 
     if params[:url].blank?
-      offer_type = search_params[:offer_type].first if search_params[:offer_type].present? && search_params[:offer_type].size == 1
-      category = search_params[:category].first if search_params[:category].present? && search_params[:category].size == 1
 
-      property_type = AdvEnums::PROPERTY_TYPES.index(:residental) if search_params[:category].present? && ('0'..'5').to_a.sort == search_params[:category].sort
-      property_type = AdvEnums::PROPERTY_TYPES.index(:commerce) if search_params[:category].present? && ('6'..'11').to_a.sort == search_params[:category].sort
+      single_section = true
+
+      if search_params[:offer_type].present? && search_params[:offer_type].size == 1
+        offer_type = search_params[:offer_type].first
+      else
+        single_section = false
+      end
+
+      if search_params[:category].present? && search_params[:category].size == 1
+        category = search_params[:category].first
+      elsif search_params[:category].present? && ('0'..'5').to_a.sort == search_params[:category].sort
+        property_type = AdvEnums::PROPERTY_TYPES.index(:residental)
+      elsif search_params[:category].present? && ('6'..'11').to_a.sort == search_params[:category].sort
+        property_type = AdvEnums::PROPERTY_TYPES.index(:commerce)
+      else
+        single_section = false
+      end           
 
       load_location_state!
 
@@ -25,8 +38,13 @@ class AdvertisementsController < ApplicationController
         child_location_ids << m if @locations.find{|n| n.location_id == m.id}.blank?
       end
 
-      location_id = child_location_ids.first if child_location_ids.size == 1
-      @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first
+      if child_location_ids.size == 1
+        location_id = child_location_ids.first
+      else
+        single_section = false
+      end
+
+      @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first if single_section
 
       if @section.present?
         if @section.url != '/'
