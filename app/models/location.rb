@@ -72,7 +72,7 @@ class Location < ActiveRecord::Base
 
 
   def self.suggest_location parent_id, term
-    children = where(location_id: parent_id.to_i).where('title like ?', "%#{term}%").limit(15)
+    children = where(location_id: parent_id.to_i).where('LOWER(title) like ?', "%#{term.to_s.mb_chars.downcase}%").limit(15)
     children.map{ |l| { label: l.title, value: l.id, has_children: l.has_children? } }
   end
 
