@@ -41,6 +41,6 @@ class User < ActiveRecord::Base
   end
 
   def change_adv_role
-    self.advertisements.each { |adv| adv.update(user_role: self.role) }
+    Advertisement.where(user_id: self.id).update_all({user_role: self.role})
   end
 end

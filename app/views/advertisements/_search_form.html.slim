@@ -11,7 +11,7 @@
 
         .btn-group data-toggle="buttons"
            - [:sale, :for_rent, :day].each do |offer|
-            - active = ((@section.present? ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
+            - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[offer_type][]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" checked=active = t("advertisement.offer.#{offer}")
       '
@@ -23,7 +23,7 @@
         '
         .btn-group data-toggle="buttons"
           - [:buy, :rent].each do |offer|
-            - active = ((@section.present? ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
+            - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[offer_type][]" value="#{AdvEnums::OFFER_TYPES.index(offer)}" checked=active = t("advertisement.offer.#{offer}")
         '
@@ -37,7 +37,7 @@
         '
         .btn-group data-toggle="buttons"
           - [:flat, :newbuild, :house, :ijs, :hotel, :room, :garage].each do |category|
-            - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.residental?)
+            - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.residental?)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
       .form-group
@@ -48,7 +48,7 @@
         '
         .btn-group data-toggle="buttons"
           - [:office, :trade, :storage, :cafe, :land].each do |category|
-            - active = ((@section.present? ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
+            - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
             label.btn.btn-default class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     .row
