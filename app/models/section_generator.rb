@@ -11,6 +11,18 @@ module SectionGenerator
     ).increment!(:advertisements_count)
   end
 
+  def self.by_offer_category_without_location(offer_type, category)
+    url = "/#{chain_url([offer_type, category])}"
+    Section.create_with(
+        generate_attributes(url, offer_type, category, nil, nil)
+    )
+    .find_or_create_by(
+        offer_type: Section.offer_types[offer_type],
+        category: Section.categories[category],
+        location_id: nil
+    ).increment!(:advertisements_count)
+  end
+
   def self.by_property_offer(property_type, offer_type, location, loc_chain_url, loc_chain_title)
     url = "/#{loc_chain_url}/#{chain_url([offer_type, property_type])}"
     Section.create_with(
@@ -67,31 +79,31 @@ module SectionGenerator
 
   def self.generate_title(offer_type, category, property_type, loc_chain_title)
     if(offer_type && category)
-      return "#{enum_title(offer_type)} #{enum_title(category)} #{loc_chain_title}"
+      return ["#{enum_title(offer_type)} #{enum_title(category)}", loc_chain_title].compact.join(' ')
     elsif(offer_type && property_type)
-      return "#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость #{loc_chain_title}"
+      return ["#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость", loc_chain_title].compact.join(' ')
     elsif(offer_type.blank? && property_type.blank? && category.blank?)
-      return "Недвижимость #{loc_chain_title}"
+      return ['Недвижимость', loc_chain_title].compact.join(' ')
     end
   end
 
   def self.generate_keywords(offer_type, category, property_type, loc_chain_title)
     if(offer_type && category)
-      return "#{enum_title(offer_type)} #{enum_title(category)}, #{loc_chain_title}"
+      return ["#{enum_title(offer_type)} #{enum_title(category)}", loc_chain_title].compact.join(', ')
     elsif(offer_type && property_type)
-      return "#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость, #{loc_chain_title}"
+      return ["#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость", loc_chain_title].compact.join(', ')
     elsif(offer_type.blank? && property_type.blank? && category.blank?)
-      return "Недвижимость, #{loc_chain_title}"
+      return ['недвижимость', loc_chain_title].compact.join(', ')
     end
   end
 
   def self.generate_description(offer_type, category, property_type, loc_chain_title)
     if(offer_type && category)
-      return "#{loc_chain_title} #{enum_title(offer_type)} #{enum_title(category)}"
+      return [loc_chain_title, enum_title(offer_type), enum_title(category)].compact.join(' ')
     elsif(offer_type && property_type)
-      return "#{loc_chain_title} #{enum_title(offer_type)} #{enum_title(property_type)} недвижимость"
+      return [loc_chain_title, enum_title(offer_type), enum_title(property_type), 'недвижимость'].compact.join(' ')
     elsif(offer_type.blank? && property_type.blank? && category.blank?)
-      return "#{loc_chain_title} недвижимость"
+      return [loc_chain_title, 'недвижимость'].compact.join(' ')
     end
   end
 

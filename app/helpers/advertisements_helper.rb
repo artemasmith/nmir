@@ -59,7 +59,9 @@ module AdvertisementsHelper
       }
 
       if search_attribute == 'not_for_agents'
-        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'})
+        return (can?(:search_not_for_agents, Advertisement)) ?
+            render('/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'})) :
+            nil
       end
 
       if search_attribute == 'mortgage'

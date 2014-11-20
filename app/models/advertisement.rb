@@ -212,6 +212,7 @@ class Advertisement < ActiveRecord::Base
       SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url, locations_chain_title)
       SectionGenerator.by_location(loc, locations_chain_url, locations_chain_title)
     end
+    SectionGenerator.by_offer_category_without_location(offer_type, category)
     SectionGenerator.empty
   end
 

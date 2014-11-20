@@ -14,9 +14,16 @@
     - if @root_section.h1.present?
       h1.header-font
         == bb_tags(@root_section.h1, @bbtags)
-    - if @root_section.p.present?
+    - unless params[:advertisement].empty?
       p
-        == bb_tags(@root_section.p, @bbtags)
+        i.fa.fa-list
+        '
+        == bb_tags("Найдено [b]search_entries[/b]", @bbtags)
+
+    - else
+      - if @root_section.p.present?
+        p
+          == bb_tags(@root_section.p, @bbtags)
 
   = render 'advertisements/search_results'
   - if @root_section.present?

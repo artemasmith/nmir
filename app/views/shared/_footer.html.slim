@@ -1,27 +1,32 @@
 hr
   .row
     .col-sm-4
-      i.fa.fa-line-chart
-      = "2007–#{DateTime.now.year} Электронная база недвижимости."
-    .col-sm-4
-        i.fa.fa-fax
-        '
-        | +7 (863) 200-61-54
+      ul.list-unstyled
+        li
+          i.fa.fa-line-chart
+          = "2007–#{DateTime.now.year} Электронная база недвижимости."
+    .col-sm-3
+      ul.list-unstyled
+        li
+          i.fa.fa-fax +7 (863) 200-61-54
+        li
+          a href="mailto:info@multilisting.su"
+            i.fa.fa-envelope-o info@multilisting.su
     .col-sm-2
-      a href="mailto:info@multilisting.su"
-        i.fa.fa-envelope-o
-        '
-        | info@multilisting.su
-    .col-sm-2
-      javascript:
-        document.write("<a href='//www.liveinternet.ru/click' " +
-        "target=_blank><img src='//counter.yadro.ru/hit?t17.1;r" +
-        escape(document.referrer) + ((typeof(screen) == "undefined") ? "" :
-        ";s" + screen.width + "*" + screen.height + "*" + (screen.colorDepth ?
-        screen.colorDepth:screen.pixelDepth))+";u" + escape(document.URL) +
-        ";" + Math.random() +
-        "' alt='' title='LiveInternet: показано число просмотров за 24" +
-        " часа, посетителей за 24 часа и за сегодня' " +
-        "border='0' width='88' height='31'><\/a>");
+      ul.list-unstyled
+        li
+          javascript:
+            document.write("<a href='//www.liveinternet.ru/click' " +
+            "target=_blank><img src='//counter.yadro.ru/hit?t17.1;r" +
+            escape(document.referrer) + ((typeof(screen) == "undefined") ? "" :
+            ";s" + screen.width + "*" + screen.height + "*" + (screen.colorDepth ?
+            screen.colorDepth : screen.pixelDepth)) + ";u" + escape(document.URL) +
+            ";" + Math.random() +
+            "' alt='' title='LiveInternet: показано число просмотров за 24" +
+            " часа, посетителей за 24 часа и за сегодня' " +
+            "border='0' width='88' height='31'><\/a>");
 hr
+
+
+
 

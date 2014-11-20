@@ -11,6 +11,7 @@ class Ability
     elsif user.owner?
       can :read, :all
       can :manage, Advertisement, user_id: user.id
+      can :search_not_for_agents, Advertisement
     elsif user.agent?
       can :read, :all
       can :manage, Advertisement, user_id: user.id

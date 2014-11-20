@@ -13,22 +13,25 @@ class AdvertisementsController < ApplicationController
 
     if params[:url].blank?
 
-      single_section = true
+      offer_type_section = false
+      category_section = false
+      location_section = false
+      property_type_section = false
 
       if search_params[:offer_type].present? && search_params[:offer_type].size == 1
         offer_type = search_params[:offer_type].first
-      else
-        single_section = false
+        offer_type_section = true
       end
 
       if search_params[:category].present? && search_params[:category].size == 1
         category = search_params[:category].first
+        category_section = true
       elsif search_params[:category].present? && ('0'..'5').to_a.sort == search_params[:category].sort
         property_type = AdvEnums::PROPERTY_TYPES.index(:residental)
+        property_type_section = true
       elsif search_params[:category].present? && ('6'..'11').to_a.sort == search_params[:category].sort
         property_type = AdvEnums::PROPERTY_TYPES.index(:commerce)
-      else
-        single_section = false
+        property_type_section = true
       end
 
       load_location_state!
@@ -40,11 +43,15 @@ class AdvertisementsController < ApplicationController
 
       if child_location_ids.size == 1
         location_id = child_location_ids.first
-      else
-        single_section = false
+        location_section = true
       end
 
-      @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first if single_section
+      if (location_section && offer_type_section && category_section) ||
+         (location_section && offer_type_section && property_type_section) ||
+         (location_section) ||
+         (offer_type_section && category_section)
+        @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first
+      end
 
       if @section.present? && @section.url != '/'
         params[:advertisement].delete_if{|e| params[:advertisement][e].blank?}
@@ -136,8 +143,12 @@ class AdvertisementsController < ApplicationController
       end
     end
 
-    [:not_for_agents, :mortgage].each do |m|
+    [:mortgage].each do |m|
       with[m] = search_params[m] == '1' if search_params[m].present?
+    end
+
+    [:not_for_agents].each do |m|
+      with[m] = search_params[m] == '1' if (search_params[m].present?) && can?(:search_not_for_agents, Advertisement)
     end
 
     if search_params[:date_interval].present?
@@ -149,8 +160,12 @@ class AdvertisementsController < ApplicationController
 
     with[:location_ids] = @locations.find_all { |l|  @locations.find{ |n| n.location_id == l.id}.blank? }.map{|l| l.id}
     @search_result_ids = ThinkingSphinx.search_for_ids(search_params[:description].presence, options)
-    @search_result_count = @search_result_ids.total_entries
-    @bbtags = {'total_entries' => @search_result_count}
+    @search_result_count = @search_result_ids.total_entries.to_i
+    @total_result_count = ThinkingSphinx.count('', {:classes => [Advertisement]}).to_i
+    @bbtags = {
+        'search_entries' => "#{@search_result_count} #{Russian.p(@search_result_count, 'объявление', 'объявления', 'объявлений')}",
+        'total_entries' => "#{@total_result_count} #{Russian.p(@total_result_count, 'объявление', 'объявления', 'объявлений')}"
+    }
     @pages = (@search_result_count.to_f / @limit.to_f).ceil
     @search_results = Advertisement.where(id: @search_result_ids).order('updated_at DESC')
   end
