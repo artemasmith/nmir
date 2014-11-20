@@ -1,6 +1,6 @@
 ul.list-unstyled
   - @search_results.each_with_index do |adv, index|
-    li.media.clearfix.adv-card class="#{'adv_item_even' if index % 2 == 0}"
+    li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}"
       span.col-xs-12.col-md-1.text-muted.small
         = l adv.created_at
         '
