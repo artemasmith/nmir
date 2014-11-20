@@ -69,9 +69,9 @@
             - if @root_section.present?
               - Section.child_for(@root_section.location_id).not_empty.each do |section|
                 = link_to section.title, section.url, class: 'button btn btn-default location_hide_action'
-    = render 'advertisements/additional_search_params'
     .row
-      .col-sm-9.col-xs-12
+      .col-sm-10.col-xs-12.additional_search_params_container_action
+        = render 'advertisements/additional_search_params'
         .form-group
           label
             i.fa.fa-calendar
@@ -81,16 +81,13 @@
             | за всё время
             span.caret
 
-
-
-
         '
         .form-group
           label
             i.fa.fa-file-text-o
           '
           input placeholder="текст или №" type="text" name="advertisement[description]" value=params[:advertisement][:description]
-      .col-sm-3
+      .col-sm-2
         button.btn.btn-primary.btn-lg.pull-left type="submit"
           i.fa.fa-search.fa-lg
           '

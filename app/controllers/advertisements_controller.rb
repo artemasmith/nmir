@@ -2,7 +2,7 @@ class AdvertisementsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :set_location, except: [:new, :create]
   before_action :find_adv, only: [:show, :edit, :update]
-  load_and_authorize_resource except: [:get_locations, :get_attributes]
+  load_and_authorize_resource except: [:get_locations, :get_attributes, :get_search_attributes]
 
 
   def index

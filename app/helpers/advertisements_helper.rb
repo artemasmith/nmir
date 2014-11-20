@@ -47,8 +47,11 @@ module AdvertisementsHelper
       if suffix == 'price'
         return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: 'fa-rouble'})
       end
-      if suffix == 'floor' || suffix == 'floor_cnt' || suffix == 'space' || suffix == 'outdoors_space'
-        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil})
+      if suffix == 'floor' || suffix == 'floor_cnt'
+        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-2'})
+      end
+      if suffix == 'space' || suffix == 'outdoors_space'
+        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-3'})
       end
 
     else

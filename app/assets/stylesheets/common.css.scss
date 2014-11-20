@@ -33,6 +33,24 @@
 
 .btn.SelectLocation {padding: 2px 6px;}
 
+input[type="text"].w-2,
+input[type="date"].w-2,
+input[type="datetime"].w-2,
+input[type="email"].w-2,
+input[type="number"].w-2,
+select.w-2{
+  width: 40px;
+}
+input[type="text"].w-3,
+input[type="date"].w-3,
+input[type="datetime"].w-3,
+input[type="email"].w-3,
+input[type="number"].w-3,
+select.w-3{
+  width: 70px;
+}
+
+
 
 
 
