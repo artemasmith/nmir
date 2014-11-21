@@ -1,15 +1,24 @@
 - if @locations.count < 20 && @locations['street'].blank?
   - @locations.each_value do |value|
     .row.top-buffer
+      legend
+        =(@location.present?) ? t("activerecord.attributes.location.#{@location.location_type}") +" #{@location.title}" : t("activerecord.attributes.location.region")
       .col-md-12
+        - if @location.present?
+          legend
+            =t "activerecord.attributes.location.#{@locations.keys[0]}"
         .btn-group data-toggle="buttons"
           - value.sort_by{ |l| l[:title] }.each do |location|
             .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}" class="button btn btn-default SelectLocation"
               = location[:title]
 - else
   .row.pop-show-location
+    legend
+      = t("activerecord.attributes.location.#{@location.location_type}") +" #{@location.title}"
     .col-md-12
       form.form-horizontal role="form"
+        legend
+          =t "activerecord.attributes.location.#{@locations.keys[0]}"
         .form-group
           label.col-sm-6.popover-short-padding.control-label for="autocomplete" Поиск по названию
           .col-sm-6.popover-long-padding
