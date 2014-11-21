@@ -795,12 +795,12 @@
             }
         },
 
-        _months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+        _months : 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split('_'),
         months : function (m) {
             return this._months[m.month()];
         },
 
-        _monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
+        _monthsShort : 'янв_фев_мар_апр_мая_июня_июля_авг_сен_окт_ноя_дек'.split('_'),
         monthsShort : function (m) {
             return this._monthsShort[m.month()];
         },
@@ -826,17 +826,17 @@
             }
         },
 
-        _weekdays : 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'),
+        _weekdays : 'воскресенье_понедельник_вторник_среда_четверг_пятница_суббота'.split('_'),
         weekdays : function (m) {
             return this._weekdays[m.day()];
         },
 
-        _weekdaysShort : 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'),
+        _weekdaysShort : 'вос_пон_вт_ср_чет_пят_суб'.split('_'),
         weekdaysShort : function (m) {
             return this._weekdaysShort[m.day()];
         },
 
-        _weekdaysMin : 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'),
+        _weekdaysMin : 'вос_пон_вт_ср_чет_пят_суб'.split('_'),
         weekdaysMin : function (m) {
             return this._weekdaysMin[m.day()];
         },
@@ -954,7 +954,7 @@
         },
 
         _week : {
-            dow : 0, // Sunday is the first day of the week.
+            dow : 1, // Sunday is the first day of the week.
             doy : 6  // The week that contains Jan 1st is the first week of the year.
         },
 
