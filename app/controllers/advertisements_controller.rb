@@ -252,7 +252,7 @@ class AdvertisementsController < ApplicationController
     end
 
     if @adv.valid?
-      @adv.save and redirect_to advertisement_path(@adv)
+      @adv.save and redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
     else
       load_location_state!
       @grouped_allowed_attributes = @adv.grouped_allowed_attributes
@@ -262,7 +262,7 @@ class AdvertisementsController < ApplicationController
 
   def update
     if @adv.update_attributes(advertisement_params)
-      redirect_to advertisement_path(@adv)
+      redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
     else
       load_location_state!
       @grouped_allowed_attributes = @adv.grouped_allowed_attributes

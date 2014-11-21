@@ -73,20 +73,18 @@
       .col-sm-10.col-xs-12.additional_search_params_container_action
         = render 'advertisements/additional_search_params'
         .form-group
-          label
-            i.fa.fa-calendar
-          '
-          .btn.btn-default.btn-xs.range_date_picker_action
-            input.range_date_picker_input name="advertisement[date_interval]" type="hidden" value=params[:advertisement][:date_interval].presence
-            | за всё время
-            span.caret
+          .input-prepend.input-group
+            span.add-on.input-group-addon
+              i.fa.fa-file-text-o
+            input.form-control placeholder="текст или №" type="text" name="advertisement[description]" value=params[:advertisement][:description]
 
         '
         .form-group
-          label
-            i.fa.fa-file-text-o
-          '
-          input placeholder="текст или №" type="text" name="advertisement[description]" value=params[:advertisement][:description]
+          .input-prepend.input-group
+            span.add-on.input-group-addon
+              i.glyphicon.glyphicon-calendar.fa.fa-calendar
+            input.range_date_picker_action.form-control name="advertisement[date_interval]" type="text" value=params[:advertisement][:date_interval].presence
+
       .col-sm-2
         button.btn.btn-primary.btn-lg.pull-left type="submit"
           i.fa.fa-search.fa-lg

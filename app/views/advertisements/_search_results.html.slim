@@ -12,9 +12,9 @@ ul.list-unstyled
       .media-object.pull-left
         - if adv.preview_url.present?
           a href="#{advertisement_path(adv)}_#{adv.url}"
-            img.preview-url.col-xs-12 src=adv.preview_url  alt=adv.preview_alt
+            img.preview-url.col-xs-12 src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
         -else
-          img.preview-url.col-xs-12 src="#{image_path("empty_preview.png")}"
+          img.preview-url.col-xs-12 src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
 
       span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
         span.h4.media-heading

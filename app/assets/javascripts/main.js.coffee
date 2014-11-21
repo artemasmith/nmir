@@ -318,6 +318,34 @@ $('.range_date_picker_action').livequery ->
     {
       format: 'DD/MM/YYYY'
       locale: 'ru'
+      ranges:
+        'За сегодня': [
+          moment()
+          moment()
+        ]
+        'За вчера': [
+          moment().subtract("days", 1)
+          moment().subtract("days", 1)
+        ]
+        "За неделю": [
+          moment().subtract("days", 6)
+          moment()
+        ]
+        "За 30 дней": [
+          moment().subtract("days", 29)
+          moment()
+        ]
+        "За месяц": [
+          moment().startOf("month")
+          moment().endOf("month")
+        ]
+        "За прошлый месяц": [
+          moment().subtract("month", 1).startOf("month")
+          moment().subtract("month", 1).endOf("month")
+        ]
+
+      startDate: moment().subtract("days", 29)
+      endDate: moment()
     },
     (dstart, dend) ->
       $('.range_date_picker_input').val(dstart.format('DD/MM/YYYY')  + ' - ' + dend.format('DD/MM/YYYY'))

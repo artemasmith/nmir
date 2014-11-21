@@ -56,7 +56,7 @@ ol.breadcrumb
         = @photos.first.comment
       - @photos.each do |photo|
         a.show_photo_action href="#" full_scr=photo.advertisement_photo comment=photo.comment
-          = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail'
+          = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail', style: 'width: 145px;height: 90px;'
   .col-lg-5.clearfix
     p
       = @adv.comment
