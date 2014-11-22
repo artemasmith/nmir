@@ -158,7 +158,7 @@
                 fromLabel: 'От',
                 toLabel: 'До',
                 weekLabel: 'Нед.',
-                customRangeLabel: 'Другой диапозон',
+                customRangeLabel: 'Другой интервал',
                 daysOfWeek: moment.weekdaysMin(),
                 monthNames: moment.monthsShort(),
                 firstDay: moment.localeData()._week.dow

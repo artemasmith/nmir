@@ -147,9 +147,15 @@ class AdvertisementsController < ApplicationController
       with[m] = search_params[m] == '1' if search_params[m].present?
     end
 
-    [:not_for_agents].each do |m|
-      with[m] = search_params[m] == '1' if (search_params[m].present?) && can?(:search_not_for_agents, Advertisement)
+    if current_user && current_user.agent?
+      with[:not_for_agents] = false
     end
+
+    [:owner].each do |m|
+      with[:user_role] = AdvEnums::USER_ROLES.index(:owner) if search_params[m].present? && search_params[m] == '1'
+    end
+
+
 
     if search_params[:date_interval].present?
       date_from = (Date.parse(search_params[:date_interval].split('-').first.strip) - 1.day) rescue (DateTime.now - 1.day).to_date
@@ -274,18 +280,17 @@ class AdvertisementsController < ApplicationController
   def get_locations
     if params[:parent_id].to_i != 0
       @location = Location.find(params[:parent_id])
-      @locations = @location.children_locations
+      if @location.city?
+        @locations = @location.children_locations(:non_admin_area)
+      else
+        @locations = @location.children_locations
+      end
     else
       @locations = Location.where(location_type: 0)
     end
-    #@locations = @locations
-    @locations = @locations.map do |l| { id: l.id,
-                                         location_type: l.location_type,
-                                         title: l.title,
-                                         has_children: l.has_children?}
-    end
-    @locations = @locations.group_by { |l| l[:location_type] }
-
+    @locations = @locations.map { |l|
+      { id: l.id, location_type: l.location_type, title: l.title, has_children: l.has_children? }
+    }.group_by { |l| l[:location_type] }
   end
 
 

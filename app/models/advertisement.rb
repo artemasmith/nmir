@@ -122,7 +122,7 @@ class Advertisement < ActiveRecord::Base
 
     attr.flatten!
 
-    return %w(price_from not_for_agents) + attr.uniq.delete_if do |e|
+    return %w(price_from owner) + attr.uniq.delete_if do |e|
       match = e.match(/(.+)(_to|_from)$/i)
       match ? match[2] == '_to' : false
     end.delete_if do |e|
@@ -187,6 +187,11 @@ class Advertisement < ActiveRecord::Base
 
   def category=(value)
     self.property_type = AdvEnums::CATEGORIES.index(value.to_sym).to_i <= 5 ? :residental : :commerce
+    super(value)
+  end
+
+  def room_from=(value)
+    self.room_to = value if self.room_to.blank?
     super(value)
   end
 

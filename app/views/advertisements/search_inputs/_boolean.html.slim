@@ -1,6 +1,6 @@
 .form-group.additional_search_params_action
   .btn-group data-toggle="buttons"
-    label.btn.btn-default.btn-xs class="#{('active' if attr[:value]=='1')}"
+    label.btn.btn-xs class="#{attr[:btn_class_name]}" class="#{('active' if attr[:value]=='1')}"
       i.fa.fa-lg class="#{attr[:class_name]}"
       '
       input type="checkbox" name="advertisement[#{attr[:name]}]" value="1" checked=(attr[:value]=='1')

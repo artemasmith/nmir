@@ -14,11 +14,11 @@
     p
       i.fa.fa-list
       '
-      == bb_tags("Найдено [b]search_entries[/b]", @bbtags)
+      == bb_tags('Найдено [b]search_entries[/b]', @bbtags)
   - else
     - if @root_section.present?
       - if @root_section.h1.present?
-        h1.header-font
+        h1
           == bb_tags(@root_section.h1, @bbtags)
       - if @root_section.p.present?
         p
@@ -28,7 +28,7 @@
   - if params[:advertisement].empty?
     - if @root_section.present?
       - if @root_section.h2.present?
-        h2.header-font
+        h2
           == bb_tags(@root_section.h2, @bbtags)
       - if @root_section.p2.present?
         p
