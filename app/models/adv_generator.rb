@@ -7,44 +7,33 @@ module AdvGenerator
     before_save :generate_attributes
 
     private
+
+    def sorted_child_location(list, total_list, return_list=[])
+      list.each do |m|
+        return_list << m
+        sorted_child_location(
+            total_list.find_all{ |n| n.location_id == m.id}.sort_by{|l| Location.locations_list.index(l.location_type.to_s)},
+            total_list,
+            return_list)
+      end
+      return return_list
+    end
+
+
     def generate_attributes
 
       self.user_role ||= self.user.role
       self.phone ||= self.user.phones.map{ |p| p.original }.join(', ')
       self.name ||= self.user.name
 
-
-
-      if self.demand?
-        child_location = []
-        self.locations.each do |m|
-          child_location << m if self.locations.find{|n| n.location_id == m.id}.blank?
-        end
-        locations_title = child_location.map do |location|
-          list = []
-          while location.present?
-            list << location
-            location_id = location.location_id
-            location = self.locations.find{|n| location_id == n.id }
-          end
-          [
-              list.find{|n| n.location_type.to_sym == :district},
-              list.find{|n| n.location_type.to_sym == :city},
-              list.find{|n| n.location_type.to_sym== :non_admin_area},
-              list.find{|n| n.location_type.to_sym == :street},
-              list.find{|n| n.location_type.to_sym == :address}
-          ].compact.map(&:title).join(', ')
-        end.join(' ')
-      elsif self.offer?
-        locations_title =
-            [
-                self.locations.find_all{|n| n.location_type.to_sym == :district},
-                self.locations.find_all{|n| n.location_type.to_sym == :city},
-                self.locations.find_all{|n| n.location_type.to_sym== :non_admin_area},
-                self.locations.find_all{|n| n.location_type.to_sym == :street},
-                self.locations.find_all{|n| n.location_type.to_sym == :address}
-            ].flatten.compact.map(&:title).join(', ')
+      child_location = []
+      self.locations.each do |m|
+        child_location << m if self.locations.find{|n| m.location_id == n.id}.blank?
       end
+
+      locations_title = sorted_child_location(child_location, self.locations).delete_if do |l|
+        not [:district, :city, :non_admin_area, :street, :address].include?(l.location_type.to_sym)
+      end.map(&:title).join(' ')
 
 
       self.locations_title = locations_title unless self.locations_title.present?

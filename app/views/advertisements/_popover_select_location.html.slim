@@ -1,13 +1,8 @@
 - if @location.present? && @location.city?
-  legend
-    | Районы
-  - @locations.each_value do |value|
-    .row.top-buffer
-      .col-md-12
-        .btn-group data-toggle="buttons"
-          - value.sort_by{ |l| l[:title] }.each do |location|
-            .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}" class="button btn btn-default SelectLocation"
-              = location[:title]
+  - if @locations.present?
+    legend
+      | Районы
+    = render 'advertisements/popover_locations'
   legend
     | Улицы
   row.top-buffer
@@ -15,12 +10,8 @@
       .form-group
         label.popover-short-padding.control-label for="autocomplete" Поиск по улице
         '
-        input.form-control.autocomplete-search-location parent_id="#{@location.id}" multiple=true
+        input.autocomplete-search-location parent_id="#{@location.id}" multiple=true
 - else
-  - @locations.each_value do |value|
-    .row.top-buffer
-      .col-md-12
-        .btn-group data-toggle="buttons"
-          - value.sort_by{ |l| l[:title] }.each do |location|
-            .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}" class="button btn btn-default SelectLocation"
-              = location[:title]
+  = render 'advertisements/popover_locations'
+
+.popover-footer

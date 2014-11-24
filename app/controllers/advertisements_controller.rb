@@ -114,10 +114,20 @@ class AdvertisementsController < ApplicationController
 
     @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories)
 
-    [:price, :floor, :floor_cnt, :space, :outdoors_space].each do |m|
+    [:price, :floor, :floor_cnt].each do |m|
       if search_params["#{m}_from"].present?
         from = search_params["#{m}_from"].to_i
         to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_i : 999999999
+        from, to = to, from if to < from
+        with["#{m}_from"] = from..to
+        with["#{m}_to"] = from..to if search_params["#{m}_to"].present?
+      end
+    end
+
+    [:space, :outdoors_space].each do |m|
+      if search_params["#{m}_from"].present?
+        from = search_params["#{m}_from"].to_f
+        to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_f : 999999999.0
         from, to = to, from if to < from
         with["#{m}_from"] = from..to
         with["#{m}_to"] = from..to if search_params["#{m}_to"].present?
@@ -154,8 +164,6 @@ class AdvertisementsController < ApplicationController
     [:owner].each do |m|
       with[:user_role] = AdvEnums::USER_ROLES.index(:owner) if search_params[m].present? && search_params[m] == '1'
     end
-
-
 
     if search_params[:date_interval].present?
       date_from = (Date.parse(search_params[:date_interval].split('-').first.strip) - 1.day) rescue (DateTime.now - 1.day).to_date

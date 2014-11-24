@@ -51,7 +51,7 @@ module AdvertisementsHelper
         return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-2'})
       end
       if suffix == 'space' || suffix == 'outdoors_space'
-        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-3'})
+        return render '/advertisements/search_inputs/numeric', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-3'})
       end
 
     else
