@@ -68,8 +68,9 @@
               - Section.child_for(@root_section.location_id).not_empty.each do |section|
                 = link_to section.title, section.url, class: 'button btn btn-default location_hide_action'
     .row
-      .col-sm-10.col-xs-12.additional_search_params_container_action
+      .col-sm-12.col-xs-12.additional_search_params_container_action
         = render 'advertisements/additional_search_params'
+      .col-sm-10.col-xs-12
         .form-group
           label
             i.fa.fa-search
