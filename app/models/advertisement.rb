@@ -107,6 +107,7 @@ class Advertisement < ActiveRecord::Base
   end
 
   def self.grouped_allowed_search_attributes(adv_types, categories)
+    sorted_list = ['price_from', 'owner', 'mortgage']
     attr = []
     section_count = 0
     AdvConformity::ATTR_VISIBILITY.each_pair do |key1, value1|
@@ -122,14 +123,14 @@ class Advertisement < ActiveRecord::Base
 
     attr.flatten!
 
-    return %w(price_from not_for_agents) + attr.uniq.delete_if do |e|
+    return %w(price_from owner) + attr.uniq.delete_if do |e|
       match = e.match(/(.+)(_to|_from)$/i)
       match ? match[2] == '_to' : false
     end.delete_if do |e|
       %w(landmark private_comment comment price_from not_for_agents).include? e
     end.delete_if do |e|
       attr.find_all{|n| n == e }.size != section_count
-    end
+    end.sort_by{|l| sorted_list.index(l) || 99}
   end
 
 
@@ -187,6 +188,11 @@ class Advertisement < ActiveRecord::Base
 
   def category=(value)
     self.property_type = AdvEnums::CATEGORIES.index(value.to_sym).to_i <= 5 ? :residental : :commerce
+    super(value)
+  end
+
+  def room_from=(value)
+    self.room_to = value if self.room_to.blank?
     super(value)
   end
 

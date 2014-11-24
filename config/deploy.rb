@@ -6,7 +6,7 @@ set :rails_env, "production"
 set :migration_role, 'db'
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 set :whenever_environment, 'production'
-
+set :domain, '192.168.0.79'
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master
 #ask :branch, :master
@@ -39,6 +39,22 @@ set :deploy_to, '/home/tea/var/www/multilisting'
 set :keep_releases, 3
 set :unicorn_pid, "/home/tea/var/www/multilisting/run/unicorn.pid"
 
+desc 'Dump remote production postgresql database, rsync to localhost'
+task :dump do
+  on roles(:all) do |_|
+    download!("#{current_path}/config/database.yml", "tmp/database.yml")
+    remote_settings = YAML::load_file("tmp/database.yml")["production"]
+    local_settings  = YAML::load_file("config/database.yml")["development"]
+    execute "export PGPASSWORD=#{remote_settings["password"]} && pg_dump --host=#{remote_settings["host"]} --port=#{remote_settings["port"]} --username #{remote_settings["username"]} --file #{current_path}/tmp/#{remote_settings["database"]}_dump --no-owner -Fc #{remote_settings["database"]}"
+    run_locally do
+      execute "rsync --recursive --times --rsh=ssh --compress --human-readable --progress #{fetch(:domain)}:#{current_path}/tmp/#{remote_settings["database"]}_dump tmp/"
+      execute "export PGPASSWORD=\"#{local_settings["password"]}\"; dropdb -U #{local_settings["username"]} --host=#{local_settings["host"]} --port=#{local_settings["port"]} #{local_settings["database"]}"
+      execute "export PGPASSWORD=\"#{local_settings["password"]}\"; createdb -U #{local_settings["username"]} --host=#{local_settings["host"]} --port=#{local_settings["port"]} -T template0 #{local_settings["database"]}"
+      execute "export PGPASSWORD=\"#{local_settings["password"]}\"; pg_restore -U #{local_settings["username"]} --host=#{local_settings["host"]} --port=#{local_settings["port"]} -d #{local_settings["database"]} --no-owner -n public tmp/#{remote_settings["database"]}_dump"
+    end
+  end
+end
+
 namespace :deploy do
 
   desc 'Create symlink'
@@ -70,6 +86,10 @@ namespace :deploy do
       end
     end
   end
+
+
+
+
 before 'deploy:compile_assets', 'deploy:symlink'
 
 after "deploy", "deploy:migrate"

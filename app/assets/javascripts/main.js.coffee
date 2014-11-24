@@ -1,3 +1,6 @@
+$().ready ->
+  $('.location_hide_action').addClass('hidden')
+
 @set_property = (hid, multi, oval) ->
   val = ''
   sid = ''
@@ -180,8 +183,7 @@ $('.SelectLocation').livequery ->
     sp['parent_id'] = 0
     click_select_location(sp)
 
-$('.location_hide_action').livequery ->
-  $(this).addClass('hidden')
+
 
 $('.DelChildren').livequery ->
   $(this).click ->
@@ -412,8 +414,12 @@ $('.autocomplete-search-location').livequery ->
       click_select_location(sp)
     })
 
+$('input[type="text"][valid-type=integer]').livequery ->
+  $(this).forceNumericOnly()
 
 
+$('input[type="text"][valid-type=float]').livequery ->
+  $(this).forceFloatOnly()
 
 
 

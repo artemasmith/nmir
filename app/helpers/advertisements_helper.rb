@@ -51,7 +51,7 @@ module AdvertisementsHelper
         return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-2'})
       end
       if suffix == 'space' || suffix == 'outdoors_space'
-        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-3'})
+        return render '/advertisements/search_inputs/numeric', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-3'})
       end
 
     else
@@ -61,36 +61,17 @@ module AdvertisementsHelper
           value: params[:advertisement].try(:[], search_attribute.to_sym),
       }
 
-      if search_attribute == 'not_for_agents'
-        return (can?(:search_not_for_agents, Advertisement)) ?
-            render('/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'})) :
-            nil
+      if search_attribute == 'mortgage'
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-bank'}).merge({btn_class_name: 'btn-default'})
       end
 
-      if search_attribute == 'mortgage'
-        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-bank'})
+      if search_attribute == 'owner'
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'}).merge({btn_class_name: 'btn-success'})
       end
 
     end
 
     raise "type not found #{search_attribute}"
-
-    # if (name_from == :space_from) || (name_from == :outdoors_space_from)
-    #   return render '/advertisements/inputs/numeric', attr
-    # end
-    #
-    # if (name_from == :comment) || (name_from == :private_comment)
-    #   return render '/advertisements/inputs/textarea', attr
-    # end
-    #
-    # if (name_from == :not_for_agents) || (name_from == :mortgage)
-    #   return render '/advertisements/inputs/boolean', attr
-    # end
-    #
-    # if (name_from == :landmark)
-    #   return render '/advertisements/inputs/text', attr
-    # end
-
   end
 
   def render_input(name_from, name_to, value_from, value_to)

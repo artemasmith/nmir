@@ -114,10 +114,20 @@ class AdvertisementsController < ApplicationController
 
     @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories)
 
-    [:price, :floor, :floor_cnt, :space, :outdoors_space].each do |m|
+    [:price, :floor, :floor_cnt].each do |m|
       if search_params["#{m}_from"].present?
         from = search_params["#{m}_from"].to_i
         to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_i : 999999999
+        from, to = to, from if to < from
+        with["#{m}_from"] = from..to
+        with["#{m}_to"] = from..to if search_params["#{m}_to"].present?
+      end
+    end
+
+    [:space, :outdoors_space].each do |m|
+      if search_params["#{m}_from"].present?
+        from = search_params["#{m}_from"].to_f
+        to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_f : 999999999.0
         from, to = to, from if to < from
         with["#{m}_from"] = from..to
         with["#{m}_to"] = from..to if search_params["#{m}_to"].present?
@@ -147,8 +157,12 @@ class AdvertisementsController < ApplicationController
       with[m] = search_params[m] == '1' if search_params[m].present?
     end
 
-    [:not_for_agents].each do |m|
-      with[m] = search_params[m] == '1' if (search_params[m].present?) && can?(:search_not_for_agents, Advertisement)
+    if current_user && current_user.agent?
+      with[:not_for_agents] = false
+    end
+
+    [:owner].each do |m|
+      with[:user_role] = AdvEnums::USER_ROLES.index(:owner) if search_params[m].present? && search_params[m] == '1'
     end
 
     if search_params[:date_interval].present?
@@ -274,18 +288,17 @@ class AdvertisementsController < ApplicationController
   def get_locations
     if params[:parent_id].to_i != 0
       @location = Location.find(params[:parent_id])
-      @locations = @location.children_locations
+      if @location.city?
+        @locations = @location.children_locations(:non_admin_area)
+      else
+        @locations = @location.children_locations
+      end
     else
       @locations = Location.where(location_type: 0)
     end
-    #@locations = @locations
-    @locations = @locations.map do |l| { id: l.id,
-                                         location_type: l.location_type,
-                                         title: l.title,
-                                         has_children: l.has_children?}
-    end
-    @locations = @locations.group_by { |l| l[:location_type] }
-
+    @locations = @locations.map { |l|
+      { id: l.id, location_type: l.location_type, title: l.title, has_children: l.has_children? }
+    }.group_by { |l| l[:location_type] }
   end
 
 
