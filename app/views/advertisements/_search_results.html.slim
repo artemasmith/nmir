@@ -15,11 +15,10 @@ ul.list-unstyled
           -else
             img.preview-url src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
 
-        span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
-          span.h4.media-heading
+        span.media-body.col-md-6.col-lg-5.col-sm-4.pull-left
+          h4.media-heading
             = adv.anchor
           - if adv.price_from.present?
-            br
             span.lead
               = adv.price_from
               - if adv.price_to.present? && adv.price_to != adv.price_to
@@ -33,17 +32,18 @@ ul.list-unstyled
             br
               span
                 = adv.locations_title
-      span.h5.media-heading.col-xs-12.col-md-2.col-lg-3
-        - if adv.user_role == 'owner'
-          i.fa.fa-check
+      .col-xs-12.col-md-2.col-lg-2.col-sm-3
+        h5.media-heading
+          - if adv.user_role == 'owner'
+            i.fa.fa-check
 
-        - else
-          i.fa.fa-cube
-        '
-        = t "activerecord.attributes.user.roles.#{adv.user_role}"
-        - if adv.name.present?
+          - else
+            i.fa.fa-cube
           '
-          = adv.name
+          = t "activerecord.attributes.user.roles.#{adv.user_role}"
+          - if adv.name.present?
+            '
+            = adv.name
         '
         a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
           | показать телефон
