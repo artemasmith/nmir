@@ -1,0 +1,14 @@
+.form-group.additional_search_params_action
+  label
+    - if attr[:class_name].present?
+      i.fa.fa-lg class=attr[:class_name]
+      '
+    = t("advertisement.attributes.#{attr[:name_from]}").mb_chars.downcase
+  '
+  input.text-input-lg.width-define class=attr[:class_name_input] name="advertisement[#{attr[:name_from]}]" valid-type='float' type="text" value=attr[:value_from]
+  '
+  label —
+  '
+  input.text-input-lg.width-define class=attr[:class_name_input] name="advertisement[#{attr[:name_to]}]" valid-type='float' type="text" value=attr[:value_to]
+
+

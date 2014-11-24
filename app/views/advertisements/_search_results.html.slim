@@ -8,30 +8,31 @@ ul.list-unstyled
           a.btn-link href=edit_advertisement_path(adv)
             i.fa.fa-edit.fa-lg
 
-      /a href="#{advertisement_path(adv)}_#{adv.url}"
-      .media-object.pull-left
-        a href="#{advertisement_path(adv)}_#{adv.url}"
+      a href="#{advertisement_path(adv)}_#{adv.url}"
+        .pull-left
           - if adv.preview_url.present?
-            img.preview-url.col-xs-12 src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
+            img.preview-url src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
           -else
-            img.preview-url.col-xs-12 src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
+            img.preview-url src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
 
-      span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
-        span.h4.media-heading
-          a href="#{advertisement_path(adv)}_#{adv.url}"
+        span.media-body.col-md-6.col-lg-5.col-sm-8.pull-left
+          span.h4.media-heading
             = adv.anchor
+          - if adv.price_from.present?
             br
             span.lead
               = adv.price_from
-              - if adv.price_to.present?
+              - if adv.price_to.present? && adv.price_to != adv.price_to
                 '
                 | -
                 '
                 = adv.price_to
               '
               i.fa.fa-rub
-              br
-              = adv.locations_title
+          - if adv.locations_title.present?
+            br
+              span
+                = adv.locations_title
       span.h5.media-heading.col-xs-12.col-md-2.col-lg-3
         - if adv.user_role == 'owner'
           i.fa.fa-check
@@ -43,7 +44,7 @@ ul.list-unstyled
         - if adv.name.present?
           '
           = adv.name
-        br
+        '
         a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
           | показать телефон
 

@@ -59,6 +59,44 @@ jQuery.fn.replaceWith = (value) ->
   else
     return oldReplaceWith.apply this, arguments
 
+$.fn.forceFloatOnly = ->
+  expression = /^(\d+(\.\d{0,2})?)?$/
+  @each ->
+    oldValue = $(this).val()
+    $(this).keydown (e) ->
+      key = e.charCode or e.keyCode or 0
+      (key is 110 or key is 8 or key is 9 or key is 13 or key is 46 or key is 110 or key is 190 or (key >= 35 and key <= 40) or (key >= 48 and key <= 57) or (key >= 96 and key <= 105)) and (!e.shiftKey)
+    $(this).keydown () ->
+      value = $(this).val()
+      if expression.test(value)
+        oldValue = value
+    $(this).on 'keypress keyup', () ->
+      value = $(this).val()
+      unless expression.test(value)
+        $(this).val(oldValue)
+        return false
+      return true
+
+$.fn.forceNumericOnly = ->
+  expression = /^(\d+)?$/
+  @each ->
+    oldValue = $(this).val()
+    $(this).keydown (e) ->
+      key = e.charCode or e.keyCode or 0
+      # allow backspace, tab, delete, enter, arrows, numbers and keypad numbers ONLY
+      # home, end, period, and numpad decimal
+      (key is 8 or key is 9 or key is 13 or key is 46 or key is 110 or key is 190 or (key >= 35 and key <= 40) or (key >= 48 and key <= 57) or (key >= 96 and key <= 105)) and (!e.shiftKey)
+    $(this).keydown () ->
+      value = $(this).val()
+      if expression.test(value)
+        oldValue = value
+    $(this).on 'keypress keyup', () ->
+      value = $(this).val()
+      unless expression.test(value)
+        $(this).val(oldValue)
+        return false
+      return true
+
 
 
 
