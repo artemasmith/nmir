@@ -5,13 +5,20 @@
     = render 'advertisements/popover_locations'
   legend
     | Улицы
-  row.top-buffer
+  .row.top-buffer
     .col-md-12
       .form-group
         label.popover-short-padding.control-label for="autocomplete" Поиск по улице
         '
         input.autocomplete-search-location parent_id="#{@location.id}" multiple=true
+  .row
+    '
 - else
+  - if @location.present?
+    legend
+      = t("activerecord.attributes.location.#{@location.location_type}") + ": #{@location.title}"
+  legend
+    = t"activerecord.attributes.location.#{@locations.keys[0]}"
   = render 'advertisements/popover_locations'
 
 .popover-footer
