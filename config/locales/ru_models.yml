@@ -42,6 +42,15 @@ ru:
           #property_type
           residental: жилой недвижимости
           commerce: нежилой недвижимости
+      location:
+        admin_area: 'административный район'
+        non_admin_area: 'не административный район'
+        region: 'регион'
+        district: 'район'
+        city: 'город'
+        street: 'улица'
+        address: 'адрес'
+        landmark: 'ориентир'
 
       advertisement:
 
