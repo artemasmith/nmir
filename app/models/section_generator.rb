@@ -79,8 +79,9 @@ module SectionGenerator
   end
 
   def self.generate_title(offer_type, category, property_type, loc_chain_title, short_title = nil)
-    if short_title || (offer_type.blank? && property_type.blank? && category.blank?)
-      return '' if loc_chain_title.blank?
+    if short_title.present?
+      return loc_chain_title
+    elsif (offer_type.blank? && property_type.blank? && category.blank?)
       return ['Недвижимость', loc_chain_title].compact.join(' ')
     elsif(offer_type && category)
       return ["#{enum_title(offer_type)} #{enum_title(category)}", loc_chain_title].compact.join(' ')
