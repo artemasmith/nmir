@@ -49,41 +49,39 @@
             - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
             label.btn.btn-default.click_additional_search_params_action class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
-    .row
-      .col-xs-12.form-group
-        label
-          i.fa.fa-map-marker.fa-lg
-          '
-          | место
+    .row.col-xs-12.form-group
+      label
+        i.fa.fa-map-marker.fa-lg
         '
-        span.button-toolbar
-          .location-group multi=true state="#{@location_state}"
-            .button.btn.btn-default.GetChildren lid="#{0}" data-toggle="dropdown"
-              i.fa.fa-globe.fa-lg
-              '
-              | выберите местоположение
-              '
-              i.caret
-            - if @root_section.present?
-              - Section.child_for(@root_section.location_id).not_empty.each do |section|
-                = link_to section.title, section.url, class: 'button btn btn-default location_hide_action'
+        | место
+      '
+      span.button-toolbar
+        .location-group multi=true state="#{@location_state}"
+          .button.btn.btn-default.GetChildren lid="#{0}" data-toggle="dropdown"
+            i.fa.fa-globe.fa-lg
+            '
+            | выберите местоположение
+            '
+            i.caret
+          - if @root_section.present?
+            - Section.child_for(@root_section.location_id).not_empty.each do |section|
+              = link_to section.title, section.url, class: 'button btn btn-default location_hide_action'
     .row
-      .col-sm-12.col-xs-12.additional_search_params_container_action
+      .col-md-10.col-sm-9.col-xs-12.additional_search_params_container_action
         = render 'advertisements/additional_search_params'
-      .col-sm-10.col-xs-12
         .form-group
           label
             i.fa.fa-search
           '
-          input.text-input name="advertisement[description]" value=params[:advertisement][:description] placeholder="поиск по тексту или №" type="text"
+          input.text-input name="advertisement[description]" value=params[:advertisement][:description] placeholder=" поиск по тексту или №" type="text"
         '
         .form-group
           label
             i.fa.fa-calendar
           '
-          input.text-input.range_date_picker_action name="advertisement[date_interval]" placeholder="за всё время" type="text" value=params[:advertisement][:date_interval].presence
+          input.text-input.range_date_picker_action name="advertisement[date_interval]" placeholder='▼за всё время' type="text" value=params[:advertisement][:date_interval].presence
 
-      .col-sm-2
+      .col-md-2.col-sm-3.col-xs-12
         button.btn.btn-primary.btn-lg.pull-left type="submit"
           i.fa.fa-search.fa-lg
           '

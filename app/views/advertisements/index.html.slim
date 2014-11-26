@@ -6,8 +6,9 @@
     = content_for :meta
       meta name="description" content=@root_section.description
       meta name="keywords" content=@root_section.keywords
-= render 'advertisements/neighbors', locale: { neighbors: @neigbors } if @neighbors.present?
-= render 'advertisements/search_form'
+= content_for :header
+  = render 'advertisements/neighbors', locale: { neighbors: @neigbors } if @neighbors.present?
+  = render 'advertisements/search_form'
 
 .well.well-sm
   - unless params[:advertisement].empty?

@@ -1,16 +1,16 @@
 - if @location.present? && @location.city?
   - if @locations.present?
-    legend
-      | Районы
     = render 'advertisements/popover_locations'
   legend
-    | Улицы
-  row.top-buffer
+    = t("activerecord.attributes.location.street")
+  .row.top-buffer
     .col-md-12
       .form-group
         label.popover-short-padding.control-label for="autocomplete" Поиск по улице
         '
         input.autocomplete-search-location parent_id="#{@location.id}" multiple=true
+  .row
+    '
 - else
   = render 'advertisements/popover_locations'
 

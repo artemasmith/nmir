@@ -43,14 +43,14 @@ ru:
           residental: жилой недвижимости
           commerce: нежилой недвижимости
       location:
-        admin_area: 'административный район'
-        non_admin_area: 'не административный район'
-        region: 'регион'
-        district: 'район'
-        city: 'город'
-        street: 'улица'
-        address: 'адрес'
-        landmark: 'ориентир'
+        admin_area: 'административные районы'
+        non_admin_area: 'неадминистративные районы'
+        region: 'регионы'
+        district: 'районы'
+        city: 'города'
+        street: 'улицы'
+        address: 'адреса'
+        landmark: 'ориентиры'
 
       advertisement:
 

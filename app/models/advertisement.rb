@@ -214,9 +214,10 @@ class Advertisement < ActiveRecord::Base
       locations_chain_array = locations_chain_array_from(loc)
       locations_chain_url = SectionGenerator.chain_url(locations_chain_array.map(&:title))
       locations_chain_title = locations_chain_array.map(&:title).join(' ')
-      SectionGenerator.by_offer_category(offer_type, category, loc, locations_chain_url, locations_chain_title)
-      SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url, locations_chain_title)
-      SectionGenerator.by_location(loc, locations_chain_url, locations_chain_title)
+      short_loc_title = locations_chain_array.last.try(:title)
+      SectionGenerator.by_offer_category(offer_type, category, loc, locations_chain_url, locations_chain_title, short_loc_title)
+      SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url, locations_chain_title, short_loc_title)
+      SectionGenerator.by_location(loc, locations_chain_url, locations_chain_title, short_loc_title)
     end
     SectionGenerator.by_offer_category_without_location(offer_type, category)
     SectionGenerator.empty

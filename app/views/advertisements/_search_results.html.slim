@@ -1,52 +1,56 @@
-ul.list-unstyled
-  - @search_results.each_with_index do |adv, index|
-    li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}"
-      span.col-xs-12.col-md-1.text-muted.small
-        = l adv.created_at
-        '
-        -if can? :manage, adv
-          a.btn-link href=edit_advertisement_path(adv)
-            i.fa.fa-edit.fa-lg
-
-      a href="#{advertisement_path(adv)}_#{adv.url}"
-        .pull-left
-          - if adv.preview_url.present?
-            img.preview-url src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
-          -else
-            img.preview-url src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
-
-        span.media-body.col-md-6.col-lg-5.col-sm-4.pull-left
-          h4.media-heading
-            = adv.anchor
-          - if adv.price_from.present?
-            span.lead
-              = adv.price_from
-              - if adv.price_to.present? && adv.price_to != adv.price_to
-                '
-                | -
-                '
-                = adv.price_to
-              '
-              i.fa.fa-rub
-          - if adv.locations_title.present?
-            br
-              span
-                = adv.locations_title
-      .col-xs-12.col-md-2.col-lg-2.col-sm-3
-        h5.media-heading
-          - if adv.user_role == 'owner'
-            i.fa.fa-check
-
-          - else
-            i.fa.fa-cube
+- if @search_results.present?
+  ul.list-unstyled
+    - @search_results.each_with_index do |adv, index|
+      li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}"
+        span.col-xs-12.col-md-1.text-muted.small
+          = l adv.created_at
           '
-          = t "activerecord.attributes.user.roles.#{adv.user_role}"
-          - if adv.name.present?
-            '
-            = adv.name
-        '
-        a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
-          | показать телефон
+          -if can? :manage, adv
+            a.btn-link href=edit_advertisement_path(adv)
+              i.fa.fa-edit.fa-lg
+
+        a href="#{advertisement_path(adv)}_#{adv.url}"
+          .pull-left
+            - if adv.preview_url.present?
+              img.preview-url src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
+            -else
+              img.preview-url src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
+
+          span.media-body.col-md-6.col-lg-5.col-sm-4.pull-left
+            h4.media-heading
+              = adv.anchor
+            - if adv.price_from.present?
+              span.lead
+                = adv.price_from
+                - if adv.price_to.present? && adv.price_to != adv.price_to
+                  '
+                  | -
+                  '
+                  = adv.price_to
+                '
+                i.fa.fa-rub
+            - if adv.locations_title.present?
+              br
+                span
+                  = adv.locations_title
+        .col-xs-12.col-md-2.col-lg-2.col-sm-3
+          h5.media-heading
+            - if adv.user_role == 'owner'
+              i.fa.fa-check
+              '
+              = t "activerecord.attributes.user.roles.owner"
+            - else
+              i.fa.fa-cube
+              '
+              = t "activerecord.attributes.user.roles.agent"
+            - if adv.name.present?
+              '
+              = adv.name
+          '
+          a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
+            | показать телефон
+- else
+  p Ничего не найдено
 
 
 

@@ -1,8 +1,8 @@
 module SectionGenerator
-  def self.by_offer_category(offer_type, category, location, loc_chain_url, loc_chain_title)
+  def self.by_offer_category(offer_type, category, location, loc_chain_url, loc_chain_title, short_loc_title)
     url = "/#{loc_chain_url}/#{chain_url([offer_type, category])}"
     Section.create_with(
-        generate_attributes(url, offer_type, category, nil, loc_chain_title)
+        generate_attributes(url, offer_type, category, nil, loc_chain_title, short_loc_title)
     )
     .find_or_create_by(
       offer_type: Section.offer_types[offer_type], 
@@ -14,7 +14,7 @@ module SectionGenerator
   def self.by_offer_category_without_location(offer_type, category)
     url = "/#{chain_url([offer_type, category])}"
     Section.create_with(
-        generate_attributes(url, offer_type, category, nil, nil)
+        generate_attributes(url, offer_type, category, nil, nil, nil)
     )
     .find_or_create_by(
         offer_type: Section.offer_types[offer_type],
@@ -23,10 +23,10 @@ module SectionGenerator
     ).increment!(:advertisements_count)
   end
 
-  def self.by_property_offer(property_type, offer_type, location, loc_chain_url, loc_chain_title)
+  def self.by_property_offer(property_type, offer_type, location, loc_chain_url, loc_chain_title, short_loc_title)
     url = "/#{loc_chain_url}/#{chain_url([offer_type, property_type])}"
     Section.create_with(
-        generate_attributes(url, offer_type, nil, property_type, loc_chain_title)
+        generate_attributes(url, offer_type, nil, property_type, loc_chain_title, short_loc_title)
     )
     .find_or_create_by(
       property_type: Section.property_types[property_type], 
@@ -35,10 +35,10 @@ module SectionGenerator
     ).increment!(:advertisements_count)
   end
 
-  def self.by_location(location, loc_chain_url, loc_chain_title)
+  def self.by_location(location, loc_chain_url, loc_chain_title, short_loc_title)
     url = "/#{loc_chain_url}"
     Section.create_with(
-        generate_attributes(url, nil, nil, nil, loc_chain_title)
+        generate_attributes(url, nil, nil, nil, loc_chain_title, short_loc_title)
     )
     .find_or_create_by(location_id: location.id, offer_type: nil, property_type: nil, category: nil ).increment!(:advertisements_count)
   end
@@ -63,12 +63,13 @@ module SectionGenerator
     end
   end
 
-  def self.generate_attributes(url, offer_type, category, property_type, loc_chain_title)
+  def self.generate_attributes(url, offer_type, category, property_type, loc_chain_title, short_loc_title)
     {
         url: url,
         description: generate_description(offer_type, category, property_type, loc_chain_title),
         keywords: generate_keywords(offer_type, category, property_type, loc_chain_title),
         title: generate_title(offer_type, category, property_type, loc_chain_title),
+        short_title: generate_title(offer_type, category, property_type, short_loc_title, true),
         p: nil,
         p2: nil,
         h1: generate_title(offer_type, category, property_type, loc_chain_title),
@@ -77,13 +78,14 @@ module SectionGenerator
     }
   end
 
-  def self.generate_title(offer_type, category, property_type, loc_chain_title)
-    if(offer_type && category)
+  def self.generate_title(offer_type, category, property_type, loc_chain_title, short_title = nil)
+    if short_title || (offer_type.blank? && property_type.blank? && category.blank?)
+      return '' if loc_chain_title.blank?
+      return ['Недвижимость', loc_chain_title].compact.join(' ')
+    elsif(offer_type && category)
       return ["#{enum_title(offer_type)} #{enum_title(category)}", loc_chain_title].compact.join(' ')
     elsif(offer_type && property_type)
       return ["#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость", loc_chain_title].compact.join(' ')
-    elsif(offer_type.blank? && property_type.blank? && category.blank?)
-      return ['Недвижимость', loc_chain_title].compact.join(' ')
     end
   end
 

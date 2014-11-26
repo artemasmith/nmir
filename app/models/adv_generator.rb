@@ -31,8 +31,17 @@ module AdvGenerator
         child_location << m if self.locations.find{|n| m.location_id == n.id}.blank?
       end
 
-      locations_title = sorted_child_location(child_location, self.locations).delete_if do |l|
+      locations = sorted_child_location(child_location, self.locations).delete_if do |l|
         not [:district, :city, :non_admin_area, :street, :address].include?(l.location_type.to_sym)
+      end
+
+      locations_present =
+          locations.find{|e| e.location_type.to_sym == :non_admin_area}.present? &&
+          locations.find{|e| e.location_type.to_sym == :street}.present? &&
+          locations.find{|e| e.location_type.to_sym == :address}.present?
+
+      locations_title = locations.delete_if do |l|
+        l.location_type.to_sym == :district && locations_present
       end.map(&:title).join(' ')
 
 
@@ -40,7 +49,7 @@ module AdvGenerator
 
       self.anchor = [
           AdvGenerator.enum_title(self.offer_type),
-          AdvGenerator.enum_text(self, :room, 'к'), #без пробела
+          AdvGenerator.enum_text(self, :room, ' к'), #без пробела
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, ' м²'),
           AdvGenerator.enum_text(self, :floor, ' этаж'),
@@ -49,17 +58,21 @@ module AdvGenerator
 
       self.title = [
           self.anchor,
-          AdvGenerator.enum_text(self, :price, 'руб'),
+          AdvGenerator.enum_text(self, :price, ' руб'),
+          locations_title
       ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.title.present?
 
       self.description = [
           Russian::strftime((self.updated_at || DateTime.now).to_date),
-          AdvGenerator.enum_text(self, :price, 'руб'),
+          AdvGenerator.enum_text(self, :price, ' руб'),
           "объявление #{self.id} в базе недвижимости"
       ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.description.present?
 
       self.p = self.comment unless self.p.present?
-      self.h1 = self.anchor unless self.h1.present?
+      self.h1 = [
+          self.anchor,
+          locations_title
+      ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.h1.present?
       self.h2 = '' unless self.h2.present?
       self.h3 = '' unless self.h3.present?
       self.keywords = [
