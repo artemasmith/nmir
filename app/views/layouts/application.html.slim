@@ -19,8 +19,11 @@ html
 
   body
     .container
-      = render 'shared/header'
-      .notifications.top-right
+      header
+        = render 'shared/header'
+        .notifications.top-right
+        - if content_for?(:header)
+          = yield :header
       = yield
       footer
         = render 'shared/footer'

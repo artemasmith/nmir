@@ -1,4 +1,6 @@
 - @locations.each_value do |value|
+  legend
+    = t("activerecord.attributes.location.#{value.first[:location_type]}")
   .row.top-buffer
     .col-md-12
       .btn-group data-toggle="buttons"

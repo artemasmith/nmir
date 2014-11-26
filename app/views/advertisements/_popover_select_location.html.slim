@@ -1,10 +1,8 @@
 - if @location.present? && @location.city?
   - if @locations.present?
-    legend
-      | Районы
     = render 'advertisements/popover_locations'
   legend
-    | Улицы
+    = t("activerecord.attributes.location.street")
   .row.top-buffer
     .col-md-12
       .form-group
@@ -14,11 +12,6 @@
   .row
     '
 - else
-  - if @location.present?
-    legend
-      = t("activerecord.attributes.location.#{@location.location_type}") + ": #{@location.title}"
-  legend
-    = t"activerecord.attributes.location.#{@locations.keys[0]}"
   = render 'advertisements/popover_locations'
 
 .popover-footer
