@@ -8,7 +8,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   flat:
@@ -20,7 +19,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   hotel:
@@ -31,7 +29,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   house:
@@ -41,7 +38,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
 
@@ -51,7 +47,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
     
   room:
@@ -63,7 +58,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   garage:
@@ -71,7 +65,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   office:
@@ -80,7 +73,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   trade:
@@ -89,7 +81,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   storage:
@@ -99,7 +90,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   cafe:
@@ -109,7 +99,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   land:
@@ -118,7 +107,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
   free_appointment:
@@ -127,7 +115,6 @@ offer:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
 
 demand:
@@ -139,7 +126,6 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
     - landmark
   newbuild:
     - floor_from
@@ -155,7 +141,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   flat:
     - floor_from
@@ -171,7 +157,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   house:
     - space_from
@@ -183,7 +169,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
 
   ijs:
@@ -194,7 +180,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
     
   room:
     - floor_from
@@ -210,7 +196,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   garage:
     - price_from
@@ -218,7 +204,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   office:
     - space_from
@@ -228,7 +214,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   trade:
     - space_from
@@ -238,7 +224,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   storage:
     - space_from
@@ -250,7 +236,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   cafe:
     - space_from
@@ -262,7 +248,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   land:
     - outdoors_space_from
@@ -272,7 +258,7 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     
 
   free_appointment:
     - space_from
@@ -282,4 +268,4 @@ demand:
     - not_for_agents
     - mortgage
     - comment
-    - private_comment
+     

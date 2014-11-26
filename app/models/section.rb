@@ -16,6 +16,8 @@
 #  offer_type           :integer
 #  category             :integer
 #  property_type        :integer
+#  p2                   :text
+#  short_title          :string(255)
 #
 
 class Section < ActiveRecord::Base

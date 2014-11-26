@@ -8,15 +8,12 @@ class Ability
       can :access, :rails_admin
       can :dashboard
       can :create_from_admin, Advertisement
-      can :see_private_comment, Advertisement
     elsif user.owner?
       can :read, :all
       can :manage, Advertisement, user_id: user.id
-      can :see_private_comment, Advertisement, user_id: user.id
       can :search_not_for_agents, Advertisement
     elsif user.agent?
       can :read, :all
-      can :see_private_comment, Advertisement, user_id: user.id
       can :manage, Advertisement, user_id: user.id
     else
       can :read, :all
