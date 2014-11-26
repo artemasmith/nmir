@@ -37,11 +37,12 @@
           h5.media-heading
             - if adv.user_role == 'owner'
               i.fa.fa-check
-
+              '
+              = t "activerecord.attributes.user.roles.owner"
             - else
               i.fa.fa-cube
-            '
-            = t "activerecord.attributes.user.roles.#{adv.user_role}"
+              '
+              = t "activerecord.attributes.user.roles.agent"
             - if adv.name.present?
               '
               = adv.name
