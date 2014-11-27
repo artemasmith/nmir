@@ -17,15 +17,6 @@ h1
   = @adv.h1
 .well.well-sm.clearfix
   .row
-    - if @photos.present?
-      .col-xs-12.col-lg-7.pull-right.clearfix
-        = image_tag @photos.first.advertisement_photo, class: 'first_photo_img_action search-photo-size'
-        p.text-center.first_photo_comment_action
-          = @photos.first.comment
-        - @photos.each do |photo|
-          a.show_photo_action href="#" full_scr=photo.advertisement_photo comment=photo.comment
-            = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail search-photo-size-preview'
-
     .col-lg-5
       p
         span.small.text-muted
@@ -83,7 +74,11 @@ h1
                     = value_to
                     '
                     = t("advertisement.units.#{attr_from}")
-
+            - if @adv.latitude.present? && @adv.longitude.present?
+              li
+                a.show_map_action href='#'
+                  | Показать карту
+                .map.sm-map#map.hidden data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable=true
 
         - if @adv.user_role == 'owner'
           i.fa.fa-check
@@ -109,10 +104,15 @@ h1
           - @near_sections.each do |near_section|
             = link_to near_section.short_title, near_section.url, class: 'btn btn-default btn-xs' if near_section.short_title.present?
             '
+    - if @photos.present?
+      .col-xs-12.col-lg-7
+        = image_tag @photos.first.advertisement_photo, class: 'first_photo_img_action search-photo-size'
+        p.text-center.first_photo_comment_action
+          = @photos.first.comment
+        - @photos.each do |photo|
+          a.show_photo_action href="#" full_scr=photo.advertisement_photo comment=photo.comment
+            = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail search-photo-size-preview'
 
-    - if @adv.latitude.present? && @adv.longitude.present?
-      .col-lg-7
-        .map#map  data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable=true
 
 
   .panel.panel-body.col-xs-12

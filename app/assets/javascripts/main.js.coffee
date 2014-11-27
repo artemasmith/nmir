@@ -420,6 +420,18 @@ $('input[type="text"][valid-type=integer]').livequery ->
 $('input[type="text"][valid-type=float]').livequery ->
   $(this).forceFloatOnly()
 
+$('.show_map_action').livequery ->
+  $(this).click (event)->
+    cancelEvent(event)
+    isVisible = $('#map').is(':visible')
+    if isVisible
+      $('#map').addClass('hidden')
+      $(this).text('Показать карту')
+    else
+      $('#map').removeClass('hidden')
+      $(this).text('Скрыть карту')
+
+
 
 
 

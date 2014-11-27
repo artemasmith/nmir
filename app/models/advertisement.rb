@@ -92,6 +92,7 @@ class Advertisement < ActiveRecord::Base
   
   def grouped_allowed_attributes
     return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)
+    sorted_list = ['price_from']
     @grouped_allowed_attributes = []
     allowed_attributes.each do |attr|
       if match = attr.match(/(.+)(_to|_from)$/i)
@@ -107,6 +108,7 @@ class Advertisement < ActiveRecord::Base
         @grouped_allowed_attributes << [attr]
       end
     end
+    @grouped_allowed_attributes = @grouped_allowed_attributes.sort_by{|l| sorted_list.index(l[0]) || 99}
     return @grouped_allowed_attributes
   end
 
