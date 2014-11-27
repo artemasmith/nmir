@@ -93,7 +93,7 @@ module AdvertisementsHelper
       return render '/advertisements/inputs/numeric', attr
     end
 
-    if (name_from == :comment) || (name_from == :private_comment)
+    if (name_from == :comment)
       return render '/advertisements/inputs/textarea', attr
     end
 

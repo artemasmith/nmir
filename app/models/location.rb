@@ -11,7 +11,8 @@
 #  admin_area_id     :integer
 #  non_admin_area_id :integer
 #  city_id           :integer
-
+#  loaded_resource   :boolean          default(FALSE), not null
+#
 
 class Location < ActiveRecord::Base
   has_many :sublocations, class_name: 'Location', foreign_key: "location_id"

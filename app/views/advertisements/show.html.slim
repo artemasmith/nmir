@@ -60,7 +60,6 @@ h1
         ul.list-unstyled
           - @grouped_allowed_attributes.each do |group|
             - next if group[0] == 'comment'
-            - next if group[0] == 'private_comment' && !can?(:see_private_comment, @adv)
             - attr_from = group[0]
             - attr_to = group[1]
             - value_from = @adv.send(attr_from)
@@ -108,7 +107,7 @@ h1
         = "#{t("advertisement.offer.#{@adv.offer_type}")} #{t("advertisement.category.#{@adv.category}")}"
         '
         - @near_sections.each do |near_section|
-          = link_to near_section.short_title, near_section.url, class: 'btn btn-default btn-xs'
+          = link_to near_section.short_title, near_section.url, class: 'btn btn-default btn-xs' if near_section.short_title.present?
           '
 
     - if @adv.latitude.present? && @adv.longitude.present?

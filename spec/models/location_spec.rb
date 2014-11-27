@@ -11,6 +11,7 @@
 #  admin_area_id     :integer
 #  non_admin_area_id :integer
 #  city_id           :integer
+#  loaded_resource   :boolean          default(FALSE), not null
 #
 
 require 'rails_helper'

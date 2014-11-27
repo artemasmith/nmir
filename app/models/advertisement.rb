@@ -37,24 +37,28 @@
 #  keywords                 :text
 #  created_at               :datetime
 #  updated_at               :datetime
-#  landmark                 :string(255)
 #  comment                  :text
-#  private_comment          :text
 #  adv_type                 :integer
-#  region_id                :integer
-#  district_id              :integer
-#  city_id                  :integer
-#  admin_area_id            :integer
-#  non_admin_area_id        :integer
-#  street_id                :integer
-#  address_id               :integer
-#  landmark_id              :integer
 #  room_from                :integer
 #  room_to                  :integer
 #  status_type              :integer          default(0), not null
 #  user_id                  :integer
 #  latitude                 :float
 #  longitude                :float
+#  locations_title          :string(255)
+#  landmark                 :string(255)
+#  delta                    :boolean          default(TRUE), not null
+#  description              :text
+#  p                        :text
+#  title                    :string(255)
+#  h1                       :string(255)
+#  h2                       :string(255)
+#  h3                       :string(255)
+#  url                      :string(255)
+#  anchor                   :string(255)
+#  preview_url              :string(255)
+#  preview_alt              :string(255)
+#  user_role                :integer
 #
 
 class Advertisement < ActiveRecord::Base
@@ -127,7 +131,7 @@ class Advertisement < ActiveRecord::Base
       match = e.match(/(.+)(_to|_from)$/i)
       match ? match[2] == '_to' : false
     end.delete_if do |e|
-      %w(landmark private_comment comment price_from not_for_agents).include? e
+      %w(landmark comment price_from not_for_agents).include? e
     end.delete_if do |e|
       attr.find_all{|n| n == e }.size != section_count
     end.sort_by{|l| sorted_list.index(l) || 99}
