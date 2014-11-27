@@ -110,8 +110,9 @@ class Advertisement < ActiveRecord::Base
     return @grouped_allowed_attributes
   end
 
-  def self.grouped_allowed_search_attributes(adv_types, categories)
-    sorted_list = ['price_from', 'owner', 'mortgage']
+  def self.grouped_allowed_search_attributes(adv_types, categories, offer_types)
+    is_offer_type = offer_types == [:sale]
+    sorted_list = %w(price_from owner mortgage)
     attr = []
     section_count = 0
     AdvConformity::ATTR_VISIBILITY.each_pair do |key1, value1|
@@ -132,6 +133,8 @@ class Advertisement < ActiveRecord::Base
       match ? match[2] == '_to' : false
     end.delete_if do |e|
       %w(landmark comment price_from not_for_agents).include? e
+    end.delete_if do |e|
+      e == 'mortgage' && !is_offer_type
     end.delete_if do |e|
       attr.find_all{|n| n == e }.size != section_count
     end.sort_by{|l| sorted_list.index(l) || 99}

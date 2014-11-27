@@ -94,6 +94,7 @@ class AdvertisementsController < ApplicationController
 
     adv_types = []
     categories = []
+    offer_types = []
 
     if @section.present? && @section.url != '/'
       [:offer_type, :category].each do |m|
@@ -101,18 +102,25 @@ class AdvertisementsController < ApplicationController
       end
       with[:property_type] =  AdvEnums::PROPERTY_TYPES.index(@section.property_type.to_sym) if @section.property_type.present?
 
-      adv_types = [Advertisement.adv_type(@section.offer_type)] if @section.offer_type.present?
+      if @section.offer_type.present?
+        adv_types = [Advertisement.adv_type(@section.offer_type)]
+        offer_types = [@section.offer_type]
+      end
       categories = [@section.category] if @section.category.present?
     else
       [:offer_type, :category].each do |m|
         with[m] = search_params[m].map{|e| e.to_i} if search_params[m].present?
       end
 
-      adv_types = search_params[:offer_type].map{|e| Advertisement.adv_type(AdvEnums::OFFER_TYPES[e.to_i]) }.uniq if search_params[:offer_type].present?
+      if search_params[:offer_type].present?
+        adv_types = search_params[:offer_type].map{|e| Advertisement.adv_type(AdvEnums::OFFER_TYPES[e.to_i]) }.uniq
+        offer_types = search_params[:offer_type].map{|e| AdvEnums::OFFER_TYPES[e.to_i]}.uniq
+      end
+
       categories = search_params[:category].map{|e| AdvEnums::CATEGORIES[e.to_i].to_s}.uniq if search_params[:category].present?
     end
 
-    @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories)
+    @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories, offer_types)
 
     [:price, :floor, :floor_cnt].each do |m|
       if search_params["#{m}_from"].present?
@@ -309,10 +317,11 @@ class AdvertisementsController < ApplicationController
   end
 
   def get_search_attributes
-    adv_types = params[:offer_types].to_s.split(',').map{|e| Advertisement.adv_type(AdvEnums::OFFER_TYPES[e.to_i]) }.uniq
+    offer_types = params[:offer_types].to_s.split(',').map{|e| AdvEnums::OFFER_TYPES[e.to_i]}.uniq
+    adv_types = params[:offer_types].to_s.split(',').map{|e| Advertisement.adv_type(AdvEnums::OFFER_TYPES[e.to_i])}.uniq
     categories = params[:categories].to_s.split(',').map{|e| AdvEnums::CATEGORIES[e.to_i].to_s}.uniq
 
-    @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories)
+    @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories, offer_types)
   end
 
   def check_phone

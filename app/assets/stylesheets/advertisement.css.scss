@@ -25,6 +25,7 @@
 .map{
   width: auto;
   height: 400px;
+  margin-bottom: 15px;
 }
 .location-title {
   font-size: 14px;
@@ -34,8 +35,8 @@
 }
 
 .search-photo-size{
-  width: 540px;
-  height: 300px;
+  width: 600px;
+  height: 400px;
 }
 
 .search-photo-size-preview{
@@ -68,5 +69,6 @@ label.col-sm-6.popover-short-padding {
 .form-horizontal .form-group.location-group{
   margin-left: 0px;
   margin-right: 0px;
+  margin-bottom: 0px;
 }
 

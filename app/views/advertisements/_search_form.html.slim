@@ -7,8 +7,7 @@
           i.fa.fa-share.fa-lg
           '
           | предложение
-          '
-
+        '
         .btn-group data-toggle="buttons"
            - [:sale, :for_rent, :day].each do |offer|
             - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:offer_type.to_s].to_s] : params[:advertisement][:offer_type]) || []).include?(AdvEnums::OFFER_TYPES.index(offer).to_s)

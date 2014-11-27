@@ -40,9 +40,9 @@ module AdvGenerator
           locations.find{|e| e.location_type.to_sym == :street}.present? &&
           locations.find{|e| e.location_type.to_sym == :address}.present?
 
-      locations_title = locations.delete_if do |l|
+      locations_title = (locations.delete_if do |l|
         l.location_type.to_sym == :district && locations_present
-      end.map(&:title).join(' ')
+      end.map(&:title) + [self.landmark]).delete_if{|e| e.to_s.strip == ''}.join(' ')
 
 
       self.locations_title = locations_title unless self.locations_title.present?

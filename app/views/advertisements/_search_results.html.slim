@@ -2,7 +2,7 @@
   ul.list-unstyled
     - @search_results.each_with_index do |adv, index|
       li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}"
-        span.col-xs-12.col-md-1.text-muted.small
+        .col-lg-1.col-md-1.col-sm-12.col-xs-12.text-muted.small
           = l adv.created_at
           '
           -if can? :manage, adv
@@ -10,13 +10,13 @@
               i.fa.fa-edit.fa-lg
 
         a href="#{advertisement_path(adv)}_#{adv.url}"
-          .pull-left
+          .col-lg-2.col-md-2.col-sm-3.col-xs-4
             - if adv.preview_url.present?
-              img.preview-url src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
+              img src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
             -else
-              img.preview-url src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
+              img src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
 
-          span.media-body.col-md-6.col-lg-5.col-sm-4.pull-left
+          .col-lg-6.col-md-7.col-sm-8.col-xs-7
             h4.media-heading
               = adv.anchor
             - if adv.price_from.present?
@@ -33,7 +33,8 @@
               br
                 span
                   = adv.locations_title
-        .col-xs-12.col-md-2.col-lg-2.col-sm-3
+
+        .col-lg-2.col-md-2.col-sm-6.col-xs-8
           h5.media-heading
             - if adv.user_role == 'owner'
               i.fa.fa-check
@@ -46,9 +47,9 @@
             - if adv.name.present?
               '
               = adv.name
-          '
-          a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
-            | показать телефон
+            '
+            a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
+              | показать телефон
 - else
   p Ничего не найдено
 

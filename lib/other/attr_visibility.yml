@@ -124,7 +124,6 @@ demand:
     - space_from
     - price_from
     - not_for_agents
-    - mortgage
     - comment
     - landmark
   newbuild:
@@ -139,7 +138,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -155,7 +153,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -167,7 +164,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -178,7 +174,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
     
@@ -194,7 +189,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -202,7 +196,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -212,7 +205,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -222,7 +214,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -234,7 +225,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -246,7 +236,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -256,7 +245,6 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      
 
@@ -266,6 +254,5 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - mortgage
     - comment
      

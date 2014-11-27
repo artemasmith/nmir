@@ -66,7 +66,7 @@ module AdvertisementsHelper
       end
 
       if search_attribute == 'owner'
-        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'}).merge({btn_class_name: 'btn-success'})
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-lg fa-check'}).merge({btn_class_name: 'btn-success'})
       end
 
     end

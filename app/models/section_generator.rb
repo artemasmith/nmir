@@ -69,7 +69,7 @@ module SectionGenerator
         description: generate_description(offer_type, category, property_type, loc_chain_title),
         keywords: generate_keywords(offer_type, category, property_type, loc_chain_title),
         title: generate_title(offer_type, category, property_type, loc_chain_title),
-        short_title: generate_title(offer_type, category, property_type, short_loc_title, true),
+        short_title: short_loc_title,
         p: nil,
         p2: nil,
         h1: generate_title(offer_type, category, property_type, loc_chain_title),
@@ -78,17 +78,16 @@ module SectionGenerator
     }
   end
 
-  def self.generate_title(offer_type, category, property_type, loc_chain_title, short_title = nil)
-    if short_title.present?
-      return loc_chain_title
-    elsif (offer_type.blank? && property_type.blank? && category.blank?)
-      return ['Недвижимость', loc_chain_title].compact.join(' ')
-    elsif(offer_type && category)
+  def self.generate_title(offer_type, category, property_type, loc_chain_title)
+    if(offer_type && category)
       return ["#{enum_title(offer_type)} #{enum_title(category)}", loc_chain_title].compact.join(' ')
     elsif(offer_type && property_type)
       return ["#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость", loc_chain_title].compact.join(' ')
+    elsif(offer_type.blank? && property_type.blank? && category.blank?)
+      return ['Недвижимость', loc_chain_title].compact.join(' ')
     end
   end
+
 
   def self.generate_keywords(offer_type, category, property_type, loc_chain_title)
     if(offer_type && category)
