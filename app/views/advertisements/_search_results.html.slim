@@ -2,21 +2,22 @@
   ul.list-unstyled
     - @search_results.each_with_index do |adv, index|
       li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}"
-        .col-lg-1.col-md-1.col-sm-12.col-xs-12.text-muted.small
-          = l adv.created_at
+        span.col-lg-1.col-md-1.col-sm-12.col-xs-12
+          - date = (adv.created_at >= adv.updated_at) ? adv.created_at : adv.updated_at
+          = l date
           '
           -if can? :manage, adv
             a.btn-link href=edit_advertisement_path(adv)
               i.fa.fa-edit.fa-lg
 
         a href="#{advertisement_path(adv)}_#{adv.url}"
-          .col-lg-2.col-md-2.col-sm-3.col-xs-4
+          .col-lg-2.col-md-2.col-sm-3.col-xs-12
             - if adv.preview_url.present?
               img src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
             -else
               img src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
 
-          .col-lg-6.col-md-7.col-sm-8.col-xs-7
+          .col-lg-5.col-md-6.col-sm-9.col-xs-12
             h4.media-heading
               = adv.anchor
             - if adv.price_from.present?
@@ -34,7 +35,7 @@
                 span
                   = adv.locations_title
 
-        .col-lg-2.col-md-2.col-sm-6.col-xs-8
+        .col-lg-3.col-md-3.col-sm-12.col-xs-12
           h5.media-heading
             - if adv.user_role == 'owner'
               i.fa.fa-check

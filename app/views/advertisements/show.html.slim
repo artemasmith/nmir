@@ -20,15 +20,17 @@ h1
     .col-lg-5
       p
         span.small.text-muted
-          | Размещено
-          '
-          strong
-            = Russian::strftime @adv.created_at.to_date
-          '
-          | Обновлено
-          '
-          strong
-            = Russian::strftime @adv.updated_at.to_date
+          - if @adv.created_at >= @adv.updated_at
+            | Размещено
+            '
+            strong
+              = Russian::strftime @adv.created_at.to_date
+          - else
+            '
+            | Обновлено
+            '
+            strong
+              = Russian::strftime @adv.updated_at.to_date
           '
           | Просмотров:
           '
