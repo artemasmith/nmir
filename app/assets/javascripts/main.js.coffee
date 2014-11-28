@@ -134,10 +134,10 @@ $('.GetChildren').livequery ->
   return
 
 drop_down_button = (multi, lid, value)->
-  "<div class='form-group location-group button-group' data-toggle='buttons' multi='#{multi}'><div class='button btn dropdown-toggle btn-default GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span></div><div class='button btn btn-default DelChildren'><div class='fa fa-times'></div></div><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div>"
+  "<div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'><div class='button btn dropdown-toggle btn-default GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span></div><div class='button btn btn-default DelChildren'><div class='fa fa-times'></div></div><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div>"
 
 easy_button = (multi, lid, value)->
-  "<div class='form-group location-group button-group' data-toggle='buttons' multi='#{multi}'><div class='button btn btn-default active btn-xs'  lid='#{lid}'> #{value} </div><div class='button btn btn-default btn-xs DelChildren'><div class='fa fa-times'></div></div><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div>"
+  "<div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'><div class='button btn btn-default active btn-xs'  lid='#{lid}'> #{value} </div><div class='button btn btn-default btn-xs DelChildren'><div class='fa fa-times'></div></div><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div>"
 sort_button_list = (context)->
   parent = context.parent()
   list = parent.children('.location-group').sort (a, b) ->
