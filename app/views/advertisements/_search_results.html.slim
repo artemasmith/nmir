@@ -3,7 +3,8 @@
     - @search_results.each_with_index do |adv, index|
       li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}"
         span.col-lg-1.col-md-1.col-sm-12.col-xs-12
-          = l adv.created_at
+          - date = (adv.created_at >= adv.updated_at) ? adv.created_at : adv.updated_at
+          = l date
           '
           -if can? :manage, adv
             a.btn-link href=edit_advertisement_path(adv)
