@@ -13,7 +13,5 @@ legend Местоположение
             '
             i.caret
     - if new_action.present?
-      /.form-group
       - attr_from = 'landmark'
-      - attr_to = nil
       = render_input attr_from.to_sym,  nil, (defined?(f) ? f.object.send(attr_from) : nil), nil
