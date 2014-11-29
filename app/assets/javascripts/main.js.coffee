@@ -170,9 +170,9 @@ sort_button_list = (context)->
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
 
 
-@make_active_last_button = (lg)->
+@make_active_last_button = (sp)->
   $('.button.loc').removeClass('active')
-  lg.find('.button.loc').last().addClass( ' active')
+  sp['group'].find('.button.loc[lid='+sp['lid']+']').addClass( ' active')
 
 
 
@@ -187,7 +187,7 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
-    make_active_last_button(sp['group'])
+    make_active_last_button(sp)
 
 
 
