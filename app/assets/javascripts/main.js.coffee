@@ -189,7 +189,12 @@ $('.SelectLocation').livequery ->
     click_select_location(sp)
     make_active_last_button(sp)
 
-
+$('.NewAdv').livequery ->
+  $(this).click ->
+    console.log('hid' + hid)
+    console.log('val' + val)
+    $('.NewAdv[hid="' + hid + '"]').removeClass('active')
+    $('.NewAdv[value="' + val + '"][hid="' + hid + '"]').addClass('active')
 
 $('.DelChildren').livequery ->
   $(this).click ->

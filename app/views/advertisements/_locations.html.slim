@@ -12,6 +12,7 @@ legend Местоположение
             | Выбрать
             '
             i.caret
+    - new_action ||= nil
     - if new_action.present?
       - attr_from = 'landmark'
       = render_input attr_from.to_sym,  nil, (defined?(f) ? f.object.send(attr_from) : nil), nil
