@@ -68,7 +68,7 @@ h1
                   = f.radio_button :category,  "#{category}"
                   = t "advertisement.category.#{category}"
 
-      = render partial: 'advertisements/locations', locals: { id: 0, multi: true }
+      = render partial: 'advertisements/locations', locals: { id: 0, multi: true, new_action: true }
       = render '/advertisements/attributes_place', f: f
       = render '/advertisements/map', f: f
       = render '/advertisements/photos', f: f
