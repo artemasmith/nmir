@@ -144,8 +144,9 @@ $().ready ->
   return
 
 @getChildren = ->
+  $this = $(this)
   $.getScript(
-    Routes.get_locations_advertisements_path(parent_id: $(this).attr('lid'))
+    Routes.get_locations_advertisements_path(parent_id: $this.attr('lid'))
   )
 
   return
@@ -159,6 +160,7 @@ $('.GetChildren').livequery ->
   return
 
 drop_down_button = (multi, lid, value)->
+
   "<div class ='form-group form-group-location'>
     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'>
       <div class='btn btn-default GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span>
@@ -185,6 +187,7 @@ easy_button = (multi, lid, value)->
      </div>
     </div>
     "
+
 sort_button_list = (context)->
   children = context.children('.form-group:not(.location-group)')
   list = children.sort (a, b) ->
@@ -220,15 +223,10 @@ sort_button_list = (context)->
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
 
 
-@make_active_last_button = ->
-  ln = $('.form-group.btn-group.location-group').length - 1
-  $('.form-group.btn-group.location-group').removeClass('active')
-  cls = $('.form-group.btn-group.location-group').filter( (index) ->
-    return index == ln
-  ).children()[0].className
-  $('.form-group.btn-group.location-group').filter( (index) ->
-    return index == ln
-  ).children()[0].setAttribute('class', cls + ' active')
+@make_active_last_button = (sp)->
+  $('.button.loc').removeClass('active')
+  sp['group'].find('.button.loc[lid='+sp['lid']+']').addClass( ' active')
+
 
 
 $('.SelectLocation').livequery ->
@@ -244,9 +242,16 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
-#    make_active_last_button()
 
 
+
+
+$('.NewAdv').livequery ->
+  $(this).click ->
+    console.log('hid' + hid)
+    console.log('val' + val)
+    $('.NewAdv[hid="' + hid + '"]').removeClass('active')
+    $('.NewAdv[value="' + val + '"][hid="' + hid + '"]').addClass('active')
 
 $('.DelChildren').livequery ->
   $(this).click ->

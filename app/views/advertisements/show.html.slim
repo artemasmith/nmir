@@ -74,7 +74,10 @@ h1
                     - if value_to.present? && value_from != value_to
                       | от
                       '
-                    = value_from
+                    -if value_from == true
+                      = 'да'
+                    - else
+                      = value_from
                     '
                     = t("advertisement.units.#{attr_from}")
                   - if value_to.present? && value_from != value_to

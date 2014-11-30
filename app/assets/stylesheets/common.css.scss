@@ -63,15 +63,21 @@ h1, h2 {
   margin-left:15px;
 }
 
-.form-inline .form-group.location-group {
+
+
+.form-horizontal .location-group, .form-horizontal .form-group-location{
+  margin: 0!important;
+  display: inline-block!important;
+}
+
+.form-inline .form-group.location-group, .form-horizontal .form-group.location-group {
   position: inherit;
 }
 
-.img-responsive {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
+
+
+
+
 
 
 
