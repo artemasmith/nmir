@@ -5,13 +5,13 @@ legend Местоположение
       i.fa.fa-map-marker.fa-lg
       '
       | место
-    .col-sm-9.form.form-horizontal
-      span.button-toolbar
-        .location-group multi="#{multi}" state="#{@location_state}"
-          .button.btn.btn-default.GetChildren lid="#{id}" data-toggle="dropdown"
-            | Выбрать
-            '
-            i.caret
-    - if new_action.present?
-      - attr_from = 'landmark'
-      = render_input attr_from.to_sym,  nil, (defined?(f) ? f.object.send(attr_from) : nil), nil
+  .form-group
+    .form-group.location-group.btn-group multi=true state="#{@location_state}"
+      .btn.btn-default.GetChildren.dropdown-toggle lid="#{id}" data-toggle="dropdown"
+        | Место
+        '
+        i.caret
+  - if new_action.present?
+    .form-group
+        - attr_from = 'landmark'
+        = render_input attr_from.to_sym,  nil, (defined?(f) ? f.object.send(attr_from) : nil), nil

@@ -47,25 +47,27 @@ $().ready ->
 
 
 
-@map = (el, latitude = null, longitude = null, editable = true)->
+@map = (el, latitude = null, longitude = null, editable = true) ->
+
+  start = null
 
   create_start = (map, x, y) ->
-    start = new ymaps.Placemark([x, y],
+    placemark = new ymaps.Placemark([x, y],
       {hintContent: 'Местоположение объекта'},
       {draggable: true});
-    start.events.add 'dragend', (e) ->
+    placemark.events.add 'dragend', (e) ->
       coords = e.get('target').geometry.getCoordinates()
       $('.latitude-value').val(coords[0].toPrecision(6))
       $('.longitude-value').val(coords[1].toPrecision(6))
       return
-    map.geoObjects.add start
-    return start
+    map.geoObjects.add placemark
+    return placemark
 
-  create_map = (center)->
-      start = null
+  create_map = (center, maxZoom = false)->
+      zoom = if maxZoom then 16 : 12
       window.map = new ymaps.Map("map"
         center: center
-        zoom: 12
+        zoom: zoom
       )
 
       if latitude and longitude
@@ -93,10 +95,29 @@ $().ready ->
           create_map(center)
           return
       else
-        create_map [latitude, longitude]
+        create_map [latitude, longitude], true
       return
     ymaps.ready init
     return
+
+  $('.SelectLocation, .DelChildren').livequery ->
+    $(this).click ->
+      position = $.grep($("div:not(.SelectLocation)[lid]").map(->
+          $.trim $(this).text()
+        ), (n) ->
+        n isnt "Выбрать" and n
+      ).join " "
+      if position and window.map and window.ymaps
+        ymaps.geocode(position).then (res) ->
+          first = res.geoObjects.get(0)
+          if first
+            center = first.geometry.getCoordinates()
+            map.panTo(center)
+            if(start)
+              start.geometry.setCoordinates(coords)
+            else
+              start = create_start(map, coords[0].toPrecision(6), coords[1].toPrecision(6))
+            return
   return
 
 
@@ -129,44 +150,73 @@ $().ready ->
 
   return
 
+$(".location-button").livequery ->
+  $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
+  return
+
 $('.GetChildren').livequery ->
   $(this).click getChildren
   return
 
 drop_down_button = (multi, lid, value)->
-  "<div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'><div class='button btn dropdown-toggle btn-default GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span></div><div class='button btn btn-default DelChildren'><div class='fa fa-times'></div></div><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div>"
+  "<div class ='form-group form-group-location'>
+    <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'>
+      <div class='btn btn-default GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span>
+      <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
+      </div>
+      <div class='btn btn-default DelChildren'>
+        <div class='fa fa-times'>
+        </div>
+      </div>
+    </div>
+  </div>
+  "
 
 easy_button = (multi, lid, value)->
-  "<div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'><div class='button btn btn-default btn-xs'  lid='#{lid}'> #{value} </div><div class='button btn btn-default btn-xs DelChildren'><div class='fa fa-times'></div></div><input type='hidden' name='advertisement[location_ids][]' value='#{lid}'></div>"
+  "<div class ='form-group form-group-location'>
+     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'>
+       <div class='btn btn-default active btn-xs'  lid='#{lid}'> #{value}
+       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
+       </div>
+       <div class='btn btn-default active btn-xs DelChildren'>
+         <div class='fa fa-times'>
+         </div>
+       </div>
+     </div>
+    </div>
+    "
 sort_button_list = (context)->
-  parent = context.parent()
-  list = parent.children('.location-group').sort (a, b) ->
-    name1 = $(a).children('[lid]').attr('name')
-    name2 = $(b).children('[lid]').attr('name')
-    text1 = $(a).children('[lid]').text()
-    text2 = $(b).children('[lid]').text()
-    name1 + text1  >  name2 + text2
+  children = context.children('.form-group:not(.location-group)')
+  list = children.sort (a, b) ->
+    text1 = $(a).children('.form-group').children('[lid]').text()
+    text2 = $(b).children('.form-group').children('[lid]').text()
+    text1  >  text2
   $.each list, (_, value) ->
-    parent.append(value)
+    context.append(value)
 
 #lid,group, value, multi, has_children, common, parent_id
 @click_select_location = (sp) ->
-  if sp['group'].find("input[value=#{sp['lid']}]").length is 0
+  if sp['el']
+    if sp['el'].hasClass('active')
+      sp['el'].removeClass('active')
+    else
+      sp['el'].addClass('active')
+  if sp['group'].parent().find("input[value=#{sp['lid']}]").length is 0
     if sp['has_children'] is 'true'
       button = drop_down_button(sp['multi'], sp['lid'], sp['value'])
     else
       button = easy_button(sp['multi'], sp['lid'], sp['value'])
-    template = sp['group'].append(button)
-    sort_button_list(sp['group'].children('.GetChildren'))
+    template = sp['group'].parent().append(button)
+    sort_button_list(sp['group'].parent())
   else
-    sp['group'].find("input[value=#{sp['lid']}]").closest('.location-group').remove()
+    sp['group'].parent().find("input[value=#{sp['lid']}]").closest('.location-group').parent().remove()
   if (sp['multi'] is 'false')
     if (sp['common'] == false)
-      $(".GetChildren[lid=#{sp['parent_id']}]").closest('.location-group').find('.location-group').remove()
-      sp['group'].append(button)
+      $(".GetChildren[lid=#{sp['parent_id']}]").closest('.location-group').parent().find('.location-group').remove()
+      sp['group'].parent().append(button)
     else
       $(".location-button.active[lid!=#{sp['lid']}]").click()
-      sp['group'].find('.GetChildren').popover "destroy"
+      sp['group'].parent().find('.GetChildren').popover "destroy"
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
 
 
@@ -182,8 +232,10 @@ sort_button_list = (context)->
 
 
 $('.SelectLocation').livequery ->
-  $(this).click ->
+  $(this).click (event)->
+    cancelEvent(event)
     sp = {}
+    sp['el'] = $(this)
     sp['lid'] = $(this).attr('lid')
     sp['group'] = $(this).closest('.location-group')
     sp['value'] = $(this).text()
@@ -192,13 +244,13 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
-    make_active_last_button()
+#    make_active_last_button()
 
 
 
 $('.DelChildren').livequery ->
   $(this).click ->
-    group = $(this).closest('.location-group')
+    group = $(this).closest('.location-group').parent()
     group.remove()
 
 $('.location-group[state]').livequery ->
@@ -227,10 +279,9 @@ $('.location-group[state]').livequery ->
     if element.has_children
       $.each childElements(element), (index, value) ->
         processElement(value, new_context)
-    sort_button_list(context.children('.GetChildren'))
-
-
     console.log context
+    sort_button_list(context)
+
 
   root_list = $.grep list, (e) ->
     e.location_id is null
@@ -300,9 +351,9 @@ $("html").on "mouseup", (e) ->
       return
   return
 
-$(".location-button").livequery ->
-  $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
-  return
+#$(".location-button").livequery ->
+#  $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
+#  return
 
 $('form .attributes input, form .attributes textarea').livequery ->
   $this = $(this)
@@ -374,20 +425,7 @@ $('.new_entity_action').livequery ->
   $(this).click ->
     location.href = Routes.new_advertisement_path()
 
-$('.SelectLocation, .DelChildren').livequery ->
-  $(this).click ->
-    position = $.grep($("div:not(.SelectLocation)[lid]").map(->
-        $.trim $(this).text()
-    ), (n) ->
-        n isnt "Выбрать" and n
-    ).join " "
-    if position and window.map and window.ymaps
-      ymaps.geocode(position).then (res) ->
-        first = res.geoObjects.get(0)
-        if first
-          center = first.geometry.getCoordinates()
-          map.panTo(center)
-          return
+
 
 
 $('.click_additional_search_params_action').livequery ->
@@ -432,16 +470,7 @@ $('input[type="text"][valid-type=integer]').livequery ->
 $('input[type="text"][valid-type=float]').livequery ->
   $(this).forceFloatOnly()
 
-$('.show_map_action').livequery ->
-  $(this).click (event)->
-    cancelEvent(event)
-    isVisible = $('#map').is(':visible')
-    if isVisible
-      $('#map').addClass('hidden')
-      $(this).text('Показать карту')
-    else
-      $('#map').removeClass('hidden')
-      $(this).text('Скрыть карту')
+
 
 
 

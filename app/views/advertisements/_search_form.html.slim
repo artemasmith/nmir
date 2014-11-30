@@ -49,14 +49,9 @@
             label.btn.btn-default.click_additional_search_params_action class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     .row.col-xs-12.form-group
-      label
-        i.fa.fa-map-marker.fa-lg
-        '
-        | место
-      '
-      span.button-toolbar
-        .location-group multi=true state="#{@location_state}"
-          .button.btn.btn-default.GetChildren lid="#{0}" data-toggle="dropdown"
+      .form-group
+        .form-group.location-group.btn-group multi=true state="#{@location_state}"
+          .btn.btn-default.GetChildren.dropdown-toggle lid="#{0}" data-toggle="dropdown"
             i.fa.fa-globe.fa-lg
             '
             | выберите местоположение

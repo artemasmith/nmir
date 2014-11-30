@@ -259,7 +259,7 @@ class AdvertisementsController < ApplicationController
     @adv.offer_type = AdvEnums::OFFER_TYPES.first
     @adv.category = AdvEnums::CATEGORIES.first
     @grouped_allowed_attributes = @adv.grouped_allowed_attributes
-    @grouped_allowed_attributes.delete(["landmark"])
+    @grouped_allowed_attributes.delete(['landmark'])
   end
 
   def create
