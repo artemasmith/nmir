@@ -13,7 +13,7 @@ h1
     = f.hidden_field :latitude, class: 'latitude-value'
     = f.hidden_field :longitude, class: 'longitude-value'
     = render '/advertisements/user', f: f
-    .adv-params class="#{(can?(:create_from_admin, @adv) && !@save_with_errors && @adv.new_record?)  ? 'hidden' : ''}"
+    .adv-params
       legend Раздел
       .form.form-horizontal role="form"
         .form-group

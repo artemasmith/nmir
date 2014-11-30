@@ -25,7 +25,7 @@
               .input-group
                 span.input-group-addon
                   i.fa.fa-phone
-                = f.text_field :original, class: 'form-control', required: true
+                = f.text_field :original, class: 'form-control checkPhone', required: true
                 span.input-group-btn
                   = f.link_to_remove class: 'btn btn-default' do
                     i.fa.fa-minus
@@ -38,4 +38,6 @@
         - if !@save_with_errors && @adv.new_record?
           .form-group
             .col-sm-offset-3.col-sm-4
-              label.btn.btn-primary.checkPhone Далее
+              label.btn.btn-warning.hidden.DuplicatePhones
+          .form-group.DuplicateResults
+

@@ -305,7 +305,11 @@ $('.AdvPropertySearch').livequery ->
   $(this).change set_adv_property
 
 $('.checkPhone').livequery ->
-  $(this).click check_phones
+  $(this).keyup check_phones
+
+$('.DuplicatePhones').livequery ->
+  $(this).click ->
+    $(".modal#dublicate_modal").modal('show');
 
 $('.ShowAdvPhone').livequery ->
   $this = $(this)
@@ -423,8 +427,8 @@ $('.range_date_picker_action').livequery ->
 
 $('.use_user_action').livequery ->
   $(this).click ->
-    $('.adv-params').removeClass('hidden');
-    $('.user-params').addClass('hidden');
+    #$('.adv-params').removeClass('hidden');
+    #$('.user-params').addClass('hidden');
     $('#dublicate_modal').modal('hide');
 $('.new_entity_action').livequery ->
   $(this).click ->
