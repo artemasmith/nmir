@@ -18,19 +18,56 @@ h1
       .form.form-horizontal role="form"
         .form-group
           label.col-sm-3.control-label for="offer_type" Вид сделки
-          .col-sm-9.btn-group.btn-group data-toggle="buttons"
-            - AdvEnums::OFFER_TYPES.each do |offer|
-              label.btn.btn-default.AdvProperty hid="offer" multi="one" value="#{AdvEnums::OFFER_TYPES.index(offer)}" class="#{@adv.offer_type.to_sym == offer.to_sym  ? 'active' : ''}"
-                = f.radio_button :offer_type, "#{offer}"
-                = t("advertisement.offer.#{offer}")
+
+          .col-sm-9
+            label
+              i.fa.fa-share.fa-lg
+              '
+              | предложение
+            '
+            .btn-group.btn-group data-toggle="buttons"
+              - [:sale, :for_rent, :day].each do |offer|
+                label.btn.btn-default.AdvProperty.NewAdv hid="offer" multi="one" value="#{AdvEnums::OFFER_TYPES.index(offer)}" class="#{@adv.offer_type.to_sym == offer.to_sym  ? 'active' : ''}"
+                  = f.radio_button :offer_type, "#{offer}"
+                  = t("advertisement.offer.#{offer}")
+            '
+            label.control-label
+              i.fa.fa-reply.fa-lg
+              '
+              | спрос
+            '
+            .btn-group.btn-group data-toggle="buttons"
+              - [:buy, :rent].each do |offer|
+                label.btn.btn-default.AdvProperty.NewAdv hid="offer" multi="one" value="#{AdvEnums::OFFER_TYPES.index(offer)}" class="#{@adv.offer_type.to_sym == offer.to_sym  ? 'active' : ''}"
+                  = f.radio_button :offer_type, "#{offer}"
+                  = t("advertisement.offer.#{offer}")
         .form-group
           label.col-sm-3.control-label for="category" Тип недвижимости
-          .col-sm-9.btn-toolbar
+          .col-sm-9
+            label.control-label
+              i.fa.fa-building
+              '
+              | жилая
+            '
             .btn-group.btn-group data-toggle="buttons"
-              - AdvEnums::CATEGORIES.each do |category|
-                label.btn.btn-default.AdvProperty hid="category" multi="one" value="#{AdvEnums::CATEGORIES.index(category)}" class="#{@adv.category.to_sym == category.to_sym  ? 'active' : ''}"
+              - [:flat, :newbuild, :house, :ijs, :hotel, :room, :garage].each do |category|
+                label.btn.btn-default.AdvProperty.NewAdv hid="category" multi="one" value="#{AdvEnums::CATEGORIES.index(category)}" class="#{@adv.category.to_sym == category.to_sym  ? 'active' : ''}"
                   = f.radio_button :category,  "#{category}"
                   = t "advertisement.category.#{category}"
+          .col-sm-3
+            '
+          .col-sm-9
+            label.control-label
+              i.fa.fa-briefcase
+              '
+              | коммерческая
+            '
+            .btn-group.btn-group data-toggle="buttons"
+              - [:office, :trade, :storage, :cafe, :land].each do |category|
+                label.btn.btn-default.AdvProperty.NewAdv hid="category" multi="one" value="#{AdvEnums::CATEGORIES.index(category)}" class="#{@adv.category.to_sym == category.to_sym  ? 'active' : ''}"
+                  = f.radio_button :category,  "#{category}"
+                  = t "advertisement.category.#{category}"
+
       = render partial: 'advertisements/locations', locals: { id: 0, multi: true, new_action: true }
       = render '/advertisements/attributes_place', f: f
       = render '/advertisements/map', f: f
