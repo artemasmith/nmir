@@ -1,6 +1,6 @@
 <% if @search_results.present? %>
-    $('<%= j (render('advertisements/form_duplicate')) %>').modal('show');
+    $('.form-group.DuplicateResults').html('<%= j (render('advertisements/form_duplicate')) %>');
+    $('.DuplicatePhones').removeClass('hidden').html("Найдено <%=@search_results.count%> объявлений с таким номером");
 <% else %>
-    $('.adv-params').removeClass('hidden');
-    $('.user-params').addClass('hidden');
+    $('.DuplicatePhones').addClass('hidden');
 <% end %>
