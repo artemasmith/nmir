@@ -118,7 +118,7 @@ h1
 
     - if @adv.latitude.present? && @adv.longitude.present?
       .col-xs-12.col-lg-5
-        .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable=true
+        .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='false' data-zoom=@adv.zoom
   .panel.panel-body
     .row
       .col-lg-7

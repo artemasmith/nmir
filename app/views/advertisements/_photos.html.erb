@@ -23,16 +23,6 @@
       </table>
 </div>
 
-<script>
-    var fileUploadErrors = {
-        maxFileSize: 'File is too big',
-        minFileSize: 'File is too small',
-        acceptFileTypes: 'Filetype not allowed',
-        maxNumberOfFiles: 'Max number of files exceeded',
-        uploadedBytes: 'Uploaded bytes exceed file size',
-        emptyResult: 'Empty file upload result'
-    };
-</script>
 
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
@@ -108,7 +98,7 @@
             dataType: 'json',
             disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
             maxFileSize: 5000000,
-            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+            acceptFileTypes: /(\.|\/)(jpe?g|png)$/i,
             previewMaxWidth: 100,
             previewMaxHeight: 100,
             previewCrop: true,
@@ -117,6 +107,9 @@
                 data.context.find('.progress-bar').css('width',progress + '%').text(progress + '%').attr('aria-valuenow', progress);
             }
         });
+
+
+
 
         <% if @adv.photos.present? %>
         $.ajax({

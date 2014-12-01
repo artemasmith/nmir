@@ -11,10 +11,121 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141126170831) do
+ActiveRecord::Schema.define(version: 20141201003717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ADDROBJ", force: true do |t|
+    t.integer "actstatus"
+    t.string  "aoguid",     limit: 36
+    t.string  "aoid",       limit: 36
+    t.integer "aolevel"
+    t.string  "areacode",   limit: 3
+    t.string  "autocode",   limit: 1
+    t.integer "centstatus"
+    t.string  "citycode",   limit: 3
+    t.string  "code",       limit: 17
+    t.integer "currstatus"
+    t.date    "enddate"
+    t.string  "formalname", limit: 120
+    t.string  "ifnsfl",     limit: 4
+    t.string  "ifnsul",     limit: 4
+    t.string  "nextid",     limit: 36
+    t.string  "offname",    limit: 120
+    t.string  "okato",      limit: 11
+    t.string  "oktmo",      limit: 8
+    t.integer "operstatus"
+    t.string  "parentguid", limit: 36
+    t.string  "placecode",  limit: 3
+    t.string  "plaincode",  limit: 15
+    t.string  "postalcode", limit: 6
+    t.string  "previd",     limit: 36
+    t.string  "regioncode", limit: 2
+    t.string  "shortname",  limit: 10
+    t.date    "startdate"
+    t.string  "streetcode", limit: 4
+    t.string  "terrifnsfl", limit: 4
+    t.string  "terrifnsul", limit: 4
+    t.date    "updatedate"
+    t.string  "ctarcode",   limit: 3
+    t.string  "extrcode",   limit: 4
+    t.string  "sextcode",   limit: 3
+    t.integer "livestatus"
+    t.string  "normdoc",    limit: 36
+  end
+
+  create_table "HOUSE01", force: true do |t|
+    t.string  "aoguid",     limit: 36
+    t.string  "buildnum",   limit: 10
+    t.date    "enddate"
+    t.integer "eststatus"
+    t.string  "houseguid",  limit: 36
+    t.string  "houseid",    limit: 36
+    t.string  "housenum",   limit: 10
+    t.integer "statstatus"
+    t.string  "ifnsfl",     limit: 4
+    t.string  "ifnsul",     limit: 4
+    t.string  "okato",      limit: 11
+    t.string  "oktmo",      limit: 8
+    t.string  "postalcode", limit: 6
+    t.date    "startdate"
+    t.string  "strucnum",   limit: 10
+    t.integer "strstatus"
+    t.string  "terrifnsfl", limit: 4
+    t.string  "terrifnsul", limit: 4
+    t.date    "updatedate"
+    t.string  "normdoc",    limit: 36
+    t.integer "counter"
+  end
+
+  create_table "HOUSE02", force: true do |t|
+    t.string  "aoguid",     limit: 36
+    t.string  "buildnum",   limit: 10
+    t.date    "enddate"
+    t.integer "eststatus"
+    t.string  "houseguid",  limit: 36
+    t.string  "houseid",    limit: 36
+    t.string  "housenum",   limit: 10
+    t.integer "statstatus"
+    t.string  "ifnsfl",     limit: 4
+    t.string  "ifnsul",     limit: 4
+    t.string  "okato",      limit: 11
+    t.string  "oktmo",      limit: 8
+    t.string  "postalcode", limit: 6
+    t.date    "startdate"
+    t.string  "strucnum",   limit: 10
+    t.integer "strstatus"
+    t.string  "terrifnsfl", limit: 4
+    t.string  "terrifnsul", limit: 4
+    t.date    "updatedate"
+    t.string  "normdoc",    limit: 36
+    t.integer "counter"
+  end
+
+  create_table "HOUSE61", force: true do |t|
+    t.string  "aoguid",     limit: 36
+    t.string  "buildnum",   limit: 10
+    t.date    "enddate"
+    t.integer "eststatus"
+    t.string  "houseguid",  limit: 36
+    t.string  "houseid",    limit: 36
+    t.string  "housenum",   limit: 10
+    t.integer "statstatus"
+    t.string  "ifnsfl",     limit: 4
+    t.string  "ifnsul",     limit: 4
+    t.string  "okato",      limit: 11
+    t.string  "oktmo",      limit: 8
+    t.string  "postalcode", limit: 6
+    t.date    "startdate"
+    t.string  "strucnum",   limit: 10
+    t.integer "strstatus"
+    t.string  "terrifnsfl", limit: 4
+    t.string  "terrifnsul", limit: 4
+    t.date    "updatedate"
+    t.string  "normdoc",    limit: 36
+    t.integer "counter"
+  end
 
   create_table "advertisement_counters", force: true do |t|
     t.integer  "advertisement_id"
@@ -91,6 +202,7 @@ ActiveRecord::Schema.define(version: 20141126170831) do
     t.string   "preview_url"
     t.string   "preview_alt"
     t.integer  "user_role"
+    t.integer  "zoom",                                                        default: 12,    null: false
   end
 
   add_index "advertisements", ["offer_type", "category", "property_type", "status_type"], name: "index_advertisements_on_ot_c_li_pt_st", using: :btree
@@ -102,6 +214,8 @@ ActiveRecord::Schema.define(version: 20141126170831) do
     t.integer "location_type"
     t.integer "location_id"
     t.integer "children_count",    default: 0
+    t.string  "aoguid"
+    t.string  "parentguid"
     t.integer "admin_area_id"
     t.integer "non_admin_area_id"
     t.integer "city_id"
@@ -109,11 +223,12 @@ ActiveRecord::Schema.define(version: 20141126170831) do
   end
 
   add_index "locations", ["admin_area_id"], name: "index_locations_on_admin_area_id", using: :btree
-  add_index "locations", ["children_count"], name: "index_locations_on_children_count", using: :btree
+  add_index "locations", ["aoguid"], name: "index_locations_on_aoguid", using: :btree
   add_index "locations", ["city_id"], name: "index_locations_on_city_id", using: :btree
   add_index "locations", ["location_id"], name: "index_locations_on_location_id", using: :btree
   add_index "locations", ["location_type"], name: "index_locations_on_location_type", using: :btree
   add_index "locations", ["non_admin_area_id"], name: "index_locations_on_non_admin_area_id", using: :btree
+  add_index "locations", ["parentguid"], name: "index_locations_on_parentguid", using: :btree
   add_index "locations", ["title"], name: "index_locations_on_title", using: :btree
 
   create_table "neighborhoods", force: true do |t|

@@ -370,7 +370,7 @@ class AdvertisementsController < ApplicationController
   end
 
   def advertisement_params
-    params.require(:advertisement).permit(:category, :offer_type, :price_from, :landmark,
+    params.require(:advertisement).permit(:category, :offer_type, :price_from, :landmark, :zoom,
     :price_to, :not_for_agents, :district, :user_id,
     :floor_from, :space, :room_from, :comment, :phone, :adv_type, :latitude, :longitude,
     :property_type, :floor_cnt_from, :space_from, :floor_max, :mortgage, adv_type: [],

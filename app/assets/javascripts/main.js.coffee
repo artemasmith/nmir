@@ -44,47 +44,66 @@ $().ready ->
   return
 
 
+@create_start = (map, x, y) ->
+  placemark = new ymaps.Placemark([x, y],
+    {hintContent: 'Местоположение объекта'},
+    {draggable: true});
+  placemark.events.add 'dragend', (e) ->
+    coords = e.get('target').geometry.getCoordinates()
+    $('.latitude-value').val(coords[0].toPrecision(6))
+    $('.longitude-value').val(coords[1].toPrecision(6))
+    $('.zoom-value').val(map.getZoom())
+    return
+  map.geoObjects.add placemark
+  return placemark
+
+@geoCoding = ->
+  return unless $('#map').data('editable')
+  position = $.grep($("div:not(.SelectLocation)[lid]").map(->
+      $.trim $(this).text()
+    ), (n) ->
+    (n isnt "Выбрать") and (n isnt "Место") and n
+  ).join " "
+  console.log position
+  if position and window.map and window.ymaps
+    ymaps.geocode(position).then (res) ->
+      first = res.geoObjects.get(0)
+      if first
+        center = first.geometry.getCoordinates()
+        map.setCenter(center)
+        map.setZoom(16)
+        start = map.geoObjects.get(0)
+        if start
+          start.geometry.setCoordinates(center)
+        else
+          start = create_start(map, center[0], center[1])
+        return
+  return
 
 
-
-@map = (el, latitude = null, longitude = null, editable = true) ->
-
-  start = null
-
-  create_start = (map, x, y) ->
-    placemark = new ymaps.Placemark([x, y],
-      {hintContent: 'Местоположение объекта'},
-      {draggable: true});
-    placemark.events.add 'dragend', (e) ->
-      coords = e.get('target').geometry.getCoordinates()
-      $('.latitude-value').val(coords[0].toPrecision(6))
-      $('.longitude-value').val(coords[1].toPrecision(6))
-      return
-    map.geoObjects.add placemark
-    return placemark
-
-  create_map = (center, maxZoom = false)->
-      zoom = if maxZoom then 16 : 12
-      window.map = new ymaps.Map("map"
+@map = (el, latitude = null, longitude = null, zoom = null, editable = true) ->
+  create_map = (center, zoom)->
+      window.map = new ymaps.Map("map",
         center: center
-        zoom: zoom
+        zoom: parseInt(zoom)
       )
 
       if latitude and longitude
-        start = create_start(map, parseFloat(latitude), parseFloat(longitude))
-
+        create_start(map, parseFloat(latitude), parseFloat(longitude))
 
       if editable
         map.events.add "click", (e) ->
           coords = e.get("coords")
           $('.latitude-value').val(coords[0].toPrecision(6))
           $('.longitude-value').val(coords[1].toPrecision(6))
-
-          if(start)
+          $('.zoom-value').val(map.getZoom())
+          start = map.geoObjects.get(0)
+          if start
             start.geometry.setCoordinates(coords)
           else
             start = create_start(map, coords[0].toPrecision(6), coords[1].toPrecision(6))
           return
+
 
 
   $.getScript "http://api-maps.yandex.ru/2.1/?lang=ru_RU", ->
@@ -92,32 +111,16 @@ $().ready ->
       if !latitude or !longitude
         ymaps.geocode("Ростов-на-Дону").then (res) ->
           center = res.geoObjects.get(0).geometry.getCoordinates()
-          create_map(center)
+          create_map(center, zoom)
           return
       else
-        create_map [latitude, longitude], true
+        create_map([latitude, longitude], zoom)
       return
     ymaps.ready init
     return
-
   $('.SelectLocation, .DelChildren').livequery ->
     $(this).click ->
-      position = $.grep($("div:not(.SelectLocation)[lid]").map(->
-          $.trim $(this).text()
-        ), (n) ->
-        n isnt "Выбрать" and n
-      ).join " "
-      if position and window.map and window.ymaps
-        ymaps.geocode(position).then (res) ->
-          first = res.geoObjects.get(0)
-          if first
-            center = first.geometry.getCoordinates()
-            map.panTo(center)
-            if(start)
-              start.geometry.setCoordinates(coords)
-            else
-              start = create_start(map, coords[0].toPrecision(6), coords[1].toPrecision(6))
-            return
+      geoCoding()
   return
 
 
@@ -125,22 +128,14 @@ $().ready ->
   name = $('input[name="advertisement[user_attributes][name]"]').val()
   phones = $.grep($('input[name*="[original]"]').map( -> $.trim($(this).val()) ).get(), (n) -> n).join(',')
 
-  if phones.length is 0 or name.length is 0
-    $(".top-right").notify(
-      type: "danger"
-      message:
-        text: "Необходимо заполнить имя и хоть один номер телефона"
-      fadeOut:
-        delay: 5000
-    ).show()
-    return
-  $.ajax(
-    type: 'GET'
-    url: Routes.check_phone_advertisements_path()
-    data:
-      phones: phones
-    dataType: 'script'
-  )
+  if phones.length > 3
+    $.ajax(
+      type: 'GET'
+      url: Routes.check_phone_advertisements_path()
+      data:
+        phones: phones
+      dataType: 'script'
+    )
   return
 
 @getChildren = ->
@@ -340,7 +335,8 @@ $('#map').livequery ->
   map($(this),
       $(this).data('latitude'),
       $(this).data('longitude'),
-      $(this).prop('editable')
+      $(this).data('zoom'),
+      $(this).data('editable')
   )
 
 
@@ -470,6 +466,7 @@ $('.autocomplete-search-location').livequery ->
       sp['has_children'] = "#{ui.item.has_children}"
       sp['common'] = false
       click_select_location(sp)
+      geoCoding()
     })
 
 $('input[type="text"][valid-type=integer]').livequery ->

@@ -16,7 +16,7 @@
 class Photo < ActiveRecord::Base
   belongs_to :advertisement
   has_attached_file :advertisement_photo, :styles => { :medium => "1024x720", :thumb => "168x104" }, :default_url => "/images/:style/missing.png", :url => "/system/:class/entity/:id_partition/:style/:filename"
-  validates_attachment_content_type :advertisement_photo, :content_type => /\Aimage\/.*\Z/
+  validates_attachment_content_type :advertisement_photo, :content_type => %w(image/jpeg image/png image/pjpeg image/x-png)
 
   include Rails.application.routes.url_helpers
 
