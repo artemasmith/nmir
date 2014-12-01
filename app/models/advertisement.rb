@@ -69,7 +69,6 @@ class Advertisement < ActiveRecord::Base
   has_many :notepads, :dependent => :destroy
   has_many :advertisement_counters, :dependent => :destroy
   has_many :photos, :dependent => :destroy
-  has_many :advertisement_locations, :dependent => :destroy
   accepts_nested_attributes_for :photos, :allow_destroy => true, :reject_if => :check_photos
   has_and_belongs_to_many :locations, join_table: 'advertisement_locations'
 
