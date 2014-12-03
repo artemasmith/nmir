@@ -18,9 +18,16 @@ $().ready ->
   return
 
 @prepare_allowed_attributes = ->
-  hid = this.getAttribute('hid')
-  multi = this.getAttribute('multi')
-  value = this.getAttribute('value')
+  $this = $(this)
+  hid = $this.attr('hid')
+  multi = $this.attr('multi')
+  value = $this.attr('value')
+
+
+  $('.AdvProperty[hid="' + hid + '"][value!="' + value + '"]').removeClass('active')
+  $('.AdvProperty[hid="' + hid + '"][value!="' + value + '"] input').prop('checked', false)
+
+
   set_property(hid, multi, value)
   adv_type = $('.adv-type-value').val()
   property = $('.property-type-value').val()
@@ -136,6 +143,8 @@ $().ready ->
         phones: phones
       dataType: 'script'
     )
+  else
+    $('.DuplicatePhones').addClass('hidden')
   return
 
 @getChildren = ->
@@ -143,7 +152,6 @@ $().ready ->
   $.getScript(
     Routes.get_locations_advertisements_path(parent_id: $this.attr('lid'))
   )
-
   return
 
 $(".location-button").livequery ->
@@ -154,10 +162,10 @@ $('.GetChildren').livequery ->
   $(this).click getChildren
   return
 
-drop_down_button = (multi, lid, value)->
+drop_down_button = (multi, editable, lid, value)->
 
   "<div class ='form-group form-group-location'>
-    <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'>
+    <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
       <div class='btn btn-default GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span>
       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
       </div>
@@ -169,9 +177,9 @@ drop_down_button = (multi, lid, value)->
   </div>
   "
 
-easy_button = (multi, lid, value)->
+easy_button = (multi, editable, lid, value)->
   "<div class ='form-group form-group-location'>
-     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}'>
+     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
        <div class='btn btn-default active btn-xs'  lid='#{lid}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
@@ -201,9 +209,9 @@ sort_button_list = (context)->
       sp['el'].addClass('active')
   if sp['group'].parent().find("input[value=#{sp['lid']}]").length is 0
     if sp['has_children'] is 'true'
-      button = drop_down_button(sp['multi'], sp['lid'], sp['value'])
+      button = drop_down_button(sp['multi'], sp['editable'], sp['lid'], sp['value'])
     else
-      button = easy_button(sp['multi'], sp['lid'], sp['value'])
+      button = easy_button(sp['multi'], sp['editable'], sp['lid'], sp['value'])
     template = sp['group'].parent().append(button)
     sort_button_list(sp['group'].parent())
   else
@@ -233,6 +241,7 @@ $('.SelectLocation').livequery ->
     sp['group'] = $(this).closest('.location-group')
     sp['value'] = $(this).text()
     sp['multi'] = sp['group'].attr('multi')
+    sp['editable'] = sp['group'].attr('editable')
     sp['has_children'] = $(this).attr('has_children')
     sp['common'] = true
     sp['parent_id'] = 0
@@ -241,12 +250,8 @@ $('.SelectLocation').livequery ->
 
 
 
-$('.NewAdv').livequery ->
-  $(this).click ->
-    console.log('hid' + hid)
-    console.log('val' + val)
-    $('.NewAdv[hid="' + hid + '"]').removeClass('active')
-    $('.NewAdv[value="' + val + '"][hid="' + hid + '"]').addClass('active')
+
+
 
 $('.DelChildren').livequery ->
   $(this).click ->
@@ -256,6 +261,7 @@ $('.DelChildren').livequery ->
 $('.location-group[state]').livequery ->
   attr = $(this).attr('state')
   multi = $(this).attr('multi')
+  editable = $(this).attr('editable')
   $this = $(this)
   return unless attr
   list = JSON.parse(attr)
@@ -267,9 +273,9 @@ $('.location-group[state]').livequery ->
 
   renderElement = (element, context)->
     if element.has_children
-      button = $(drop_down_button(multi, element.id, element.title))
+      button = $(drop_down_button(multi, editable, element.id, element.title))
     else
-      button = $(easy_button(multi, element.id, element.title))
+      button = $(easy_button(multi, editable, element.id, element.title))
 
     context.append(button)
     return button
@@ -300,7 +306,7 @@ $('.AdvPropertySearch').livequery ->
   $(this).change set_adv_property
 
 $('.checkPhone').livequery ->
-  $(this).keyup check_phones
+  $(this).on 'keyup paste', check_phones
 
 $('.DuplicatePhones').livequery ->
   $(this).click ->
@@ -445,6 +451,7 @@ $('.autocomplete-search-location').livequery ->
   sp = {}
   sp['parent_id'] = $(this).attr('parent_id')
   sp['multi']  = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('multi')
+  sp['editable'] = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('editable')
   $(this).autocomplete({
     source: (request, response) ->
       $.ajax(
@@ -463,7 +470,11 @@ $('.autocomplete-search-location').livequery ->
       sp['lid'] = ui.item.value
       sp['group'] = $("input[value=#{sp['parent_id']}]").closest('.location-group')
       sp['value'] = ui.item.label
-      sp['has_children'] = "#{ui.item.has_children}"
+      if sp['editable'] is 'true'
+        sp['has_children'] = 'true'
+      else
+        sp['has_children'] = "#{ui.item.has_children}"
+
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
@@ -475,6 +486,84 @@ $('input[type="text"][valid-type=integer]').livequery ->
 
 $('input[type="text"][valid-type=float]').livequery ->
   $(this).forceFloatOnly()
+
+changeSearchButtonStatus = ()->
+  if ($('.search-container-action .SelectLocation:visible').length > 0)
+    $('.create-street-action').addClass('hidden').addClass('disabled')
+    $('.empty-search-container-action').addClass('hidden')
+  else
+    $('.create-street-action').removeClass('hidden').removeClass('disabled')
+    $('.empty-search-container-action').removeClass('hidden')
+
+$('.search-or-create-street-action').livequery ->
+  $(this).keyup (event)->
+    cancelEvent(event)
+    query = $(this).val()
+    exactResultPresent = false
+    unless ($.trim(query) is "") or (query is $(this).attr("placeholder"))
+      $.each $('.search-container-action .SelectLocation'), (index, value) ->
+        if ($(value).text().toLowerCase() == query)
+          exactResultPresent = true
+        if $(value).is(":icontains('" + query + "')")
+          $(value).show()
+        else
+          $(value).hide()
+        return
+    else
+      $('.search-container-action .SelectLocation').show()
+    console.log exactResultPresent
+    changeSearchButtonStatus()
+    if !exactResultPresent and !($.trim(query) is "")
+      $('.create-street-action').removeClass('hidden').removeClass('disabled')
+
+
+
+  changeSearchButtonStatus()
+
+$('.create-street-action').livequery ->
+  $this = $(this)
+  $this.click ->
+    $.ajax(
+      type: 'POST'
+      dataType: 'json'
+      url: Routes.api_locations_path()
+      data:
+        'location[title]': $('[name="location[title]"]').val()
+        'location[location_type]': $('[name="location[location_type]"]').val()
+        'location[location_id]': $('[name="location[location_id]"]').val()
+      success: (data) ->
+        context = $('.search-container-action')
+        $('[name="location[title]"]').val('').keyup()
+        template = "<div class='location-button button btn btn-default SelectLocation' has_children='#{data.has_children}' lid='#{data.id}' name='#{data.location_type}'>#{data.title}</div>"
+        context.append(template)
+        children = context.children('.SelectLocation')
+        list = children.sort (a, b) ->
+          text1 = $(a).text()
+          text2 = $(b).text()
+          text1  >  text2
+        $.each list, (_, value) ->
+          context.append(value)
+        el = $(".SelectLocation[lid='#{data.id}']")
+        sp = {}
+        sp['el'] = el
+        sp['lid'] = el.attr('lid')
+        sp['group'] = el.closest('.location-group')
+        sp['value'] = el.text()
+        sp['multi'] = sp['group'].attr('multi')
+        sp['editable'] = sp['group'].attr('editable')
+        sp['has_children'] = el.attr('has_children')
+        sp['common'] = true
+        sp['parent_id'] = 0
+        click_select_location(sp)
+        changeSearchButtonStatus()
+        return
+
+
+    )
+
+
+
+
 
 
 

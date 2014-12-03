@@ -5,6 +5,15 @@ el.popover({
     placement: 'bottom'
 }).popover("show");
 
+el.find('input[type="text"]').focus();
+$('.popover:first').css('width', $('.popover').width());
+if (el.closest('.location-group').attr('editable') === 'true') {
+    $('.search-or-create-street-container-action').removeClass('hidden')
+}
+
+
+
+
 
 
 

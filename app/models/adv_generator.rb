@@ -52,8 +52,7 @@ module AdvGenerator
           AdvGenerator.enum_text(self, :room, ' к'), #без пробела
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, ' м²'),
-          AdvGenerator.enum_text(self, :floor, ' этаж'),
-          AdvGenerator.enum_text(self, :floor_cnt, ' этажей')
+          AdvGenerator.floor_and_flor_cnt_text(self),
       ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.anchor.present?
 
       self.title = [
@@ -92,6 +91,23 @@ module AdvGenerator
         self.preview_url = first_photo.advertisement_photo(:thumb)
         self.preview_alt = first_photo.comment
       end
+    end
+  end
+
+  def self.floor_and_flor_cnt_text(adv)
+    floor_from = adv.floor_from
+    floor_cnt_from = adv.floor_cnt_from
+
+    floor_to = adv.floor_to
+    floor_cnt_to = adv.floor_cnt_to
+
+    if floor_from.present? && floor_cnt_from.present? && floor_to.blank? && floor_cnt_to.blank?
+      "#{floor_from}/#{floor_cnt_from}"
+    else
+      [
+          AdvGenerator.enum_text(adv, :floor, ' этаж'),
+          AdvGenerator.enum_text(adv, :floor_cnt, ' этажей')
+      ].delete_if{|e| e.to_s.strip == ''}.join(' ')
     end
   end
 

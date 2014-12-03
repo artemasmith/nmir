@@ -1,6 +1,5 @@
 class AdvertisementsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :set_location, except: [:new, :create]
   before_action :find_adv, only: [:show, :edit, :update]
   load_and_authorize_resource except: [:get_locations, :get_attributes, :get_search_attributes]
 
@@ -256,10 +255,6 @@ class AdvertisementsController < ApplicationController
 
   def new
     @adv = Advertisement.new
-    @adv.offer_type = AdvEnums::OFFER_TYPES.first
-    @adv.category = AdvEnums::CATEGORIES.first
-    @grouped_allowed_attributes = @adv.grouped_allowed_attributes
-    @grouped_allowed_attributes.delete(['landmark'])
   end
 
   def create
@@ -307,7 +302,7 @@ class AdvertisementsController < ApplicationController
       @locations = Location.where(location_type: 0)
     end
     @locations = @locations.map { |l|
-      { id: l.id, location_type: l.location_type, title: l.title, has_children: l.has_children? }
+      { id: l.id, location_type: l.location_type, title: l.title, has_children: (l.has_children?)  }
     }.group_by { |l| l[:location_type] }
   end
 
@@ -348,7 +343,7 @@ class AdvertisementsController < ApplicationController
           location_id: l.location_id,
           location_type: l.location_type,
           title: l.title,
-          has_children: l.has_children?
+          has_children: l.has_children? || (l.street? && params[:action] == 'edit')
       }
     end.to_json
   end
@@ -357,9 +352,6 @@ class AdvertisementsController < ApplicationController
     params.collect{|k,v| "#{k}=#{v}"}.join('&')
   end
 
-  def set_location
-    @location = params[:location] ? Location.search(conditions: { title: params[:location] }).first : nil
-  end
 
   def find_adv
     @adv = Advertisement.find(params[:id])

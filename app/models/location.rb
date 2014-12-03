@@ -49,6 +49,9 @@ class Location < ActiveRecord::Base
                        :address,
                        :landmark]
 
+  enum status_type: [:unchecked,
+                       :checked,
+                       :blocked]
 
 
 
@@ -70,7 +73,6 @@ class Location < ActiveRecord::Base
   def has_children?
     self.children_count > 0
   end
-
 
   def self.suggest_location parent_id, term
     children = where(location_id: parent_id.to_i).street.where('LOWER(title) like ?', "%#{term.to_s.mb_chars.downcase}%").limit(5)

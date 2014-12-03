@@ -82,7 +82,7 @@ module SectionGenerator
     if(offer_type && category)
       return ["#{enum_title(offer_type)} #{enum_title(category)}", loc_chain_title].compact.join(' ')
     elsif(offer_type && property_type)
-      return ["#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость", loc_chain_title].compact.join(' ')
+      return ["#{enum_title(offer_type)} #{enum_title(property_type)}", loc_chain_title].compact.join(' ')
     elsif(offer_type.blank? && property_type.blank? && category.blank?)
       return ['Недвижимость', loc_chain_title].compact.join(' ')
     end
@@ -93,7 +93,7 @@ module SectionGenerator
     if(offer_type && category)
       return ["#{enum_title(offer_type)} #{enum_title(category)}", loc_chain_title].compact.join(', ')
     elsif(offer_type && property_type)
-      return ["#{enum_title(offer_type)} #{enum_title(property_type)} недвижимость", loc_chain_title].compact.join(', ')
+      return ["#{enum_title(offer_type)} #{enum_title(property_type)}", loc_chain_title].compact.join(', ')
     elsif(offer_type.blank? && property_type.blank? && category.blank?)
       return ['недвижимость', loc_chain_title].compact.join(', ')
     end
@@ -103,7 +103,7 @@ module SectionGenerator
     if(offer_type && category)
       return [loc_chain_title, enum_title(offer_type), enum_title(category)].compact.join(' ')
     elsif(offer_type && property_type)
-      return [loc_chain_title, enum_title(offer_type), enum_title(property_type), 'недвижимость'].compact.join(' ')
+      return [loc_chain_title, enum_title(offer_type), enum_title(property_type)].compact.join(' ')
     elsif(offer_type.blank? && property_type.blank? && category.blank?)
       return [loc_chain_title, 'недвижимость'].compact.join(' ')
     end

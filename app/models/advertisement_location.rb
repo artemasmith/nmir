@@ -8,5 +8,7 @@
 #
 
 class AdvertisementLocation < ActiveRecord::Base
+  belongs_to :advertisement
+  belongs_to :location
 end
 

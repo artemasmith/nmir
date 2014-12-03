@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :photos
 
   match 'photos' => 'photos#create', via: [:post, :patch]
+
   resources :advertisements, :path => 'entity' do
     collection do
       get 'get_attributes'
@@ -16,6 +17,7 @@ Rails.application.routes.draw do
   devise_for :users
 
   namespace :api do
+    resources :locations
     resources :advertisements, :path => '/entity' do
       collection do
         get 'streets_houses'

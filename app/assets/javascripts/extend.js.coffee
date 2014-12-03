@@ -98,6 +98,11 @@ $.fn.forceNumericOnly = ->
       return true
 
 
+$.extend $.expr[":"],
+  icontains: (elem, i, match, array) ->
+    (elem.textContent or elem.innerText or "").toLowerCase().indexOf((match[3] or "").toLowerCase()) >= 0
+
+
 
 
 

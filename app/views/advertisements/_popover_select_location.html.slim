@@ -3,12 +3,13 @@
     = render 'advertisements/popover_locations'
   legend
     = t("activerecord.attributes.location.street")
-  .row.top-buffer
+  .top-buffer
     .col-md-12
       .form-group
-        label.popover-short-padding.control-label for="autocomplete" Поиск по улице
+        label
+          i.fa.fa-search
         '
-        input.autocomplete-search-location parent_id="#{@location.id}" multiple=true
+        input.autocomplete-search-location parent_id="#{@location.id}" multiple=true placeholder=" найти по названию"
   .row
     '
 - else

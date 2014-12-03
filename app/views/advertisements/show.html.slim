@@ -32,13 +32,13 @@ h1
             | Размещено
             '
             strong
-              = Russian::strftime @adv.created_at.to_date
+              = l @adv.created_at
           - else
             '
             | Обновлено
             '
             strong
-              = Russian::strftime @adv.updated_at.to_date
+              = l @adv.updated_at
           '
           | Просмотров:
           '
@@ -80,6 +80,8 @@ h1
                       = value_from
                     '
                     = t("advertisement.units.#{attr_from}")
+                    - if attr_from == 'price_from'
+                      i.fa.fa-rouble
                   - if value_to.present? && value_from != value_to
                     - if value_from.present?
                       | до
@@ -87,6 +89,8 @@ h1
                     = value_to
                     '
                     = t("advertisement.units.#{attr_from}")
+                    - if attr_to == 'price_to'
+                      i.fa.fa-rouble
 
         - if @adv.user_role == 'owner'
           i.fa.fa-check
@@ -159,12 +163,12 @@ h1
             i.fa.fa-level-up
             | обновить
 
-  h4
-    | вам могут подойти эти варианты
-    '
-    i.fa.fa-arrow-down
-
   - if @search_results.present?
+    h4
+      | вам могут подойти эти варианты
+      '
+      i.fa.fa-arrow-down
+
     = render 'advertisements/search_results'
 
 

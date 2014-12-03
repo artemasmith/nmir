@@ -69,6 +69,7 @@ class Advertisement < ActiveRecord::Base
   has_many :notepads, :dependent => :destroy
   has_many :advertisement_counters, :dependent => :destroy
   has_many :photos, :dependent => :destroy
+  has_many :advertisement_locations, :dependent => :destroy
   accepts_nested_attributes_for :photos, :allow_destroy => true, :reject_if => :check_photos
   has_and_belongs_to_many :locations, join_table: 'advertisement_locations'
 
@@ -91,7 +92,7 @@ class Advertisement < ActiveRecord::Base
   
   def grouped_allowed_attributes
     return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)
-    sorted_list = ['price_from']
+    sorted_list = %w(price_from floor_from floor_cnt_from space_from outdoors_space_from room_from)
     @grouped_allowed_attributes = []
     allowed_attributes.each do |attr|
       if match = attr.match(/(.+)(_to|_from)$/i)
@@ -133,7 +134,7 @@ class Advertisement < ActiveRecord::Base
       match = e.match(/(.+)(_to|_from)$/i)
       match ? match[2] == '_to' : false
     end.delete_if do |e|
-      %w(landmark comment price_from not_for_agents).include? e
+      %w(comment price_from not_for_agents).include? e
     end.delete_if do |e|
       e == 'mortgage' && !is_offer_type
     end.delete_if do |e|
