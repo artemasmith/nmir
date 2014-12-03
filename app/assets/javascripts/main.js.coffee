@@ -51,16 +51,17 @@ $().ready ->
   return
 
 
-@create_start = (map, x, y) ->
+@create_start = (map, x, y, editable) ->
   placemark = new ymaps.Placemark([x, y],
     {hintContent: 'Местоположение объекта'},
-    {draggable: true});
-  placemark.events.add 'dragend', (e) ->
-    coords = e.get('target').geometry.getCoordinates()
-    $('.latitude-value').val(coords[0].toPrecision(6))
-    $('.longitude-value').val(coords[1].toPrecision(6))
-    $('.zoom-value').val(map.getZoom())
-    return
+    {draggable: editable})
+  if editable
+    placemark.events.add 'dragend', (e) ->
+      coords = e.get('target').geometry.getCoordinates()
+      $('.latitude-value').val(coords[0].toPrecision(6))
+      $('.longitude-value').val(coords[1].toPrecision(6))
+      $('.zoom-value').val(map.getZoom())
+      return
   map.geoObjects.add placemark
   return placemark
 
@@ -83,7 +84,7 @@ $().ready ->
         if start
           start.geometry.setCoordinates(center)
         else
-          start = create_start(map, center[0], center[1])
+          start = create_start(map, center[0], center[1], true)
         return
   return
 
@@ -96,7 +97,7 @@ $().ready ->
       )
 
       if latitude and longitude
-        create_start(map, parseFloat(latitude), parseFloat(longitude))
+        create_start(map, parseFloat(latitude), parseFloat(longitude), editable)
 
       if editable
         map.events.add "click", (e) ->
@@ -108,7 +109,7 @@ $().ready ->
           if start
             start.geometry.setCoordinates(coords)
           else
-            start = create_start(map, coords[0].toPrecision(6), coords[1].toPrecision(6))
+            start = create_start(map, coords[0].toPrecision(6), coords[1].toPrecision(6), editable)
           return
 
 
