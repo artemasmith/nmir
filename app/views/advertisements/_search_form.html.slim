@@ -50,10 +50,11 @@
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     .row.col-xs-12.form-group
       .form-group
+        label
+          i.fa.fa-map-marker.fa-lg
+        '
         .form-group.location-group.btn-group multi='true' editable='false' state="#{@location_state}"
           .btn.btn-default.GetChildren.dropdown-toggle lid="#{0}" data-toggle="dropdown"
-            i.fa.fa-globe.fa-lg
-            '
             | местоположение
             '
             i.caret

@@ -45,7 +45,7 @@ module AdvertisementsHelper
           value_to: params[:advertisement].try(:[], "#{suffix}_to".to_sym),
       }
       if suffix == 'price'
-        return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: 'fa-rouble'})
+        return render '/advertisements/search_inputs/price', attr: attr.merge({class_name: 'fa-rouble'})
       end
       if suffix == 'floor' || suffix == 'floor_cnt'
         return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-2'})
@@ -82,10 +82,13 @@ module AdvertisementsHelper
         value_to: value_to
     }
 
+    if name_from == :price_from
+      return render '/advertisements/inputs/price', attr
+    end
+
     if (name_from == :floor_from) ||
        (name_from == :floor_cnt_from)||
-       (name_from == :room_from)||
-       (name_from == :price_from)
+       (name_from == :room_from)
       return render '/advertisements/inputs/integer', attr
     end
 

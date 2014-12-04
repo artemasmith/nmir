@@ -22,12 +22,14 @@
               = adv.anchor
             - if adv.price_from.present?
               span.lead
-                = adv.price_from
+                span.formatRub
+                  = adv.price_from
                 - if adv.price_to.present? && adv.price_to != adv.price_to
                   '
                   | -
                   '
-                  = adv.price_to
+                  span.formatRub
+                    = adv.price_to
                 '
                 i.fa.fa-rub
             - if adv.locations_title.present?

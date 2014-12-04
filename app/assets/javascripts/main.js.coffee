@@ -562,6 +562,31 @@ $('.create-street-action').livequery ->
 
     )
 
+$('[name="advertisement[price_from]"], [name="advertisement[price_to]"]').livequery ->
+  $(this).priceFormat({
+    prefix: '',
+    centsLimit: 0
+    clearPrefix: true
+  })
+
+
+$('.formatRub').livequery ->
+  formatRub = (value) ->
+    tab = value.toString().split("")
+    result = ""
+    j = 0
+    i = tab.length - 1
+    while i >= 0
+      if j is 3
+        result = tab[i] + " " + result
+        j = 0
+      else
+        result = tab[i] + result
+      j++
+      i--
+    result
+  $(this).text(formatRub($(this).text()))
+
 
 
 

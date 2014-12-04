@@ -74,10 +74,13 @@ h1
                     - if value_to.present? && value_from != value_to
                       | от
                       '
-                    -if value_from == true
-                      = 'да'
+                    - if value_from == true
+                      | да
+                    - elsif value_from == false
+                      = 'нет'
                     - else
-                      = value_from
+                      span class="#{'formatRub' if attr_from == 'price_from'}"
+                        = value_from
                     '
                     = t("advertisement.units.#{attr_from}")
                     - if attr_from == 'price_from'
@@ -86,7 +89,8 @@ h1
                     - if value_from.present?
                       | до
                       '
-                    = value_to
+                    span class="#{'formatRub' if attr_to == 'price_to'}"
+                      = value_to
                     '
                     = t("advertisement.units.#{attr_from}")
                     - if attr_to == 'price_to'

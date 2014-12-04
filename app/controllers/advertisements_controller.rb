@@ -1,4 +1,5 @@
 class AdvertisementsController < ApplicationController
+  before_action :overload_params
   before_action :authenticate_user!, only: [:new, :create]
   before_action :find_adv, only: [:show, :edit, :update]
   load_and_authorize_resource except: [:get_locations, :get_attributes, :get_search_attributes]
@@ -368,6 +369,18 @@ class AdvertisementsController < ApplicationController
     :property_type, :floor_cnt_from, :space_from, :floor_max, :mortgage, adv_type: [],
     offer_type: [], category: [], photo_ids: [], location_ids: [],
     user_attributes: [:name, :role, :password, :email, phones_attributes: [:id, :original, :_destroy]])
+  end
+
+  def overload_params
+    if params[:advertisement].present?
+      if params[:advertisement][:price_from].present?
+        params[:advertisement][:price_from] = params[:advertisement][:price_from].to_s.gsub(',', '')
+      end
+
+      if params[:advertisement][:price_to].present?
+        params[:advertisement][:price_to] = params[:advertisement][:price_to].to_s.gsub(',', '')
+      end
+    end
   end
 
 
