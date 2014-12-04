@@ -45,7 +45,7 @@ module AdvGenerator
       end.map(&:title) + [self.landmark]).delete_if{|e| e.to_s.strip == ''}.join(' ')
 
 
-      self.locations_title = locations_title unless self.locations_title.present?
+      self.locations_title = locations_title
 
       self.anchor = [
           AdvGenerator.enum_title(self.offer_type),
@@ -53,27 +53,27 @@ module AdvGenerator
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, ' м²'),
           AdvGenerator.floor_and_flor_cnt_text(self),
-      ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.anchor.present?
+      ].delete_if{|e| e.to_s.strip == ''}.join(' ')
 
       self.title = [
           self.anchor,
           AdvGenerator.enum_text(self, :price, ' руб'),
           locations_title
-      ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.title.present?
+      ].delete_if{|e| e.to_s.strip == ''}.join(' ')
 
       self.description = [
           Russian::strftime((self.updated_at || DateTime.now).to_date),
           AdvGenerator.enum_text(self, :price, ' руб'),
           "объявление #{self.id} в базе недвижимости"
-      ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.description.present?
+      ].delete_if{|e| e.to_s.strip == ''}.join(' ')
 
-      self.p = self.comment unless self.p.present?
+      self.p = self.comment
       self.h1 = [
           self.anchor,
           locations_title
-      ].delete_if{|e| e.to_s.strip == ''}.join(' ') unless self.h1.present?
-      self.h2 = '' unless self.h2.present?
-      self.h3 = '' unless self.h3.present?
+      ].delete_if{|e| e.to_s.strip == ''}.join(' ')
+      self.h2 = ''
+      self.h3 = ''
       self.keywords = [
           AdvGenerator.enum_title(self.offer_type),
           AdvGenerator.enum_text(self, :room, 'ком.'),
@@ -82,9 +82,9 @@ module AdvGenerator
           AdvGenerator.enum_text(self, :outdoors_space, 'сот'),
           self.locations_title,
           AdvGenerator.enum_text(self, :price, 'руб')
-      ].delete_if{|e| e.to_s.strip == ''}.join(', ') unless self.keywords.present?
+      ].delete_if{|e| e.to_s.strip == ''}.join(', ')
 
-      self.url = self.title.to_s.parameterize unless self.url.present?
+      self.url = self.title.to_s.parameterize
 
       first_photo = self.photos.first
       if first_photo.present?

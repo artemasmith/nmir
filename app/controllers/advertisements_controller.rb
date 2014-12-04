@@ -26,10 +26,10 @@ class AdvertisementsController < ApplicationController
       if search_params[:category].present? && search_params[:category].size == 1
         category = search_params[:category].first
         category_section = true
-      elsif search_params[:category].present? && ('0'..'5').to_a.sort == search_params[:category].sort
+      elsif search_params[:category].present? && (('0'..'5').to_a + ['12']).sort == search_params[:category].sort
         property_type = AdvEnums::PROPERTY_TYPES.index(:residental)
         property_type_section = true
-      elsif search_params[:category].present? && ('6'..'11').to_a.sort == search_params[:category].sort
+      elsif search_params[:category].present? && ('6'..'10').to_a.sort == search_params[:category].sort
         property_type = AdvEnums::PROPERTY_TYPES.index(:commerce)
         property_type_section = true
       end

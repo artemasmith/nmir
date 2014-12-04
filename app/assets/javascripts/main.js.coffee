@@ -217,7 +217,7 @@ sort_button_list = (context)->
     sort_button_list(sp['group'].parent())
   else
     sp['group'].parent().find("input[value=#{sp['lid']}]").closest('.location-group').parent().remove()
-  if (sp['multi'] is 'false')
+  if (sp['multi'] is false)
     if (sp['common'] == false)
       $(".GetChildren[lid=#{sp['parent_id']}]").closest('.location-group').parent().find('.location-group').remove()
       sp['group'].parent().append(button)
@@ -225,6 +225,10 @@ sort_button_list = (context)->
       $(".location-button.active[lid!=#{sp['lid']}]").click()
       sp['group'].parent().find('.GetChildren').popover "destroy"
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
+  else
+    if (sp['common'] == false)
+      $(".GetChildren[lid=#{sp['parent_id']}]").click()
+
 
 
 @make_active_last_button = (sp)->
@@ -479,6 +483,8 @@ $('.autocomplete-search-location').livequery ->
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
+
+
     })
 
 $('input[type="text"][valid-type=integer]').livequery ->
