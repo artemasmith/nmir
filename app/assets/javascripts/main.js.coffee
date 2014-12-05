@@ -570,7 +570,8 @@ $('.create-street-action').livequery ->
 
 $('[name="advertisement[price_from]"], [name="advertisement[price_to]"]').livequery ->
   $(this).priceFormat({
-    prefix: '',
+    prefix: ''
+    thousandsSeparator: ' '
     centsLimit: 0
     clearPrefix: true
   })

@@ -1,18 +1,19 @@
 - if pages > 1
   .row
-    ul.pagination.pull-left
-      - if current_page > 1
-        li
-          a href=url_path.call(url_params.merge!({:page => current_page - 1}))
-            | &laquo;
-      - (1..pages).each do |page|
-        li class="#{'disabled' if page == current_page}"
-          a href=url_path.call(url_params.merge!({:page => page}))
-            = page
-      -if current_page < pages
-        li
-          a href=url_path.call(url_params.merge!({:page => current_page + 1}))
-            | &raquo;
+    .col-xs-12
+      ul.pagination.pull-left
+        - if current_page > 1
+          li
+            a href=url_path.call(url_params.merge!({:page => current_page - 1}))
+              | &laquo;
+        - (1..pages).each do |page|
+          li class="#{'disabled' if page == current_page}"
+            a href=url_path.call(url_params.merge!({:page => page}))
+              = page
+        -if current_page < pages
+          li
+            a href=url_path.call(url_params.merge!({:page => current_page + 1}))
+              | &raquo;
 
 
 

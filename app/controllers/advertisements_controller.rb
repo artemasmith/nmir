@@ -1,8 +1,8 @@
 class AdvertisementsController < ApplicationController
   before_action :overload_params
-  before_action :authenticate_user!, only: [:new, :create]
+  # before_action :authenticate_user!, only: [:new, :create]
   before_action :find_adv, only: [:show, :edit, :update]
-  load_and_authorize_resource except: [:get_locations, :get_attributes, :get_search_attributes]
+  load_and_authorize_resource except: [:new, :create, :get_locations, :get_attributes, :get_search_attributes]
 
 
   def index
@@ -259,24 +259,29 @@ class AdvertisementsController < ApplicationController
   end
 
   def create
-    if can? :create_from_admin, Advertisement
-      user = Phone.where(number: advertisement_params[:user_attributes][:phones_attributes].map{|_, e| Phone.normalize(e[:original])}).first.try :user
-      if user.blank?
-        @adv = Advertisement.new advertisement_params
-        @adv.user.from_admin = true
+    if current_user.present?
+      if can? :create_from_admin, Advertisement
+        user = Phone.where(number: advertisement_params[:user_attributes][:phones_attributes].map{|_, e| Phone.normalize(e[:original])}).first.try :user
+        if user.blank?
+          @adv = Advertisement.new advertisement_params
+          @adv.user.from_admin = true
+        else
+          @adv = user.advertisements.new advertisement_params
+        end
       else
-        @adv = user.advertisements.new advertisement_params
+        @adv = current_user.advertisements.new advertisement_params
+      end
+
+      if @adv.valid?
+        @adv.save and redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
+      else
+        load_location_state!
+        @grouped_allowed_attributes = @adv.grouped_allowed_attributes
+        @save_with_errors = true and render 'advertisements/new'
       end
     else
-      @adv = current_user.advertisements.new advertisement_params
-    end
-
-    if @adv.valid?
-      @adv.save and redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
-    else
-      load_location_state!
-      @grouped_allowed_attributes = @adv.grouped_allowed_attributes
-      @save_with_errors = true and render 'advertisements/new'
+      @adv = Advertisement.new advertisement_params
+      render 'devise/registrations/new'
     end
   end
 
@@ -374,11 +379,11 @@ class AdvertisementsController < ApplicationController
   def overload_params
     if params[:advertisement].present?
       if params[:advertisement][:price_from].present?
-        params[:advertisement][:price_from] = params[:advertisement][:price_from].to_s.gsub(',', '')
+        params[:advertisement][:price_from] = params[:advertisement][:price_from].to_s.gsub(' ', '')
       end
 
       if params[:advertisement][:price_to].present?
-        params[:advertisement][:price_to] = params[:advertisement][:price_to].to_s.gsub(',', '')
+        params[:advertisement][:price_to] = params[:advertisement][:price_to].to_s.gsub(' ', '')
       end
     end
   end
