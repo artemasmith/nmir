@@ -40,4 +40,11 @@
             .col-sm-offset-3.col-sm-4
               label.btn.btn-warning.hidden.DuplicatePhones
           .form-group.DuplicateResults
+- elsif current_user.blank?
+  .user-params
+    legend Контакт
+    .form.form-horizontal role="form"
+      = f.fields_for :user, (@adv.user.presence || @adv.build_user(role: :owner)) do |f|
+        = render 'devise/registrations/fields', f: f
+
 

@@ -5,3 +5,5 @@
   - if name_to.present?
     .col-sm-2
       = text_field_tag("advertisement[#{name_to}]", value_to, class: 'form-control text-right', type: 'text',  placeholder: 0,  required:AdvValidation::PRESENCE_FIELDS.include?(name_to))
+  label.control-label
+    i.fa.fa-rouble.fa-lg

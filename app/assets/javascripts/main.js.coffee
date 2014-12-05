@@ -317,24 +317,15 @@ $('.DuplicatePhones').livequery ->
   $(this).click ->
     $(".modal#dublicate_modal").modal('show');
 
+$('.HideAdvPhone').livequery ->
+  $this = $(this)
+  $this.replaceWith("<div class=\"btn btn-default btn-xs ShowAdvPhone\" data-phone=\"" + $this.text() + "\">Показать телефон</div>")
+
+
 $('.ShowAdvPhone').livequery ->
   $this = $(this)
   $this.click ->
-    $.ajax(
-      url: Routes.api_advertisement_path($('.ShowAdvPhone').data('id'))
-      dataType: 'json'
-    ).done (data)->
-      span =
-        $this.replaceWith("<div class=\"btn btn-default btn-xs\">#{data.phone}</div>")
-      return
-    .error ->
-      $(".top-right").notify(
-        type: "danger"
-        message:
-          text: "Ошибка сети("
-        fadeOut:
-          delay: 5000
-      ).show()
+    $this.replaceWith("<div class=\"btn btn-default btn-xs\">" + $this.data('phone') + "</div>")
     return
   return
 

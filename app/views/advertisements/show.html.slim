@@ -108,10 +108,8 @@ h1
           '
         = @adv.name
         '
-        button.btn.btn-default.btn-xs.ShowAdvPhone data-id=@adv.id
-          i.fa.fa-phone.fa-lg
-          '
-          | показать телефон
+        button.btn.btn-default.btn-xs.HideAdvPhone
+          = @adv.phone
         - if @near_sections.present?
           br
           br

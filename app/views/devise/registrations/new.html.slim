@@ -1,72 +1,12 @@
 header
   h1 Регистрация
-ol.breadcrumb
-  li
-    a href=root_path title='на главную'
-      i.fa.fa-home
-  li.active Зарегистрироваться
+= content_for :title
+  | Регистрация
 .well
-  - resource.phones.build() unless params.has_key? :user
   = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'form-horizontal'}) do |f|
-    = f.fields_for :advertisement, resource.build_advertisement
     = devise_error_messages!
     fieldset
-      .form-group
-        label.control-label.col-sm-4 for="radios"  Я регистрируюсь как
-        .col-sm-4
-          - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
-            = label_tag "user_role_#{role}", class: 'radio' do
-              = t "activerecord.attributes.user.roles.#{role}"
-              = f.radio_button :role, role.to_sym, checked: (index == 0)
-      .form-group
-        label.control-label.col-sm-4 for="textinput"  имя
-        .col-sm-4
-          .form-group
-            .input-group
-              span.input-group-addon
-                i.fa.fa-user
-              = f.text_field :name, class: 'form-control', required: true
-      .form-group
-        label.control-label.col-sm-4 телефон
-        .input-group.col-sm-4#reg-phones
-          = f.fields_for :phones do |phone_form|
-            .input-group
-              span.input-group-addon
-                i.fa.fa-phone
-              = phone_form.text_field :original, class: 'form-control', required: true
-              span.input-group-btn
-                = phone_form.link_to_remove class: 'btn btn-default' do
-                  i.fa.fa-minus
-
-      .form-group
-        label.control-label.col-sm-4 
-        .input-group.col-sm-4
-          = f.link_to_add 'Добавить номер', :phones, :data => { :target => "#reg-phones" }
-          span.help-block.small например: +7(863) 2-12-85-06
-      .form-group
-        label.control-label.col-sm-4 почта
-        .col-sm-4
-          .form-group
-            .input-group
-              span.input-group-addon
-                i.fa.fa-envelope-o
-              = f.email_field :email, autofocus: true, class: 'form-control', required: true
-      .form-group
-        label.control-label.col-sm-4 пароль
-        .col-sm-4
-          .form-group
-            .input-group
-              span.input-group-addon
-                i.fa.fa-unlock
-              = f.password_field :password, autocomplete: "off", class: 'form-control', required: true
-      .form-group
-        label.control-label.col-sm-4 подтверждение пароля
-        .col-sm-4
-          .form-group
-            .input-group
-              span.input-group-addon
-                i.fa.fa-unlock
-              = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: true
+      = render 'devise/registrations/fields', f: f
       .form-group
         .col-sm-4.col-sm-offset-4
           .form-group

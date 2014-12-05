@@ -84,7 +84,7 @@ module AdvGenerator
           AdvGenerator.enum_text(self, :price, 'руб')
       ].delete_if{|e| e.to_s.strip == ''}.join(', ')
 
-      self.url = self.title.to_s.parameterize
+      self.url = self.title.to_s.parameterize unless self.url.present?
 
       first_photo = self.photos.first
       if first_photo.present?

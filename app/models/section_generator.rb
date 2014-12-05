@@ -35,6 +35,18 @@ module SectionGenerator
     ).increment!(:advertisements_count)
   end
 
+  def self.by_property_offer_without_location(property_type, offer_type)
+    url = "/#{chain_url([offer_type, property_type])}"
+    Section.create_with(
+        generate_attributes(url, offer_type, nil, property_type, nil, nil)
+    )
+    .find_or_create_by(
+        property_type: Section.property_types[property_type],
+        offer_type: Section.offer_types[offer_type],
+        location_id: nil
+    ).increment!(:advertisements_count)
+  end
+
   def self.by_location(location, loc_chain_url, loc_chain_title, short_loc_title)
     url = "/#{loc_chain_url}"
     Section.create_with(

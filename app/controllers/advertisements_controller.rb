@@ -48,6 +48,7 @@ class AdvertisementsController < ApplicationController
 
       if (location_section && offer_type_section && category_section) ||
          (location_section && offer_type_section && property_type_section) ||
+         (offer_type_section && property_type_section) ||
          (location_section) ||
          (offer_type_section && category_section)
         @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first
@@ -234,19 +235,17 @@ class AdvertisementsController < ApplicationController
         @adv.locations.find_all{|n| n.location_type.to_sym== :non_admin_area},
         @adv.locations.find_all{|n| n.location_type.to_sym == :street},
         @adv.locations.find_all{|n| n.location_type.to_sym == :address}
-    ].delete_if{|e| e.empty?}
-    list.pop
-    list.flatten!
+    ].delete_if{|e| e.empty?}.flatten
 
     location_ids = list.map{|l| l.id}
     with[:location_ids] = location_ids
     @search_result_ids = ThinkingSphinx.search_for_ids('', options)
     @search_result_ids.delete_if{|result| result == @adv.id}
-    @search_results = Advertisement.where(id: @search_result_ids)
+    @search_results = Advertisement.where(id: @search_result_ids).where.not(id: @adv.id)
 
     @near_sections = Section.where(location_id: location_ids).
         where(offer_type: Section.offer_types[@adv.offer_type]).
-        where(category: Section.categories[@adv.category]).limit(10)
+        where(category: Section.categories[@adv.category]).limit(10).to_a.sort_by{|s| location_ids.index(s.location_id)}
   end
 
   def edit
@@ -271,17 +270,17 @@ class AdvertisementsController < ApplicationController
       else
         @adv = current_user.advertisements.new advertisement_params
       end
-
-      if @adv.valid?
-        @adv.save and redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
-      else
-        load_location_state!
-        @grouped_allowed_attributes = @adv.grouped_allowed_attributes
-        @save_with_errors = true and render 'advertisements/new'
-      end
     else
       @adv = Advertisement.new advertisement_params
-      render 'devise/registrations/new'
+    end
+    if @adv.valid?
+      @adv.save
+      sign_in @adv.user if current_user.blank?
+      redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
+    else
+      load_location_state!
+      @grouped_allowed_attributes = @adv.grouped_allowed_attributes
+      @save_with_errors = true and render 'advertisements/new'
     end
   end
 

@@ -2,7 +2,7 @@ module AdvertisementsHelper
 
   def bb_tags(string, tags)
     tags.each_pair do |name, value|
-      string.gsub!("[b]#{name.to_s}[/b]", value.to_s)
+      string.to_s.gsub!("[b]#{name.to_s}[/b]", value.to_s)
     end
     return string
   end

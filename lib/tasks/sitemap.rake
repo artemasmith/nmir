@@ -25,7 +25,7 @@ namespace :sitemap do
     end
 
     index = 0
-    Section.not_empty.find_in_batches(batch_size: 10000) do |group|
+      Section.not_empty.find_in_batches(batch_size: 10000) do |group|
       index += 1
       doc =  Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
         xml.urlset(xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9") do

@@ -2,10 +2,13 @@
   - if @root_section.title.present?
     = content_for :title
       = @root_section.title
-  - if @root_section.description.present? && @root_section.keywords.present?
-    = content_for :meta
+  = content_for :meta
+    - if @root_section.description.present?
       meta name="description" content=@root_section.description
+    - if @root_section.keywords.present?
       meta name="keywords" content=@root_section.keywords
+    - if params[:advertisement].present?
+      link rel="canonical" href=@root_section.url
 = content_for :header
   = render 'advertisements/neighbors', locale: { neighbors: @neigbors } if @neighbors.present?
   = render 'advertisements/search_form'

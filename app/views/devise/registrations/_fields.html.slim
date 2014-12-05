@@ -1,0 +1,57 @@
+.form-group
+  label.control-label.col-sm-4 for="radios"
+  .col-sm-4
+    - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
+      = f.label :role, class: 'radio' do
+        = t "activerecord.attributes.user.roles.#{role}"
+        = f.radio_button :role, role.to_sym, checked: (index == 0)
+.form-group
+  label.control-label.col-sm-4 for="textinput"
+    i.fa.fa-user
+    '
+    | имя
+  .col-sm-4
+    .form-group
+      = f.text_field :name, class: 'form-control', required: true
+.form-group
+  label.control-label.col-sm-4
+    i.fa.fa-phone
+    '
+    | телефон
+  .input-group.col-sm-4#reg-phones
+    = f.fields_for :phones, (resource.phones.presence || resource.phones.build) do |phone_form|
+      .input-group
+        = phone_form.text_field :original, class: 'form-control', required: true
+        span.input-group-btn
+          = phone_form.link_to_remove class: 'btn btn-default' do
+            i.fa.fa-minus
+
+.form-group
+  label.control-label.col-sm-4
+  .input-group.col-sm-4
+    = f.link_to_add 'Добавить номер', :phones, :data => { :target => "#reg-phones" }
+    span.help-block.small например: +7(863) 2-12-85-06
+.form-group
+  label.control-label.col-sm-4
+    i.fa.fa-envelope-o
+    '
+    | почта
+  .col-sm-4
+    .form-group
+      = f.email_field :email, autofocus: true, class: 'form-control', required: true
+.form-group
+  label.control-label.col-sm-4
+    i.fa.fa-unlock
+    '
+    | пароль
+  .col-sm-4
+    .form-group
+      = f.password_field :password, autocomplete: "off", class: 'form-control', required: true
+.form-group
+  label.control-label.col-sm-4
+    i.fa.fa-unlock
+    '
+    | подтверждение пароля
+  .col-sm-4
+    .form-group
+      = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: true

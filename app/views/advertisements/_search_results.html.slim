@@ -51,8 +51,9 @@
               '
               = adv.name
             '
-            a.btn.btn-default.btn-xs.ShowAdvPhone data-id="#{adv.id}"
-              | показать телефон
+            a.btn.btn-default.btn-xs.HideAdvPhone
+              = adv.phone
+
 - else
   p Ничего не найдено
 
