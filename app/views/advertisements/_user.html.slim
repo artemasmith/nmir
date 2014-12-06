@@ -3,38 +3,7 @@
     legend Контакт
     .form.form-horizontal role="form"
       = f.fields_for :user, (@adv.user.presence || @adv.build_user(role: :owner)) do |f|
-        .form-group
-          label.col-sm-3.control-label for="name"  Имя
-          .col-sm-4
-            = f.text_field :name, class: 'form-control', required: true
-        .form-group
-          label.col-sm-3.control-label for="name"  Роль
-          .col-sm-4
-            .btn-group data-toggle="buttons"
-              label.btn.btn-default type="button" class="#{'active' if f.object.role == 'owner'}"
-                = f.radio_button :role, :owner
-                | Владелец
-              label.btn.btn-default type="button" class="#{'active' if f.object.role == 'agent'}"
-                = f.radio_button :role, :agent
-                | Агент
-
-        .form-group
-          label.control-label.col-sm-3 for="reg-phones"  Телефон
-          .col-sm-4#reg-phones
-            = f.fields_for :phones, (@adv.user.phones.presence || @adv.user.phones.build) do |f|
-              .input-group
-                span.input-group-addon
-                  i.fa.fa-phone
-                = f.text_field :original, class: 'form-control checkPhone', required: true
-                span.input-group-btn
-                  = f.link_to_remove class: 'btn btn-default' do
-                    i.fa.fa-minus
-        .form-group
-          label.control-label.col-sm-3
-          .col-sm-4
-            = f.link_to_add 'Добавить номер', :phones, :data => { :target => "#reg-phones" }
-            span.help-block
-              | например: +7(863) 2-12-85-06
+        = render 'devise/registrations/fields', f: f, additional_params: false, check_phone: true
         - if !@save_with_errors && @adv.new_record?
           .form-group
             .col-sm-offset-3.col-sm-4
@@ -44,7 +13,7 @@
   .user-params
     legend Контакт
     .form.form-horizontal role="form"
-      = f.fields_for :user, (@adv.user.presence || @adv.build_user(role: :owner)) do |f|
-        = render 'devise/registrations/fields', f: f
+      = f.fields_for :user, (@adv.user.presence || @adv.build_user) do |f|
+        = render 'devise/registrations/fields', f: f, additional_params: true, check_phone: false
 
 

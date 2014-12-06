@@ -1,0 +1,50 @@
+h1
+  | Вход
+= content_for :title
+  | Вход
+.well.clearfix
+  - if flash[:alert]
+    .alert.alert-danger
+      = flash[:alert]
+  = form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form form-horizontal'}) do |f|
+    fieldset
+      .form-group
+        label.control-label.col-sm-4
+          i.fa.fa-envelope-o.fa-lg
+          '
+          | почта
+        .col-sm-4
+          = f.email_field :email, autofocus: true, class: 'form-control', required: true, placeholder: 'mail@example.com'
+      .form-group
+        label.control-label.col-sm-4
+          i.fa.fa-unlock.fa-lg
+          '
+          | пароль
+        .col-sm-4
+          = f.password_field :password, autocomplete: 'off', class: 'form-control', placeholder: "******", required: true
+      - if devise_mapping.rememberable?
+        .form-group
+          label.control-label.col-sm-4
+          .col-sm-4
+            label.checkbox for="user_remember_me"
+              = f.check_box :remember_me, checked: true
+              | запомнить меня
+      .form-group
+        label.control-label.col-sm-4
+        .col-sm-2
+          = f.button class: 'btn btn-primary btn-lg' do
+            i.fa.fa-sign-in
+            '
+            | Войти
+          br
+          br
+          a.small href="#{new_user_password_path}"
+            i.fa.fa-refresh
+            '
+            | восстановить пароль
+      = render "devise/shared/links"
+
+
+
+
+

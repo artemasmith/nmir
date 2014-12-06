@@ -1,0 +1,23 @@
+h1
+  | Восстановление пароля
+= content_for :title
+  | Восстановление пароля
+.well.clearfix
+  = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'form form-horizontal' }) do |f|
+    = devise_error_messages!
+    fieldset
+      .form-group
+        label.control-label.col-sm-4
+          i.fa.fa-envelope-o.fa-lg
+          '
+          | почта
+        .col-sm-4
+          = f.text_field :email, class: 'form-control', placeholder: 'mail@example.com', required: true
+      .form-group
+        label.control-label.col-sm-4
+        .col-sm-4
+          = f.button class: 'btn btn-primary btn-lg' do
+            i.fa.fa-send
+            '
+            | Войти
+    = render "devise/shared/links"

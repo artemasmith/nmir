@@ -225,9 +225,8 @@ sort_button_list = (context)->
       $(".location-button.active[lid!=#{sp['lid']}]").click()
       sp['group'].parent().find('.GetChildren').popover "destroy"
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
-  else
-    if (sp['common'] == false)
-      $(".GetChildren[lid=#{sp['parent_id']}]").click()
+
+
 
 
 
@@ -444,11 +443,14 @@ $('.click_additional_search_params_action').livequery ->
   return
 
 $('.autocomplete-search-location').livequery ->
+  $this = $(this)
   sp = {}
-  sp['parent_id'] = $(this).attr('parent_id')
+  sp['parent_id'] = $this.attr('parent_id')
   sp['multi']  = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('multi')
   sp['editable'] = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('editable')
-  $(this).autocomplete({
+  parent = $this.parent()
+  $this.autocomplete({
+    appendTo: parent
     source: (request, response) ->
       $.ajax(
         url: '/api/entity/streets_houses'
@@ -460,9 +462,8 @@ $('.autocomplete-search-location').livequery ->
           response(data)
           return
       )
-    open: ->
-      $(".ui-autocomplete").css("z-index", "2147483647")
     select: (event, ui) ->
+      cancelEvent(event)
       sp['lid'] = ui.item.value
       sp['group'] = $("input[value=#{sp['parent_id']}]").closest('.location-group')
       sp['value'] = ui.item.label
@@ -470,13 +471,14 @@ $('.autocomplete-search-location').livequery ->
         sp['has_children'] = 'true'
       else
         sp['has_children'] = "#{ui.item.has_children}"
-
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
-
-
+      $this.val('')
+      return false
     })
+  $this.focus()
+
 
 $('input[type="text"][valid-type=integer]').livequery ->
   $(this).forceNumericOnly()

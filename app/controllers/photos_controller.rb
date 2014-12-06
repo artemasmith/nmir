@@ -1,5 +1,4 @@
 class PhotosController < ApplicationController
-  before_action :authenticate_user!
   layout false
 
   def index
@@ -33,6 +32,7 @@ class PhotosController < ApplicationController
 
   def destroy
     @photo = Photo.find(params[:id])
+    raise CanCan::AccessDenied if current_user.blank? && @photo.advertisement_id.present?
     @photo.destroy
     render :json => true
   end

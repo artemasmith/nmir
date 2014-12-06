@@ -8,8 +8,13 @@
   display: inline-block;
 }
 
-#reg-phones i.glyphicon{
+#reg-phones i.glyphicon {
   margin-right: 40px;
+}
+
+#reg-phones {
+  padding-right: 0px;
+  padding-left: 0px;
 }
 
 
@@ -71,6 +76,9 @@ h1, h2 {
   position: inherit;
 }
 
+.ui-autocomplete {
+  position: relative;
+}
 
 
 

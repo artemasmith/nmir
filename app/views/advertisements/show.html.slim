@@ -32,13 +32,13 @@ h1
             | Размещено
             '
             strong
-              = l @adv.created_at
+              time.smart_time datetime=@adv.created_at time_zone=3
           - else
             '
             | Обновлено
             '
             strong
-              = l @adv.updated_at
+              time.smart_time datetime=@adv.updated_at time_zone=3
           '
           | Просмотров:
           '

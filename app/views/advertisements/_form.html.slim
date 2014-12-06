@@ -72,6 +72,12 @@ h1
       = render '/advertisements/map', f: f
       = render '/advertisements/photos', f: f
       .fields
-        .form.form-horizontal
-          = f.submit "#{@adv.new_record? ? 'Создать' : 'Обновить'}", class: 'btn btn-primary'
+        .col-sm-offset-3.form.form-horizontal
+          = f.button class: 'btn btn-primary btn-lg' do
+            - if @adv.new_record?
+              i.fa.fa-bullhorn
+            - else
+              i.fa.fa-save
+            '
+            = "#{@adv.new_record? ? 'Создать' : 'Сохранить'}"
 

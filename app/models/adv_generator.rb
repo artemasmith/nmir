@@ -49,7 +49,7 @@ module AdvGenerator
 
       self.anchor = [
           AdvGenerator.enum_title(self.offer_type),
-          AdvGenerator.enum_text(self, :room, ' к'), #без пробела
+          AdvGenerator.enum_text(self, :room, 'к'), #без пробела
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, ' м²'),
           AdvGenerator.floor_and_flor_cnt_text(self),
@@ -76,7 +76,7 @@ module AdvGenerator
       self.h3 = ''
       self.keywords = [
           AdvGenerator.enum_title(self.offer_type),
-          AdvGenerator.enum_text(self, :room, 'ком.'),
+          AdvGenerator.enum_text(self, :room, 'к'),
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, 'м. кв.'),
           AdvGenerator.enum_text(self, :outdoors_space, 'сот'),
