@@ -318,8 +318,8 @@ $('.DuplicatePhones').livequery ->
 
 $('.HideAdvPhone').livequery ->
   $this = $(this)
-  $this.replaceWith("<div class=\"btn btn-default btn-xs ShowAdvPhone\" data-phone=\"" + $this.text() + "\">Показать телефон</div>")
-
+  $this.replaceWith("<div class=\"btn btn-default btn-xs ShowAdvPhone\" data-phone=\"" + $this.text() + "\">показать телефон</div>")
+  return
 
 $('.ShowAdvPhone').livequery ->
   $this = $(this)
@@ -341,14 +341,57 @@ $('#map').livequery ->
   )
 
 
-$('form').livequery ->
+$('form:not(".withoutBootstrapValidator")').livequery ->
   $(this).bootstrapValidator({
-    feedbackIcons: {
+    feedbackIcons:
       valid: 'glyphicon glyphicon-ok'
       invalid: 'glyphicon glyphicon-remove'
       validating: 'glyphicon glyphicon-refresh'
-    }
+    fields:
+      'advertisement[user_attributes][password]':
+        validators:
+          stringLength:
+            min: 4
+            message: "Пароль должен быть не меньще 4 символов"
+      'advertisement[user_attributes][password_confirmation]':
+        validators:
+          stringLength:
+            min: 4
+            message: "Пароль должен быть не меньще 4 символов"
+      'advertisement[user_attributes][email]':
+        message: "Такой email не допустим"
+        validators:
+          remote:
+            message: ("Такой email уже зарегестрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>авторезируйтесь</a>.")
+            url: Routes.api_validation_index_path()
+      'advertisement[offer_type]':
+        validators:
+          callback:
+            message: "Выберите вид сделки"
+            trigger: 'change'
+            callback:  ->
+              $('[name="advertisement[offer_type]"]').is(':checked')
+
+      'advertisement[category]':
+        validators:
+          callback:
+            message: "Выберите тип недвижимости"
+            trigger: 'change'
+            callback:  ->
+              $('[name="advertisement[category]"]').is(':checked')
+
+
   })
+$('#reg-phones input[type=text]').livequery ->
+  $this = $(this)
+  $this.closest('form').bootstrapValidator('addField', $this, {
+    message: "Такой телефон не допустим"
+    validators:
+      remote:
+        message: ("Такой телефон уже зарегестрирован на нашем сайте. Используйте другой телефон.")
+        url: Routes.api_validation_index_path()
+  })
+
 
 $("html").on "mouseup", (e) ->
   unless $(e.target).closest(".popover").length

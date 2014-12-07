@@ -2,7 +2,7 @@
   .user-params
     legend Контакт
     .form.form-horizontal role="form"
-      = f.fields_for :user, (@adv.user.presence || @adv.build_user(role: :owner)) do |f|
+      = f.fields_for :user, (@adv.user.presence || @adv.build_user) do |f|
         = render 'devise/registrations/fields', f: f, additional_params: false, check_phone: true
         - if !@save_with_errors && @adv.new_record?
           .form-group

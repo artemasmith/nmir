@@ -12,7 +12,7 @@
     | имя
   .col-sm-4
     .form-group
-      = f.text_field :name, class: 'form-control', required: true, placeholder: 'Имя'
+      = f.text_field :name, autofocus: true, class: 'form-control', required: true, placeholder: 'Имя'
 .form-group
   label.control-label.col-sm-4
     i.fa.fa-phone
@@ -38,7 +38,7 @@
       | почта
     .col-sm-4
       .form-group
-        = f.email_field :email, autofocus: true, class: 'form-control', required: true, placeholder: 'mail@example.com'
+        = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
   .form-group
     label.control-label.col-sm-4
       i.fa.fa-unlock
@@ -46,7 +46,7 @@
       | пароль
     .col-sm-4
       .form-group
-        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******'
+        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6
   .form-group
     label.control-label.col-sm-4
       i.fa.fa-unlock
@@ -54,4 +54,4 @@
       | подтверждение пароля
     .col-sm-4
       .form-group
-        = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: true, placeholder: '******'
+        = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6

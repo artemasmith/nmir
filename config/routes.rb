@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   devise_for :users
 
   namespace :api do
+    resources :validation
     resources :locations
     resources :advertisements, :path => '/entity' do
       collection do

@@ -5,7 +5,6 @@ namespace :advertisement do
     Advertisement.active.find_in_batches(batch_size: slice_count).each do |group|
       group.each do |adv|
         adv.expired! unless adv.yandex_valid?
-        adv.save
       end
     end
 

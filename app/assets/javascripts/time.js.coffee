@@ -1,5 +1,18 @@
 monthNames =  ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"]
 
+
+declOfNum = (number, titles) ->
+  cases = [
+    2
+    0
+    1
+    1
+    1
+    2
+  ]
+  titles[(if (number % 100 > 4 and number % 100 < 20) then 2 else cases[(if (number % 10 < 5) then number % 10 else 5)])]
+
+
 date_offset = (el)->
   reg = /^([0-9]{4})-([0-9]{2})-([0-9]{2})[T\s]([0-9]{2}):([0-9]{2}):([0-9]{2})/
   match = reg.exec(el.attr('datetime'))
@@ -71,7 +84,7 @@ setTime = (el)->
   text = switch
     when distance < 60 then "только что"
     when distance < 120 then "минуту назад"
-    when distance <= 60*59 then Math.round(distance / 60) + " " + CheckHelper.declOfNum(Math.round(distance / 60), ["минуту назад", "минуты назад", "минут назад"])
+    when distance <= 60*59 then Math.round(distance / 60) + " " + declOfNum(Math.round(distance / 60), ["минуту назад", "минуты назад", "минут назад"])
     when isToday(el) then "сегодня в #{timeToStr(el)}"
     when isYesterday(el) then "вчера в #{timeToStr(el)}"
     else

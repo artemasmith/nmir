@@ -105,6 +105,12 @@
             progress: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 data.context.find('.progress-bar').css('width',progress + '%').text(progress + '%').attr('aria-valuenow', progress);
+            },
+            start: function (e) {
+                $('.fileupload').closest('form').find('button[type=submit]').attr('disabled', true)
+            },
+            stop: function (e) {
+                $('.fileupload').closest('form').find('button[type=submit]').attr('disabled', false)
             }
         });
 

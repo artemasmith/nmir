@@ -61,6 +61,7 @@ h1
           ul.list-unstyled
             - @grouped_allowed_attributes.each do |group|
               - next if group[0] == 'comment'
+              - next if group[0] == 'not_for_agents'
               - attr_from = group[0]
               - attr_to = group[1]
               - value_from = @adv.send(attr_from)
@@ -108,7 +109,7 @@ h1
           '
         = @adv.name
         '
-        button.btn.btn-default.btn-xs.HideAdvPhone
+        span.btn.btn-default.btn-xs.HideAdvPhone
           = @adv.phone
         - if @near_sections.present?
           br

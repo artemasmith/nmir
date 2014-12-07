@@ -191,6 +191,16 @@ class AdvertisementsController < ApplicationController
     }
     @pages = (@search_result_count.to_f / @limit.to_f).ceil
     @search_results = Advertisement.where(id: @search_result_ids).order('updated_at DESC')
+
+
+    if @root_section.present?
+      if @root_section.location_id.present?
+        @hidden_sections = Section.child_for(@root_section.location_id).not_empty.where.not(id: @root_section.id)
+      else
+        @hidden_sections = Section.where(location_id: nil).where.not(id: @root_section.id).not_empty
+      end
+    end
+
   end
 
   def show
