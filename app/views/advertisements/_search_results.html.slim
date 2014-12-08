@@ -1,15 +1,19 @@
 - if @search_results.present?
   ul.list-unstyled
     - @search_results.each_with_index do |adv, index|
-      li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}"
+      li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}" element_id=adv.id
         .col-lg-1.col-md-1.col-sm-12.col-xs-12.text-muted.small
-          time.smart_time datetime=((adv.created_at >= adv.updated_at) ? adv.created_at : adv.updated_at) time_zone=3
-          '
-          -if can? :manage, adv
-            a.btn-link href=edit_advertisement_path(adv)
-              i.fa.fa-edit.fa-lg
-
-        a href="#{advertisement_path(adv)}_#{adv.url}"
+          .row
+            span.col-md-12.col-sm-1
+              time.smart_time datetime=((adv.created_at >= adv.updated_at) ? adv.created_at : adv.updated_at) time_zone=3
+            span.col-md-12.col-sm-1
+              -if can? :manage, adv
+                a.btn-link href=edit_advertisement_path(adv)
+                  i.fa.fa-edit.fa-lg
+                '
+                = link_to advertisement_path(adv), class: 'btn-link', method: :delete, remote: true, data: { confirm: 'Удалить это объявление?' } do
+                  i.fa.fa-trash.fa-lg
+        a href="#{advertisement_path(adv)}-#{adv.url}"
           .col-lg-2.col-md-2.col-sm-3.col-xs-12
             - if adv.preview_url.present?
               img src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"

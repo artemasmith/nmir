@@ -1,13 +1,15 @@
 - if @root_section.present?
   - if @root_section.title.present?
     = content_for :title
-      = @root_section.title
+      = concat_page_number(@root_section.title)
   = content_for :meta
     - if @root_section.description.present?
       meta name="description" content=@root_section.description
     - if @root_section.keywords.present?
       meta name="keywords" content=@root_section.keywords
-    - if params[:advertisement].present?
+    - if params[:page].present?
+      meta name="robots" content="noindex, follow"
+    - elsif params[:advertisement].present?
       link rel="canonical" href=@root_section.url
 = content_for :header
   = render 'advertisements/neighbors', locale: { neighbors: @neigbors } if @neighbors.present?
@@ -15,22 +17,25 @@
 
 .well.well-sm
   - unless params[:advertisement].empty?
-    p
-      i.fa.fa-list
-      '
-      == bb_tags('Найдено [b]search_entries[/b]', @bbtags)
-      = render 'advertisements/search_results'
+    - if params[:page].blank?
+      p
+        i.fa.fa-list
+        '
+        == bb_tags('Найдено [b]search_entries[/b]', @bbtags)
+        = render 'advertisements/search_results'
   - else
     - if @root_section.present?
       - if @root_section.h1.present?
         h1
-          == bb_tags(@root_section.h1, @bbtags)
-      p
-        == bb_tags(@root_section.p, @bbtags)
-        = render 'advertisements/search_results'
+          == concat_page_number(bb_tags(@root_section.h1, @bbtags))
+      - if params[:page].blank?
+        p
+          == bb_tags(@root_section.p, @bbtags)
+          = render 'advertisements/search_results'
     - else
-      p
-        = render 'advertisements/search_results'
+      - if params[:page].blank?
+        p
+          = render 'advertisements/search_results'
 
 
   - if params[:advertisement].empty?

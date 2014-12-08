@@ -96,6 +96,15 @@ $().ready ->
         zoom: parseInt(zoom)
       )
 
+      map.behaviors.disable("scrollZoom")
+      map.controls.remove("trafficControl")
+      .remove("searchControl")
+      .remove("rulerControl")
+      .remove("fullscreenControl")
+      .remove("typeSelector")
+      .remove("geolocationControl")
+
+
       if latitude and longitude
         create_start(map, parseFloat(latitude), parseFloat(longitude), editable)
 
@@ -362,7 +371,7 @@ $('form:not(".withoutBootstrapValidator")').livequery ->
         message: "Такой email не допустим"
         validators:
           remote:
-            message: ("Такой email уже зарегестрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>авторезируйтесь</a>.")
+            message: ("Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>.")
             url: Routes.api_validation_index_path()
       'advertisement[offer_type]':
         validators:
@@ -388,7 +397,7 @@ $('#reg-phones input[type=text]').livequery ->
     message: "Такой телефон не допустим"
     validators:
       remote:
-        message: ("Такой телефон уже зарегестрирован на нашем сайте. Используйте другой телефон.")
+        message: ("Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон.")
         url: Routes.api_validation_index_path()
   })
 

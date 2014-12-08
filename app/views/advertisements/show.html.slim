@@ -3,6 +3,7 @@
 = content_for :meta
   meta name="description" content=@adv.description
   meta name="keywords" content=@adv.keywords
+  link rel="canonical" href="#{advertisement_path(@adv)}-#{@adv.url}"
 = content_for :header
   ol.breadcrumb
     - @sorted_locations.each do |location|
@@ -161,10 +162,15 @@ h1
             '
             | редактировать
           '
-        - if can? :manage, @adv
           a.btn.btn-default.btn-xs
             i.fa.fa-level-up
+            '
             | обновить
+          '
+          = link_to advertisement_path(@adv), class: 'btn btn-default btn-xs', method: :delete, data: { confirm: 'Удалить это объявление?' } do
+            i.fa.fa-trash
+            '
+            | Удалить
 
   - if @search_results.present?
     h4

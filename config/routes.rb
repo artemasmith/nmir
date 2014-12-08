@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   match 'photos' => 'photos#create', via: [:post, :patch]
 
+  get '/entity', to: redirect('/')
+
   resources :advertisements, :path => 'entity' do
     collection do
       get 'get_attributes'

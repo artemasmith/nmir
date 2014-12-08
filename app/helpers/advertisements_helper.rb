@@ -1,5 +1,9 @@
 module AdvertisementsHelper
 
+  def concat_page_number(text)
+    [text, "#{params[:page].to_i > 1 ? "страница № #{params[:page]}" : ''}"].delete_if{|e| e.to_s == ''}.join(' ')
+  end
+
   def bb_tags(string, tags)
     tags.each_pair do |name, value|
       string.to_s.gsub!("[b]#{name.to_s}[/b]", value.to_s)

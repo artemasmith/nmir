@@ -1,11 +1,11 @@
 class AdvertisementsController < ApplicationController
   before_action :overload_params
-  # before_action :authenticate_user!, only: [:new, :create]
-  before_action :find_adv, only: [:show, :edit, :update]
-  load_and_authorize_resource except: [:new, :create, :get_locations, :get_attributes, :get_search_attributes]
+  before_action :find_adv, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_resource!, only: [:edit, :update, :destroy]
 
 
   def index
+    params.delete(:page) and redirect_to(root_path(params)) and return if params[:page] == '1'
 
     params[:advertisement] = {} if params[:advertisement].blank?
 
@@ -87,7 +87,6 @@ class AdvertisementsController < ApplicationController
 
     @limit = (params[:per_page].presence || 10).to_i
 
-    params[:page] ||= 1
     options[:page] = (params[:page] || 1).to_i
     options[:per_page] = @limit
 
@@ -201,6 +200,8 @@ class AdvertisementsController < ApplicationController
       end
     end
 
+    raise ActionController::RoutingError.new('Not Found') if (params[:page].to_i > 1) && (@search_results.blank?)
+
   end
 
   def show
@@ -286,7 +287,7 @@ class AdvertisementsController < ApplicationController
     if @adv.valid?
       @adv.save
       sign_in @adv.user if current_user.blank?
-      redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
+      redirect_to "#{advertisement_path(@adv)}-#{@adv.url}"
     else
       load_location_state!
       @grouped_allowed_attributes = @adv.grouped_allowed_attributes
@@ -296,7 +297,7 @@ class AdvertisementsController < ApplicationController
 
   def update
     if @adv.update_attributes(advertisement_params)
-      redirect_to "#{advertisement_path(@adv)}_#{@adv.url}"
+      redirect_to "#{advertisement_path(@adv)}-#{@adv.url}"
     else
       load_location_state!
       @grouped_allowed_attributes = @adv.grouped_allowed_attributes
@@ -342,6 +343,17 @@ class AdvertisementsController < ApplicationController
       .all
   end
 
+  def destroy
+    unless request.xhr?
+      location_id = @adv.locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}.last.try(:id)
+      section = Section.where(location_id: location_id).
+          where(offer_type: Section.offer_types[@adv.offer_type]).
+          where(category: Section.categories[@adv.category]).first
+      redirect_to((section.present? ? section.url : root_path), notice: 'Объявление успешно удалено')
+    end
+    @adv.delete
+  end
+
   protected
 
   def load_location_state!(locations = nil)
@@ -370,6 +382,10 @@ class AdvertisementsController < ApplicationController
 
   def find_adv
     @adv = Advertisement.find(params[:id])
+  end
+
+  def authorize_resource!
+    raise Error::AccessDenied unless can?(:manage, @adv)
   end
 
   def search_params
