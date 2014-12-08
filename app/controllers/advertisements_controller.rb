@@ -385,7 +385,7 @@ class AdvertisementsController < ApplicationController
   end
 
   def authorize_resource!
-    raise Error::AccessDenied unless can?(:manage, @adv)
+    raise CanCan::AccessDenied unless can?(:manage, @adv)
   end
 
   def search_params
