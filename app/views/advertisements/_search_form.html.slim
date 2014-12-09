@@ -48,6 +48,17 @@
             - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
             label.btn.btn-default.click_additional_search_params_action class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
+    - if @hidden_sections.present?
+      .row.col-xs-12
+        - @hidden_sections.group_by { |section| section.offer_type }.each_pair do |key, value|
+          label.control-label
+            = I18n.t("activerecord.attributes.section.enum_title.#{key}")
+          '
+          - value.each do |section|
+            .form-group
+              = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.category}"), section.url, class: 'btn btn-default btn-xs location_hide_action'
+            '
+
     .row.col-xs-12.form-group
       .form-group
         label
@@ -58,10 +69,12 @@
             | местоположение
             '
             i.caret
-
-          - if @hidden_sections.present?
-            - @hidden_sections.each do |section|
-              = link_to section.title, section.url, class: 'button btn btn-default location_hide_action'
+    - if @hidden_location_sections.present?
+      .row.col-xs-12
+        - @hidden_location_sections.each do |section|
+          .form-group
+            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs location_hide_action'
+          '
     .row
       .col-md-10.col-sm-9.col-xs-12.additional_search_params_container_action
         = render 'advertisements/additional_search_params'

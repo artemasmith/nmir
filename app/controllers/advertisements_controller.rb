@@ -193,11 +193,15 @@ class AdvertisementsController < ApplicationController
 
 
     if @root_section.present?
-      if @root_section.location_id.present?
-        @hidden_sections = Section.child_for(@root_section.location_id).not_empty.where.not(id: @root_section.id)
-      else
-        @hidden_sections = Section.where(location_id: nil).where.not(id: @root_section.id).not_empty
+      if @root_section.url == '/'
+        @hidden_location_sections = Section.root_location_child.not_empty
+        @hidden_sections = Section.root_child.not_empty.where.not(id: @root_section.id)
       end
+      # if @root_section.location_id.present?
+
+      # else
+      #   @hidden_sections = Section.where(location_id: nil).where.not(id: @root_section.id).not_empty
+      # end
     end
 
     raise ActionController::RoutingError.new('Not Found') if (params[:page].to_i > 1) && (@search_results.blank?)
@@ -393,11 +397,24 @@ class AdvertisementsController < ApplicationController
   end
 
   def advertisement_params
-    params.require(:advertisement).permit(:category, :offer_type, :price_from, :landmark, :zoom,
-    :price_to, :not_for_agents, :district, :user_id,
-    :floor_from, :space, :room_from, :comment, :phone, :adv_type, :latitude, :longitude,
-    :property_type, :floor_cnt_from, :space_from, :floor_max, :mortgage, adv_type: [],
-    offer_type: [], category: [], photo_ids: [], location_ids: [],
+    params.require(:advertisement).permit(:category, :offer_type, :property_type,
+    :landmark, :comment,
+    :price_from, :price_to,
+    :not_for_agents,
+    :district,
+    :user_id,
+    :floor_from, :floor_to,
+    :floor_cnt_from, :floor_cnt_to,
+    :space_from, :space_to,
+    :outdoors_space_from, :outdoors_space_to,
+    :room_from, :room_to,
+
+
+    :phone, :adv_type,
+    :latitude, :longitude, :zoom,
+
+    :mortgage,
+    adv_type: [], offer_type: [], category: [], photo_ids: [], location_ids: [],
     user_attributes: [:name, :role, :password, :email, phones_attributes: [:id, :original, :_destroy]])
   end
 

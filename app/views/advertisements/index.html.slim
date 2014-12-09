@@ -23,6 +23,8 @@
         '
         == bb_tags('Найдено [b]search_entries[/b]', @bbtags)
         = render 'advertisements/search_results'
+    - else
+      = render 'advertisements/search_results'
   - else
     - if @root_section.present?
       - if @root_section.h1.present?
@@ -32,10 +34,14 @@
         p
           == bb_tags(@root_section.p, @bbtags)
           = render 'advertisements/search_results'
+      - else
+        = render 'advertisements/search_results'
     - else
       - if params[:page].blank?
         p
           = render 'advertisements/search_results'
+      - else
+        = render 'advertisements/search_results'
 
 
   - if params[:advertisement].empty?

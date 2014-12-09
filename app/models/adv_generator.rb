@@ -52,6 +52,7 @@ module AdvGenerator
           AdvGenerator.enum_text(self, :room, 'к'), #без пробела
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, ' м²'),
+          AdvGenerator.enum_text(self, :outdoors_space, 'сот'),
           AdvGenerator.floor_and_flor_cnt_text(self),
       ].delete_if{|e| e.to_s.strip == ''}.join(' ')
 

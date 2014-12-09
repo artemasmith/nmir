@@ -31,7 +31,7 @@ module AdvValidation
       return true if record[to_attribute].nil? || value.nil?
 
       if record[attribute] > record[to_attribute]
-        record.errors.add attribute, "Должно быть меньше максимального значения"  
+        record[attribute], record[to_attribute] = record[to_attribute], record[attribute]
       end
     end
   end

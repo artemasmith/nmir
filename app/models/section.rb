@@ -31,8 +31,10 @@ class Section < ActiveRecord::Base
   scope :not_empty, -> { where('advertisements_count > 0') }
 
   scope :child_for, ->(location_id) { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"').
-                          where(['locations.location_id = ? OR locations.id = ?', location_id, location_id])}
+                          where(['locations.location_id = ?', location_id])}
 
+  scope :root_location_child, -> { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"').where('locations.location_id' => nil).where(offer_type: nil).where(category: nil).where(property_type: nil)}
+  scope :root_child, -> { where(location_id: nil)}
 
 
 end

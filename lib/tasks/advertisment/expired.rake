@@ -17,8 +17,10 @@ namespace :advertisement do
     Section.find_in_batches(batch_size: slice_count).each do |group|
       group.each do |section|
         advertisement = Advertisement.active
-        advertisement = advertisement.joins('INNER JOIN "advertisement_locations" ON "advertisements"."id" = "advertisement_locations"."advertisement_id"')
-        advertisement = advertisement.where('advertisement_locations.location_id' => section.location_id)
+        if section.location_id.present?
+          advertisement = advertisement.joins('INNER JOIN "advertisement_locations" ON "advertisements"."id" = "advertisement_locations"."advertisement_id"')
+          advertisement = advertisement.where('advertisement_locations.location_id' => section.location_id)
+        end
         advertisement = advertisement.where(offer_type: section.offer_type) if section.offer_type.present?
         advertisement = advertisement.where(category: section.category) if section.category.present?
         advertisement = advertisement.where(property_type: section.property_type) if section.property_type.present?
