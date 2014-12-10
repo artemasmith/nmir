@@ -193,15 +193,26 @@ class AdvertisementsController < ApplicationController
 
 
     if @root_section.present?
-      if @root_section.url == '/'
-        @hidden_location_sections = Section.root_location_child.not_empty
-        @hidden_sections = Section.root_child.not_empty.where.not(id: @root_section.id)
+      @hidden_sections = Section.not_empty
+      @hidden_sections = @hidden_sections.where.not(id: @root_section.id) if @root_section.url == '/'
+      @hidden_sections = @hidden_sections.where(location_id: @root_section.location_id)
+      if @root_section.offer_type.present? && @root_section.category.present?
+        @hidden_sections = @hidden_sections.where.not(category: @root_section.category)
+      elsif @root_section.offer_type.present? && @root_section.property_type.present?
+        @hidden_sections = @hidden_sections.where(property_type: @root_section.property_type)
       end
-      # if @root_section.location_id.present?
 
-      # else
-      #   @hidden_sections = Section.where(location_id: nil).where.not(id: @root_section.id).not_empty
-      # end
+      @hidden_location_sections = Section.not_empty.root_child(@root_section.location_id)
+      if @root_section.offer_type.present? && @root_section.category.present?
+        @hidden_location_sections = @hidden_location_sections.where(offer_type: @root_section.offer_type)
+        @hidden_location_sections = @hidden_location_sections.where(category: @root_section.category)
+      elsif @root_section.offer_type.present? && @root_section.property_type.present?
+        @hidden_location_sections = @hidden_location_sections.where(offer_type: @root_section.offer_type)
+        @hidden_location_sections = @hidden_location_sections.where(property_type: @root_section.property_type)
+      else
+        @hidden_location_sections = @hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
+      end
+
     end
 
     raise ActionController::RoutingError.new('Not Found') if (params[:page].to_i > 1) && (@search_results.blank?)

@@ -1,7 +1,7 @@
 .well.well-sm
   = form_tag root_path, method: :get, class: 'form form-inline withoutBootstrapValidator', role:'form'
     /What a hell with this css??
-    .row.col-xs-12
+    .row.col-xs-12.control_show_action.hidden
       .form-group
         label
           i.fa.fa-share.fa-lg
@@ -49,17 +49,20 @@
             label.btn.btn-default.click_additional_search_params_action class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     - if @hidden_sections.present?
-      .row.col-xs-12
+      .row.col-xs-12.control_hide_action
         - @hidden_sections.group_by { |section| section.offer_type }.each_pair do |key, value|
           label.control-label
             = I18n.t("activerecord.attributes.section.enum_title.#{key}")
           '
           - value.each do |section|
             .form-group
-              = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.category}"), section.url, class: 'btn btn-default btn-xs location_hide_action'
+              = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.category}"), section.url, class: 'btn btn-default btn-xs'
             '
 
-    .row.col-xs-12.form-group
+    .row.col-xs-12.form-group.control_show_action.hidden
+      .control_remove_action
+        - @locations.each do |location|
+          = hidden_field_tag 'advertisement[location_ids][]', location.id
       .form-group
         label
           i.fa.fa-map-marker.fa-lg
@@ -70,10 +73,10 @@
             '
             i.caret
     - if @hidden_location_sections.present?
-      .row.col-xs-12
+      .row.col-xs-12.control_hide_action
         - @hidden_location_sections.each do |section|
           .form-group
-            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs location_hide_action'
+            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
           '
     .row
       .col-md-10.col-sm-9.col-xs-12.additional_search_params_container_action

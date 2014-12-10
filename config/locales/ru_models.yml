@@ -20,7 +20,7 @@ ru:
         enum_title:
           # offer_type
           sale: продажа
-          rent: сдача
+          rent: аренда
           for_rent: аренда
           day: посуточно аренда
           buy: покупка
