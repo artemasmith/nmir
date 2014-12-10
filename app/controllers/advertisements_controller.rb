@@ -194,7 +194,7 @@ class AdvertisementsController < ApplicationController
 
     if @root_section.present?
       @hidden_sections = Section.not_empty
-      @hidden_sections = @hidden_sections.where.not(id: @root_section.id) if @root_section.url == '/'
+      @hidden_sections = @hidden_sections.where.not(id: @root_section.id) 
       @hidden_sections = @hidden_sections.where(location_id: @root_section.location_id)
       if @root_section.offer_type.present? && @root_section.category.present?
         @hidden_sections = @hidden_sections.where.not(category: @root_section.category)
