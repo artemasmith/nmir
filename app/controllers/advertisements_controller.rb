@@ -212,7 +212,7 @@ class AdvertisementsController < ApplicationController
         @hidden_location_sections = @hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
       end
 
-      @neighborhood_sections = @root_section.neighborhoods.not_empty
+      # @neighborhood_sections = @root_section.neighborhoods.not_empty
 
 
 
