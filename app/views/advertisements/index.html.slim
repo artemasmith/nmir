@@ -12,7 +12,6 @@
     - elsif params[:advertisement].present?
       link rel="canonical" href=@root_section.url
 = content_for :header
-  = render 'advertisements/neighbors', locale: { neighbors: @neigbors } if @neighbors.present?
   = render 'advertisements/search_form'
 
 .well.well-sm

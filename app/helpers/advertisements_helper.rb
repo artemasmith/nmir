@@ -19,10 +19,6 @@ module AdvertisementsHelper
     render 'shared/pagination', :pages => @pages, :current_page => url_params[:page].to_i, :url_path => method(:root_path), :url_params => url_params
   end
 
-  def get_neighbors location
-    Location.find_by_id(location.to_i).neighbors
-  end
-
   def generate_ac_source src
     src.map{ |s| { "#{s[:title]}" => s[:id] }}.to_json
   end

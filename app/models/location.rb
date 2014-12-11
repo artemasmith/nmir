@@ -23,12 +23,13 @@ class Location < ActiveRecord::Base
   after_find :load_resources
 
 
+
   # neighbors
-  has_and_belongs_to_many :neighbors,
-                          class_name: 'Location', 
-                          join_table: 'neighborhoods',
-                          foreign_key: 'location_id',
-                          association_foreign_key: 'neighbor_id'
+  # has_and_belongs_to_many :neighbors,
+  #                         class_name: 'Location',
+  #                         join_table: 'neighborhoods',
+  #                         foreign_key: 'location_id',
+  #                         association_foreign_key: 'neighbor_id'
 
 
 

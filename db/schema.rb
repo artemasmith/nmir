@@ -232,13 +232,6 @@ ActiveRecord::Schema.define(version: 20141202000433) do
   add_index "locations", ["parentguid"], name: "index_locations_on_parentguid", using: :btree
   add_index "locations", ["title"], name: "index_locations_on_title", using: :btree
 
-  create_table "neighborhoods", force: true do |t|
-    t.integer "location_id"
-    t.integer "neighbor_id"
-  end
-
-  add_index "neighborhoods", ["location_id", "neighbor_id"], name: "by_location_neighbor", using: :btree
-
   create_table "notepads", force: true do |t|
     t.integer  "user_id"
     t.integer  "advertisement_id"

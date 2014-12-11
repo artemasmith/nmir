@@ -21,9 +21,9 @@ namespace :advertisement do
           advertisement = advertisement.joins('INNER JOIN "advertisement_locations" ON "advertisements"."id" = "advertisement_locations"."advertisement_id"')
           advertisement = advertisement.where('advertisement_locations.location_id' => section.location_id)
         end
-        advertisement = advertisement.where(offer_type: section.offer_type) if section.offer_type.present?
-        advertisement = advertisement.where(category: section.category) if section.category.present?
-        advertisement = advertisement.where(property_type: section.property_type) if section.property_type.present?
+        advertisement = advertisement.where(offer_type: Section.offer_types[section.offer_type]) if section.offer_type.present?
+        advertisement = advertisement.where(category: Section.categories[section.category]) if section.category.present?
+        advertisement = advertisement.where(property_type: Section.property_types[section.property_type]) if section.property_type.present?
         section.advertisements_count = advertisement.count
         section.save
       end

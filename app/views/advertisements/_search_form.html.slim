@@ -56,7 +56,10 @@
           '
           - value.each do |section|
             .form-group
+            - if section.category
               = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.category}"), section.url, class: 'btn btn-default btn-xs'
+            - else
+              = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.property_type}"), section.url, class: 'btn btn-default btn-xs'
             '
 
     .row.col-xs-12.form-group.control_show_action.hidden
@@ -74,7 +77,19 @@
             i.caret
     - if @hidden_location_sections.present?
       .row.col-xs-12.control_hide_action
+        label.control-label
+          | местоположение
+          '
         - @hidden_location_sections.each do |section|
+          .form-group
+            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
+          '
+    - if @neighborhood_sections.present?
+      .row.col-xs-12.control_hide_action
+        label.control-label
+          | популярные
+          '
+        - @neighborhood_sections.each do |section|
           .form-group
             = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
           '

@@ -74,7 +74,6 @@ class AdvertisementsController < ApplicationController
       load_location_state!(@section.present? && @section.location_id ? Location.parent_locations(Location.find(@section.location_id)) : nil)
     end
 
-    @neighbors = nil
 
     with = {}
     conditions = {}
@@ -194,24 +193,28 @@ class AdvertisementsController < ApplicationController
 
     if @root_section.present?
       @hidden_sections = Section.not_empty
-      @hidden_sections = @hidden_sections.where.not(id: @root_section.id) 
+      @hidden_sections = @hidden_sections.where.not(id: @root_section.id)
       @hidden_sections = @hidden_sections.where(location_id: @root_section.location_id)
       if @root_section.offer_type.present? && @root_section.category.present?
-        @hidden_sections = @hidden_sections.where.not(category: @root_section.category)
+        @hidden_sections = @hidden_sections.where.not(category: Section.categories[@root_section.category])
       elsif @root_section.offer_type.present? && @root_section.property_type.present?
-        @hidden_sections = @hidden_sections.where(property_type: @root_section.property_type)
+        @hidden_sections = @hidden_sections.where(property_type: Section.property_types[@root_section.property_type])
       end
 
       @hidden_location_sections = Section.not_empty.root_child(@root_section.location_id)
       if @root_section.offer_type.present? && @root_section.category.present?
-        @hidden_location_sections = @hidden_location_sections.where(offer_type: @root_section.offer_type)
-        @hidden_location_sections = @hidden_location_sections.where(category: @root_section.category)
+        @hidden_location_sections = @hidden_location_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
+        @hidden_location_sections = @hidden_location_sections.where(category: Section.categories[@root_section.category])
       elsif @root_section.offer_type.present? && @root_section.property_type.present?
-        @hidden_location_sections = @hidden_location_sections.where(offer_type: @root_section.offer_type)
-        @hidden_location_sections = @hidden_location_sections.where(property_type: @root_section.property_type)
+        @hidden_location_sections = @hidden_location_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
+        @hidden_location_sections = @hidden_location_sections.where(property_type: Section.categories[@root_section.property_type])
       else
         @hidden_location_sections = @hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
       end
+
+      @neighborhood_sections = @root_section.neighborhoods.not_empty
+
+
 
     end
 
