@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141202000433) do
+ActiveRecord::Schema.define(version: 20141211023120) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,6 +232,13 @@ ActiveRecord::Schema.define(version: 20141202000433) do
   add_index "locations", ["parentguid"], name: "index_locations_on_parentguid", using: :btree
   add_index "locations", ["title"], name: "index_locations_on_title", using: :btree
 
+  create_table "neighborhoods", force: true do |t|
+    t.integer "location_id"
+    t.integer "neighbor_id"
+  end
+
+  add_index "neighborhoods", ["location_id", "neighbor_id"], name: "by_location_neighbor", using: :btree
+
   create_table "notepads", force: true do |t|
     t.integer  "user_id"
     t.integer  "advertisement_id"
@@ -277,9 +284,11 @@ ActiveRecord::Schema.define(version: 20141202000433) do
     t.integer "property_type"
     t.text    "p2"
     t.string  "short_title"
+    t.integer "neighborhood_id"
   end
 
   add_index "sections", ["location_id"], name: "index_sections_on_location_id", using: :btree
+  add_index "sections", ["neighborhood_id"], name: "index_sections_on_neighborhood_id", using: :btree
   add_index "sections", ["offer_type", "category", "location_id", "property_type"], name: "index_sections_on_ot_c_li_pt", using: :btree
   add_index "sections", ["url"], name: "index_sections_on_url", using: :btree
 
