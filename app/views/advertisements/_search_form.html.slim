@@ -98,7 +98,10 @@
           '
         - @neighborhood_sections.each do |section|
           .form-group
-            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
+            - if section.category
+              = link_to "#{t("activerecord.attributes.section.enum_title.#{section.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{section.category}")} #{section.short_title}", section.url, class: 'btn btn-default btn-xs'
+            - elsif section.property_type
+              = link_to "#{t("activerecord.attributes.section.enum_title.#{section.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{section.property_type}")} #{section.short_title}", section.url, class: 'btn btn-default btn-xs'
           '
     .row
       .col-md-10.col-sm-9.col-xs-12.additional_search_params_container_action

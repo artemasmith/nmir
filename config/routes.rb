@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/:url', :to => "advertisements#index", :constraints => { :url => /[^\.]*/ }
+  get '/:url', :to => "advertisements#index", :constraints => { :url => /[^\.]*/, :format => 'html' }
 
 
   root 'advertisements#index'

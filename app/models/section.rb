@@ -35,9 +35,7 @@ class Section < ActiveRecord::Base
 
   scope :root_child, ->(location_id) { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"').where('locations.location_id' => location_id)}
 
-
-
-  # scope :root_child, ->(location_id) { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"').joins('INNER JOIN "neighborhoods" ON "location"."id" = "neighborhoods"."id"').where('locations.location_id' => location_id)}
+  scope :neighborhood, ->(location_id) { joins('INNER JOIN "neighborhoods" ON "sections"."location_id" = "neighborhoods"."neighbor_id"').where('neighborhoods.location_id' => location_id)}
 
 
 end

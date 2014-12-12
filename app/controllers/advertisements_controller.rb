@@ -230,7 +230,12 @@ class AdvertisementsController < ApplicationController
           hidden_location_sections.to_a
         end
       end
-      # @neighborhood_sections = @root_section.neighborhoods.not_empty
+
+     @neighborhood_sections = Rails.cache.fetch("neighborhood_sections:#{@root_section.id}", expires_in: 15.minutes) do
+       hidden_location_sections = Section.not_empty.neighborhood(@root_section.location_id)
+       hidden_location_sections.to_a
+     end
+
 
 
 
