@@ -11,17 +11,6 @@ module SectionGenerator
     ).increment!(:advertisements_count)
   end
 
-  def self.by_offer_category_without_location(offer_type, category)
-    url = "/#{chain_url([offer_type, category])}"
-    Section.create_with(
-        generate_attributes(url, offer_type, category, nil, nil, nil)
-    )
-    .find_or_create_by(
-        offer_type: Section.offer_types[offer_type],
-        category: Section.categories[category],
-        location_id: nil
-    ).increment!(:advertisements_count)
-  end
 
   def self.by_property_offer(property_type, offer_type, location, loc_chain_url, loc_chain_title, short_loc_title)
     url = "/#{loc_chain_url}/#{chain_url([offer_type, property_type])}"
@@ -32,18 +21,6 @@ module SectionGenerator
       property_type: Section.property_types[property_type], 
       offer_type: Section.offer_types[offer_type], 
       location_id: location.id
-    ).increment!(:advertisements_count)
-  end
-
-  def self.by_property_offer_without_location(property_type, offer_type)
-    url = "/#{chain_url([offer_type, property_type])}"
-    Section.create_with(
-        generate_attributes(url, offer_type, nil, property_type, nil, nil)
-    )
-    .find_or_create_by(
-        property_type: Section.property_types[property_type],
-        offer_type: Section.offer_types[offer_type],
-        location_id: nil
     ).increment!(:advertisements_count)
   end
 

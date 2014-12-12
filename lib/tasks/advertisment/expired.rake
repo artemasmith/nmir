@@ -23,7 +23,13 @@ namespace :advertisement do
         end
         advertisement = advertisement.where(offer_type: Section.offer_types[section.offer_type]) if section.offer_type.present?
         advertisement = advertisement.where(category: Section.categories[section.category]) if section.category.present?
-        advertisement = advertisement.where(property_type: Section.property_types[section.property_type]) if section.property_type.present?
+        if section.property_type.present?
+          if section.property_type == :residental
+            advertisement = advertisement.where(category: AdvEnums::RESIDENTAL_CATEGORIES)
+          elsif section.property_type == :commerce
+            advertisement = advertisement.where(category: AdvEnums::COMMERCE_CATEGORIES)
+          end
+        end
         section.advertisements_count = advertisement.count
         section.save
       end

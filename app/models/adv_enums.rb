@@ -18,6 +18,10 @@ module AdvEnums
       :hotel
     ]
 
+  COMMERCE_CATEGORIES = [0, 1, 2, 3 ,4 ,5, 12]
+
+  RESIDENTAL_CATEGORIES = [6, 7 ,8, 9, 10]
+
   ADV_TYPES = [:demand, :offer]
 
   OFFER_TYPES = [:sale, :rent, :for_rent, :day, :buy]

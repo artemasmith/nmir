@@ -104,5 +104,8 @@ gem "js-routes"
 
 gem "nokogiri"
 
+#redis-rails provides a full set of stores (Cache, Session, HTTP Cache) for Ruby on Rails. See the main redis-store readme for general guidelines.
+gem 'redis-rails'
+
 
 
