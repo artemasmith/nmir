@@ -30,12 +30,12 @@ class Section < ActiveRecord::Base
 
   scope :not_empty, -> { where('advertisements_count > 0') }
 
-  scope :child_for, ->(location_id) { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"').
-                          where(['locations.location_id = ?', location_id])}
+  scope :child_for, -> { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"')}
 
-  scope :root_child, ->(location_id) { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"').where('locations.location_id' => location_id)}
 
-  scope :neighborhood, ->(location_id) { joins('INNER JOIN "neighborhoods" ON "sections"."location_id" = "neighborhoods"."neighbor_id"').where('neighborhoods.location_id' => location_id)}
+
+
+
 
 
 end

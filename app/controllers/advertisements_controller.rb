@@ -193,15 +193,10 @@ class AdvertisementsController < ApplicationController
 
     if @root_section.present?
       if @root_section.location_id.present?
-
-        parent_location = @locations.find{|location| location.id == @root_section.location_id}
-        @hidden_locations = [@root_section.location_id]
-        @hidden_locations.insert(0, parent_location.location_id) if parent_location.present? && parent_location.location_id.present?
-
-        @hidden_sections = Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 15.minutes) do
+        @hidden_sections = Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 1.seconds) do
           hidden_sections = Section.not_empty
           hidden_sections = hidden_sections.where.not(id: @root_section.id)
-          hidden_sections = hidden_sections.where(location_id: @hidden_locations)
+          hidden_sections = hidden_sections.where(location_id: @root_section.location_id)
           if @root_section.offer_type.present? && @root_section.category.present?
             query = Section.where.not(category: Section.categories[@root_section.category]).where(property_type: Section.property_types.values)
             hidden_sections = hidden_sections.where(query.where_values.inject(:or))
@@ -218,23 +213,50 @@ class AdvertisementsController < ApplicationController
 
 
 
-      if @root_section.property_type.blank?
-        @hidden_location_sections = Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 15.minutes) do
-          hidden_location_sections = Section.not_empty.root_child(@root_section.location_id)
-          if @root_section.offer_type.present? && @root_section.category.present?
-            hidden_location_sections = hidden_location_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
-            hidden_location_sections = hidden_location_sections.where(category: Section.categories[@root_section.category])
-          else
-            hidden_location_sections = hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
-          end
-          hidden_location_sections.to_a
+      @hidden_location_sections = Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 1.seconds) do
+
+        parent_location = @locations.find{|location| location.id == @root_section.location_id}
+        hidden_location_ids = []
+        hidden_location_ids << @root_section.location_id
+        hidden_location_ids << parent_location.location_id if parent_location.present?
+        neighborhood_ids = Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
+
+
+
+        query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
+        hidden_location_sections = Section.not_empty.child_for.where(query.where_values.inject(:or))
+        if @root_section.offer_type.present? && @root_section.category.present?
+          hidden_location_sections = hidden_location_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
+          hidden_location_sections = hidden_location_sections.where(category: Section.categories[@root_section.category])
+        elsif @root_section.offer_type.present? && @root_section.property_type.present?
+          hidden_location_sections = hidden_location_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
+          hidden_location_sections = hidden_location_sections.where(property_type: Section.property_types[@root_section.property_type])
+        else
+          hidden_location_sections = hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
+        end
+        hidden_location_sections.to_a
+      end
+
+
+      if @root_section.offer_type.present? && @root_section.category.present? && @root_section.location_id.present?
+        @current_sections = Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 1.seconds) do
+          parent_location = @locations.find{|location| location.id == @root_section.location_id}
+          hidden_location_ids = []
+          hidden_location_ids << @root_section.location_id
+          hidden_location_ids << parent_location.location_id if parent_location.present?
+          neighborhood_ids = Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
+
+
+          query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
+
+          current_sections = Section.not_empty.not_empty.child_for.where(query.where_values.inject(:or))
+          current_sections = current_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
+          current_sections = current_sections.where(category: Section.categories[@root_section.category])
+
+          current_sections.to_a
         end
       end
 
-     @neighborhood_sections = Rails.cache.fetch("neighborhood_sections:#{@root_section.id}", expires_in: 15.minutes) do
-       hidden_location_sections = Section.not_empty.neighborhood(@root_section.location_id)
-       hidden_location_sections.to_a
-     end
 
 
 

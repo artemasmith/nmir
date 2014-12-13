@@ -49,7 +49,7 @@
             label.btn.btn-default.click_additional_search_params_action class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
     - if @hidden_sections.present?
-      - @hidden_sections.group_by { |section| section.location_id }.sort_by{ |key, _| @hidden_locations.index(key) }.to_h.each_pair do |_, group|
+      - @hidden_sections.group_by { |section| section.location_id }.each_pair do |_, group|
         - if group.present?
           .row.col-xs-12.control_hide_action
             - group.group_by { |section| section.offer_type }.each_pair do |key, value|
@@ -91,17 +91,16 @@
           .form-group
             = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
           '
-    - if @neighborhood_sections.present?
+    - if @current_sections.present?
       .row.col-xs-12.control_hide_action
         label.control-label
-          | популярные
+          = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.offer_type}")
           '
-        - @neighborhood_sections.each do |section|
+          = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.category}")
+          '
+        - @current_sections.each do |section|
           .form-group
-            - if section.category
-              = link_to "#{t("activerecord.attributes.section.enum_title.#{section.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{section.category}")} #{section.short_title}", section.url, class: 'btn btn-default btn-xs'
-            - elsif section.property_type
-              = link_to "#{t("activerecord.attributes.section.enum_title.#{section.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{section.property_type}")} #{section.short_title}", section.url, class: 'btn btn-default btn-xs'
+            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
           '
     .row
       .col-md-10.col-sm-9.col-xs-12.additional_search_params_container_action
