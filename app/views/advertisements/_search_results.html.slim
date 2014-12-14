@@ -11,8 +11,13 @@
                 a.btn-link href=edit_advertisement_path(adv)
                   i.fa.fa-edit.fa-lg
                 '
+                = link_to top_advertisement_path(adv), class: 'btn-link', remote: true do
+                  i.fa.fa-level-up.fa-lg
+                '
                 = link_to advertisement_path(adv), class: 'btn-link', method: :delete, remote: true, data: { confirm: 'Удалить это объявление?' } do
                   i.fa.fa-trash.fa-lg
+
+
         a href="#{advertisement_path(adv)}-#{adv.url}"
           .col-lg-2.col-md-2.col-sm-3.col-xs-12
             - if adv.preview_url.present?

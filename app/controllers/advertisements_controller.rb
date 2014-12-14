@@ -1,7 +1,7 @@
 class AdvertisementsController < ApplicationController
   before_action :overload_params
-  before_action :find_adv, only: [:show, :edit, :update, :destroy]
-  before_action :authorize_resource!, only: [:edit, :update, :destroy]
+  before_action :find_adv, only: [:show, :edit, :update, :destroy, :top]
+  before_action :authorize_resource!, only: [:edit, :update, :destroy, :top]
 
 
   def index
@@ -381,6 +381,12 @@ class AdvertisementsController < ApplicationController
     @locations = @locations.map { |l|
       { id: l.id, location_type: l.location_type, title: l.title, has_children: (l.has_children?)  }
     }.group_by { |l| l[:location_type] }
+  end
+
+  def top
+    @adv.updated_at = DateTime.now
+    @adv.status_type = :active
+    @adv.save
   end
 
 

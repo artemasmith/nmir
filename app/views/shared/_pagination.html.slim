@@ -9,7 +9,7 @@
               | &laquo;
         - (1..pages).each do |page|
           li class="#{'disabled' if page == current_page}"
-            a href=(page == current_page ? '#': url_path.call(url_params.merge!(page != 1 ? {:page => page} : {})))
+            a href=(page == current_page ? '#' : url_path.call(url_params.merge!(page != 1 ? {:page => page} : {})))
               = page
         -if current_page < pages
           li

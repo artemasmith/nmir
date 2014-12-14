@@ -25,18 +25,20 @@ h1
           p.text-center.first_photo_comment_action
             = @photos.first.comment
           - @photos.each do |photo|
-            a.show_photo_action href="#" full_scr=photo.advertisement_photo comment=photo.comment
+            a.show_photo_action href="#" full_scr=photo.advertisement_photo(:thumb) comment=photo.comment
               = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail'
       p
         span.small.text-muted
           - if @adv.created_at >= @adv.updated_at
-            | Размещено
+            span.time-container-action
+              | Размещено
             '
             strong
               time.smart_time datetime=@adv.created_at time_zone=3
           - else
             '
-            | Обновлено
+            span.time-container-action
+              | Обновлено
             '
             strong
               time.smart_time datetime=@adv.updated_at time_zone=3
@@ -137,17 +139,21 @@ h1
           '
           | в избранное
         '
-        a.btn.btn-default.btn-xs
+        a.btn.btn-default.btn-xs href="http://twitter.com/share?url=#{@adv.url}&text=#{@adv.comment}&via=multilisting.su"
           '
-          i.fa.fa-twitter.fa-lg
+          i.fa.fa-twitter.fa-lg.tw
         '
-        a.btn.btn-default.btn-xs
+        a.btn.btn-default.btn-xs href="http://vk.com/share.php?url=#{@adv.url}&title=#{@adv.title}&description=#{@adv.comment}&image=#{@photos.first.present? ? @photos.first.advertisement_photo(:thumb) : ''}"
           '
-          i.fa.fa-vk.fa-lg
+          i.fa.fa-vk.fa-lg.vk
         '
-        a.btn.btn-default.btn-xs
+        a.btn.btn-default.btn-xs href="http://www.facebook.com/plugins/like.php?href=#{@adv.url}"
           '
-          i.fa.fa-facebook.fa-lg
+          i.fa.fa-thumbs-o-up.fa-lg.fb
+        '
+        a.btn.btn-default.btn-xs href="http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=#{@adv.url}&st.comments=#{@adv.comment}"
+          | ok
+
       .col-lg-5
         | ещё можно:
         '
@@ -162,7 +168,7 @@ h1
             '
             | редактировать
           '
-          a.btn.btn-default.btn-xs
+          a.btn.btn-default.btn-xs href=top_advertisement_path(@adv.id) data-remote=true
             i.fa.fa-level-up
             '
             | обновить

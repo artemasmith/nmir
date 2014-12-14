@@ -16,7 +16,7 @@ module AdvertisementsHelper
     url_params[:advertisement].delete_if{|e| url_params[:advertisement][e].blank?}
     url_params.delete :utf8
     url_params.delete :advertisement if url_params[:advertisement].empty?
-    render 'shared/pagination', :pages => @pages, :current_page => url_params[:page].to_i, :url_path => method(:root_path), :url_params => url_params
+    render 'shared/pagination', :pages => @pages, :current_page => (url_params[:page] || 1).to_i, :url_path => method(:root_path), :url_params => url_params
   end
 
   def generate_ac_source src

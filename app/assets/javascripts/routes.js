@@ -381,6 +381,10 @@
   edit_user_registration_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
+// entity => /entity(.:format)
+  entity_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
 // get_attributes_advertisements => /entity/get_attributes(.:format)
   get_attributes_advertisements_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_attributes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
@@ -492,6 +496,10 @@
 // streets_houses_api_advertisements => /api/entity/streets_houses(.:format)
   streets_houses_api_advertisements_path: function(options) {
   return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"streets_houses",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
+  },
+// top_advertisements => /entity/top(.:format)
+  top_advertisements_path: function(options) {
+  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"top",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
   },
 // user_password => /users/password(.:format)
   user_password_path: function(options) {

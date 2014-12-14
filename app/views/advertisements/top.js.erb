@@ -1,0 +1,9 @@
+<% if params[:from_full_card] == 'true' %>
+$('li[element_id="' + <%= @adv.id %> + '"] time.smart_time').attr('datetime', '<%= @adv.updated_at %>');
+<% else %>
+$('time.smart_time').attr('datetime', '<%= @adv.updated_at %>');
+$('.time-container-action').text('Обновлено');
+<% end %>
+$('.notifications').notify({
+    message: { text: 'Объявление обновлено' }
+}).show();

@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   get '/entity', to: redirect('/')
 
   resources :advertisements, :path => 'entity' do
+    member do
+      get 'top'
+    end
     collection do
       get 'get_attributes'
       get 'get_search_attributes'
