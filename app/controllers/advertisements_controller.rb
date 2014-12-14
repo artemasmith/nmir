@@ -221,8 +221,6 @@ class AdvertisementsController < ApplicationController
         hidden_location_ids << parent_location.location_id if parent_location.present?
         neighborhood_ids = Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
 
-
-
         query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
         hidden_location_sections = Section.not_empty.child_for.where(query.where_values.inject(:or))
         if @root_section.offer_type.present? && @root_section.category.present?
