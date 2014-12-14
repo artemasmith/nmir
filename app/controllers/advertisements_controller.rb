@@ -122,7 +122,7 @@ class AdvertisementsController < ApplicationController
     @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories, offer_types)
 
     [:price, :floor, :floor_cnt].each do |m|
-      if search_params["#{m}_from"].present?
+      if search_params["#{m}_from"].present? || search_params["#{m}_to"].present?
         from = search_params["#{m}_from"].to_i
         to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_i : 999999999
         from, to = to, from if to < from
@@ -132,7 +132,7 @@ class AdvertisementsController < ApplicationController
     end
 
     [:space, :outdoors_space].each do |m|
-      if search_params["#{m}_from"].present?
+      if search_params["#{m}_from"].present? || search_params["#{m}_to"].present?
         from = search_params["#{m}_from"].to_f
         to = search_params["#{m}_to"].present? ? search_params["#{m}_to"].to_f : 999999999.0
         from, to = to, from if to < from

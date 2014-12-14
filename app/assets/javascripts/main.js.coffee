@@ -1,7 +1,7 @@
 $().ready ->
   $('.control_hide_action').addClass('hidden')
   $('.control_show_action').removeClass('hidden')
-  $('.control_remove_action').removeClass('hidden')
+  $('.control_remove_action').remove()
 
 @set_property = (hid, multi, oval) ->
   val = ''

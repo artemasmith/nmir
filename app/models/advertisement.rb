@@ -200,10 +200,20 @@ class Advertisement < ActiveRecord::Base
     super(value)
   end
 
-  def room_from=(value)
-    self.room_to = value if self.room_to.blank?
-    super(value)
+  [:price, :floor, :floor_cnt, :space, :outdoors_space, :room].each do |m|
+    define_method("#{m}_from=") do |value|
+      write_attribute("#{m}_to", value) if read_attribute("#{m}_to").blank?
+      super(value)
+    end
+
+    define_method("#{m}_to=") do |value|
+      write_attribute("#{m}_from", value) if read_attribute("#{m}_from").blank?
+      super(value)
+    end
   end
+
+
+
 
   private
 
