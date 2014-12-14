@@ -139,20 +139,21 @@ h1
           '
           | в избранное
         '
-        a.btn.btn-default.btn-xs href="http://twitter.com/share?url=#{@adv.url}&text=#{@adv.comment}&via=multilisting.su"
+        noindex
+          a.btn.btn-default.btn-xs href="http://twitter.com/share?url=#{@adv.url}&text=#{@adv.comment}&via=multilisting.su"
+            '
+            i.fa.fa-twitter.fa-lg.tw
           '
-          i.fa.fa-twitter.fa-lg.tw
-        '
-        a.btn.btn-default.btn-xs href="http://vk.com/share.php?url=#{@adv.url}&title=#{@adv.title}&description=#{@adv.comment}&image=#{@photos.first.present? ? @photos.first.advertisement_photo(:thumb) : ''}"
+          a.btn.btn-default.btn-xs href="http://vk.com/share.php?url=#{@adv.url}&title=#{@adv.title}&description=#{@adv.comment}&image=#{@photos.first.present? ? @photos.first.advertisement_photo(:thumb) : ''}"
+            '
+            i.fa.fa-vk.fa-lg.vk
           '
-          i.fa.fa-vk.fa-lg.vk
-        '
-        a.btn.btn-default.btn-xs href="http://www.facebook.com/plugins/like.php?href=#{@adv.url}"
+          a.btn.btn-default.btn-xs href="http://www.facebook.com/plugins/like.php?href=#{@adv.url}"
+            '
+            i.fa.fa-thumbs-o-up.fa-lg.fb
           '
-          i.fa.fa-thumbs-o-up.fa-lg.fb
-        '
-        a.btn.btn-default.btn-xs href="http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=#{@adv.url}&st.comments=#{@adv.comment}"
-          | ok
+          a.btn.btn-default.btn-xs href="http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=#{@adv.url}&st.comments=#{@adv.comment}"
+            | ok
 
       .col-lg-5
         | ещё можно:
