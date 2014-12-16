@@ -161,8 +161,15 @@ $().ready ->
 
 @getChildren = ->
   $this = $(this)
+  params = {'parent_id': $this.attr('lid')}
+  if $('.click_additional_search_params_action').length > 0
+    offer_types = $.grep($('[name="advertisement[offer_type][]"]:checked').map( -> $(this).val() ).get(), (n) -> n).join(',')
+    categories = $.grep($('[name="advertisement[category][]"]:checked').map( -> $(this).val() ).get(), (n) -> n).join(',')
+    params['offer_types'] = offer_types
+    params['categories'] = categories
+    params['editable'] = false
   $.getScript(
-    Routes.get_locations_advertisements_path(parent_id: $this.attr('lid'))
+    Routes.get_locations_advertisements_path(params)
   )
   return
 

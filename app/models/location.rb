@@ -24,6 +24,8 @@ class Location < ActiveRecord::Base
 
 
 
+
+
   # neighbors
   # has_and_belongs_to_many :neighbors,
   #                         class_name: 'Location',

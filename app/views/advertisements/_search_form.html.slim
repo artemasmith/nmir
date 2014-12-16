@@ -96,7 +96,10 @@
         label.control-label
           = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.offer_type}")
           '
-          = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.category}")
+          - if @root_section.category.present?
+            = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.category}")
+          - else
+            = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.property_type}")
           '
         - @current_sections.each do |section|
           .form-group

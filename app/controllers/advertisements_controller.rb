@@ -193,7 +193,7 @@ class AdvertisementsController < ApplicationController
 
     if @root_section.present?
       if @root_section.location_id.present?
-        @hidden_sections = Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 1.seconds) do
+        @hidden_sections = Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 15.minutes) do
           hidden_sections = Section.not_empty
           hidden_sections = hidden_sections.where.not(id: @root_section.id)
           hidden_sections = hidden_sections.where(location_id: @root_section.location_id)
@@ -207,61 +207,59 @@ class AdvertisementsController < ApplicationController
               hidden_sections = hidden_sections.where(category: AdvEnums::COMMERCE_CATEGORIES)
             end
           end
+          hidden_sections = hidden_sections.order('advertisements_count DESC')
           hidden_sections.to_a
         end
       end
 
 
 
-      @hidden_location_sections = Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 1.seconds) do
+      @hidden_location_sections = Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 15.minutes) do
 
         parent_location = @locations.find{|location| location.id == @root_section.location_id}
         hidden_location_ids = []
-        hidden_location_ids << @root_section.location_id
-        hidden_location_ids << parent_location.location_id if parent_location.present?
-        neighborhood_ids = Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
+        neighborhood_ids = []
+        if @root_section.offer_type.present?
+          neighborhood_ids << @root_section.location_id
+          neighborhood_ids << parent_location.location_id if parent_location.present?
+        else
+          hidden_location_ids << @root_section.location_id
+          hidden_location_ids << parent_location.location_id if parent_location.present?
+        end
+        neighborhood_ids += Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
 
         query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
         hidden_location_sections = Section.not_empty.child_for.where(query.where_values.inject(:or))
-        if @root_section.offer_type.present? && @root_section.category.present?
-          hidden_location_sections = hidden_location_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
-          hidden_location_sections = hidden_location_sections.where(category: Section.categories[@root_section.category])
-        elsif @root_section.offer_type.present? && @root_section.property_type.present?
-          hidden_location_sections = hidden_location_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
-          hidden_location_sections = hidden_location_sections.where(property_type: Section.property_types[@root_section.property_type])
-        else
-          hidden_location_sections = hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
-        end
+        hidden_location_sections = hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
+        hidden_location_sections = hidden_location_sections.order('advertisements_count DESC')
         hidden_location_sections.to_a
       end
 
 
-      if @root_section.offer_type.present? && @root_section.category.present? && @root_section.location_id.present?
-        @current_sections = Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 1.seconds) do
+      if @root_section.offer_type.present? && (@root_section.category.present? || @root_section.property_type.present?) && @root_section.location_id.present?
+        @current_sections = Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
           parent_location = @locations.find{|location| location.id == @root_section.location_id}
+          neighborhood_ids = []
           hidden_location_ids = []
-          hidden_location_ids << @root_section.location_id
-          hidden_location_ids << parent_location.location_id if parent_location.present?
-          neighborhood_ids = Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
-
+          neighborhood_ids << @root_section.location_id
+          neighborhood_ids << parent_location.location_id if parent_location.present?
+          neighborhood_ids += Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
+          hidden_location_ids << parent_location.id
 
           query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
-
           current_sections = Section.not_empty.not_empty.child_for.where(query.where_values.inject(:or))
           current_sections = current_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
           current_sections = current_sections.where(category: Section.categories[@root_section.category])
-
+          current_sections = current_sections.order('advertisements_count DESC')
           current_sections.to_a
         end
       end
-
-
-
-
-
     end
 
-    raise ActionController::RoutingError.new('Not Found') if (params[:page].to_i > 1) && (@search_results.blank?)
+    if ((params[:page].to_i > 1) && (@search_results.blank?)) ||
+      (@section.present? && @section.url != '/' && (@search_results.blank?))
+      raise ActionController::RoutingError.new('Not Found')
+    end
 
   end
 
@@ -368,19 +366,40 @@ class AdvertisementsController < ApplicationController
 
 
   def get_locations
-    if params[:parent_id].to_i != 0
-      @location = Location.find(params[:parent_id])
-      if @location.city?
-        @locations = @location.children_locations(:non_admin_area)
-      else
-        @locations = @location.children_locations
+
+    @location = Location.find(params[:parent_id]) if params[:parent_id].to_i != 0
+
+    @locations = Rails.cache.fetch("get_locations:#{params[:editable]}:#{params[:offer_types]}:#{params[:categories]}:#{params[:parent_id]}", expires_in: 15.minutes) do
+      if params[:editable] == 'false'
+        offer_types = params[:offer_types].to_s.split(',').map{|e| e.to_i}.uniq
+        categories = params[:categories].to_s.split(',').map{|e| e.to_i}.uniq
       end
-    else
-      @locations = Location.where(location_type: 0)
+
+      if @location.present?
+        if @location.city?
+          locations = @location.children_locations(:non_admin_area)
+        else
+          locations = @location.children_locations
+        end
+      else
+        locations = Location.where(location_type: 0)
+      end
+
+      if params[:editable] == 'false'
+        sections =  Section.where(location_id: locations.map(&:id))
+        sections = Section.where(offer_type: offer_types) if offer_types.present?
+        sections = sections.where(category: categories) if categories.present?
+        sections = sections.where('advertisements_count > 0').to_a
+      end
+
+      locations = locations.map do |l|
+        { id: l.id, location_type: l.location_type, title: l.title, has_children: (l.has_children?)  }
+      end
+
+      locations = locations.delete_if{|l| sections.find{|s| s.location_id == l[:id]}.blank?} unless sections.nil?
+
+      locations.group_by{|l| l[:location_type]}
     end
-    @locations = @locations.map { |l|
-      { id: l.id, location_type: l.location_type, title: l.title, has_children: (l.has_children?)  }
-    }.group_by { |l| l[:location_type] }
   end
 
   def top

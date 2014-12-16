@@ -18,6 +18,12 @@
       .empty-search-container-action.hidden
         | Ничего не найдено
       .btn-group.search-container-action data-toggle="buttons"
+- else
+  legend
+    | Раздел пуст
+  .row.top-buffer
+    .col-md-12
+      | Ничего не найдено
 
 
 - if @location.present? && @location.street? && can?(:manage, Location)
