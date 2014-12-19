@@ -79,9 +79,10 @@
         '
         .form-group.location-group.btn-group multi='true' editable='false' state="#{@location_state}"
           .btn.btn-default.GetChildren.dropdown-toggle lid="#{0}" data-toggle="dropdown"
-            | местоположение
-            '
-            i.caret
+            b
+              | местоположение
+              '
+              i.caret
     - if @hidden_location_sections.present?
       .row.col-xs-12.control_hide_action
         label.control-label

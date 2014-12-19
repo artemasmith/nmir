@@ -38,6 +38,7 @@ ru:
           cafe: кафе
           land: земли
           free_appointment: общего назначения
+          hotel: гостинки
 
           #property_type
           residental: жилой недвижимости
@@ -75,6 +76,7 @@ ru:
           cafe: кафе
           land: землю
           free_appointment: общего назначения
+          hotel: гостинку
 
           #property_type
           residental: жилая

@@ -103,7 +103,7 @@ module AdvGenerator
     floor_cnt_to = adv.floor_cnt_to
 
     if floor_from.present? && floor_cnt_from.present? && floor_to.blank? && floor_cnt_to.blank?
-      "#{floor_from}/#{floor_cnt_from}"
+      "этаж #{floor_from}/#{floor_cnt_from}"
     else
       [
           AdvGenerator.enum_text(adv, :floor, ' этаж'),

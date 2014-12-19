@@ -89,6 +89,7 @@ class Advertisement < ActiveRecord::Base
   include AdvRailsAdmin
 
   after_create :generate_sections
+  after_update :generate_sections
   
   def grouped_allowed_attributes
     return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)

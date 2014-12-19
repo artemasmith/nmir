@@ -11,10 +11,13 @@ sale:
   - cafe
   - land
   - free_appointment
+  - hotel
 
 for_rent:
+  - newbuild
   - flat
   - house
+  - ijs
   - room
   - garage
   - office
@@ -23,6 +26,7 @@ for_rent:
   - cafe
   - land
   - free_appointment
+  - hotel
 
 day:
   - flat
@@ -42,10 +46,13 @@ buy:
   - cafe
   - land
   - free_appointment
+  - hotel
 
 rent:
+  - newbuild
   - flat
   - house
+  - ijs
   - room
   - garage
   - office
@@ -54,6 +61,7 @@ rent:
   - cafe
   - land
   - free_appointment
+  - hotel
 
 residental:
   - sale

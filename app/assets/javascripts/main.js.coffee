@@ -85,6 +85,9 @@ $().ready ->
         start = map.geoObjects.get(0)
         if start
           start.geometry.setCoordinates(center)
+          $('.latitude-value').val(center[0].toPrecision(6))
+          $('.longitude-value').val(center[1].toPrecision(6))
+          $('.zoom-value').val(map.getZoom())
         else
           start = create_start(map, center[0], center[1], true)
         return
@@ -144,9 +147,11 @@ $().ready ->
 
 
 @check_phones = ->
+
   name = $('input[name="advertisement[user_attributes][name]"]').val()
   phones = $.grep($('input[name*="[original]"]').map( -> $.trim($(this).val()) ).get(), (n) -> n).join(',')
 
+  console.log phones
   if phones.length > 3
     $.ajax(
       type: 'GET'
@@ -328,7 +333,8 @@ $('.AdvPropertySearch').livequery ->
   $(this).change set_adv_property
 
 $('.checkPhone').livequery ->
-  $(this).on 'keyup paste', check_phones
+  $(this).on 'keyup paste', ->
+    check_phones()
 
 $('.DuplicatePhones').livequery ->
   $(this).click ->
@@ -400,7 +406,7 @@ $('form:not(".withoutBootstrapValidator")').livequery ->
 
 
   })
-$('#reg-phones input[type=text]').livequery ->
+$('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
   $this = $(this)
   $this.closest('form').bootstrapValidator('addField', $this, {
     message: "Такой телефон не допустим"
@@ -617,6 +623,7 @@ $('.create-street-action').livequery ->
         sp['parent_id'] = 0
         click_select_location(sp)
         changeSearchButtonStatus()
+        geoCoding()
         return
 
 
