@@ -4,9 +4,9 @@
       li.media.clearfix.adv_item class="#{'adv_item_even' if index % 2 == 0}" element_id=adv.id
         .col-lg-1.col-md-1.col-sm-12.col-xs-12.text-muted.small
           .row
-            span.col-md-12.col-sm-1
+            span.col-md-12.col-md-2.col-sm-3
               time.smart_time datetime=((adv.created_at >= adv.updated_at) ? adv.created_at : adv.updated_at) time_zone=3
-            span.col-md-12.col-sm-1
+            span.col-md-12.col-sm-12
               -if can? :manage, adv
                 a.btn-link href=edit_advertisement_path(adv)
                   i.fa.fa-edit.fa-lg
