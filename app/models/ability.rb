@@ -10,11 +10,13 @@ class Ability
       can :create_from_admin, Advertisement
     elsif user.owner?
       can :read, :all
-      can :manage, Advertisement, user_id: user.id
+      can [:update, :destroy, :read], Advertisement, user_id: user.id
+      can :create, Advertisement
       can :search_not_for_agents, Advertisement
     elsif user.agent?
       can :read, :all
-      can :manage, Advertisement, user_id: user.id
+      can [:update, :destroy, :read], Advertisement, user_id: user.id
+      can :create, Advertisement
     else
       can :read, :all
       can :get_location, Advertisement
