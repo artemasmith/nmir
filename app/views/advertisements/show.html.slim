@@ -141,22 +141,22 @@ h1
           | в избранное
         '
         noindex
-          a.btn.btn-default.btn-xs href="http://twitter.com/share?url=#{advertisement_url(@adv)}-#{@adv.url}&text=#{@adv.comment}&via=multilisting.su"
+          a.btn.btn-default.btn-xs rel="nofollow" href="http://twitter.com/share?url=#{advertisement_url(@adv)}-#{@adv.url}&text=#{@adv.comment}&via=multilisting.su"
             '
             i.fa.fa-twitter.fa-lg.tw
           '
-          a.btn.btn-default.btn-xs href="http://vk.com/share.php?url=#{advertisement_url(@adv)}-#{@adv.url}&title=#{@adv.title}&description=#{@adv.comment}&image=#{@photos.first.present? ? @photos.first.advertisement_photo(:thumb) : ''}"
+          a.btn.btn-default.btn-xs rel="nofollow" href="http://vk.com/share.php?url=#{advertisement_url(@adv)}-#{@adv.url}&title=#{@adv.title}&description=#{@adv.comment}&image=#{@photos.first.present? ? @photos.first.advertisement_photo(:thumb) : ''}"
             '
             i.fa.fa-vk.fa-lg.vk
           '
-          a.btn.btn-default.btn-xs href="http://www.facebook.com/plugins/like.php?href=#{advertisement_url(@adv)}-#{@adv.url}"
+          a.btn.btn-default.btn-xs rel="nofollow" href="http://www.facebook.com/plugins/like.php?href=#{advertisement_url(@adv)}-#{@adv.url}"
             '
             i.fa.fa-facebook.fa-lg
           '
-          a.btn.btn-default.btn-xs href="http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=#{advertisement_url(@adv)}-#{@adv.url}&st.comments=#{@adv.comment}"
+          a.btn.btn-default.btn-xs rel="nofollow" href="http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=#{advertisement_url(@adv)}-#{@adv.url}&st.comments=#{@adv.comment}"
             | ok
           '
-          a.btn.btn-default.btn-xs href="https://plus.google.com/share?url=#{advertisement_url(@adv)}-#{@adv.url}"
+          a.btn.btn-default.btn-xs rel="nofollow" href="https://plus.google.com/share?url=#{advertisement_url(@adv)}-#{@adv.url}"
             '
             i.fa.fa-lg.fa-google-plus
 
