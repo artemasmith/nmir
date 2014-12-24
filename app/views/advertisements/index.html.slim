@@ -45,11 +45,12 @@
 
   - if params[:advertisement].empty?
     - if @root_section.present?
-      - if @root_section.h2.present?
-        h2
-          == bb_tags(@root_section.h2, @bbtags)
-      - if @root_section.p2.present?
-        p
-          == bb_tags(@root_section.p2, @bbtags)
+      - if params[:page].blank?
+        - if @root_section.h2.present?
+          h2
+            == bb_tags(@root_section.h2, @bbtags)
+        - if @root_section.p2.present?
+          p
+            == bb_tags(@root_section.p2, @bbtags)
   = advertisements_pagination
 

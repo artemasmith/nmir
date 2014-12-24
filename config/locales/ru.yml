@@ -296,7 +296,7 @@ ru:
       room_from: ''
       landmark: ''
       space_from: 'м.кв.'
-      outdoors_space_from: 'г.кв.'
+      outdoors_space_from: 'сот.'
       price_from: ''
       not_for_agents: ''
       mortgage: ''

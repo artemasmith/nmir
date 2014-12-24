@@ -5,11 +5,28 @@ class AdvertisementsController < ApplicationController
 
 
   def index
+    params.delete(:utf8)
     params.delete(:page) and redirect_to(root_path(params)) and return if params[:page] == '1'
+    if params[:advertisement].present?
+      deleted = false
+      params[:advertisement].each_key do |e|
+        if params[:advertisement][e].blank?
+          params[:advertisement].delete(e)
+          deleted = true
+        end
+      end
+      if deleted
+        params.delete(:advertisement) if params[:advertisement].blank?
+        redirect_to(root_path(params))
+        return
+      end
+    end
 
-    params[:advertisement] = {} if params[:advertisement].blank?
 
     #clear
+    params[:advertisement] = {} if params[:advertisement].blank?
+
+
 
     if params[:url].blank?
 
@@ -55,8 +72,6 @@ class AdvertisementsController < ApplicationController
       end
 
       if @section.present? && @section.url != '/'
-        params[:advertisement].delete_if{|e| params[:advertisement][e].blank?}
-        params.delete :utf8
         [:action, :controller].each { |m| params.delete(m) }
         [:offer_type, :category, :location_ids, :property_type].each { |m| params[:advertisement].delete(m) }
         params.delete :advertisement if params[:advertisement].empty?
@@ -214,19 +229,18 @@ class AdvertisementsController < ApplicationController
 
 
 
-      @hidden_location_sections = Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 15.minutes) do
+      @hidden_location_sections = begin#Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 15.minutes) do
 
         parent_location = @locations.find{|location| location.id == @root_section.location_id}
         hidden_location_ids = []
         neighborhood_ids = []
         if @root_section.offer_type.present?
           neighborhood_ids << @root_section.location_id
-          neighborhood_ids << parent_location.location_id if parent_location.present?
-
+          neighborhood_ids += @locations.map(&:id)
         else
           hidden_location_ids << @root_section.location_id
-          neighborhood_ids << parent_location.location_id if parent_location.present?
-          #hidden_location_ids << parent_location.location_id if parent_location.present?
+          neighborhood_ids += @locations.map(&:id)
+          neighborhood_ids.delete(@root_section.location_id)
         end
         neighborhood_ids += Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
 
@@ -240,14 +254,15 @@ class AdvertisementsController < ApplicationController
 
 
       if @root_section.offer_type.present? && (@root_section.category.present? || @root_section.property_type.present?) && @root_section.location_id.present?
-        @current_sections = Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
+        @current_sections = begin#Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
           parent_location = @locations.find{|location| location.id == @root_section.location_id}
           neighborhood_ids = []
           hidden_location_ids = []
-          neighborhood_ids << @root_section.location_id
-          neighborhood_ids << parent_location.location_id if parent_location.present?
-          neighborhood_ids += Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
           hidden_location_ids << parent_location.id
+
+          neighborhood_ids += @locations.map(&:id)
+          neighborhood_ids += Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
+
 
           query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
           current_sections = Section.not_empty.where.not(id: @root_section.id).not_empty.child_for.where(query.where_values.inject(:or))
@@ -261,7 +276,7 @@ class AdvertisementsController < ApplicationController
     end
 
     if ((params[:page].to_i > 1) && (@search_results.blank?)) ||
-      (@section.present? && @section.url != '/' && (@search_results.blank?))
+      (@section.present? && @section.url != '/' && (@search_results.blank?) && params[:advertisement].blank?)
       raise ActionController::RoutingError.new('Not Found')
     end
 

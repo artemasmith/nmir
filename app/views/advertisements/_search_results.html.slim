@@ -11,7 +11,7 @@
                 a.btn-link href=edit_advertisement_path(adv)
                   i.fa.fa-edit.fa-lg
                 '
-                = link_to top_advertisement_path(adv), class: 'btn-link', remote: true do
+                = link_to top_advertisement_path(adv, from_full_card: true), class: 'btn-link', remote: true do
                   i.fa.fa-level-up.fa-lg
                 '
                 = link_to advertisement_path(adv), class: 'btn-link', method: :delete, remote: true, data: { confirm: 'Удалить это объявление?' } do

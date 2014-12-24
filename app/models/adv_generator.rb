@@ -52,13 +52,13 @@ module AdvGenerator
           AdvGenerator.enum_text(self, :room, 'к'), #без пробела
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, ' м²'),
-          AdvGenerator.enum_text(self, :outdoors_space, 'сот'),
+          AdvGenerator.enum_text(self, :outdoors_space, ' сот', 'на участке '),
           AdvGenerator.floor_and_flor_cnt_text(self),
       ].delete_if{|e| e.to_s.strip == ''}.join(' ')
 
       self.title = [
           self.anchor,
-          AdvGenerator.enum_text(self, :price, ' руб'),
+          AdvGenerator.enum_text(self, :price, ' руб', nil, true),
           locations_title
       ].delete_if{|e| e.to_s.strip == ''}.join(' ')
 
@@ -80,7 +80,7 @@ module AdvGenerator
           AdvGenerator.enum_text(self, :room, 'к'),
           AdvGenerator.enum_title(self.category),
           AdvGenerator.enum_text(self, :space, 'м. кв.'),
-          AdvGenerator.enum_text(self, :outdoors_space, 'сот'),
+          AdvGenerator.enum_text(self, :outdoors_space, ' сот', 'на участке '),
           self.locations_title,
           AdvGenerator.enum_text(self, :price, 'руб')
       ].delete_if{|e| e.to_s.strip == ''}.join(', ')
@@ -106,17 +106,21 @@ module AdvGenerator
       "этаж #{floor_from}/#{floor_cnt_from}"
     else
       [
-          AdvGenerator.enum_text(adv, :floor, ' этаж'),
-          AdvGenerator.enum_text(adv, :floor_cnt, ' этажей')
+          AdvGenerator.enum_text(adv, :floor, '', 'этаж '),
+          AdvGenerator.enum_text(adv, :floor_cnt, '', 'этажей ')
       ].delete_if{|e| e.to_s.strip == ''}.join(' ')
     end
   end
 
-  def self.enum_text(adv, attr, units, prefix = nil)
+  def self.enum_text(adv, attr, units, prefix = nil, short = false)
     value_from = adv.send("#{attr}_from".to_sym)
     value_to = adv.send("#{attr}_to".to_sym)
     if value_from.present? && value_to.present? && value_from != value_to
-      "#{prefix}от #{value_from} до #{value_to}#{units}"
+      if short
+        "#{prefix}от #{value_from}#{units}"
+      else
+        "#{prefix}от #{value_from} до #{value_to}#{units}"
+      end
     elsif value_from.present?
       "#{prefix}#{value_from}#{units}"
     else
