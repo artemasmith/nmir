@@ -309,9 +309,13 @@ $('.location-group[state]').livequery ->
 
   processElement = (element, context) ->
     new_context = renderElement(element, context)
+    has_visible_children = false
     if element.has_children
       $.each childElements(element), (index, value) ->
+        has_visible_children = true
         processElement(value, new_context)
+    unless has_visible_children
+      new_context.find('.btn').addClass('active')
     console.log context
     sort_button_list(context)
 

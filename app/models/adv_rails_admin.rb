@@ -6,7 +6,7 @@ module AdvRailsAdmin
   included do
 
     rails_admin do
-      edit do
+      # edit do
         field :adv_type, :enum do
           enum do
             AdvEnums::ADV_TYPES
@@ -35,7 +35,7 @@ module AdvRailsAdmin
         field :floor_to, :integer
         field :floor_cnt_from, :integer
         include_all_fields
-      end
+      # end
     end
   end
 end
