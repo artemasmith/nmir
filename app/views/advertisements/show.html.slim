@@ -4,6 +4,7 @@
   meta name="description" content=@adv.description
   meta name="keywords" content=@adv.keywords
   link rel="canonical" href="#{advertisement_path(@adv)}-#{@adv.url}"
+
 = content_for :header
   ol.breadcrumb
     - @sorted_locations.each do |location|
@@ -150,10 +151,14 @@ h1
           '
           a.btn.btn-default.btn-xs href="http://www.facebook.com/plugins/like.php?href=#{advertisement_url(@adv)}-#{@adv.url}"
             '
-            i.fa.fa-thumbs-o-up.fa-lg.fb
+            i.fa.fa-facebook.fa-lg
           '
           a.btn.btn-default.btn-xs href="http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=#{advertisement_url(@adv)}-#{@adv.url}&st.comments=#{@adv.comment}"
             | ok
+          '
+          a.btn.btn-default.btn-xs href="https://plus.google.com/share?url=#{advertisement_url(@adv)}-#{@adv.url}"
+            '
+            i.fa.fa-lg.fa-google-plus
 
       .col-lg-5
         | ещё можно:
