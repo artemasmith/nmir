@@ -315,6 +315,7 @@ ru:
       owner: 'Частные'
       comment: 'Комментарий'
       private_comment: 'Скрытый комментарий'
+      expired: 'Устаревшие'
     offer:
       buy: 'куплю'
       sale: 'продажа'

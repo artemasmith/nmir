@@ -187,6 +187,22 @@ class AdvertisementsController < ApplicationController
       with[:user_role] = AdvEnums::USER_ROLES.index(:owner) if search_params[m].present? && search_params[m] == '1'
     end
 
+
+
+    [:mortgage].each do |m|
+      with[m] = search_params[m] == '1' if search_params[m].present?
+    end
+
+    [:expired].each do |m|
+      if search_params[m].present? && search_params[m] == '1'
+        with['status_type'] = AdvEnums::STATUSES.index(:expired)
+      else
+        with['status_type'] = AdvEnums::STATUSES.index(:active)
+      end
+    end
+
+
+
     if search_params[:date_interval].present?
       date_from = (Date.parse(search_params[:date_interval].split('-').first.strip) - 1.day) rescue (DateTime.now - 1.day).to_date
       date_to = (Date.parse(search_params[:date_interval].split('-').last.strip) + 1.day) rescue (DateTime.now + 1.day).to_date
