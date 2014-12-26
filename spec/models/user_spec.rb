@@ -28,6 +28,26 @@ RSpec.describe User, :type => :model do
     it { expect(user).to respond_to(:role) }
     it { expect(user).to respond_to(:from_admin) }
   end
+
+  describe 'permissions check' do
+    it 'owner should not create_from_admin' do
+      user = FactoryGirl.create(:user, role: :owner)
+      ab = Ability.new(user)
+      ab.can?(:create_from_admin, Advertisement).should eq false
+    end
+
+    it 'agent cant create_from_Admin' do
+      user = FactoryGirl.create(:user, role: :agent)
+      ab = Ability.new(user)
+      ab.can?(:create_from_admin, Advertisement).should eq false
+    end
+
+    it 'owner can create adv' do
+      user = FactoryGirl.create(:user, role: :owner)
+      ab = Ability.new(user)
+      ab.can?(:create, Advertisement).should eq true
+    end
+  end
 end
 
 def new_user
