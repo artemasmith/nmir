@@ -68,6 +68,7 @@ GEM
     coffee-script-source (1.8.0)
     colorize (0.7.3)
     crass (0.2.1)
+    database_cleaner (1.2.0)
     dbf (2.0.7)
       fastercsv (~> 1.5.4)
     devise (3.3.0)
@@ -322,6 +323,7 @@ DEPENDENCIES
   capybara
   carrierwave
   coffee-rails (~> 4.0.0)
+  database_cleaner
   dbf
   devise
   factory_girl_rails (~> 4.0)
