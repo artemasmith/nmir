@@ -194,14 +194,12 @@ class AdvertisementsController < ApplicationController
     end
 
     [:expired].each do |m|
-      if search_params[m].present? && search_params[m] == '1'
+      if search_params[m].present? && search_params[m] == '1' && can?(:read_expired, Advertisement)
         with['status_type'] = AdvEnums::STATUSES.index(:expired)
       else
         with['status_type'] = AdvEnums::STATUSES.index(:active)
       end
     end
-
-
 
     if search_params[:date_interval].present?
       date_from = (Date.parse(search_params[:date_interval].split('-').first.strip) - 1.day) rescue (DateTime.now - 1.day).to_date
@@ -245,7 +243,7 @@ class AdvertisementsController < ApplicationController
 
 
 
-      @hidden_location_sections = begin#Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 15.minutes) do
+      @hidden_location_sections = Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 15.minutes) do
 
         parent_location = @locations.find{|location| location.id == @root_section.location_id}
         hidden_location_ids = []
@@ -270,7 +268,7 @@ class AdvertisementsController < ApplicationController
 
 
       if @root_section.offer_type.present? && (@root_section.category.present? || @root_section.property_type.present?) && @root_section.location_id.present?
-        @current_sections = begin#Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
+        @current_sections = Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
           parent_location = @locations.find{|location| location.id == @root_section.location_id}
           neighborhood_ids = []
           hidden_location_ids = []
