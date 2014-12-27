@@ -120,6 +120,15 @@
             i.fa.fa-calendar
           '
           input.text-input.range_date_picker_action name="advertisement[date_interval]" placeholder='▼за всё время' type="text" value=params[:advertisement][:date_interval].presence
+        - if can? :read_expired, Advertisement
+          '
+          .form-group
+            .btn-group data-toggle="buttons"
+              label.btn.btn-xs.btn-default class="#{('active' if params[:advertisement][:expired]=='1')}"
+                i.fa.fa-pause
+                '
+                input type="checkbox" name="advertisement[expired]" value="1" checked=(params[:advertisement][:expired]=='1')
+                = t("advertisement.attributes.expired")
 
       .col-md-2.col-sm-3.col-xs-12
         button.btn.btn-primary.btn-lg.btn-block type="submit"

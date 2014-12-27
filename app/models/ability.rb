@@ -8,6 +8,7 @@ class Ability
       can :access, :rails_admin
       can :dashboard
       can :create_from_admin, Advertisement
+      can :read_expired, Advertisement
     elsif user.owner?
       can :read, :all
       can [:update, :destroy, :read], Advertisement, user_id: user.id
