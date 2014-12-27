@@ -204,10 +204,10 @@ drop_down_button = (multi, editable, lid, value)->
 easy_button = (multi, editable, lid, value)->
   "<div class ='form-group form-group-location'>
      <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-       <div class='btn btn-default active btn-xs'  lid='#{lid}'> #{value}
+       <div class='btn btn-default  btn-xs'  lid='#{lid}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
-       <div class='btn btn-default active btn-xs DelChildren'>
+       <div class='btn btn-default btn-xs DelChildren'>
          <div class='fa fa-times'>
          </div>
        </div>
@@ -249,15 +249,15 @@ sort_button_list = (context)->
       sp['group'].parent().find('.GetChildren').popover "destroy"
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
 
+@mark_last_selection = (lid) ->
+  $('.GetChildren').removeClass('active')
+  $('.btn.btn-default[lid="' + lid + '"]').addClass( ' active')
 
-
-
-
-@make_active_last_button = (sp)->
-  $('.button.loc').removeClass('active')
-  sp['group'].find('.button.loc[lid='+sp['lid']+']').addClass( ' active')
-
-
+$('.GetChildren').livequery ->
+  $(this).on 'hide.bs.popover', ->
+    lid = $(".last-selected-location").attr('lid')
+    mark_last_selection(lid)
+    console.log('popove close' + lid)
 
 $('.SelectLocation').livequery ->
   $(this).click (event)->
@@ -273,9 +273,7 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
-
-
-
+    $(".last-selected-location").attr('lid',sp['lid'])
 
 
 
@@ -545,6 +543,7 @@ $('.autocomplete-search-location').livequery ->
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
+      $(".last-selected-location").attr('lid',sp['lid'])
       $this.val('')
       return false
     })
