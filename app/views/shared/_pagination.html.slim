@@ -5,15 +5,15 @@
         - url_params.delete(:page)
         - if current_page > 1
           li
-            a href=url_path.call(url_params.merge!(current_page - 1 != 1 ? {:page => current_page - 1} : {}))
+            a href=url_path.call(url_params.merge(current_page - 1 != 1 ? {:page => current_page - 1} : {}))
               | &laquo;
         - (1..pages).each do |page|
           li class="#{'disabled' if page == current_page}"
-            -if page == current_page
+            - if page == current_page
               span
                 = page
             - else
-              a href=(url_path.call(url_params.merge!(page != 1 ? {:page => page} : {})))
+              a href=(url_path.call(url_params.merge(page != 1 ? {:page => page} : {})))
                 = page
         -if current_page < pages
           li

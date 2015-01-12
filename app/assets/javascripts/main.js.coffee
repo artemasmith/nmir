@@ -28,16 +28,15 @@ $().ready ->
 
   $('.AdvProperty[hid="' + hid + '"][value!="' + value + '"]').removeClass('active')
   $('.AdvProperty[hid="' + hid + '"][value!="' + value + '"] input').prop('checked', false)
-
-
   set_property(hid, multi, value)
-  adv_type = $('.adv-type-value').val()
-  property = $('.property-type-value').val()
-  if adv_type && property
-    category = $('input:checked[name*="category"]').val()
+
+
+  offer_type = $('input:checked[name*="offer_type"]').val()
+  category = $('input:checked[name*="category"]').val()
+  if offer_type && category
     pdata =
       category: category
-      adv_type: adv_type
+      offer_type: offer_type
     $.ajax
       type: 'GET',
       url: Routes.get_attributes_advertisements_path(),
@@ -77,7 +76,7 @@ $().ready ->
     ), (n) ->
     (n isnt "Выбрать") and (n isnt "Место") and n
   ).join " "
-  console.log position
+  #console.log position
   if position and window.map and window.ymaps
     ymaps.geocode(position).then (res) ->
       first = res.geoObjects.get(0)
@@ -154,7 +153,7 @@ $().ready ->
   name = $('input[name="advertisement[user_attributes][name]"]').val()
   phones = $.grep($('input[name*="[original]"]').map( -> $.trim($(this).val()) ).get(), (n) -> n).join(',')
 
-  console.log phones
+  #console.log phones
   if phones.length > 3
     $.ajax(
       type: 'GET'
@@ -193,7 +192,7 @@ drop_down_button = (multi, editable, lid, value, name)->
 
   "<div class ='form-group form-group-location'>
     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-      <div class='btn btn-default GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
+      <div class='btn btn-default loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
       </div>
       <div class='btn btn-default DelChildren'>
@@ -207,10 +206,10 @@ drop_down_button = (multi, editable, lid, value, name)->
 easy_button = (multi, editable, lid, value, name)->
   "<div class ='form-group form-group-location'>
      <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-       <div class='btn btn-default active btn-xs' lid='#{lid}' name='#{name}'> #{value}
+       <div class='btn btn-default loc-btn  btn-xs'  lid='#{lid}' name='#{name}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
-       <div class='btn btn-default active btn-xs DelChildren'>
+       <div class='btn btn-default btn-xs DelChildren'>
          <div class='fa fa-times'>
          </div>
        </div>
@@ -237,6 +236,7 @@ sort_button_list = (context)->
   if sp['group'].parent().find("input[value=#{sp['lid']}]").length is 0
     if sp['has_children'] is 'true'
       button = drop_down_button(sp['multi'], sp['editable'], sp['lid'], sp['value'], sp['name'])
+      $(".last-selected-location").attr('lid', sp['lid'])
     else
       button = easy_button(sp['multi'], sp['editable'], sp['lid'], sp['value'], sp['name'])
     template = sp['group'].parent().append(button)
@@ -252,15 +252,15 @@ sort_button_list = (context)->
       sp['group'].parent().find('.GetChildren').popover "destroy"
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
 
+@mark_last_selection = (lid) ->
+  $('.GetChildren').removeClass('active')
+  $('.GetChildren[lid=' + lid + ']').addClass( ' active')
 
-
-
-
-@make_active_last_button = (sp)->
-  $('.button.loc').removeClass('active')
-  sp['group'].find('.button.loc[lid='+sp['lid']+']').addClass( ' active')
-
-
+$('.GetChildren').livequery ->
+  $(this).on 'hide.bs.popover', ->
+    lid = $(".last-selected-location").attr('lid')
+    if lid
+      mark_last_selection(lid)
 
 $('.SelectLocation').livequery ->
   $(this).click (event)->
@@ -277,9 +277,6 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
-
-
-
 
 
 
@@ -320,7 +317,7 @@ $('.location-group[state]').livequery ->
         processElement(value, new_context)
     unless has_visible_children
       new_context.find('.btn').addClass('active')
-    console.log context
+    #console.log context
     sort_button_list(context)
 
 
@@ -550,6 +547,7 @@ $('.autocomplete-search-location').livequery ->
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
+      #console.log('added lid' + sp['lid'])
       $this.val('')
       return false
     })
@@ -587,7 +585,7 @@ $('.search-or-create-street-action').livequery ->
         return
     else
       $('.search-container-action .SelectLocation').show()
-    console.log exactResultPresent
+    #console.log exactResultPresent
     changeSearchButtonStatus()
     if !exactResultPresent and !($.trim(query) is "")
       $('.create-street-action').removeClass('hidden').removeClass('disabled')

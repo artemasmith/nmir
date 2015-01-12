@@ -3,8 +3,9 @@
   .col-sm-4
     - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
       = f.label :role, class: 'radio' do
-        = t "activerecord.attributes.user.roles.#{role}"
         = f.radio_button :role, role.to_sym, required: true
+        = t "activerecord.attributes.user.roles.#{role}"
+
 .form-group
   label.control-label.col-sm-4 for="textinput"
     i.fa.fa-user

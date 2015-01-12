@@ -61,68 +61,68 @@ h1
           = @adv.comment
 
 
-        - if @grouped_allowed_attributes.present?
-          ul.list-unstyled
-            - @grouped_allowed_attributes.each do |group|
-              - next if group[0] == 'comment'
-              - next if group[0] == 'not_for_agents'
-              - attr_from = group[0]
-              - attr_to = group[1]
-              - value_from = @adv.send(attr_from)
-              - value_to = @adv.send(attr_to) if attr_to.present?
-              - if value_from.present? || value_to.present?
-                li class="#{'lead' if attr_from == 'price_from'}"
-                  = t("advertisement.attributes.#{attr_from}")
-                  | :
-                  - if value_from.present?
-                    '
-                    - if value_to.present? && value_from != value_to
-                      | от
-                      '
-                    - if value_from == true
-                      | да
-                    - elsif value_from == false
-                      = 'нет'
-                    - else
-                      span class="#{'formatRub' if attr_from == 'price_from'}"
-                        = value_from
-                    '
-                    = t("advertisement.units.#{attr_from}")
-                    - if attr_from == 'price_from'
-                      i.fa.fa-rouble
+      - if @grouped_allowed_attributes.present?
+        ul.list-unstyled
+          - @grouped_allowed_attributes.each do |group|
+            - next if group[0] == 'comment'
+            - next if group[0] == 'not_for_agents'
+            - attr_from = group[0]
+            - attr_to = group[1]
+            - value_from = @adv.send(attr_from)
+            - value_to = @adv.send(attr_to) if attr_to.present?
+            - if value_from.present? || value_to.present?
+              li class="#{'lead' if attr_from == 'price_from'}"
+                = t("advertisement.attributes.#{attr_from}")
+                | :
+                - if value_from.present?
+                  '
                   - if value_to.present? && value_from != value_to
-                    - if value_from.present?
-                      | до
-                      '
-                    span class="#{'formatRub' if attr_to == 'price_to'}"
-                      = value_to
+                    | от
                     '
-                    = t("advertisement.units.#{attr_from}")
-                    - if attr_to == 'price_to'
-                      i.fa.fa-rouble
+                  - if value_from == true
+                    | да
+                  - elsif value_from == false
+                    = 'нет'
+                  - else
+                    span class="#{'formatRub' if attr_from == 'price_from'}"
+                      = value_from
+                  '
+                  = t("advertisement.units.#{attr_from}")
+                  - if attr_from == 'price_from'
+                    i.fa.fa-rouble
+                - if value_to.present? && value_from != value_to
+                  - if value_from.present?
+                    | до
+                    '
+                  span class="#{'formatRub' if attr_to == 'price_to'}"
+                    = value_to
+                  '
+                  = t("advertisement.units.#{attr_from}")
+                  - if attr_to == 'price_to'
+                    i.fa.fa-rouble
 
-        - if @adv.user_role == 'owner'
-          i.fa.fa-check
-          '
-          = t('activerecord.attributes.user.roles.owner')
-          '
-        -else
-          i.fa.fa-cube
-          '
-          = t('activerecord.attributes.user.roles.agent')
-          '
-        = @adv.name
+      - if @adv.user_role == 'owner'
+        i.fa.fa-check
         '
-        span.btn.btn-default.btn-xs.HideAdvPhone
-          = @adv.phone
-        - if @near_sections.present?
-          br
-          br
-          = "#{t("activerecord.attributes.section.enum_title.#{@adv.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{@adv.category}")}"
+        = t('activerecord.attributes.user.roles.owner')
+        '
+      -else
+        i.fa.fa-cube
+        '
+        = t('activerecord.attributes.user.roles.agent')
+        '
+      = @adv.name
+      '
+      span.btn.btn-default.btn-xs.HideAdvPhone
+        = @adv.phone
+      - if @near_sections.present?
+        br
+        br
+        = "#{t("activerecord.attributes.section.enum_title.#{@adv.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{@adv.category}")}"
+        '
+        - @near_sections.each do |near_section|
+          = link_to near_section.short_title, near_section.url if near_section.short_title.present?
           '
-          - @near_sections.each do |near_section|
-            = link_to near_section.short_title, near_section.url if near_section.short_title.present?
-            '
 
 
 
