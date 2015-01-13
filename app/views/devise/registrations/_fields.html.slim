@@ -2,7 +2,7 @@
   label.control-label.col-sm-3 for="radios"
   .col-sm-4
     - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
-      .col-sm-4
+      .col-sm-6.zero-left
         = f.label :role, class: 'radio' do
           = f.radio_button :role, role.to_sym, required: true
           = t "activerecord.attributes.user.roles.#{role}"
