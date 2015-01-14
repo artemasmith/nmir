@@ -63,6 +63,8 @@
 
 class Advertisement < ActiveRecord::Base
 
+  include AdvCallbacks
+
   belongs_to :user
   has_many   :photos, :dependent => :destroy
   has_one   :advertisement_counter, :dependent => :destroy
@@ -83,13 +85,11 @@ class Advertisement < ActiveRecord::Base
   validate :category_conformity
   validate :propery_type_conformity
 
-  # Enums
   include AdvEnums
-  #rails_admin
   include AdvRailsAdmin
 
-  after_create :generate_sections
-  after_update :generate_sections
+
+
   
   def grouped_allowed_attributes
     return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)
@@ -147,6 +147,9 @@ class Advertisement < ActiveRecord::Base
   def allowed_attributes
     return @allowed_attributes if defined?(@allowed_attributes)
     @allowed_attributes = AdvConformity::ATTR_VISIBILITY[adv_type][category] rescue []
+    @allowed_attributes = @allowed_attributes.delete_if do |attr|
+      attr == 'mortgage' && (self.rent? || self.for_rent? || self.day?)
+    end
   end
 
   # define methods like :price, from pirce_from attr
@@ -218,6 +221,7 @@ class Advertisement < ActiveRecord::Base
 
   private
 
+
   def locations_chain_array_from(location)
     ls = self.locations.all
     result = []
@@ -229,18 +233,6 @@ class Advertisement < ActiveRecord::Base
     result.reverse
   end
 
-  def generate_sections
-    self.locations.each do |loc|
-      locations_chain_array = locations_chain_array_from(loc)
-      locations_chain_url = SectionGenerator.chain_url(locations_chain_array.map(&:title))
-      locations_chain_title = locations_chain_array.map(&:title).join(' ')
-      short_loc_title = locations_chain_array.last.try(:title)
-      SectionGenerator.by_offer_category(offer_type, category, loc, locations_chain_url, locations_chain_title, short_loc_title)
-      SectionGenerator.by_property_offer(property_type, offer_type, loc, locations_chain_url, locations_chain_title, short_loc_title)
-      SectionGenerator.by_location(loc, locations_chain_url, locations_chain_title, short_loc_title)
-    end
-    SectionGenerator.empty
-  end
 
   def category_conformity
     unless AdvConformity::TYPE_CONFORMITY[self.offer_type].try(:include?, category)

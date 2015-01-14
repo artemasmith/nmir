@@ -10,7 +10,7 @@ namespace :advertisement do
 
     Advertisement.expired.where(['updated_at < ?', DateTime.now - 90.days]).find_in_batches(batch_size: slice_count).each do |group|
       group.each do |adv|
-        adv.delete
+        adv.destroy
       end
     end
 

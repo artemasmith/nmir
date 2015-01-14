@@ -28,16 +28,15 @@ $().ready ->
 
   $('.AdvProperty[hid="' + hid + '"][value!="' + value + '"]').removeClass('active')
   $('.AdvProperty[hid="' + hid + '"][value!="' + value + '"] input').prop('checked', false)
-
-
   set_property(hid, multi, value)
-  adv_type = $('.adv-type-value').val()
-  property = $('.property-type-value').val()
-  if adv_type && property
-    category = $('input:checked[name*="category"]').val()
+
+
+  offer_type = $('input:checked[name*="offer_type"]').val()
+  category = $('input:checked[name*="category"]').val()
+  if offer_type && category
     pdata =
       category: category
-      adv_type: adv_type
+      offer_type: offer_type
     $.ajax
       type: 'GET',
       url: Routes.get_attributes_advertisements_path(),
@@ -70,7 +69,10 @@ $().ready ->
 @geoCoding = ->
   return unless $('#map').data('editable')
   position = $.grep($("div:not(.SelectLocation)[lid]").map(->
-      $.trim $(this).text()
+      if $(this).attr('name') isnt 'non_admin_area' and $(this).attr('name') isnt 'admin_area'
+        $.trim $(this).text()
+      else
+        null
     ), (n) ->
     (n isnt "Выбрать") and (n isnt "Место") and n
   ).join " "
@@ -186,11 +188,11 @@ $('.GetChildren').livequery ->
   $(this).click getChildren
   return
 
-drop_down_button = (multi, editable, lid, value)->
+drop_down_button = (multi, editable, lid, value, name)->
 
   "<div class ='form-group form-group-location'>
     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-      <div class='btn btn-default loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}'> #{value} <span class='caret'></span>
+      <div class='btn btn-default loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
       </div>
       <div class='btn btn-default DelChildren'>
@@ -201,10 +203,10 @@ drop_down_button = (multi, editable, lid, value)->
   </div>
   "
 
-easy_button = (multi, editable, lid, value)->
+easy_button = (multi, editable, lid, value, name)->
   "<div class ='form-group form-group-location'>
      <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-       <div class='btn btn-default loc-btn  btn-xs'  lid='#{lid}'> #{value}
+       <div class='btn btn-default loc-btn  btn-xs'  lid='#{lid}' name='#{name}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
        <div class='btn btn-default btn-xs DelChildren'>
@@ -235,7 +237,7 @@ sort_button_list = (context)->
     if sp['has_children'] is 'true'
       button = drop_down_button(sp['multi'], sp['editable'], sp['lid'], sp['value'])
     else
-      button = easy_button(sp['multi'], sp['editable'], sp['lid'], sp['value'])
+      button = easy_button(sp['multi'], sp['editable'], sp['lid'], sp['value'], sp['name'])
     template = sp['group'].parent().append(button)
     sort_button_list(sp['group'].parent())
   else
@@ -273,6 +275,7 @@ $('.SelectLocation').livequery ->
     sp = {}
     sp['el'] = $(this)
     sp['lid'] = $(this).attr('lid')
+    sp['name'] = $(this).attr('name')
     sp['group'] = $(this).closest('.location-group')
     sp['value'] = $(this).text()
     sp['multi'] = sp['group'].attr('multi')
@@ -305,9 +308,9 @@ $('.location-group[state]').livequery ->
 
   renderElement = (element, context)->
     if element.has_children
-      button = $(drop_down_button(multi, editable, element.id, element.title))
+      button = $(drop_down_button(multi, editable, element.id, element.title, element.location_type))
     else
-      button = $(easy_button(multi, editable, element.id, element.title))
+      button = $(easy_button(multi, editable, element.id, element.title, element.location_type))
 
     context.append(button)
     return button
@@ -540,6 +543,7 @@ $('.autocomplete-search-location').livequery ->
       )
     select: (event, ui) ->
       cancelEvent(event)
+      sp['name'] = 'street'
       sp['lid'] = ui.item.value
       sp['group'] = $("input[value=#{sp['parent_id']}]").closest('.location-group')
       sp['value'] = ui.item.label
@@ -631,6 +635,7 @@ $('.create-street-action').livequery ->
         sp['has_children'] = el.attr('has_children')
         sp['common'] = true
         sp['parent_id'] = 0
+        sp['name'] = 'address'
         click_select_location(sp)
         changeSearchButtonStatus()
         geoCoding()

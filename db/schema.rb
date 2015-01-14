@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141212025045) do
+ActiveRecord::Schema.define(version: 20150112014037) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,6 +96,13 @@ ActiveRecord::Schema.define(version: 20141212025045) do
 
   add_index "advertisements", ["offer_type", "category", "property_type", "status_type"], name: "index_advertisements_on_ot_c_li_pt_st", using: :btree
   add_index "advertisements", ["status_type"], name: "index_advertisements_on_status_type", using: :btree
+
+  create_table "deleted_advertisements", force: true do |t|
+    t.integer "advertisement_id"
+    t.integer "section_id"
+  end
+
+  add_index "deleted_advertisements", ["advertisement_id"], name: "index_deleted_advertisements_on_advertisement_id", using: :btree
 
   create_table "locations", force: true do |t|
     t.string  "title"

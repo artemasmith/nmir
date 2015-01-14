@@ -1,13 +1,14 @@
 .form-group
-  label.control-label.col-sm-4 for="radios"
+  label.control-label.col-sm-3 for="radios"
   .col-sm-4
     - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
-      = f.label :role, class: 'radio' do
-        = f.radio_button :role, role.to_sym, required: true
-        = t "activerecord.attributes.user.roles.#{role}"
+      .col-sm-6.zero-left
+        = f.label :role, class: 'radio' do
+          = f.radio_button :role, role.to_sym, required: true
+          = t "activerecord.attributes.user.roles.#{role}"
 
 .form-group
-  label.control-label.col-sm-4 for="textinput"
+  label.control-label.col-sm-3 for="textinput"
     i.fa.fa-user
     '
     | имя
@@ -15,7 +16,7 @@
     .form-group
       = f.text_field :name, autofocus: true, class: 'form-control', required: true, placeholder: 'Имя'
 .form-group
-  label.control-label.col-sm-4
+  label.control-label.col-sm-3
     i.fa.fa-phone
     '
     | телефон
@@ -28,7 +29,7 @@
             i.fa.fa-minus
 
 .form-group
-  label.control-label.col-sm-4
+  label.control-label.col-sm-3
   .input-group.col-sm-4.small
     = f.link_to_add 'Добавить номер', :phones, :data => { :target => "#reg-phones" }
 - if additional_params
@@ -41,7 +42,7 @@
       .form-group
         = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
   .form-group
-    label.control-label.col-sm-4
+    label.control-label.col-sm-3
       i.fa.fa-unlock
       '
       | пароль
@@ -49,7 +50,7 @@
       .form-group
         = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6
   .form-group
-    label.control-label.col-sm-4
+    label.control-label.col-sm-3
       i.fa.fa-unlock
       '
       | подтверждение пароля

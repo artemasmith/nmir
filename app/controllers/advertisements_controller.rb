@@ -1,6 +1,6 @@
 class AdvertisementsController < ApplicationController
   before_action :overload_params
-  before_action :find_adv, only: [:show, :edit, :update, :destroy, :top]
+  before_action :find_adv, only: [:edit, :update, :destroy, :top]
   before_action :authorize_resource!, only: [:edit, :update, :destroy, :top]
 
 
@@ -79,7 +79,7 @@ class AdvertisementsController < ApplicationController
         redirect_to "#{@section.url}#{build_nested_query.present? ? "?#{build_nested_query}" : ''}" and return
       end
 
-      @root_section = @section.presence || Section.where(offer_type: nil, category: nil, location_id: nil, property_type: nil).first
+      @root_section = @section.presence || Section.root
 
     else
       @root_section = @section = Section.where(url: "/#{params[:url]}").first
@@ -223,7 +223,7 @@ class AdvertisementsController < ApplicationController
     if @root_section.present?
       if @root_section.location_id.present?
         @hidden_sections = Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 15.minutes) do
-          hidden_sections = Section.not_empty
+          hidden_sections = Section.great_than_10
           hidden_sections = hidden_sections.where.not(id: @root_section.id)
           hidden_sections = hidden_sections.where(location_id: @root_section.location_id)
           if @root_section.offer_type.present? && @root_section.category.present?
@@ -259,7 +259,7 @@ class AdvertisementsController < ApplicationController
         neighborhood_ids += Neighborhood.where(location_id: @root_section.location_id).map(&:neighbor_id)
 
         query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
-        hidden_location_sections = Section.not_empty.child_for.where(query.where_values.inject(:or))
+        hidden_location_sections = Section.great_than_10.child_for.where(query.where_values.inject(:or))
         hidden_location_sections = hidden_location_sections.where.not('locations.location_type' => [Location.location_types[:street], Location.location_types[:address]])
         hidden_location_sections = hidden_location_sections.where(offer_type: nil).where(category: nil).where(property_type: nil)
         hidden_location_sections = hidden_location_sections.order('advertisements_count DESC')
@@ -279,7 +279,7 @@ class AdvertisementsController < ApplicationController
 
 
           query = Section.where('locations.location_id' => hidden_location_ids).where('locations.id' => neighborhood_ids)
-          current_sections = Section.not_empty.where.not(id: @root_section.id).not_empty.child_for.where(query.where_values.inject(:or))
+          current_sections = Section.great_than_10.where.not(id: @root_section.id).child_for.where(query.where_values.inject(:or))
           current_sections = current_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
           current_sections = current_sections.where.not('locations.location_type' => [Location.location_types[:street], Location.location_types[:address]])
           current_sections = current_sections.where(category: Section.categories[@root_section.category])
@@ -289,14 +289,31 @@ class AdvertisementsController < ApplicationController
       end
     end
 
-    if ((params[:page].to_i > 1) && (@search_results.blank?)) ||
-      (@section.present? && @section.url != '/' && (@search_results.blank?) && params[:advertisement].blank?)
+    if ((params[:page].to_i > 1) && (@search_results.blank?))
       raise ActionController::RoutingError.new('Not Found')
+    end
+
+    if (@section.present? && @section.url != '/' && (@search_results.blank?) && params[:advertisement].blank?)
+      parent_location = @locations.find{|location| location.id == @root_section.location_id}
+      section = @current_sections.find{|section| section.location_id == parent_location.location_id} if @current_sections.present?
+      return redirect_to section.url if section.present?
     end
 
   end
 
   def show
+    @adv = Advertisement.where(id: params[:id]).first
+    if @adv.blank?
+      deleted_adv = DeletedAdvertisement.where(advertisement_id: params[:id]).first
+      if deleted_adv.present?
+        section = Section.find(deleted_adv.section_id)
+        return redirect_to section.url
+      end
+      raise ActionController::RoutingError.new("Not Found Adv")
+    end
+
+
+
     @sections = Section.where(location_id: @adv.location_ids).
         where(offer_type: nil).
         where(category: nil)
@@ -417,7 +434,7 @@ class AdvertisementsController < ApplicationController
 
 
   def get_attributes
-    adv = Advertisement.new(category: params[:category].to_sym, adv_type: params[:adv_type].to_sym)
+    adv = Advertisement.new(category: params[:category].to_sym, offer_type: params[:offer_type].to_sym)
     @grouped_allowed_attributes = adv.grouped_allowed_attributes
   end
 
@@ -444,7 +461,7 @@ class AdvertisementsController < ApplicationController
           where(category: Section.categories[@adv.category]).first
       redirect_to((section.present? ? section.url : root_path), notice: 'Объявление успешно удалено')
     end
-    @adv.delete
+    @adv.destroy
   end
 
   protected

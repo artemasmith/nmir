@@ -29,13 +29,11 @@ class Section < ActiveRecord::Base
 
 
   scope :not_empty, -> { where('advertisements_count > 0') }
+  scope :great_than_10, -> { where('advertisements_count > 10') }
 
   scope :child_for, -> { joins('INNER JOIN "locations" ON "sections"."location_id" = "locations"."id"')}
 
-
-
-
-
-
-
+  def self.root
+    Section.where(offer_type: nil, category: nil, location_id: nil, property_type: nil).first
+  end
 end
