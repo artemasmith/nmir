@@ -234,7 +234,6 @@ sort_button_list = (context)->
   if sp['group'].parent().find("input[value=#{sp['lid']}]").length is 0
     if sp['has_children'] is 'true'
       button = drop_down_button(sp['multi'], sp['editable'], sp['lid'], sp['value'])
-      $(".last-selected-location").attr('lid',sp['lid'])
     else
       button = easy_button(sp['multi'], sp['editable'], sp['lid'], sp['value'])
     template = sp['group'].parent().append(button)
@@ -249,14 +248,22 @@ sort_button_list = (context)->
       $(".location-button.active[lid!=#{sp['lid']}]").click()
       sp['group'].parent().find('.GetChildren').popover "destroy"
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
+  loc = $(".last-selected-location").attr('lid')
+  $(".last-selected-location").attr('lid',loc + ' ' + sp['lid'])
 
 @mark_last_selection = (lid) ->
   $('.GetChildren').removeClass('active')
-  $('.GetChildren[lid=' + lid + ']').addClass( ' active')
+  lids = lid.split(' ')
+  for i in [0..(lids.length-1)]
+    if lids[i]
+      $('.loc-btn[lid=' + lids[i] + ']').addClass( ' active')
+  $(".last-selected-location").attr('lid','')
 
 $('.GetChildren').livequery ->
   $(this).on 'hide.bs.popover', ->
+    console.log('we are in popover close')
     lid = $(".last-selected-location").attr('lid')
+    console.log("lid #{lid}")
     if lid
       mark_last_selection(lid)
 
