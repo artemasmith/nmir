@@ -263,9 +263,7 @@ sort_button_list = (context)->
 
 $('.GetChildren').livequery ->
   $(this).on 'hide.bs.popover', ->
-    console.log('we are in popover close')
     lid = $(".last-selected-location").attr('lid')
-    console.log("lid #{lid}")
     if lid
       mark_last_selection(lid)
 
