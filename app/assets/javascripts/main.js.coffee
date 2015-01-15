@@ -235,7 +235,7 @@ sort_button_list = (context)->
       sp['el'].addClass('active')
   if sp['group'].parent().find("input[value=#{sp['lid']}]").length is 0
     if sp['has_children'] is 'true'
-      button = drop_down_button(sp['multi'], sp['editable'], sp['lid'], sp['value'])
+      button = drop_down_button(sp['multi'], sp['editable'], sp['lid'], sp['value'], sp['name'])
     else
       button = easy_button(sp['multi'], sp['editable'], sp['lid'], sp['value'], sp['name'])
     template = sp['group'].parent().append(button)
