@@ -195,7 +195,7 @@ drop_down_button = (multi, editable, lid, value, name)->
       <div class='btn btn-default loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
       </div>
-      <div class='btn btn-default DelChildren'>
+      <div class='btn btn-default loc-btn DelChildren'>
         <div class='fa fa-times'>
         </div>
       </div>
@@ -209,7 +209,7 @@ easy_button = (multi, editable, lid, value, name)->
        <div class='btn btn-default loc-btn  btn-xs'  lid='#{lid}' name='#{name}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
-       <div class='btn btn-default btn-xs DelChildren'>
+       <div class='btn btn-default btn-xs loc-btn DelChildren'>
          <div class='fa fa-times'>
          </div>
        </div>
@@ -254,11 +254,11 @@ sort_button_list = (context)->
   $(".last-selected-location").attr('lid',loc + ' ' + sp['lid'])
 
 @mark_last_selection = (lid) ->
-  $('.GetChildren').removeClass('active')
+  $('.loc-btn').removeClass('active')
   lids = lid.split(' ')
   for i in [0..(lids.length-1)]
     if lids[i]
-      $('.loc-btn[lid=' + lids[i] + ']').addClass( ' active')
+      $('.loc-btn[lid=' + lids[i] + ']').parent().find('.loc-btn').addClass( ' active')
   $(".last-selected-location").attr('lid','')
 
 $('.GetChildren').livequery ->
