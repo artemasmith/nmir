@@ -283,9 +283,6 @@ $('.SelectLocation').livequery ->
     sp['parent_id'] = 0
     click_select_location(sp)
 
-
-
-
 $('.DelChildren').livequery ->
   $(this).click ->
     group = $(this).closest('.location-group').parent()
@@ -335,6 +332,17 @@ $('.location-group[state]').livequery ->
 
 
   return
+
+$('#reg-phones').livequery ->
+  $(this).on 'nested:fieldAdded', (e) ->
+    parent = e.target
+    $(parent).find('.add-phone-number').addClass('hidden')
+    $(parent).find('.dell-phone-number').removeClass('hidden')
+    time = new Date()
+    #console.log(time.getSeconds())
+    $(parent).find('.form-control').attr('id', "#{time.getMinutes()} #{time.getSeconds()}")
+    $(parent).find('.form-control').attr('name', "advertisement[user_attributes][phones_attributes][#{time.getMinutes()}#{time.getSeconds()}][original]")
+    return
 
 $('.AdvProperty').livequery ->
   $(this).change prepare_allowed_attributes
