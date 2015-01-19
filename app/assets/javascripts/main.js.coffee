@@ -195,7 +195,7 @@ drop_down_button = (multi, editable, lid, value, name)->
       <div class='btn btn-default loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
       </div>
-      <div class='btn btn-default DelChildren'>
+      <div class='btn btn-default loc-btn DelChildren'>
         <div class='fa fa-times'>
         </div>
       </div>
@@ -209,7 +209,7 @@ easy_button = (multi, editable, lid, value, name)->
        <div class='btn btn-default loc-btn  btn-xs'  lid='#{lid}' name='#{name}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
-       <div class='btn btn-default btn-xs DelChildren'>
+       <div class='btn btn-default btn-xs loc-btn DelChildren'>
          <div class='fa fa-times'>
          </div>
        </div>
@@ -236,7 +236,6 @@ sort_button_list = (context)->
   if sp['group'].parent().find("input[value=#{sp['lid']}]").length is 0
     if sp['has_children'] is 'true'
       button = drop_down_button(sp['multi'], sp['editable'], sp['lid'], sp['value'], sp['name'])
-      $(".last-selected-location").attr('lid', sp['lid'])
     else
       button = easy_button(sp['multi'], sp['editable'], sp['lid'], sp['value'], sp['name'])
     template = sp['group'].parent().append(button)
@@ -251,10 +250,16 @@ sort_button_list = (context)->
       $(".location-button.active[lid!=#{sp['lid']}]").click()
       sp['group'].parent().find('.GetChildren').popover "destroy"
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
+  loc = $(".last-selected-location").attr('lid')
+  $(".last-selected-location").attr('lid',loc + ' ' + sp['lid'])
 
 @mark_last_selection = (lid) ->
-  $('.GetChildren').removeClass('active')
-  $('.GetChildren[lid=' + lid + ']').addClass( ' active')
+  $('.loc-btn').removeClass('active')
+  lids = lid.split(' ')
+  for i in [0..(lids.length-1)]
+    if lids[i]
+      $('.loc-btn[lid=' + lids[i] + ']').parent().find('.loc-btn').addClass( ' active')
+  $(".last-selected-location").attr('lid','')
 
 $('.GetChildren').livequery ->
   $(this).on 'hide.bs.popover', ->
@@ -277,9 +282,6 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
-
-
-
 
 $('.DelChildren').livequery ->
   $(this).click ->
@@ -330,6 +332,17 @@ $('.location-group[state]').livequery ->
 
 
   return
+
+$('#reg-phones').livequery ->
+  $(this).on 'nested:fieldAdded', (e) ->
+    parent = e.target
+    $(parent).find('.add-phone-number').addClass('hidden')
+    $(parent).find('.dell-phone-number').removeClass('hidden')
+    time = new Date()
+    #console.log(time.getSeconds())
+    $(parent).find('.form-control').attr('id', "#{time.getMinutes()} #{time.getSeconds()}")
+    $(parent).find('.form-control').attr('name', "advertisement[user_attributes][phones_attributes][#{time.getMinutes()}#{time.getSeconds()}][original]")
+    return
 
 $('.AdvProperty').livequery ->
   $(this).change prepare_allowed_attributes
