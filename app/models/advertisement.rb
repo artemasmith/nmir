@@ -159,15 +159,22 @@ class Advertisement < ActiveRecord::Base
   end
 
   def yandex_valid?
+    # жилая аренда - неделя
+    # коммерческая аренда - 1 мес
+    # посуточно - без срока
+    # продажа квартир - месяц
+    # продажа домов и участков - два месяца
+    # продажа коммерческой - два месяца
     time_now = Time.now
     case
-      when sale? && flat? then (created_at > time_now - 90.days) || (updated_at > time_now - 45.days)
-      when rent? && flat? then (created_at > time_now - 7.days) || (updated_at > time_now - 14.days)
-      when sale? && room? then (created_at > time_now - 120.days) || (updated_at > time_now - 45.days)
-      when rent? && room? then (created_at > time_now - 25.days) || (updated_at. > time_now - 24.days)
-      when rent? && house? then (created_at > time_now - 30.days) || (updated_at > time_now - 30.days)
+      when sale? && flat? then (created_at > time_now - 1.month) || (updated_at > time_now - 1.month)
+      when sale? && (house? || ijs?) then (created_at > time_now - 2.month) || (updated_at > time_now - 2.month)
+      when sale? && commerce? then (created_at > time_now - 2.month) || (updated_at > time_now - 2.month)
+      when day? then true
+      when for_rent? && residental? then (created_at > time_now - 7.days) || (updated_at > time_now - 7.days)
+      when for_rent? && commerce? then (created_at > time_now - 1.month) || (updated_at > time_now - 1.month)
       else
-        (self.created_at > time_now - 60.days) || (self.updated_at > time_now - 30.days)
+        (self.created_at > time_now - 90.days) || (self.updated_at > time_now - 30.days)
     end
   end
 

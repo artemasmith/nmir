@@ -54,10 +54,7 @@
           .row.col-xs-12.control_hide_action
             - group.group_by { |section| section.offer_type }.each_pair do |key, value|
               label.control-label
-                - if key
-                  = I18n.t("activerecord.attributes.section.enum_title.#{key}")
-                - else
-                  | вся
+                = I18n.t("activerecord.attributes.section.enum_title.#{key}")
               '
               - value.each do |section|
                 .form-group
