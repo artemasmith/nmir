@@ -13,9 +13,10 @@
  *= require_self
  *= require jquery.ui.all
  */
-//@import "bootstrap-sprockets";
+@import "bootstrap-sprockets";
 @import "bootstrap";
 @import "bootstrap/theme";
+
 //@import "vendor/font-awesome";
 //@import "font-awesome-sprockets";
 @import 'font-awesome';
