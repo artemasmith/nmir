@@ -18,17 +18,18 @@ namespace :advertisement do
       group.each do |section|
         advertisement = Advertisement.active
         if section.location_id.present?
-          advertisement = advertisement.joins('INNER JOIN "advertisement_locations" ON "advertisements"."id" = "advertisement_locations"."advertisement_id"')
+          advertisement = advertisement.joins('LEFT OUTER JOIN "advertisement_locations" ON "advertisements"."id" = "advertisement_locations"."advertisement_id"')
           advertisement = advertisement.where('advertisement_locations.location_id' => section.location_id)
         end
-        advertisement = advertisement.where(offer_type: Section.offer_types[section.offer_type]) if section.offer_type.present?
-        advertisement = advertisement.where(category: Section.categories[section.category]) if section.category.present?
+        advertisement = advertisement.where(offer_type: Advertisement.offer_types[section.offer_type]) if section.offer_type.present?
         if section.property_type.present?
-          if section.property_type == :residental
+          if section.residental?
             advertisement = advertisement.where(category: AdvEnums::RESIDENTAL_CATEGORIES)
-          elsif section.property_type == :commerce
+          elsif section.commerce?
             advertisement = advertisement.where(category: AdvEnums::COMMERCE_CATEGORIES)
           end
+        else
+          advertisement = advertisement.where(category: Advertisement.categories[section.category]) if section.category.present?
         end
         section.advertisements_count = advertisement.count
         section.save

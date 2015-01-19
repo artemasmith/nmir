@@ -222,7 +222,7 @@ class AdvertisementsController < ApplicationController
 
     if @root_section.present?
       if @root_section.location_id.present?
-        @hidden_sections = Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 15.minutes) do
+        @hidden_sections = begin# Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 15.minutes) do
           hidden_sections = Section.great_than_10
           hidden_sections = hidden_sections.where.not(id: @root_section.id)
           hidden_sections = hidden_sections.where(location_id: @root_section.location_id)
@@ -230,11 +230,7 @@ class AdvertisementsController < ApplicationController
             query = Section.where.not(category: Section.categories[@root_section.category]).where(property_type: Section.property_types.values)
             hidden_sections = hidden_sections.where(query.where_values.inject(:or))
           elsif @root_section.offer_type.present? && @root_section.property_type.present?
-            if @root_section.property_type == :residental
-              hidden_sections = hidden_sections.where(category: AdvEnums::RESIDENTAL_CATEGORIES)
-            elsif @section.property_type == :commerce
-              hidden_sections = hidden_sections.where(category: AdvEnums::COMMERCE_CATEGORIES)
-            end
+            hidden_sections = hidden_sections.where.not(offer_type: nil)
           end
           hidden_sections = hidden_sections.order('advertisements_count DESC')
           hidden_sections.to_a
@@ -268,7 +264,7 @@ class AdvertisementsController < ApplicationController
 
 
       if @root_section.offer_type.present? && (@root_section.category.present? || @root_section.property_type.present?) && @root_section.location_id.present?
-        @current_sections = Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
+        @current_sections = begin #Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
           parent_location = @locations.find{|location| location.id == @root_section.location_id}
           neighborhood_ids = []
           hidden_location_ids = []
@@ -282,7 +278,11 @@ class AdvertisementsController < ApplicationController
           current_sections = Section.great_than_10.where.not(id: @root_section.id).child_for.where(query.where_values.inject(:or))
           current_sections = current_sections.where(offer_type: Section.offer_types[@root_section.offer_type])
           current_sections = current_sections.where.not('locations.location_type' => [Location.location_types[:street], Location.location_types[:address]])
-          current_sections = current_sections.where(category: Section.categories[@root_section.category])
+          if @root_section.category.present?
+            current_sections = current_sections.where(category: Section.categories[@root_section.category])
+          else
+            current_sections = current_sections.where(property_type: Section.property_types[@root_section.property_type])
+          end
           current_sections = current_sections.order('advertisements_count DESC')
           current_sections.to_a
         end
@@ -307,9 +307,13 @@ class AdvertisementsController < ApplicationController
       deleted_adv = DeletedAdvertisement.where(advertisement_id: params[:id]).first
       if deleted_adv.present?
         section = Section.find(deleted_adv.section_id)
-        return redirect_to section.url
+        return redirect_to section.url, status: 301
       end
-      raise ActionController::RoutingError.new("Not Found Adv")
+      raise ActionController::RoutingError.new('Not Found Adv')
+    end
+
+    if @adv.expired? && !can?(:manage, @adv)
+      return redirect_to @adv.section.url
     end
 
 
