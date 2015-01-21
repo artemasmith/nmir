@@ -41,6 +41,8 @@ h1
                 label.btn.btn-default.AdvProperty hid="offer" multi="one" value="#{AdvEnums::OFFER_TYPES.index(offer)}" class="#{@adv.offer_type.to_s == offer.to_s  ? 'active' : ''}"
                   = f.radio_button :offer_type, "#{offer}"
                   = t("advertisement.offer.#{offer}")
+        =cookies[:location_ids]
+        /=params[:advertisement][:location_ids]
         .form-group
           label.col-sm-3.control-label for="category" Тип недвижимости
           .col-sm-9

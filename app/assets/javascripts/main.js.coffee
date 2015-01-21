@@ -206,10 +206,10 @@ drop_down_button = (multi, editable, lid, value, name)->
 easy_button = (multi, editable, lid, value, name)->
   "<div class ='form-group form-group-location'>
      <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-       <div class='btn btn-default loc-btn  #{button_size(name)}'  lid='#{lid}' name='#{name}'> #{value}
+       <div class='btn #{button_size(name)} loc-btn'  lid='#{lid}' name='#{name}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
-       <div class='btn btn-default #{button_size(name)} loc-btn DelChildren'>
+       <div class='btn #{button_size(name)} loc-btn DelChildren'>
          <div class='fa fa-times'>
          </div>
        </div>
@@ -274,6 +274,7 @@ sort_button_list = (context)->
 $('.GetChildren').livequery ->
   $(this).on 'hide.bs.popover', ->
     lid = $(".last-selected-location").attr('lid')
+    console.log("lid on hide popover=#{lid}")
     if lid
       mark_last_selection(lid)
 
