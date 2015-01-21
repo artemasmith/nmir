@@ -237,7 +237,7 @@ sort_button_list = (context)->
 
 #lid,group, value, multi, has_children, common, parent_id
 @click_select_location = (sp) ->
-  console.log(sp['name'])
+  #console.log(sp['name'])
   if sp['el']
     if sp['el'].hasClass('active')
       sp['el'].removeClass('active')
@@ -274,7 +274,7 @@ sort_button_list = (context)->
 $('.GetChildren').livequery ->
   $(this).on 'hide.bs.popover', ->
     lid = $(".last-selected-location").attr('lid')
-    console.log("lid on hide popover=#{lid}")
+    #console.log("lid on hide popover=#{lid}")
     if lid
       mark_last_selection(lid)
 
