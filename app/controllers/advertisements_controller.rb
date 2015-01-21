@@ -379,6 +379,8 @@ class AdvertisementsController < ApplicationController
 
   def new
     @adv = Advertisement.new
+    clids = cookies[:location_ids].split('&') if cookies[:location_ids].present?
+    load_location_state!(clids)
   end
 
   def create
@@ -399,6 +401,7 @@ class AdvertisementsController < ApplicationController
     end
     if @adv.valid?
       @adv.save
+      cookies[:location_ids] = advertisement_params[:location_ids]
       sign_in @adv.user if current_user.blank?
       redirect_to "#{advertisement_path(@adv)}-#{@adv.url}"
     else

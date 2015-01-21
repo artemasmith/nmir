@@ -192,10 +192,10 @@ drop_down_button = (multi, editable, lid, value, name)->
 
   "<div class ='form-group form-group-location'>
     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-      <div class='btn btn-default loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
+      <div class='btn #{button_size(name)} loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
       </div>
-      <div class='btn btn-default loc-btn DelChildren'>
+      <div class='btn #{button_size(name)} loc-btn DelChildren'>
         <div class='fa fa-times'>
         </div>
       </div>
@@ -206,16 +206,25 @@ drop_down_button = (multi, editable, lid, value, name)->
 easy_button = (multi, editable, lid, value, name)->
   "<div class ='form-group form-group-location'>
      <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-       <div class='btn btn-default loc-btn  btn-xs'  lid='#{lid}' name='#{name}'> #{value}
+       <div class='btn #{button_size(name)} loc-btn'  lid='#{lid}' name='#{name}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
-       <div class='btn btn-default btn-xs loc-btn DelChildren'>
+       <div class='btn #{button_size(name)} loc-btn DelChildren'>
          <div class='fa fa-times'>
          </div>
        </div>
      </div>
     </div>
     "
+
+button_size = (type) ->
+  if type =='region' or type == 'city' or type == 'district'
+    return 'btn-default'
+  if type == 'street' or 'admin_area' or 'non_admin_area'
+    return 'btn-sm'
+  if type == 'street' or 'address' or 'landmark'
+    return 'btn-xs'
+
 
 sort_button_list = (context)->
   children = context.children('.form-group:not(.location-group)')
@@ -228,6 +237,7 @@ sort_button_list = (context)->
 
 #lid,group, value, multi, has_children, common, parent_id
 @click_select_location = (sp) ->
+  #console.log(sp['name'])
   if sp['el']
     if sp['el'].hasClass('active')
       sp['el'].removeClass('active')
@@ -264,6 +274,7 @@ sort_button_list = (context)->
 $('.GetChildren').livequery ->
   $(this).on 'hide.bs.popover', ->
     lid = $(".last-selected-location").attr('lid')
+    #console.log("lid on hide popover=#{lid}")
     if lid
       mark_last_selection(lid)
 
