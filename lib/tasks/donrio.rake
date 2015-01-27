@@ -297,7 +297,7 @@ namespace :domowoi do
     end
 
 
-    args.with_defaults(:file => '/home/tea/Downloads/донрио дома уч041213 (5).xls')
+    args.with_defaults(:file => '/home/kaa/Downloads/Дома_и_участки_итоговый_(1).xls')
     args.with_defaults(:user_id => '1')
     args.with_defaults(:type_donrio => '1')
     user = User.find(args.user_id)
