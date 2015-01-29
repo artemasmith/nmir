@@ -55,9 +55,9 @@ namespace :multilisting do
             street3 = title[2]
           end
         end
-        street = street.mb_chars.upcase.to_s
+        street = Matcher.rename_street(street).mb_chars.upcase.to_s
         rostov = Location.find_by_title('Ростов-на-Дону')
-        district = rostov.sublocations.where('UPPER(title) LIKE ?', loc_params[:dist].strip.mb_chars.upcase.to_s).first
+        district = rostov.sublocations.where('UPPER(title) LIKE ?', Matcher.rename_district(loc_params[:dist].strip).mb_chars.upcase.to_s).first
 
         street = rostov.sublocations.where('UPPER(title) LIKE ?', street).first
         if street.present? && address
@@ -70,7 +70,7 @@ namespace :multilisting do
       else
         #houses and land
         rostovobl = Location.find_by_title('Ростовская область')
-        region = loc_params[:dist].strip.mb_chars.upcase.to_s
+        region = Matcher.rename_district(loc_params[:dist].strip).mb_chars.upcase.to_s
         region = rostovobl.sublocations.where("UPPER(title) LIKE ?", region.mb_chars.upcase.to_s).first
 
         title = loc_params[:addr].split('/')
@@ -79,13 +79,15 @@ namespace :multilisting do
           village = region.sublocations.where('UPPER(title) LIKE ?', title[0].mb_chars.upcase.to_s).first
           if village.present?
             temp = title[1].split(',')
+            street = Matcher.rename_street(temp[0]).mb_chars.upcase.to_s
+            address =  Matcher.rename_street(temp[1]).mb_chars.upcase.to_s
             if temp.count == 2
               # village/street, house
-              street = village.sublocations.where('UPPER(title) LIKE ?', temp[0].mb_chars.upcase.to_s).first
-              address = street.sublocations.where('UPPER(title) LIKE ?', temp[1].mb_chars.upcase.to_s).first if street.present?
+              street = village.sublocations.where('UPPER(title) LIKE ?', street).first
+              address = street.sublocations.where('UPPER(title) LIKE ?', address).first if street.present?
             elsif temp.count == 1
               #vilage/street
-              street = village.sublocations.where('UPPER(title) LIKE ?', title[1].mb_chars.upcase.to_s).first
+              street = village.sublocations.where('UPPER(title) LIKE ?', street).first
             end
           end
         end
@@ -93,7 +95,7 @@ namespace :multilisting do
       result = { district: district, village: village, street: street, address: address }
       #????
       result.each {|k,v| result.delete(k) if v.blank?}
-      return result
+      result
     end
 
     def get_contact str

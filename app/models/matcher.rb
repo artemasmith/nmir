@@ -1,6 +1,6 @@
 class Matcher
 
-  def self.match_street street
+  def self.rename_street street
     streets = {
         '' => ''
     }
