@@ -10,7 +10,7 @@ namespace :multilisting do
       if loc_params[:atype] == 0
         #flats in rostov
         title = loc_params[:addr]
-        street, street2, address = ''
+        street, street2, address, village, district = ''
 
         #fucking regexp too complicated and eat all cpu:(
 
@@ -57,19 +57,43 @@ namespace :multilisting do
         end
         street = street.mb_chars.upcase.to_s
         rostov = Location.find_by_title('Ростов-на-Дону')
+        district = rostov.sublocations.where('UPPER(title) LIKE ?', loc_params[:dist].strip.mb_chars.upcase.to_s).first
 
-        firststreet = rostov.children_locations.where('UPPER(title) LIKE ?', street)
-        if firststreet.present? && address
-          address = address.mb_chars.upcase.to_s
-          address = firststreet.children_locations.where('UPPER(title) LIKE ?', address)
+        street = rostov.sublocations.where('UPPER(title) LIKE ?', street).first
+        if street.present? && address
+          retaddress = street.sublocations.where('UPPER(title) LIKE ?', address.mb_chars.upcase.to_s).first
+          #if there is no house number - we will create it lately
+          address = retaddress if retaddress.present?
         end
         #what should I do with street2 and street 3???
 
       else
         #houses and land
+        rostovobl = Location.find_by_title('Ростовская область')
+        region = loc_params[:dist].strip.mb_chars.upcase.to_s
+        region = rostovobl.sublocations.where("UPPER(title) LIKE ?", region.mb_chars.upcase.to_s).first
 
-
+        title = loc_params[:addr].split('/')
+        if title.count == 2
+          #dist/street dist/street, house  dist/street house
+          village = region.sublocations.where('UPPER(title) LIKE ?', title[0].mb_chars.upcase.to_s).first
+          if village.present?
+            temp = title[1].split(',')
+            if temp.count == 2
+              # village/street, house
+              street = village.sublocations.where('UPPER(title) LIKE ?', temp[0].mb_chars.upcase.to_s).first
+              address = street.sublocations.where('UPPER(title) LIKE ?', temp[1].mb_chars.upcase.to_s).first if street.present?
+            elsif temp.count == 1
+              #vilage/street
+              street = village.sublocations.where('UPPER(title) LIKE ?', title[1].mb_chars.upcase.to_s).first
+            end
+          end
+        end
       end
+      result = { district: district, village: village, street: street, address: address }
+      #????
+      result.each {|k,v| result.delete(k) if v.blank?}
+      return result
     end
 
     def get_contact str
@@ -84,39 +108,6 @@ namespace :multilisting do
 
     end
 
-    def rename_district dist
-      dist = dist.strip
-      hash_list =
-          {'?' => nil,
-           'пригород' => nil,
-           'Нахич' => 'Нахич',
-           'Вонвед' => 'Военвед',
-           'Вонв.' => 'Военвед',
-           'Лениа' => 'Ленина',
-           '1 Ордж.' => '1-й Орджоникидзе',
-           '2 Ордж.' => '2-й Орджоникидзе',
-           'Пригород' => 'Ростов-на-Дону',
-           '1 Ордж' => '1-й Орджоникидзе',
-           '2 Ордж' => '2-й Орджоникидзе',
-           'Рост. море' => 'Ростовское море',
-           'Аксайскийр-н' => 'Аксайский р-н',
-           'Аэроп.' => 'Аэропорт',
-           'Аксай' => 'Аксайский р-н',
-           'Алекс' => 'Александровский р-н',
-           'Обл' => 'Ростовская обл.',
-           'Область' => 'Ростовская обл.',
-           'Рост море' => 'Ростовское море',
-           'Рост.море' => 'Ростовское море',
-           'Ц ентр' => 'Центр',
-           '1 Ордж.' => '1-й Орджоникидзе',
-           '2 Ордж.' => '2-й Орджоникидзе',
-           'Рост... море' => 'Ростовское море',
-           'РИЖТ' => 'Ленина',
-           'Рост. Море' => 'Ростовское море'
-          }
-      hash_list[dist]
-    end
-
     #should return false if we didnt find same adv
     def check_existance adv_params
 
@@ -129,6 +120,7 @@ namespace :multilisting do
     args.with_defaults(:user_id => '1')
     args.with_defaults(:type_donrio => '1')
     user = User.find(args.user_id)
+
     adv = {}
     titles = {}
     workbook = Spreadsheet.open(args.file).worksheets
@@ -171,7 +163,7 @@ namespace :multilisting do
             adv.property_type = :flat
           end
 
-          location = { addr: row[titles['Район']], dist: row[titles['Адрес']], atype: adv.property_type == :flat ? 0 : 1 }
+          location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: adv.property_type == :flat ? 0 : 1 }
           adv.locations = get_location(location)
 
           cadv = check_existance adv
