@@ -7,21 +7,24 @@ namespace :multilisting do
   task(:newdonrio, [:file] => :environment) do |t, args|
 
     def get_location loc_params
+      street, street2, address, village, district, region = ''
       if loc_params[:atype] == 0
         #flats in rostov
         title = loc_params[:addr]
-        street, street2, address, village, district = ''
 
         #fucking regexp too complicated and eat all cpu:(
 
         title = title.split('/')
+        print "title = #{title}\n"
         if title.count == 1
           #street and house or street only
-          title = title.split(',')
+          title = title[0].split(',')
           street = title[0]
+          print "if section street=#{street}"
           if title.count == 2
-            #only street
+            #street and house
             address  = title[1]
+            print "we are in first section #{address} \n"
           end
         elsif title.count == 2
           #street/street or street, house/house
@@ -64,6 +67,8 @@ namespace :multilisting do
           retaddress = street.sublocations.where('UPPER(title) LIKE ?', address.mb_chars.upcase.to_s.strip).first
           #if there is no house number - we will create it lately
           address = retaddress if retaddress.present?
+        else
+          address = nil
         end
         #what should I do with street2 and street 3???
 
@@ -104,7 +109,7 @@ namespace :multilisting do
           end
         end
       end
-      result = { district: district, village: village, street: street, address: address }
+      result = { district: district, village: village, street: street, address: address, region: region }
       #????
       result.each {|k,v| result.delete(k) if v.blank?}
       result
@@ -144,105 +149,117 @@ namespace :multilisting do
     #should return false if we didnt find same adv
     def check_existance adv_params
       nearest_location = adv_params[:locations][:address] || adv_params[:locations][:street] ||
-          adv_params[:locations][:village] || adv_params[:locations][:district]
-
+          adv_params[:locations][:village] || adv_params[:locations][:district] || adv_params[:locations][:region]
+      print " nearest_location #{nearest_location} \n"
       #first we find all advs in granted locations with our property_avd
-      pre_advs = Advertisement.joins(:locations).where('locations.title = ? AND advertisements.offer_type = ? AND advertisements.category = ? AND user_id = ?',
-                                                       nearest_location.title, adv_params[:offer_type], adv_params[:category], adv_params[:user_id])
+      offer_type = Advertisement::OFFER_TYPES.index(adv_params[:offer_type].to_sym)
+      category = Advertisement::CATEGORIES.index(adv_params[:category].to_sym)
+      property_type = Advertisement::PROPERTY_TYPES.index(adv_params[:property_type].to_sym)
+      print "\n Chex category=#{category} offer_type=#{offer_type} property_type=#{property_type}\n"
+      pre_advs = Advertisement.joins(:locations).where('locations.title = ? AND advertisements.offer_type = ?
+                                  AND advertisements.category = ? AND user_id = ? AND advertisements.property_type = ?
+                                  AND advertisements.price_from = ?',
+                                  nearest_location.title, offer_type, category, adv_params[:user_id], property_type, adv_params[:price].to_i)
+      print "\npre advs #{pre_advs.first.id}\n"
       if pre_advs.blank?
         return false
       else
-        pre_advs = pre_advs.where('comment like ?', adv_params[:comment])
-        if pre_advs.count > 0
-          print "sorry, we found simular advertisement(s) #{pre_advs.map(&:id).join(';')}"
-          return pre_advs
-        else
-          return false
-        end
+        #pre_advs = pre_advs.where('comment like ?', adv_params[:comment])
+        #if pre_advs.present?
+        print "sorry, we found simular advertisement(s) #{pre_advs.map(&:id).join(';')}"
+        return pre_advs
+        #else
+        #  return false
+        #end
       end
     end
 
 
     #TASK STARTS
     args.file ||= '/home/kaa/test-book.xls'
+    print "\nARGS= #{args} \n"
     adv = {}
     titles = {}
-    workbook = Spreadsheet.open('/home/kaa/test-book.xls').worksheets
+    workbook = Spreadsheet.open(args.file).worksheets
     workbook.each do |worksheet|
       titles.clear
+
       worksheet.each do |row|
         if titles.empty?
           row.each_with_index do |column, index|
-            titles[column] = index
+            titles[column] = index if column.present?
           end
           next
         end
 
         next if row.count == 0 || row.compact.count == 0
 
-        row.each_with_index do |col, index|
-          #here we are looking for client info
-          contactrow = row[titles['Тел контанк']].gsub(/[^[:word:]]/, '')
-          name = contactrow.gsub /[^[:alpha:]]/, ''
-          phone = contactrow.gsub /[[:alpha:]]/, ''
-          print "name = #{name} phone = #{phone}\n"
+        #here we are looking for client info
+        contactrow = row[titles['Тел контанк']].gsub(/[^[:word:]]/, '')
+        name = contactrow.gsub /[^[:alpha:]]/, ''
+        phone = contactrow.gsub /[[:alpha:]]/, ''
+        print "name = #{name} phone = #{phone}\n"
 
-          if name.blank? || phone.blank?
-            print "There is no name or phone for adv index #{index}, #{name} #{phone}\n"
-            next
-          end
+        if name.blank? || phone.blank?
+          print "There is no name or phone for adv index #{index}, #{name} #{phone}\n"
+          next
+        end
 
-          adv = Advertisement.new
-          adv.user = get_contact(name: name, phone: phone)
-          print "user = #{adv.user}"
+        adv = Advertisement.new
+        adv.user = get_contact(name: name, phone: phone)
+        print "user = #{adv.user}"
 
-          adv.offer_type = :sale
-          adv.adv_type = 1
-          adv.property_type = 1
+        adv.offer_type = :sale
+        adv.adv_type = :offer
+        adv.property_type = :commerce
 
-          adv.price_from = row[1].to_i
-          print "adv.price_from #{adv.price_from}\n"
+        adv.price_from = row[1].to_i
+        print "adv.price_from #{adv.price_from}\n"
 
-          har = row[titles['Хар']]
-          if har.match /участок/i
-            adv.category = :land
-          elsif har.match /дом/i
-            adv.category = :house
+        har = row[titles['Хар']]
+        if har.match /участок/i
+          adv.category = :land
+        elsif har.match /дом/i
+          adv.category = :house
+        else
+          adv.category = :flat
+        end
+        print "category #{adv.category}\n"
+
+        location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: titles.keys.include?('Sуч.Всотках') ? 1 : 0 }
+        print "\nlocation = #{location}\n"
+        locations = get_location(location)
+        print "locations = #{locations}\n"
+
+        if locations.blank?
+          print "\nwe cant parse even region of #{adv} #{prepare_char(row[titles['Хар']])}\n"
+          next
+        end
+
+        adv.comment = %Q(цена: #{row[1]} т.р., район: #{row[titles['Район']]},
+             адрес: #{row[titles['Адрес']]}, этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]},
+              площадь: #{row[titles['Площадь']]}, коментарий: #{prepare_char(row[titles['Хар']])})
+        print "titles #{titles}"
+        print "advcomment #{adv.comment}\n"
+        if titles.keys.include?('Sуч.Всотках')
+          adv.comment += ", площадь-участка: #{row[titles['Sуч.Всотках']]}"
+        end
+
+        adv_params = { locations: locations, offer_type: adv.offer_type, category: adv.category, property_type: adv.property_type,
+                       user_id: adv.user_id,comment: adv.comment, price: adv.price_from }
+
+        cadv = check_existance adv_params
+        print "\n\nCADV #{cadv}\n\n"
+        adv.locations = locations.map{ |k,l| l }
+
+        if !cadv
+          if adv.save
+            print "\nWe are successfully created the advertisement #{adv.id}\n"
           else
-            adv.category = :flat
+            print "\nCould not save advertisement #{adv.errors.full_messages}\n"
           end
-          print "category #{adv.category}\n"
-
-          location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: adv.category == :flat ? 0 : 1 }
-          locations = get_location(location)
-
-          if locations.blank?
-            print "\nwe cant parse even region of #{adv} #{prepare_char(row[titles['Хар']])}\n"
-            next
-          end
-
-          adv.comment = %Q(цена: #{row[1]} т.р., район: #{row[titles['Район']]},
-               адрес: #{row[titles['Адрес']]}, этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]},
-                площадь: #{row[titles['Площадь']]}, коментарий: #{prepare_char(row[titles['Хар']])})
-          if titles.keys.find('Sуч.Всотках')
-            adv.comment += ", площадь-участка: #{row[titles['Sуч.Всотках']]}"
-          end
-
-          adv_params = { locations: locations, offer_type: adv.offer_type, category: adv.category, user_id: adv.user_id,
-          comment: adv.comment }
-
-          cadv = check_existance adv_params
-          adv.locations = locations.map{ |k,l| l }
-
-          if !cadv
-            if adv.save
-              print "\nWe are successfully created the advertisement #{adv}\n"
-            else
-              print "\nCould not save advertisement #{adv.errors.full_messages}\n"
-            end
-          else
-            print "\nWe found same advertisement #{cadv}\n"
-          end
+        else
+          print "\nWe found same advertisement #{cadv.map(&:id)}\n"
         end
       end
     end
