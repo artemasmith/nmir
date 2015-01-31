@@ -30,7 +30,7 @@ gem 'sanitize-rails', require: 'sanitize/rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-# gem 'jquery-ui-rails'
+gem 'jquery-ui-rails'
 gem 'nested_form'
 
 gem 'sidekiq'

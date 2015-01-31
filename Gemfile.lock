@@ -356,6 +356,7 @@ DEPENDENCIES
   joiner (= 0.3.1)
   jquery-fileupload-rails
   jquery-rails
+  jquery-ui-rails
   js-routes
   lol_dba
   mini_magick
