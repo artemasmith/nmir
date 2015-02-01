@@ -66,7 +66,11 @@ namespace :multilisting do
         if street.present? && address
           retaddress = street.sublocations.where('UPPER(title) LIKE ?', address.mb_chars.upcase.to_s.strip).first
           #if there is no house number - we will create it lately
-          address = retaddress if retaddress.present?
+          if retaddress.present?
+            address = retaddress
+          else
+            address = create_address(parent: street.id, title: address.strip) if street.location_type == 'street'
+          end
         else
           address = nil
         end
@@ -101,10 +105,37 @@ namespace :multilisting do
             if temp.count == 2
               # village/street, house
               street = village.sublocations.where('UPPER(title) LIKE ?', street).first
-              address = street.sublocations.where('UPPER(title) LIKE ?', address).first if street.present? && address.present?
+              if street.present? && address.present?
+                raddress = street.sublocations.where('UPPER(title) LIKE ?', address).first
+                if raddress.blank? && street.location_type == 'street'
+                  address = create_address(title: address.strip, parent: street.id)
+                else
+                  address = raddress
+                end
+              end
             elsif temp.count == 1
               #vilage/street
               street = village.sublocations.where('UPPER(title) LIKE ?', street).first
+            end
+          end
+        else
+          #street, house or street
+          temp = title[0].split(',')
+          if temp.count == 2
+            #VERY WET CODE!!!!!!!!!!!!!!!!!!!!!!!!!!but i just want to go to sleep
+            #street, house
+            street = Matcher.rename_street(temp[0].strip).mb_chars.upcase.to_s
+            street = region.sublocations.where('UPPER(title) LIKE ?', street).first
+            address =  Matcher.rename_street(temp[1].strip).mb_chars.upcase.to_s
+            if street.present? && address.present?
+              raddress = street.sublocations.where('UPPER(title) LIKE ?', address).first
+              print "\n in house section street=#{street.location_type} raddress=#{raddress.blank?}\n"
+              if raddress.blank? && street.location_type == 'street'
+                address = create_address(title: address.strip, parent: street.id)
+                print "we are in house if section addres not found #{address}"
+              else
+                address = raddress
+              end
             end
           end
         end
@@ -136,8 +167,10 @@ namespace :multilisting do
 
     end
 
-    def get_date str
-
+    def create_address loc_params
+      parent = Location.find(loc_params[:parent])
+      address = parent.sublocations.create(title: loc_params[:title], location_type: :address)
+      address
     end
 
     def prepare_char str
@@ -160,7 +193,7 @@ namespace :multilisting do
                                   AND advertisements.category = ? AND user_id = ? AND advertisements.property_type = ?
                                   AND advertisements.price_from = ?',
                                   nearest_location.title, offer_type, category, adv_params[:user_id], property_type, adv_params[:price].to_i)
-      print "\npre advs #{pre_advs.first.id}\n"
+      print "\npre advs #{pre_advs.present?}\n"
       if pre_advs.blank?
         return false
       else
