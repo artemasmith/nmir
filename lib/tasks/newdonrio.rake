@@ -15,16 +15,16 @@ namespace :multilisting do
         #fucking regexp too complicated and eat all cpu:(
 
         title = title.split('/')
-        print "title = #{title}\n"
+        #print "title = #{title}\n"
         if title.count == 1
           #street and house or street only
           title = title[0].split(',')
           street = title[0]
-          print "if section street=#{street}"
+          #print "if section street=#{street}"
           if title.count == 2
             #street and house
             address  = title[1]
-            print "we are in first section #{address} \n"
+            #print "we are in first section #{address} \n"
           end
         elsif title.count == 2
           #street/street or street, house/house
@@ -80,15 +80,15 @@ namespace :multilisting do
         #houses and land
         rostovobl = Location.find_by_title('Ростовская область')
         region = Matcher.rename_district(loc_params[:dist].strip).mb_chars.upcase.to_s
-        print "\n in get_location region before search = #{region}\n"
+        #print "\n in get_location region before search = #{region}\n"
         region = rostovobl.sublocations.where("UPPER(title) LIKE ?", region).first
-        print "\n in get_location region after search = #{region}\n"
+        #print "\n in get_location region after search = #{region}\n"
 
         #if we cant parse even a region
         return false if region.blank?
 
         title = loc_params[:addr].split('/')
-        print "\n title in get_location= #{title} \n"
+        #print "\n title in get_location= #{title} \n"
         if title.count == 2
           #dist/street dist/street, house  dist/street house
           village = region.sublocations.where('UPPER(title) LIKE ?', title[0].mb_chars.upcase.to_s).first
@@ -98,7 +98,7 @@ namespace :multilisting do
               street = Matcher.rename_street(temp[0].strip).mb_chars.upcase.to_s
               address =  Matcher.rename_street(temp[1].strip).mb_chars.upcase.to_s
 
-              print " address = #{address} street = #{street}\n"
+              #print " address = #{address} street = #{street}\n"
             else
               street = Matcher.rename_street(title[1].strip).mb_chars.upcase.to_s
             end
@@ -129,10 +129,8 @@ namespace :multilisting do
             address =  Matcher.rename_street(temp[1].strip).mb_chars.upcase.to_s
             if street.present? && address.present?
               raddress = street.sublocations.where('UPPER(title) LIKE ?', address).first
-              print "\n in house section street=#{street.location_type} raddress=#{raddress.blank?}\n"
               if raddress.blank? && street.location_type == 'street'
                 address = create_address(title: address.strip, parent: street.id)
-                print "we are in house if section addres not found #{address}"
               else
                 address = raddress
               end
@@ -183,23 +181,23 @@ namespace :multilisting do
     def check_existance adv_params
       nearest_location = adv_params[:locations][:address] || adv_params[:locations][:street] ||
           adv_params[:locations][:village] || adv_params[:locations][:district] || adv_params[:locations][:region]
-      print " nearest_location #{nearest_location} \n"
+      #print " nearest_location #{nearest_location} \n"
       #first we find all advs in granted locations with our property_avd
       offer_type = Advertisement::OFFER_TYPES.index(adv_params[:offer_type].to_sym)
       category = Advertisement::CATEGORIES.index(adv_params[:category].to_sym)
       property_type = Advertisement::PROPERTY_TYPES.index(adv_params[:property_type].to_sym)
-      print "\n Chex category=#{category} offer_type=#{offer_type} property_type=#{property_type}\n"
+      #print "\n Chex category=#{category} offer_type=#{offer_type} property_type=#{property_type}\n"
       pre_advs = Advertisement.joins(:locations).where('locations.title = ? AND advertisements.offer_type = ?
                                   AND advertisements.category = ? AND user_id = ? AND advertisements.property_type = ?
                                   AND advertisements.price_from = ?',
                                   nearest_location.title, offer_type, category, adv_params[:user_id], property_type, adv_params[:price].to_i)
-      print "\npre advs #{pre_advs.present?}\n"
+      #print "\npre advs #{pre_advs.present?}\n"
       if pre_advs.blank?
         return false
       else
         #pre_advs = pre_advs.where('comment like ?', adv_params[:comment])
         #if pre_advs.present?
-        print "sorry, we found simular advertisement(s) #{pre_advs.map(&:id).join(';')}"
+        #print "sorry, we found simular advertisement(s) #{pre_advs.map(&:id).join(';')}"
         return pre_advs
         #else
         #  return false
@@ -240,14 +238,14 @@ namespace :multilisting do
 
         adv = Advertisement.new
         adv.user = get_contact(name: name, phone: phone)
-        print "user = #{adv.user}"
+        #print "user = #{adv.user}"
 
         adv.offer_type = :sale
         adv.adv_type = :offer
         adv.property_type = :commerce
 
         adv.price_from = row[1].to_i
-        print "adv.price_from #{adv.price_from}\n"
+        #print "adv.price_from #{adv.price_from}\n"
 
         har = row[titles['Хар']]
         if har.match /участок/i
@@ -257,12 +255,12 @@ namespace :multilisting do
         else
           adv.category = :flat
         end
-        print "category #{adv.category}\n"
+        #print "category #{adv.category}\n"
 
         location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: titles.keys.include?('Sуч.Всотках') ? 1 : 0 }
-        print "\nlocation = #{location}\n"
+        #print "\nlocation = #{location}\n"
         locations = get_location(location)
-        print "locations = #{locations}\n"
+        #print "locations = #{locations}\n"
 
         if locations.blank?
           print "\nwe cant parse even region of #{adv} #{prepare_char(row[titles['Хар']])}\n"
@@ -272,8 +270,8 @@ namespace :multilisting do
         adv.comment = %Q(цена: #{row[1]} т.р., район: #{row[titles['Район']]},
              адрес: #{row[titles['Адрес']]}, этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]},
               площадь: #{row[titles['Площадь']]}, коментарий: #{prepare_char(row[titles['Хар']])})
-        print "titles #{titles}"
-        print "advcomment #{adv.comment}\n"
+        #print "titles #{titles}"
+        #print "advcomment #{adv.comment}\n"
         if titles.keys.include?('Sуч.Всотках')
           adv.comment += ", площадь-участка: #{row[titles['Sуч.Всотках']]}"
         end
