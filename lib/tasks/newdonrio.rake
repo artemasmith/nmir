@@ -144,26 +144,6 @@ namespace :multilisting do
       result
     end
 
-    def get_contact cinfo
-      phone = Phone.where('number = ?',Phone.normalize(cinfo[:phone])).first
-      if phone.present?
-        return phone.user
-      else
-        user = User.where('name Like ?', cinfo[:name].strip).first
-        if user.present?
-          if user.phones.where('number = ?', Phone.normalize(cinfo[:phone])).blank?
-            user.phones.create(original: cinfo[:phone])
-          end
-          return user
-        else
-          #what should we do if there is no user or phone?
-          user = User.create(email: "#{cinfo[:name]}#{cinfo[:phone]}@mail.ru", password: "#{Time.now}+#{Time.now}", name: cinfo[:name], role: 0)
-          user.phones.create(original: cinfo[:phone])
-          return user
-        end
-      end
-
-    end
 
     def create_address loc_params
       parent = Location.find(loc_params[:parent])
@@ -177,37 +157,10 @@ namespace :multilisting do
       res
     end
 
-    #should return false if we didnt find same adv
-    def check_existance adv_params
-      nearest_location = adv_params[:locations][:address] || adv_params[:locations][:street] ||
-          adv_params[:locations][:village] || adv_params[:locations][:district] || adv_params[:locations][:region]
-      #print " nearest_location #{nearest_location} \n"
-      #first we find all advs in granted locations with our property_avd
-      offer_type = Advertisement::OFFER_TYPES.index(adv_params[:offer_type].to_sym)
-      category = Advertisement::CATEGORIES.index(adv_params[:category].to_sym)
-      property_type = Advertisement::PROPERTY_TYPES.index(adv_params[:property_type].to_sym)
-      #print "\n Chex category=#{category} offer_type=#{offer_type} property_type=#{property_type}\n"
-      pre_advs = Advertisement.joins(:locations).where('locations.title = ? AND advertisements.offer_type = ?
-                                  AND advertisements.category = ? AND user_id = ? AND advertisements.property_type = ?
-                                  AND advertisements.price_from = ?',
-                                  nearest_location.title, offer_type, category, adv_params[:user_id], property_type, adv_params[:price].to_i)
-      #print "\npre advs #{pre_advs.present?}\n"
-      if pre_advs.blank?
-        return false
-      else
-        #pre_advs = pre_advs.where('comment like ?', adv_params[:comment])
-        #if pre_advs.present?
-        #print "sorry, we found simular advertisement(s) #{pre_advs.map(&:id).join(';')}"
-        return pre_advs
-        #else
-        #  return false
-        #end
-      end
-    end
-
 
     #TASK STARTS
     args.file ||= '/home/kaa/test-book.xls'
+    log = Logger.new 'log.txt'
     print "\nARGS= #{args} \n"
     adv = {}
     titles = {}
@@ -237,7 +190,12 @@ namespace :multilisting do
         end
 
         adv = Advertisement.new
-        adv.user = get_contact(name: name, phone: phone)
+        contact = User.get_contact(name: name, phone: phone)
+        if contact
+          adv.user = contact
+        else
+          adv.phone = Phone.normalize(phone)
+        end
         #print "user = #{adv.user}"
 
         adv.offer_type = :sale
@@ -279,7 +237,7 @@ namespace :multilisting do
         adv_params = { locations: locations, offer_type: adv.offer_type, category: adv.category, property_type: adv.property_type,
                        user_id: adv.user_id,comment: adv.comment, price: adv.price_from }
 
-        cadv = check_existance adv_params
+        cadv = Advertisement.check_existence adv_params
         print "\n\nCADV #{cadv}\n\n"
         adv.locations = locations.map{ |k,l| l }
 

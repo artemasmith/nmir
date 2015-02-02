@@ -88,9 +88,8 @@ class Advertisement < ActiveRecord::Base
   include AdvEnums
   include AdvRailsAdmin
 
+  include AdvDoublefinder
 
-
-  
   def grouped_allowed_attributes
     return  @grouped_allowed_attributes if defined?(@grouped_allowed_attributes)
     sorted_list = %w(price_from floor_from floor_cnt_from space_from outdoors_space_from room_from)
