@@ -15,36 +15,43 @@ namespace :multilisting do
         #fucking regexp too complicated and eat all cpu:(
 
         title = title.split('/')
-        #print "title = #{title}\n"
+        #print "title = #{title} title count= #{title.count}\n"
         if title.count == 1
           #street and house or street only
           title = title[0].split(',')
           street = title[0]
-          #print "if section street=#{street}"
+          #print "first section title count==1 street=#{street}"
           if title.count == 2
             #street and house
             address  = title[1]
-            #print "we are in first section #{address} \n"
+           # print "title(,) count ==2 address= #{address} \n"
           end
         elsif title.count == 2
+          #print "we are in title count == 2"
           #street/street or street, house/house
           if title[1].match /^\d+[[:alpha:]]{0,1}$/
             #street, house/house
             street = title[0].split(',')[0]
             address = title[0].split(',')[1] + '/' + title[1]
-          elsif title[1].match /^\d*\s*[[:alpha:]]+$/
+           # print "first match"
+          elsif title[1].strip.match /^\d*\s*[[:alpha:]]+$/
             #street/street or street,house/street
             #if we have 2 streets we save only one?
             temp = title[0].split(',')
+            #print "second match temp=#{temp}"
             if temp.count == 2
               street = temp[0]
               address = temp[1]
+             # print "temp.count =2 "
             else
               street = title[0]
               street2 = title[1]
               address = nil
+              #print "street/street str = #{street} #{street2}"
             end
+            #print "second main if street #{street} address #{address}"
           end
+          #print "may it be? no one matcher.. street = #{street}"
         elsif title.count == 3
           #street, house/house/street or street,house/street/street
           street = title[0].split(',')[0]
@@ -58,11 +65,13 @@ namespace :multilisting do
             street3 = title[2]
           end
         end
-        street = Matcher.rename_street(street).mb_chars.upcase.to_s
+        street = Matcher.rename_street(street.strip).mb_chars.upcase.to_s
         rostov = Location.find_by_title('Ростов-на-Дону')
         district = rostov.sublocations.where('UPPER(title) LIKE ?', Matcher.rename_district(loc_params[:dist].strip).mb_chars.upcase.to_s).first
+        #print "street #{street} \n"
 
-        street = rostov.sublocations.where('UPPER(title) LIKE ?', street).first
+        street = district.sublocations.where('UPPER(title) LIKE ?', street).first
+        #print "location street #{street}"
         if street.present? && address
           retaddress = street.sublocations.where('UPPER(title) LIKE ?', address.mb_chars.upcase.to_s.strip).first
           #if there is no house number - we will create it lately
@@ -75,6 +84,7 @@ namespace :multilisting do
           address = nil
         end
         #what should I do with street2 and street 3???
+        #print "#{address}"
 
       else
         #houses and land
@@ -157,11 +167,16 @@ namespace :multilisting do
       res
     end
 
+    def normalize_locations locations
+      nearest = locations[:address] || locations[:street] || locations[:village] || locations[:district]
+      Location.parent_locations nearest
+    end
+
 
     #TASK STARTS
     args.file ||= '/home/kaa/test-book.xls'
-    log = Logger.new 'log.txt'
-    print "\nARGS= #{args} \n"
+    log = Logger.new './log/import-log.txt'
+    log.debug "\nARGS= #{args} \n"
     adv = {}
     titles = {}
     workbook = Spreadsheet.open(args.file).worksheets
@@ -182,19 +197,19 @@ namespace :multilisting do
         contactrow = row[titles['Тел контанк']].gsub(/[^[:word:]]/, '')
         name = contactrow.gsub /[^[:alpha:]]/, ''
         phone = contactrow.gsub /[[:alpha:]]/, ''
-        print "name = #{name} phone = #{phone}\n"
-
-        if name.blank? || phone.blank?
-          print "There is no name or phone for adv index #{index}, #{name} #{phone}\n"
-          next
-        end
 
         adv = Advertisement.new
         contact = User.get_contact(name: name, phone: phone)
+
         if contact
-          adv.user = contact
+          if contact.class == User
+            adv.user = contact
+          else
+            adv.phone = contact
+          end
         else
-          adv.phone = Phone.normalize(phone)
+          log.debug("could not recognize phone for adv row number #{ worksheet.rows.index(row) }")
+          next
         end
         #print "user = #{adv.user}"
 
@@ -216,12 +231,12 @@ namespace :multilisting do
         #print "category #{adv.category}\n"
 
         location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: titles.keys.include?('Sуч.Всотках') ? 1 : 0 }
-        #print "\nlocation = #{location}\n"
+        log.debug "\nlocation = #{location}\n"
         locations = get_location(location)
-        #print "locations = #{locations}\n"
+        log.debug "locations = #{locations}\n"
 
         if locations.blank?
-          print "\nwe cant parse even region of #{adv} #{prepare_char(row[titles['Хар']])}\n"
+          log.debug "\nwe can't parse even region of #{adv} row line #{worksheet.rows.index(row)}\n"
           next
         end
 
@@ -238,17 +253,17 @@ namespace :multilisting do
                        user_id: adv.user_id,comment: adv.comment, price: adv.price_from }
 
         cadv = Advertisement.check_existence adv_params
-        print "\n\nCADV #{cadv}\n\n"
-        adv.locations = locations.map{ |k,l| l }
+        #print "\n\nCADV #{cadv}\n\n"
+        adv.locations = normalize_locations locations
 
         if !cadv
           if adv.save
-            print "\nWe are successfully created the advertisement #{adv.id}\n"
+            log.debug "\nWe are successfully created the advertisement #{adv.id}\n"
           else
-            print "\nCould not save advertisement #{adv.errors.full_messages}\n"
+            log.debug "\nCould not save advertisement #{adv.errors.full_messages}\n"
           end
         else
-          print "\nWe found same advertisement #{cadv.map(&:id)}\n"
+          log.debug "\nWe found same advertisement #{cadv.map(&:id)}\n"
         end
       end
     end
