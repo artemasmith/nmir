@@ -7,28 +7,23 @@ namespace :import do
   task(:donrio, [:file] => :environment) do |t, args|
 
     def find_locations_in_db locations
-      #print "locations #{locations}"
       parent = Location.where('title = ?', locations[:parent]).first
-      ptype = parent.location_type.to_sym
       result = { parent: parent }
       keys = [:district, :area, :street, :address]
       keys.delete(:area) if locations[:parent] == 'Ростов-на-Дону'
-      #[:district, :area, :street, :address].each { |k| keys << k if locations[k].present? }
-      #print "locations #{locations}"
       keys.each do |ltype|
         break if locations[ltype].blank?
-        temp = parent.sublocations.where('UPPER(title) LIKE ?', locations[ltype].mb_chars.upcase.to_s).first
+        temp = parent.sublocations.where('UPPER(title) ILIKE ?', "%#{locations[ltype].mb_chars.upcase.to_s}%").first
         if temp.present?
           result[ltype] = temp
           parent = temp
         end
       end
-      #print "result in find_locations_in_db #{result}\n"
       result
     end
 
     def get_location loc_params
-      street, street2, address, village, district, region, parent = ''
+      street, address, district, region, parent = ''
       title = loc_params[:addr]
       district = Matcher.rename_district(loc_params[:dist])
 
@@ -36,7 +31,6 @@ namespace :import do
         #flats in rostov
         #parse string and get strings witch location titles
         street, address = DonrioParser.parse_flat title
-        #find locations by title in db
         parent = 'г Ростов-на-Дону'
       else
         #houses and land
@@ -44,18 +38,10 @@ namespace :import do
         parent = 'обл Ростовская'
       end
       lc = { parent: parent, district: district, area: area, street: street, address: address }
-      #print "lc = #{lc}"
       result = find_locations_in_db(lc)
-      #print "\nresult #{result}\n"
 
-      #return false if result[:district].blank?
-
-      #result = { district: district, village: village, street: street, address: address, region: region }
-      #????
       result.each {|k,v| result.delete(k) if v.blank?}
-      #print "\nresult = #{result}\n"
       result = normalize_locations result
-      #print "\n normalized locations #{result}\n"
       result
     end
 
@@ -105,21 +91,16 @@ namespace :import do
           log.warn("could not recognize phone=#{phone} or find it in db for adv row number #{ worksheet.rows.index(row) }")
           next
         end
-        #print "user = #{adv.user}"
 
         adv.offer_type = DonrioParser.parse_offer_type row
         adv.adv_type = DonrioParser.parse_adv_type row
         adv.property_type = DonrioParser.parse_property_type row
 
         adv.price_from = DonrioParser.parse_price row
-        #print "adv.price_from #{adv.price_from}\n"
 
         adv.category = DonrioParser.parse_category row, titles
 
-        #print "category #{adv.category}\n"
-
         location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: titles.keys.include?('Sуч.Всотках') ? 1 : 0 }
-        #log.debug "\nlocation = #{location}\n"
         locations = get_location(location)
         log.debug "locations = #{locations}\n"
 
@@ -127,7 +108,7 @@ namespace :import do
         locations.each { |l| parsed = true if l.location_type == 'address' }
 
         if locations.blank?
-          log.debug "\nwe can't parse even region of #{adv} row line #{worksheet.rows.index(row)}\n"
+          log.warn "\nwe can't parse even region of #{adv} row line #{worksheet.rows.index(row)}\n"
           next
         end
 
@@ -137,7 +118,6 @@ namespace :import do
                        user_id: adv.user_id,comment: adv.comment, price: adv.price_from }
 
         cadv = Advertisement.check_existence adv_params
-        #print "\n\nCADV #{cadv}\n\n"
         adv.locations = locations
 
         if !cadv

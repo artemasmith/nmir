@@ -54,25 +54,7 @@ class User < ActiveRecord::Base
       return phone.user
     else
       return false
-      # if cinfo[:phone].match /[[:alpha:]]/
-      #   return false
-      # else
-      #   return Phone.normalize cinfo[:phone]
-      # end
-      # user = User.where('name Like ?', cinfo[:name].strip).first
-      # if user.present?
-      #   if user.phones.where('number = ?', Phone.normalize(cinfo[:phone])).blank?
-      #     user.phones.create(original: cinfo[:phone])
-      #   end
-      #   return user
-      # else
-      #   #what should we do if there is no user or phone?
-      #   user = User.create(email: "#{cinfo[:name]}#{cinfo[:phone]}@mail.ru", password: "#{Time.now}+#{Time.now}", name: cinfo[:name], role: 0)
-      #   user.phones.create(original: cinfo[:phone])
-      #   return user
-      # end
-
     end
-
   end
+
 end
