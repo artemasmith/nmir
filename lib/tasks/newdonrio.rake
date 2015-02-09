@@ -10,29 +10,30 @@ namespace :import do
       superparent = Location.where('title = ?', locations[:parent]).first
       district = Matcher.rename_district(locations[:district])
       parent = nil
-      print "district = #{district}\n"
       parent_locations = Location.where('title ilike ?', "%#{district}%").where('location_type < 5')
-      print "parent_locations = #{parent_locations.count}"
       if parent_locations.count >= 1
         if parent_locations.where('title ilike ?', district).count == 1
           parent = parent_locations.where('title ilike ?', district).first
-          print "guesed parent #{parent}"
         else
           #same named locations example Lenina :(
-          print "we didnt find district at one time"
           parent_locations.each do |pl|
             if locations[:area].present? && !district.match(/#{locations[:area]}/i) && pl.sublocations.where('title ilike ?', "%#{locations[:area]}%").count == 1
               parent = pl
             elsif locations[:street].present? && pl.sublocations.where('title ilike ?', "%#{locations[:street]}%").count == 1
               parent = pl
             end
-            print "parent = #{parent}"
+            if parent.blank? && parent_locations.present?
+              parent = parent_locations.where('title ilike ?', locations[:district]).first
+            else
+              parent = false
+            end
           end
         end
       end
       result = { parent: superparent, district: parent }
+      return result if parent.blank?
+
       keys = [:area, :street, :address]
-      #keys.delete(:area) if locations[:parent] == 'Ростов-на-Дону'
       keys.delete(:area) if locations[:area].blank? || district.match(/#{locations[:area]}/i)
       keys.each do |ltype|
         break if locations[ltype].blank?
@@ -46,13 +47,11 @@ namespace :import do
         else
           temp = temp.first
         end
-        print "\ntemp #{temp}\n"
         if temp.present?
           result[ltype] = temp
           parent = temp
         end
       end
-      print "\n\nresult = #{result}\n\n"
       result
     end
 
@@ -120,6 +119,8 @@ namespace :import do
         #here we are looking for client info
         phone = DonrioParser.parse_phone row, titles
         name = DonrioParser.parse_name row, titles
+
+        #print "\nname=#{name}\n"
 
         adv = Advertisement.new
         contact = User.get_contact(phone: phone, name: name)
