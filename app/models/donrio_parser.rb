@@ -119,6 +119,10 @@ class DonrioParser
     phone = row[titles['Тел контанк']].gsub(/[^[:word:]]/, '').gsub /[[:alpha:]]/, ''
   end
 
+  def self.parse_name row, titles
+    name = row[titles['Тел контанк']].gsub(/[^[:word:]]/, '').gsub /[^[:alpha:]]/, ''
+  end
+
   def self.parse_price row
     row[1].to_i
   end

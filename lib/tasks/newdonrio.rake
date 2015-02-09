@@ -7,18 +7,52 @@ namespace :import do
   task(:donrio, [:file] => :environment) do |t, args|
 
     def find_locations_in_db locations
-      parent = Location.where('title = ?', locations[:parent]).first
-      result = { parent: parent }
-      keys = [:district, :area, :street, :address]
-      keys.delete(:area) if locations[:parent] == 'Ростов-на-Дону'
+      superparent = Location.where('title = ?', locations[:parent]).first
+      district = Matcher.rename_district(locations[:district])
+      parent = nil
+      print "district = #{district}\n"
+      parent_locations = Location.where('title ilike ?', "%#{district}%").where('location_type < 5')
+      print "parent_locations = #{parent_locations.count}"
+      if parent_locations.count >= 1
+        if parent_locations.where('title ilike ?', district).count == 1
+          parent = parent_locations.where('title ilike ?', district).first
+          print "guesed parent #{parent}"
+        else
+          #same named locations example Lenina :(
+          print "we didnt find district at one time"
+          parent_locations.each do |pl|
+            if locations[:area].present? && !district.match(/#{locations[:area]}/i) && pl.sublocations.where('title ilike ?', "%#{locations[:area]}%").count == 1
+              parent = pl
+            elsif locations[:street].present? && pl.sublocations.where('title ilike ?', "%#{locations[:street]}%").count == 1
+              parent = pl
+            end
+            print "parent = #{parent}"
+          end
+        end
+      end
+      result = { parent: superparent, district: parent }
+      keys = [:area, :street, :address]
+      #keys.delete(:area) if locations[:parent] == 'Ростов-на-Дону'
+      keys.delete(:area) if locations[:area].blank? || district.match(/#{locations[:area]}/i)
       keys.each do |ltype|
         break if locations[ltype].blank?
-        temp = parent.sublocations.where('UPPER(title) ILIKE ?', "%#{locations[ltype].mb_chars.upcase.to_s}%").first
+        temp = parent.sublocations.where('title ILIKE ?', "%#{locations[ltype]}%")
+        if temp.count >= 1
+          if temp.where('title ILIKE ?', "#{locations[ltype]}").count == 1
+            temp = temp.where('title ILIKE ?', "#{locations[ltype]}").first
+          else
+            temp = temp.first
+          end
+        else
+          temp = temp.first
+        end
+        print "\ntemp #{temp}\n"
         if temp.present?
           result[ltype] = temp
           parent = temp
         end
       end
+      print "\n\nresult = #{result}\n\n"
       result
     end
 
@@ -39,6 +73,10 @@ namespace :import do
       end
       lc = { parent: parent, district: district, area: area, street: street, address: address }
       result = find_locations_in_db(lc)
+
+      if address.present? && result[:address].blank? && result[:street].present? && result[:street].location_type == 'street'
+        create_address(parent: result[:street], title: address)
+      end
 
       result.each {|k,v| result.delete(k) if v.blank?}
       result = normalize_locations result
@@ -81,9 +119,10 @@ namespace :import do
 
         #here we are looking for client info
         phone = DonrioParser.parse_phone row, titles
+        name = DonrioParser.parse_name row, titles
 
         adv = Advertisement.new
-        contact = User.get_contact(phone: phone)
+        contact = User.get_contact(phone: phone, name: name)
 
         if contact
           adv.user = contact

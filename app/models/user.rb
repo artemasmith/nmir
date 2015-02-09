@@ -53,7 +53,14 @@ class User < ActiveRecord::Base
     if phone.present?
       return phone.user
     else
-      return false
+      if cinfo[:phone].match /[[:alpha:]]/
+        return false
+      else
+        print "email: #{cinfo[:phone]}@.mail.ru, name: #{cinfo[:name]}, password: #{Time.now.to_i}"
+        user = User.create(email: "#{cinfo[:phone]}@.mail.ru", name: "#{cinfo[:name]}", password: "#{Time.now.to_i}", role: 0)
+        user.phones.create(original: cinfo[:phone])
+        return user
+      end
     end
   end
 
