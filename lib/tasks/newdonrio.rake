@@ -44,8 +44,6 @@ namespace :import do
           else
             temp = temp.first
           end
-        else
-          temp = temp.first
         end
         if temp.present?
           result[ltype] = temp
@@ -136,6 +134,21 @@ namespace :import do
         adv.adv_type = DonrioParser.parse_adv_type row
         adv.property_type = DonrioParser.parse_property_type row
 
+        floor_from = DonrioParser.parse_floor_from row, titles
+        adv.floor_from = floor_from if floor_from.present? && floor_from > 0
+        floor_cnt_from = DonrioParser.parse_floor_cnt_from row, titles
+        adv.floor_cnt_from = floor_cnt_from if floor_cnt_from.present? && floor_cnt_from > 0
+
+        room_from = DonrioParser.parse_room row, titles
+        adv.room_from = room_from if room_from.present? && room_from > 0
+
+        space_from = DonrioParser.parse_space_from row, titles
+        adv.space_from = space_from if space_from.present? && space_from > 0
+
+        if titles['Sуч.Всотках'].present?
+          outdoors_space_from = DonrioParser.parse_outdoors_space_from row, titles
+          adv.outdoors_space_from = outdoors_space_from if outdoors_space_from.present? && outdoors_space_from > 0
+        end
         adv.price_from = DonrioParser.parse_price row
 
         adv.category = DonrioParser.parse_category row, titles
