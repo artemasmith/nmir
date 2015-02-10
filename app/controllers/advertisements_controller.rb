@@ -380,7 +380,7 @@ class AdvertisementsController < ApplicationController
   def new
     @adv = Advertisement.new
     clids = cookies[:location_ids].split('&') if cookies[:location_ids].present?
-    load_location_state!(clids)
+    load_location_state!(clids) if clids.present?
   end
 
   def create

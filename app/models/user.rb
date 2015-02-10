@@ -43,4 +43,24 @@ class User < ActiveRecord::Base
   def change_adv_role
     Advertisement.where(user_id: self.id).update_all({user_role: self.role})
   end
+
+  def self.get_contact cinfo
+    if cinfo[:phone].blank?
+      return false
+    end
+    phone = Phone.where('number = ?',Phone.normalize(cinfo[:phone])).first
+
+    if phone.present?
+      return phone.user
+    else
+      if cinfo[:phone].match /[[:alpha:]]/
+        return false
+      else
+        user = User.create(email: "#{cinfo[:phone]}@.mail.ru", name: "#{cinfo[:name]}", password: "#{Time.now.to_i}", role: 0)
+        user.phones.create(original: cinfo[:phone])
+        return user
+      end
+    end
+  end
+
 end

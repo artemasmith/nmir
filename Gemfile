@@ -30,8 +30,11 @@ gem 'sanitize-rails', require: 'sanitize/rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-# gem 'jquery-ui-rails'
+gem 'jquery-ui-rails'
 gem 'nested_form'
+
+gem 'sidekiq'
+gem 'spreadsheet'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
