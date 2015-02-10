@@ -103,14 +103,13 @@ class DonrioParser
   end
 
   def self.parse_comment row, titles, parsed
-    comment = %Q(цена: #{row[1]} т.р., район: #{row[titles['Район']]},
-              этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]},
-              площадь: #{row[titles['Площадь']]}, коментарий: #{DonrioParser.prepare_char(row[titles['Хар']])})
+    comment = %Q(цена: #{row[1]} т.р., этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]}, площадь: #{row[titles['Площадь']]},
+      коментарий: #{DonrioParser.prepare_char(row[titles['Хар']])})
     if titles.keys.include?('Sуч.Всотках')
       comment += ", площадь-участка: #{row[titles['Sуч.Всотках']]}"
     end
     if !parsed
-      comment += ", адрес: #{row[titles['Адрес']]}"
+      comment += ", адрес: #{row[titles['Адрес']]}, район: #{row[titles['Район']]},"
     end
     comment
   end
@@ -123,12 +122,43 @@ class DonrioParser
     name = row[titles['Тел контанк']].gsub(/[^[:word:]]/, '').gsub /[^[:alpha:]]/, ''
   end
 
+  def self.parse_space_from row, titles
+    space_from = row[titles['Площадь']].to_i
+    space_from
+  end
+
+  def self.parse_outdoors_space_from row, titles
+    temp = row[titles['Sуч.Всотках']].to_s.split(',')
+    outdoors_space_from = temp[0].to_i * 100
+    outdoors_space_from += temp[1].to_i * 10 if temp.count == 2
+    outdoors_space_from
+  end
+
   def self.parse_price row
     row[1].to_i
   end
 
-  def self.parse_floor row, titles
+  def self.parse_floor_from row, titles
+    return nil if row[titles['Эт.']].blank?
+    if titles['Sуч.Всотках'].present?
+      floor_from = row[titles['Эт.']].match(/\d+,*\d*/).to_s.to_i
+      return nil if floor_from == 0
+    else
+      temp = row[titles['Эт.']].split('/')
+      floor_from = temp[0].to_i
+    end
+    floor_from
+  end
 
+  def self.parse_floor_cnt_from row, titles
+    return nil if row[titles['Эт.']].blank?
+    temp = row[titles['Эт.']].split('/')
+    floor_cnt_from = temp.count == 2 ? temp[1].to_i : nil
+    floor_cnt_from
+  end
+
+  def self.parse_room row, titles
+    row[titles['ком.']].to_i
   end
 
   def self.parse_offer_type row
