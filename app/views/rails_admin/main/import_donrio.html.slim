@@ -1,0 +1,6 @@
+h2= t(:upload_file)
+
+=form_tag url: '/upload_donrio', method: :post, multipart: true do
+=file_field_tag :donrio, class: ''
+=submit_tag t(:create), class: 'btn btn-default btn-success'
+

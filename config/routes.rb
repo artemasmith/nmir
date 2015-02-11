@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  match 'upload_donrio' => 'donrio_uploader#create', via: :post
+
   resources :photos
 
   match 'photos' => 'photos#create', via: [:post, :patch]
