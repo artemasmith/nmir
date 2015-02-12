@@ -27,6 +27,9 @@ RailsAdmin.config do |config|
     edit
     delete
     show_in_app
+    collection :import_donrio do
+      only Advertisement
+    end
 
     ## With an audit adapter, you can add:
     # history_index

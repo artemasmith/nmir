@@ -1,0 +1,11 @@
+h2= t('admin.form.upload_file')
+
+=form_tag '/upload_donrio', method: :post, multipart: true do
+ = file_field_tag 'donrio', required: true, accept: 'xls'
+ br
+ =submit_tag t('admin.form.save'), class: 'btn btn-default btn-success'
+
+
+
+
+
