@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  match 'upload_donrio' => 'donrio_uploader#create', via: :post
+  match 'upload_donrio' => 'import_uploader#create', via: :post
 
   resources :photos
 

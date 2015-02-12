@@ -39,6 +39,10 @@ ru:
       item: "Элемент"
       message: "Сообщение"
     actions:
+      import_donrio:
+        menu: 'импорт donrio'
+        breadcrumb: 'импорт donrio'
+        title: 'Импорт из donrio'
       dashboard:
         title: "Управление сайтом"
         menu: "Панель управления"
@@ -107,6 +111,7 @@ ru:
       confirmation: "Да, уверен"
       delete_confirmation: "Подтвердить удаление"
       bulk_delete: "Следующие объекты будут удалены, что может сломать связи с другими объектами:"
+      upload_file: 'Загрузить файл'
     export:
       confirmation: "Экспортировать как %{name}"
       select: "Выберите поля для экспорта"
