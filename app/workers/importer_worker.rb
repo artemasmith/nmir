@@ -11,6 +11,6 @@ class ImporterWorker
     rake.init
     rake.load_rakefile
     rake['import:donrio'].invoke(file_path)
-    ImporterMailer.finish(email).deliver_later
+    ImporterMailer.finish(email)
   end
 end
