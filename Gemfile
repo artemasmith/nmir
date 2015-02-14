@@ -73,6 +73,7 @@ group :development do
   gem 'capistrano-rvm'
   gem 'lol_dba'
   gem 'annotate'
+  gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq'
 end
 
 group :development, :test do

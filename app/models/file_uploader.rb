@@ -2,7 +2,12 @@ class FileUploader
   def self.save(upload)
     name =  upload.original_filename
     name = name.sub(/[^\w\.\-]/,'_')
-    directory = "public/import"
+    if Rails.env.production?
+      directory = Rails.root.join('..', 'shared', 'public', 'import')
+    else
+      directory = Rails.root.join('public', 'import')
+    end
+    FileUtils.mkdir_p(directory) unless File.exists?(directory)
     # create the file path
     path = File.join(directory, name)
 

@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/seuros/capistrano-sidekiq.git
+  revision: 5dff5a371df4a6f1a91596ceabcfea6e25dcc2bc
+  specs:
+    capistrano-sidekiq (0.4.1)
+      capistrano
+      sidekiq
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -343,6 +351,7 @@ DEPENDENCIES
   cancancan (~> 1.9)
   capistrano (~> 3.2.0)
   capistrano-rvm
+  capistrano-sidekiq!
   capybara
   carrierwave
   coffee-rails (~> 4.0.0)

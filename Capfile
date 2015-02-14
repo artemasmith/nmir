@@ -28,6 +28,9 @@ require 'capistrano3/unicorn'
 
 require "whenever/capistrano"
 
+require 'capistrano/sidekiq'
+require 'capistrano/sidekiq/monit'
+
 
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.

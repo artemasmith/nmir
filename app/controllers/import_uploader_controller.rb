@@ -6,7 +6,7 @@ class ImportUploaderController < ApplicationController
       redirect_to rails_admin.import_donrio(model_name: :advertisement)
     else
       flash[:info] = 'Succesfully created file'
-      ImporterWorker.perform_async(res[:file_path])
+      ImporterWorker.perform_async(res[:file_path], current_user.email)
       redirect_to rails_admin.index_path(model_name: :advertisement)
     end
   end
