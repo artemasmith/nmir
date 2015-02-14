@@ -123,6 +123,10 @@ class Location < ActiveRecord::Base
     end
   end
 
+  def loaded_resource!
+    self.loaded_resource = true
+    self.save
+  end
 
   private
   def load_resources

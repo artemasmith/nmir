@@ -84,6 +84,7 @@ namespace :import do
     def create_address loc_params
       parent = Location.find(loc_params[:parent])
       address = parent.sublocations.create(title: loc_params[:title], location_type: :address)
+      parent.loaded_resource!
       address
     end
 
@@ -95,7 +96,7 @@ namespace :import do
 
 
     #TASK STARTS
-    args.file ||= '/home/kaa/test-book.xls'
+    args.file ||= '/home/tea/RubymineProjects/nmir/public/import/first_test_donrio.xls'
     log = Logger.new './log/import-log.txt'
     log.debug "\nARGS= #{args} \n"
     adv = {}
@@ -168,7 +169,7 @@ namespace :import do
         adv.comment = DonrioParser.parse_comment row, titles, parsed
 
         adv_params = { locations: locations, offer_type: adv.offer_type, category: adv.category, property_type: adv.property_type,
-                       user_id: adv.user_id,comment: adv.comment, price: adv.price_from }
+                       user_id: adv.user_id, price: adv.price_from }
 
         cadv = Advertisement.check_existence adv_params
         adv.locations = locations

@@ -14,17 +14,19 @@ module AdvDoublefinder
         district = location if location.location_type == 'district'
         region = location if location.location_type == 'region'
       end
-      nearest_location = address || street || non_admin_area || admin_area ||  city || district || region
+      second_nearest_location = street || non_admin_area || admin_area ||  city || district || region
+      first_nearest_location = address || second_nearest_location
+
       #first we find all advs in granted locations with our property_avd
       offer_type = Advertisement::OFFER_TYPES.index(adv_params[:offer_type].to_sym)
       category = Advertisement::CATEGORIES.index(adv_params[:category].to_sym)
       property_type = Advertisement::PROPERTY_TYPES.index(adv_params[:property_type].to_sym)
 
-      pre_advs = Advertisement.joins(:locations).where('locations.id = ? AND advertisements.offer_type = ?
+      pre_advs = Advertisement.joins(:locations).where('(locations.id IN (?, ?)) AND advertisements.offer_type = ?
                                   AND advertisements.category = ? AND user_id = ? AND advertisements.property_type = ?
-                                  AND advertisements.price_from = ?',
-                                  nearest_location.id, offer_type, category, adv_params[:user_id],
-                                  property_type, adv_params[:price].to_i)
+                                  AND (abs(advertisements.price_from - ?) < (? / 10))',
+                                  first_nearest_location.id, second_nearest_location.id, offer_type, category, adv_params[:user_id],
+                                  property_type, adv_params[:price].to_i, adv_params[:price].to_i)
       if pre_advs.blank?
         return false
       else
