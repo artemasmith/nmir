@@ -11,6 +11,7 @@ class ImporterWorker
     rake.init
     rake.load_rakefile
     rake['import:donrio'].invoke(file_path)
+    File.delete(file_path)
     ImporterMailer.finish(email)
   end
 end

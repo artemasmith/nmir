@@ -103,8 +103,7 @@ class DonrioParser
   end
 
   def self.parse_comment row, titles, parsed
-    comment = %Q(цена: #{row[1]} т.р., этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]}, площадь: #{row[titles['Площадь']]},
-      коментарий: #{DonrioParser.prepare_char(row[titles['Хар']])})
+    comment = %Q(цена: #{row[1]} т.р., этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]}, площадь: #{row[titles['Площадь']]}, #{DonrioParser.prepare_char(row[titles['Хар']])})
     if titles.keys.include?('Sуч.Всотках')
       comment += ", площадь-участка: #{row[titles['Sуч.Всотках']]}"
     end
@@ -128,14 +127,22 @@ class DonrioParser
   end
 
   def self.parse_outdoors_space_from row, titles
-    temp = row[titles['Sуч.Всотках']].to_s.split(',')
-    outdoors_space_from = temp[0].to_i * 100
-    outdoors_space_from += temp[1].to_i * 10 if temp.count == 2
-    outdoors_space_from
+    text = row[titles['Sуч.Всотках']].to_s
+    temp = text.split(',')
+    if text.include?('га')
+      outdoors_space_from = temp[0].to_f * 100
+      outdoors_space_from += temp[1].to_f * 10 if temp.count == 2
+      return outdoors_space_from
+    else
+      temp = row[titles['Sуч.Всотках']].to_s.split(',')
+      outdoors_space_from = temp[0].to_f
+      outdoors_space_from += temp[1].to_f * 0.1 if temp.count == 2
+      return outdoors_space_from
+    end
   end
 
   def self.parse_price row
-    row[1].to_i
+    row[1].to_i * 1000
   end
 
   def self.parse_floor_from row, titles

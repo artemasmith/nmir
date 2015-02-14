@@ -192,10 +192,10 @@ drop_down_button = (multi, editable, lid, value, name)->
 
   "<div class ='form-group form-group-location'>
     <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-      <div class='btn #{button_size(name)} loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
+      <div class='btn btn-default #{button_size(name)} loc-btn GetChildren' data-toggle='dropdown' lid='#{lid}' name='#{name}'> #{value} <span class='caret'></span>
       <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
       </div>
-      <div class='btn #{button_size(name)} loc-btn DelChildren'>
+      <div class='btn btn-default #{button_size(name)} loc-btn DelChildren'>
         <div class='fa fa-times'>
         </div>
       </div>
@@ -206,10 +206,10 @@ drop_down_button = (multi, editable, lid, value, name)->
 easy_button = (multi, editable, lid, value, name)->
   "<div class ='form-group form-group-location'>
      <div class='form-group location-group btn-group' data-toggle='buttons' multi='#{multi}' editable='#{editable}'>
-       <div class='btn #{button_size(name)} loc-btn'  lid='#{lid}' name='#{name}'> #{value}
+       <div class='btn btn-default #{button_size(name)} loc-btn'  lid='#{lid}' name='#{name}'> #{value}
        <input type='hidden' name='advertisement[location_ids][]' value='#{lid}'>
        </div>
-       <div class='btn #{button_size(name)} loc-btn DelChildren'>
+       <div class='btn btn-default #{button_size(name)} loc-btn DelChildren'>
          <div class='fa fa-times'>
          </div>
        </div>
@@ -219,7 +219,7 @@ easy_button = (multi, editable, lid, value, name)->
 
 button_size = (type) ->
   if type =='region' or type == 'city' or type == 'district'
-    return 'btn-default'
+    return ''
   if type == 'street' or 'admin_area' or 'non_admin_area'
     return 'btn-sm'
   if type == 'street' or 'address' or 'landmark'

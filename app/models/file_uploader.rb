@@ -1,7 +1,7 @@
 class FileUploader
   def self.save(upload)
     name =  upload.original_filename
-    name = name.sub(/[^\w\.\-]/,'_')
+    name = DateTime.now.to_i.to_s + name.sub(/[^\w\.\-]/,'_')
     if Rails.env.production?
       directory = Rails.root.join('..', 'shared', 'public', 'import')
     else

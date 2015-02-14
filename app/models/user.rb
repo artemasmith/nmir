@@ -45,20 +45,20 @@ class User < ActiveRecord::Base
   end
 
   def self.get_contact cinfo
-    if cinfo[:phone].blank?
+    if cinfo[:phone].blank? || cinfo[:name].blank?
       return false
     end
     phone = Phone.where('number = ?', Phone.normalize(cinfo[:phone])).first
 
     if phone.present? && phone.user.present?
       return phone.user
-    else
+    elsif phone.present?
       phone.destroy
     end
     if cinfo[:phone].match /[[:alpha:]]/
       return false
     else
-      user = User.create(email: "#{cinfo[:phone]}@.gmail.com", name: "#{cinfo[:name]}", password: "#{Time.now.to_i}", role: 0)
+      user = User.create(email: "#{cinfo[:phone]}@.gmail.com", name: "#{cinfo[:name]}", password: "#{Time.now.to_i}", role: 0, from_admin: true)
       user.phones.create(original: cinfo[:phone])
       return user
     end
