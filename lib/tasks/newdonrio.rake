@@ -83,21 +83,15 @@ namespace :import do
 
     def sort_locations locations
       result = ''
-      locations.each do |l|
-        result += l.title if l.location_type == 'region'
-        result += ' ' + l.title if l.location_type == 'district'
-        result += ' ' + l.title if l.location_type == 'city'
-        result += ' ' + l.title if l.location_type == 'admin_area'
-        result += ' ' + l.title if l.location_type == 'non_admin_area'
-        result += ' ' + l.title if l.location_type == 'street'
-        result += ' ' + l.title if l.location_type == 'address'
+      ['region', 'district', 'city', 'admin_area', 'non_admin_area', 'street', 'address'].each do |type|
+        loc = locations.find{ |l| l.location_type == type }
+        result += ' ' + loc.title if loc.present?
       end
       result.strip
     end
 
     def get_coords locations
       uri = 'http://geocode-maps.yandex.ru/1.x/'
-      #location = locations.map(&:title).join(' ')
       location = sort_locations locations
 
       url = URI(uri)
@@ -105,7 +99,8 @@ namespace :import do
 
       res = Net::HTTP.get_response(url)
       addr = JSON.parse(res.body)
-      if (coords = addr['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']).present?
+      if (addr['response']['GeoObjectCollection']['metaDataProperty']['GeocoderResponseMetaData']['found'] != '0')
+        coords = addr['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']
         return { latitude: coords.split(' ')[0], longitude: coords.split(' ')[1] }
       else
         return nil
@@ -205,7 +200,6 @@ namespace :import do
 
         cadv = Advertisement.check_existence adv_params
         adv.locations = locations
-        print "locations #{locations}\n"
 
         coords = get_coords locations
         if coords.present?
