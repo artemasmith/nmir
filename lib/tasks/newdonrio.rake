@@ -1,5 +1,6 @@
 #encoding: utf-8
 require 'spreadsheet'
+require 'net/http'
 Spreadsheet.client_encoding = 'UTF-8'
 namespace :import do
   desc "Импорт информации из донрио"
@@ -78,6 +79,37 @@ namespace :import do
       result.each {|k,v| result.delete(k) if v.blank?}
       result = normalize_locations result
       result
+    end
+
+    def sort_locations locations
+      result = ''
+      locations.each do |l|
+        result += l.title if l.location_type == 'region'
+        result += ' ' + l.title if l.location_type == 'district'
+        result += ' ' + l.title if l.location_type == 'city'
+        result += ' ' + l.title if l.location_type == 'admin_area'
+        result += ' ' + l.title if l.location_type == 'non_admin_area'
+        result += ' ' + l.title if l.location_type == 'street'
+        result += ' ' + l.title if l.location_type == 'address'
+      end
+      result.strip
+    end
+
+    def get_coords locations
+      uri = 'http://geocode-maps.yandex.ru/1.x/'
+      #location = locations.map(&:title).join(' ')
+      location = sort_locations locations
+
+      url = URI(uri)
+      url.query = URI.encode_www_form({ format: 'json', geocode: location, results: 1 })
+
+      res = Net::HTTP.get_response(url)
+      addr = JSON.parse(res.body)
+      if (coords = addr['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']).present?
+        return { latitude: coords.split(' ')[0], longitude: coords.split(' ')[1] }
+      else
+        return nil
+      end
     end
 
 
@@ -173,6 +205,13 @@ namespace :import do
 
         cadv = Advertisement.check_existence adv_params
         adv.locations = locations
+        print "locations #{locations}\n"
+
+        coords = get_coords locations
+        if coords.present?
+          adv.latitude = coords[:latitude]
+          adv.longitude = coords[:longitude]
+        end
 
         if !cadv
           if adv.save
