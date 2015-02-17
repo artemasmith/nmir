@@ -3,7 +3,7 @@ class ImporterWorker
 
   def perform file_path, email
 
-    stdin, stdout, stderr = Open3.popen3("RAILS_ENV=\"production\" bundle exec rake import:donrio[\"#{file_path}\"]")
+    _, stdout, stderr = Open3.popen3("RAILS_ENV=\"production\" bundle exec rake import:donrio[\"#{file_path}\"]")
     body = stdout.read + stderr.read
 
     File.delete(file_path)
