@@ -1,0 +1,12 @@
+development:
+  mysql41: 9312
+  allow_star: true
+  max_matches: 1000000
+test:
+  mysql41: 9312
+  allow_star: true
+  max_matches: 1000000
+production:
+  mysql41: 9312
+  allow_star: true
+  max_matches: 1000000

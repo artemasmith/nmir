@@ -17,7 +17,8 @@ module AdvertisementsHelper
     url_params.delete :utf8
     url_params.delete :advertisement if url_params[:advertisement].empty?
     url_params.delete :url if url_params[:url].present?
-    render 'shared/pagination', :pages => @pages, :current_page => (url_params[:page] || 1).to_i, :url_path => method(params[:url].present? ? :url_for : :root_path), :url_params => url_params
+    max_pages = 1000000 / @limit
+    render 'shared/pagination', :pages => (max_pages < @pages ? max_pages : @pages), :current_page => (url_params[:page] || 1).to_i, :url_path => method(params[:url].present? ? :url_for : :root_path), :url_params => url_params
   end
 
   def generate_ac_source src

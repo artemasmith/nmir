@@ -132,8 +132,7 @@ namespace :import do
         end
 
         adv.offer_type = DonrioParser.parse_offer_type row
-        adv.adv_type = DonrioParser.parse_adv_type row
-        adv.property_type = DonrioParser.parse_property_type row
+        adv.category = DonrioParser.parse_category row, titles
 
         floor_from = DonrioParser.parse_floor_from row, titles
         adv.floor_from = floor_from if floor_from.present? && floor_from > 0
@@ -152,7 +151,7 @@ namespace :import do
         end
         adv.price_from = DonrioParser.parse_price row
 
-        adv.category = DonrioParser.parse_category row, titles
+
 
         location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: titles.keys.include?('Sуч.Всотках') ? 1 : 0 }
         locations = get_location(location)

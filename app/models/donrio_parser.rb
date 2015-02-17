@@ -172,25 +172,21 @@ class DonrioParser
     :sale
   end
 
-  def self.parse_adv_type row
-    :offer
-  end
-
-  def self.parse_property_type row
-    :commerce
-  end
 
   def self.parse_category row, titles
-    category = ''
-    har = row[titles['Хар']]
-    if har.match /дом/i
-      category = :house
-    elsif har.match /участ[оки]/i
-      category = :land
+    category = if titles['Sуч.Всотках'].present?
+      case
+        when row[titles['Sуч.Всотках']].to_s.match(/участок/i) then :ijs
+        else :house
+      end
     else
-      category = :flat
+      case
+        when row[titles['ком.']].to_s.match(/к/i) then :room
+        when row[titles['ком.']].to_s.match(/г/i) then :hotel
+        else :flat
+      end
     end
-    category
+    return category
   end
 
 end
