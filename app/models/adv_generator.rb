@@ -102,7 +102,7 @@ module AdvGenerator
     floor_to = adv.floor_to
     floor_cnt_to = adv.floor_cnt_to
 
-    if floor_from.present? && floor_cnt_from.present? && floor_to.blank? && floor_cnt_to.blank?
+    if (floor_from.present? && floor_cnt_from.present? && floor_to.blank? && floor_cnt_to.blank?) || (floor_cnt_to.present? && floor_to.present? && floor_from == floor_to && floor_cnt_from == floor_cnt_to)
       "этаж #{floor_from}/#{floor_cnt_from}"
     else
       [
