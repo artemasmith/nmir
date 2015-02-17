@@ -35,7 +35,7 @@
               span.lead
                 span.formatRub
                   = adv.price_from
-                - if adv.price_to.present? && adv.price_to != adv.price_to
+                - if adv.price_to.present? && adv.price_to != adv.price_from
                   '
                   | -
                   '
