@@ -63,6 +63,8 @@ namespace :deploy do
       execute "cp #{shared_path}/config/database.yml #{release_path}/config/database.yml"
       execute "cp #{shared_path}/config/secrets.yml #{release_path}/config/secrets.yml"
       execute "cp #{shared_path}/config/thinking_sphinx.yml #{release_path}/config/thinking_sphinx.yml"
+      execute "cp #{shared_path}/config/sidekiq.yml #{release_path}/config/sidekiq.yml"
+
       execute :ln, '-nfs', "#{shared_path}/sphinx", "#{release_path}/db/sphinx"
       execute :mkdir, "#{release_path}/public/system/"
       execute :ln, '-nfs', "#{shared_path}/photos", "#{release_path}/public/system"
@@ -94,6 +96,8 @@ before 'deploy:compile_assets', 'deploy:symlink'
 
 after "deploy", "deploy:migrate"
 after 'deploy', 'deploy:restart'
+after 'deploy', 'sidekiq:stop'
+after 'deploy', 'sidekiq:start'
 
 
 end
