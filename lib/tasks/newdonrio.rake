@@ -5,85 +5,82 @@ Spreadsheet.client_encoding = 'UTF-8'
 namespace :import do
   desc "Импорт информации из донрио"
 
-  task(:donrio, [:file] => :environment) do |t, args|
+  task(:donrio, [:file] => :environment) do |_, args|
 
-    def find_locations_in_db locations
-      superparent = Location.where('title = ?', locations[:parent]).first
-      district = Matcher.rename_district(locations[:district])
-      parent = nil
-      parent_locations = Location.where('title ilike ?', "%#{district}%").where('location_type < 5')
-      if parent_locations.count >= 1
-        if parent_locations.where('title ilike ?', district).count == 1
-          parent = parent_locations.where('title ilike ?', district).first
-        else
-          #same named locations example Lenina :(
-          parent_locations.each do |pl|
-            if locations[:area].present? && !district.match(/#{locations[:area]}/i) && pl.sublocations.where('title ilike ?', "%#{locations[:area]}%").count == 1
-              parent = pl
-            elsif locations[:street].present? && pl.sublocations.where('title ilike ?', "%#{locations[:street]}%").count == 1
-              parent = pl
-            end
-            if parent.blank? && parent_locations.present?
-              parent = parent_locations.where('title ilike ?', locations[:district]).first
-            else
-              parent = false
-            end
-          end
-        end
-      end
-      result = { parent: superparent, district: parent }
-      return result if parent.blank?
 
-      keys = [:area, :street, :address]
-      keys.delete(:area) if locations[:area].blank? || district.match(/#{locations[:area]}/i)
-      keys.each do |ltype|
-        break if locations[ltype].blank?
-        temp = parent.sublocations.where('title ILIKE ?', "%#{locations[ltype]}%")
-        if temp.count >= 1
-          if temp.where('title ILIKE ?', "#{locations[ltype]}").count == 1
-            temp = temp.where('title ILIKE ?', "#{locations[ltype]}").first
-          else
-            temp = temp.first
-          end
-        end
-        if temp.present?
-          result[ltype] = temp
-          parent = temp
-        end
+
+    def find_address_locations_in_db parent, path, result
+      return result if path.blank?
+
+      sub_location = parent.children_locations.where('title ilike ?', "%#{path.first}%").first
+      return nil if sub_location.blank?
+      result << sub_location
+
+      if sub_location.street? && path.second.present? && path.second.to_i > 0
+        sub_sub_location = sub_location.children_locations.where(title: path.second.to_i.to_s).first ||
+                           create_address(parent: sub_location, title: path.second.to_i.to_s)
+        result << sub_sub_location
+        return nil
       end
-      result
+
+      return sub_location
+    end
+
+    def find_locations_in_db parent_name, district_name, address_name
+      result = []
+
+      superparent = Location.where(title: parent_name).first
+
+      correct_district_name = district_name.to_s.gsub(/\./i, '').gsub(/р\-н/i, '').strip
+
+      return result if correct_district_name.blank?
+      if superparent.city?
+        district = superparent.children_locations(:admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
+                   superparent.children_locations(:non_admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
+                   superparent.children_locations(:street).where('title ilike ?', "%#{correct_district_name}%").first
+      else
+        district = superparent.children_locations.where('title ilike ?', "%#{correct_district_name}%").first
+      end
+
+      return result if district.blank?
+      result << superparent
+      result << district
+
+      correct_address_name = address_name
+                                 .gsub(/х\./i, '')
+                                 .gsub(/с\./i, '')
+                                 .gsub(/п\./i, '')
+                                 .gsub(/СНТ/, '')
+                                 .gsub(/СТ/, '')
+                                 .gsub(/СТ/, '')
+                                 .gsub(/ост./i, '')
+                                 .gsub(/ул\.?/i, '')
+                                 .gsub(/д\./i, '')
+
+      return result if correct_address_name.blank?
+
+      address_name_list = correct_address_name.split('/').delete_if{ |e| e.blank? }
+      path_list = address_name_list.first.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.first.present?
+      addition_path_list = address_name_list.second.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.second.present?
+
+      address = find_address_locations_in_db district, path_list, result
+      return result if address.blank?
+
+      find_address_locations_in_db address, addition_path_list, result
+
+      return result
     end
 
     def get_location loc_params
-      street, address, district, region, parent = ''
-      title = loc_params[:addr]
       district = Matcher.rename_district(loc_params[:dist])
-
-      if loc_params[:atype] == 0
-        #flats in rostov
-        #parse string and get strings witch location titles
-        street, address = DonrioParser.parse_flat title
-        parent = 'г Ростов-на-Дону'
-      else
-        #houses and land
-        area, street, address = DonrioParser.parse_house title
-        parent = 'обл Ростовская'
-      end
-      lc = { parent: parent, district: district, area: area, street: street, address: address }
-      result = find_locations_in_db(lc)
-
-      if address.present? && result[:address].blank? && result[:street].present? && result[:street].location_type == 'street'
-        create_address(parent: result[:street], title: address)
-      end
-
-      result.each {|k,v| result.delete(k) if v.blank?}
-      result = normalize_locations result
-      result
+      address = Matcher.rename_district(loc_params[:addr])
+      result = find_locations_in_db('г Ростов-на-Дону', district, address) || find_locations_in_db('обл Ростовская', district, address)
+      return (result.presence || [Location.where(title: 'обл Ростовская').first]), result.present?
     end
 
     def sort_locations locations
       result = ''
-      ['region', 'district', 'city', 'admin_area', 'non_admin_area', 'street', 'address'].each do |type|
+      %w(region district city admin_area non_admin_area street address).each do |type|
         loc = locations.find{ |l| l.location_type == type }
         result += ' ' + loc.title if loc.present?
       end
@@ -108,23 +105,19 @@ namespace :import do
     end
 
 
-    def create_address loc_params
-      parent = Location.find(loc_params[:parent])
-      address = parent.sublocations.create(title: loc_params[:title], location_type: :address)
+    def create_address attr
+      parent = attr[:parent]
+      address = parent.sublocations.create(title: attr[:title], location_type: :address)
       parent.loaded_resource!
       address
     end
 
 
-    def normalize_locations locations
-      nearest = locations[:address] || locations[:street] || locations[:area] || locations[:district] || locations[:parent]
-      Location.parent_locations nearest
-    end
 
 
     #TASK STARTS
     args.file ||= '/home/tea/RubymineProjects/nmir/public/import/first_test_donrio.xls'
-    log = Logger.new './log/import-log.txt'
+    log = Logger.new STDOUT
     log.debug "\nARGS= #{args} \n"
     adv = {}
     titles = {}
@@ -143,18 +136,17 @@ namespace :import do
         next if row.count == 0 || row.compact.count == 0
 
         #here we are looking for client info
-        phone = DonrioParser.parse_phone row, titles
-        name = DonrioParser.parse_name row, titles
+        name, phone = DonrioParser.parse_name_and_phone row, titles
 
         #print "\nname=#{name}\n"
 
         adv = Advertisement.new
-        contact = User.get_contact(phone: phone, name: name)
+        contact = User.get_contact(phone: phone, name: name.presence || phone)
 
         if contact
           adv.user = contact
         else
-          log.warn("could not recognize phone=#{phone} or find it in db for adv row number #{ worksheet.rows.index(row) }")
+          log.warn("could not recognize name=#{name.presence || phone} & phone=#{phone} or find it in db for #{row[titles['Тел контанк']]}")
           next
         end
 
@@ -166,31 +158,24 @@ namespace :import do
         floor_cnt_from = DonrioParser.parse_floor_cnt_from row, titles
         adv.floor_cnt_from = floor_cnt_from if floor_cnt_from.present? && floor_cnt_from > 0
 
+
         room_from = DonrioParser.parse_room row, titles
         adv.room_from = room_from if room_from.present? && room_from > 0
 
         space_from = DonrioParser.parse_space_from row, titles
         adv.space_from = space_from if space_from.present? && space_from > 0
 
-        if titles['Sуч.Всотках'].present?
-          outdoors_space_from = DonrioParser.parse_outdoors_space_from row, titles
-          adv.outdoors_space_from = outdoors_space_from if outdoors_space_from.present? && outdoors_space_from > 0
-        end
+
+        outdoors_space_from = DonrioParser.parse_outdoors_space_from row, titles
+        adv.outdoors_space_from = outdoors_space_from if outdoors_space_from.present? && outdoors_space_from > 0
+
         adv.price_from = DonrioParser.parse_price row
 
 
 
-        location = { dist: row[titles['Район']], addr: row[titles['Адрес']], atype: titles.keys.include?('Sуч.Всотках') ? 1 : 0 }
-        locations = get_location(location)
-        log.debug "locations = #{locations}\n"
+        location = { dist: row[titles['Район']], addr: row[titles['Адрес']]}
+        locations, parsed = get_location(location)
 
-        parsed = false
-        locations.each { |l| parsed = true if l.location_type == 'address' }
-
-        if locations.blank?
-          log.warn "\nwe can't parse even region of #{adv} row line #{worksheet.rows.index(row)}\n"
-          next
-        end
 
         adv.comment = DonrioParser.parse_comment row, titles, parsed
 
@@ -200,18 +185,18 @@ namespace :import do
         cadv = Advertisement.check_existence adv_params
         adv.locations = locations
 
-        coords = get_coords locations
-        if coords.present?
-          adv.latitude = coords[:latitude]
-          adv.longitude = coords[:longitude]
+
+        unless cadv
+          coords = get_coords locations
+          if coords.present?
+            adv.latitude = coords[:latitude]
+            adv.longitude = coords[:longitude]
+          end
         end
 
-        if !cadv
-          if adv.save
-            log.debug "\nWe are successfully created the advertisement #{adv.id}\n"
-          else
-            log.warn "\nCould not save advertisement #{adv.errors.full_messages}\n"
-          end
+
+        unless cadv
+          log.warn "\nCould not save advertisement #{adv.errors.full_messages} row: #{ worksheet.rows.index(row) + 1 }\n" unless adv.save
         else
           log.debug "\nWe found same advertisement #{cadv.map(&:id)}\n"
         end

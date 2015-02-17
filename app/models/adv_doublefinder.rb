@@ -6,13 +6,13 @@ module AdvDoublefinder
     def self.check_existence adv_params
       address, street, non_admin_area, admin_area, city, district, region = nil
       adv_params[:locations].each do |location|
-        address = location if location.location_type == 'address'
-        street = location if location.location_type == 'street'
-        admin_area = location if location.location_type == 'admin_area'
-        non_admin_area = location if location.location_type == 'non_admin_area'
-        city = location if location.location_type == 'city'
-        district = location if location.location_type == 'district'
-        region = location if location.location_type == 'region'
+        address = location if location.address?
+        street = location if location.street?
+        admin_area = location if location.admin_area?
+        non_admin_area = location if location.non_admin_area?
+        city = location if location.city?
+        district = location if location.district?
+        region = location if location.region?
       end
       second_nearest_location = street || non_admin_area || admin_area ||  city || district || region
       first_nearest_location = address || second_nearest_location
