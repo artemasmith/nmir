@@ -7,6 +7,6 @@ class ImporterWorker
     body = stdout.read + stderr.read
 
     File.delete(file_path)
-    ImporterMailer.finish(email, body)
+    ImporterMailer.finish(email, body).deliver
   end
 end
