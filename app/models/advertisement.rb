@@ -190,6 +190,8 @@ class Advertisement < ActiveRecord::Base
       l.each do |location|
         locations << location
       end
+    else
+      raise 'no parent'
     end
   end
 
@@ -223,19 +225,17 @@ class Advertisement < ActiveRecord::Base
     end
   end
 
-
-
-
   private
 
 
   def locations_chain_array_from(location)
-    ls = self.locations.all
+    ls = self.locations.to_a
     result = []
     while location.present?
       result << location
       location_id = location.location_id
       location = ls.find{|l| l.id == location_id}
+      raise 'no parent' if location.blank? && location_id.present?
     end
     result.reverse
   end

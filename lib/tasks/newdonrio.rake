@@ -25,8 +25,7 @@ namespace :import do
       return sub_location
     end
 
-    def find_locations_in_db parent_name, district_name, address_name
-      result = []
+    def find_locations_in_db parent_name, district_name, address_name, result = []
 
       superparent = Location.where(title: parent_name).first
 
@@ -73,8 +72,9 @@ namespace :import do
     def get_location loc_params
       district = Matcher.rename_district(loc_params[:dist])
       address = Matcher.rename_district(loc_params[:addr])
-      result = find_locations_in_db('г Ростов-на-Дону', district, address) || find_locations_in_db('обл Ростовская', district, address)
-      return (result.presence || [Location.where(title: 'обл Ростовская').first]), result.present?
+      ro = Location.where(title: 'обл Ростовская').first
+      result = find_locations_in_db('г Ростов-на-Дону', district, address, [ro]) || find_locations_in_db('обл Ростовская', district, address)
+      return (result.presence || [ro]), result.present?
     end
 
 
