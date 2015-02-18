@@ -7,6 +7,7 @@ set :migration_role, 'db'
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 set :whenever_environment, 'production'
 set :domain, '192.168.0.79'
+set :sidekiq_pid, '/home/tea/var/www/multilisting/run/sidekiq.pid'
 #https://github.com/teacplusplus/nmir.git
 # Default branch is :master
 #ask :branch, :master
@@ -83,7 +84,21 @@ namespace :deploy do
       end
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute :bundle, "exec unicorn", "-c #{release_path}/config/unicorn.rb -D -E #{fetch(:rails_env)}"
+          execute :bundle, 'exec unicorn', "-c #{release_path}/config/unicorn.rb -D -E #{fetch(:rails_env)}"
+        end
+      end
+
+      if test "[ -f #{fetch(:sidekiq_pid)} ]"
+        within release_path do
+          with rails_env: fetch(:rails_env) do
+            execute :bundle, 'exec sidekiqctl', "stop #{fetch(:sidekiq_pid)} 60"
+          end
+        end
+      end
+
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, 'exec sidekiq', "-e #{fetch(:rails_env)} -C config/sidekiq.yml -d"
         end
       end
     end
@@ -96,8 +111,6 @@ before 'deploy:compile_assets', 'deploy:symlink'
 
 after "deploy", "deploy:migrate"
 after 'deploy', 'deploy:restart'
-after 'deploy', 'sidekiq:stop'
-after 'deploy', 'sidekiq:start'
 
 
 end

@@ -1,6 +1,5 @@
 #encoding: utf-8
 require 'spreadsheet'
-require 'net/http'
 Spreadsheet.client_encoding = 'UTF-8'
 namespace :import do
   desc "Импорт информации из донрио"
@@ -78,32 +77,6 @@ namespace :import do
       return (result.presence || [Location.where(title: 'обл Ростовская').first]), result.present?
     end
 
-    def sort_locations locations
-      result = ''
-      %w(region district city admin_area non_admin_area street address).each do |type|
-        loc = locations.find{ |l| l.location_type == type }
-        result += ' ' + loc.title if loc.present?
-      end
-      result.strip
-    end
-
-    def get_coords locations
-      uri = 'http://geocode-maps.yandex.ru/1.x/'
-      location = sort_locations locations
-
-      url = URI(uri)
-      url.query = URI.encode_www_form({ format: 'json', geocode: location, results: 1 })
-
-      res = Net::HTTP.get_response(url)
-      addr = JSON.parse(res.body)
-      if (addr['response']['GeoObjectCollection']['metaDataProperty']['GeocoderResponseMetaData']['found'] != '0')
-        coords = addr['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']
-        return { latitude: coords.split(' ')[0], longitude: coords.split(' ')[1] }
-      else
-        return nil
-      end
-    end
-
 
     def create_address attr
       parent = attr[:parent]
@@ -111,8 +84,6 @@ namespace :import do
       parent.loaded_resource!
       address
     end
-
-
 
 
     #TASK STARTS
@@ -185,15 +156,7 @@ namespace :import do
         cadv = Advertisement.check_existence adv_params
         adv.locations = locations
 
-
-        unless cadv
-          coords = get_coords locations
-          if coords.present?
-            adv.latitude = coords[:latitude]
-            adv.longitude = coords[:longitude]
-          end
-        end
-
+        adv.get_remote_coords unless cadv
 
         unless cadv
           log.warn "\nCould not save advertisement #{adv.errors.full_messages} row: #{ worksheet.rows.index(row) + 1 }\n" unless adv.save

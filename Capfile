@@ -28,7 +28,7 @@ require 'capistrano3/unicorn'
 
 require "whenever/capistrano"
 
-require 'capistrano/sidekiq'
+
 
 
 

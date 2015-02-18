@@ -64,6 +64,7 @@
 class Advertisement < ActiveRecord::Base
 
   include AdvCallbacks
+  include AdvRemoteCoords
 
   belongs_to :user
   has_many   :photos, :dependent => :destroy
