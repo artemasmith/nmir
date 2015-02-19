@@ -20,7 +20,7 @@ class DonrioParser
   end
 
   def self.parse_landmark row, titles, parsed
-    "адрес: #{row[titles['Адрес']]}, район: #{row[titles['Район']]}" unless parsed
+    "#{row[titles['Адрес']]}, #{row[titles['Район']]}" unless parsed
   end
 
   def self.parse_name_and_phone row, titles

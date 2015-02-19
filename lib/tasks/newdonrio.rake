@@ -79,7 +79,7 @@ namespace :import do
         result = find_locations_in_db('г Ростов-на-Дону', district, address, [ro]) || find_locations_in_db('обл Ростовская', district, address)
       end
 
-      return (result.presence || [ro]), result.present?
+      return (result.presence || [ro]), result.count > 2
     end
 
 
