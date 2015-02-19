@@ -50,8 +50,7 @@ class DonrioParser
   end
 
   def self.parse_space_from row, titles
-    space_from = row[titles['Площадь']].to_i
-    space_from
+    row[titles['Площадь']].to_i if row[titles['Площадь']].present?
   end
 
   def self.parse_outdoors_space_from row, titles
