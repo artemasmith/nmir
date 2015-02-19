@@ -29,7 +29,7 @@ namespace :import do
 
       superparent = Location.where(title: parent_name).first
 
-      correct_district_name = district_name.to_s.gsub(/\./i, '').gsub(/р\-н/i, '').strip
+      correct_district_name = district_name.to_s.gsub(/\./i, '').gsub(/\sр\-н$/i, '').gsub(/\sг$/i, '').strip
 
       return result if correct_district_name.blank?
       if superparent.city?
@@ -44,7 +44,7 @@ namespace :import do
       result << superparent
       result << district
 
-      correct_address_name = address_name
+      correct_address_name = address_name.to_s
                                  .gsub(/х\./i, '')
                                  .gsub(/с\./i, '')
                                  .gsub(/п\./i, '')
@@ -73,7 +73,12 @@ namespace :import do
       district = Matcher.rename_district(loc_params[:dist])
       address = Matcher.rename_district(loc_params[:addr])
       ro = Location.where(title: 'обл Ростовская').first
-      result = find_locations_in_db('г Ростов-на-Дону', district, address, [ro]) || find_locations_in_db('обл Ростовская', district, address)
+      if district.to_s.match(/Область/i)
+        result = find_locations_in_db('обл Ростовская', address, nil)
+      else
+        result = find_locations_in_db('г Ростов-на-Дону', district, address, [ro]) || find_locations_in_db('обл Ростовская', district, address)
+      end
+
       return (result.presence || [ro]), result.present?
     end
 
@@ -112,12 +117,12 @@ namespace :import do
         #print "\nname=#{name}\n"
 
         adv = Advertisement.new
-        contact = User.get_contact(phone: phone, name: name.presence || phone)
+        contact = User.get_contact(phone: phone, name: name.presence || 'без имени', source: User::USER_SOURCES.index(:donrio))
 
         if contact
           adv.user = contact
         else
-          log.warn("could not recognize name=#{name.presence || phone} & phone=#{phone} or find it in db for #{row[titles['Тел контанк']]}")
+          log.warn("could not recognize name=#{name.presence || 'без имени'} & phone=#{phone} or find it in db for #{row[titles['Тел контанк']]}")
           next
         end
 
@@ -148,7 +153,9 @@ namespace :import do
         locations, parsed = get_location(location)
 
 
-        adv.comment = DonrioParser.parse_comment row, titles, parsed
+        adv.comment = DonrioParser.parse_comment row, titles
+
+        adv.landmark = DonrioParser.parse_landmark row, titles, parsed
 
         adv_params = { locations: locations, offer_type: adv.offer_type, category: adv.category, property_type: adv.property_type,
                        user_id: adv.user_id, price: adv.price_from }

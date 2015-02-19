@@ -7,20 +7,25 @@ class DonrioParser
     res
   end
 
-  def self.parse_comment row, titles, parsed
-    comment = %Q(цена: #{row[1]} т.р., этажей: #{row[titles['Эт.']]}, комнат: #{row[titles['ком.']]}, площадь: #{row[titles['Площадь']]}, #{DonrioParser.prepare_char(row[titles['Хар']])})
+  def self.parse_comment row, titles
+    list = []
+    list << "цена: #{row[1]} т.р." if row[1].present?
+    list << "этажей: #{row[titles['Эт.']]}" if row[titles['Эт.']].present?
+    list << "комнат: #{row[titles['ком.']]}" if row[titles['ком.']].present?
+    list << "площадь: #{row[titles['Площадь']]}" if row[titles['Площадь']].present?
     if titles.keys.include?('Sуч.Всотках')
-      comment += ", площадь-участка: #{row[titles['Sуч.Всотках']]}"
+      list << "площадь-участка: #{row[titles['Sуч.Всотках']]}" if row[titles['Sуч.Всотках']].present?
     end
-    if !parsed
-      comment += ", адрес: #{row[titles['Адрес']]}, район: #{row[titles['Район']]},"
-    end
-    comment
+    list.join(', ')
+  end
+
+  def self.parse_landmark row, titles, parsed
+    "адрес: #{row[titles['Адрес']]}, район: #{row[titles['Район']]}" unless parsed
   end
 
   def self.parse_name_and_phone row, titles
     begin
-      prepare = row[titles['Тел контанк']].gsub(/агент на % не претендует/i, '').gsub(/посредник % на не претендует/i, '').strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
+      prepare = row[titles['Тел контанк']].gsub(/агент на % не претендует/i, '').gsub(/посредник % на не претендует/i, '').gsub(/у нас как агент/i, '').strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
       list = prepare.map do |e|
          e.gsub(/[-+\(\)\s]/, '').strip
       end.delete_if do |e|
@@ -100,11 +105,10 @@ class DonrioParser
     :sale
   end
 
-
   def self.parse_category row, titles
     category = if titles['Sуч.Всотках'].present?
       case
-        when row[titles['Sуч.Всотках']].to_s.match(/участок/i) then :ijs
+        when row[titles['Площадь']].to_s.match(/участок/i) then :ijs
         else :house
       end
     else

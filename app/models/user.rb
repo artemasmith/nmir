@@ -28,7 +28,13 @@ class User < ActiveRecord::Base
   has_many :phones, dependent: :destroy
   accepts_nested_attributes_for :phones, allow_destroy: true
   accepts_nested_attributes_for :advertisements
+
+
+
   enum :role => AdvEnums::USER_ROLES
+
+  USER_SOURCES = [:unknown, :donrio]
+  enum :source => User::USER_SOURCES
   before_validation :set_params, :on => :create
   after_update :change_adv_role, :if => :role_changed?
   validates_presence_of :role
@@ -36,7 +42,7 @@ class User < ActiveRecord::Base
 
   def set_params
     o =  [('a'..'z'), ('A'..'Z'), (0..9)].map{|i| i.to_a}.flatten
-    self.email = "#{(0..16).map{ o[rand(o.length)] }.join}@gmail.com" if self.email.blank?
+    self.email = "#{(0..16).map{ o[rand(o.length)] }.join}@.gmail.com" if self.email.blank?
     self.password = self.password_confirmation = (0..16).map{ o[rand(o.length)] }.join if self.password.blank?
   end
 
@@ -58,7 +64,12 @@ class User < ActiveRecord::Base
     if cinfo[:phone].match /[[:alpha:]]/
       return false
     else
-      user = User.create(email: "#{cinfo[:phone]}@.gmail.com", name: "#{cinfo[:name]}", password: "#{Time.now.to_i}", role: 0, from_admin: true)
+      user = User.create(email: "#{cinfo[:phone]}@.gmail.com",
+                         name: "#{cinfo[:name]}",
+                         password: "#{Time.now.to_i}",
+                         role: 0,
+                         from_admin: true,
+                         source: cinfo[:source])
       user.phones.create(original: cinfo[:phone])
       return user
     end
