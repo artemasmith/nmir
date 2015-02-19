@@ -3,6 +3,6 @@ class ImporterMailer < ActionMailer::Base
 
   def finish(email, body)
     @body = body
-    mail(to: email, subject: 'Загрузка адресата успешно выполена')
+    mail(to: email, subject: 'Загрузка донрио успешно выполена')
   end
 end
