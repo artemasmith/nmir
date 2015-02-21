@@ -12,7 +12,7 @@ class Matcher
     hash_list =
     {
       'Азов' => 'г Азов',
-      'Аксай' => 'г Аксай',
+      'Аксай' => [Location.where(title: 'обл Ростовская').first, Location.where(title: 'р-н Аксайский').first, Location.where(title: 'г Аксай').first],
 
       'Азовский р-н' => 'р-н Азовский',
       'Аксайский р-н' => 'р-н Аксайский',

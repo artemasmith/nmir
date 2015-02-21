@@ -27,44 +27,64 @@ namespace :import do
 
     def find_locations_in_db parent_name, district_name, address_name, result = []
 
-      superparent = Location.where(title: parent_name).first
 
-      correct_district_name = district_name.to_s.gsub(/\./i, '').gsub(/\sр\-н$/i, '').gsub(/\sг$/i, '').strip
 
-      return result if correct_district_name.blank?
-      if superparent.city?
-        district = superparent.children_locations(:admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
-                   superparent.children_locations(:non_admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
-                   superparent.children_locations(:street).where('title ilike ?', "%#{correct_district_name}%").first
+      if district_name.is_a?(String) || district_name.is_a?(NilClass)
+        superparent = Location.where(title: parent_name).first
+
+        correct_district_name = district_name.to_s.gsub(/\./i, '').gsub(/\sр\-н$/i, '').gsub(/\sг$/i, '').strip
+
+        return result if correct_district_name.blank?
+        if superparent.city?
+          district = superparent.children_locations(:admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
+                     superparent.children_locations(:non_admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
+                     superparent.children_locations(:street).where('title ilike ?', "%#{correct_district_name}%").first
+        else
+          district = superparent.children_locations.where('title ilike ?', "%#{correct_district_name}%").first
+        end
+
+        return result if district.blank?
+
+        result << superparent
+        result << district
       else
-        district = superparent.children_locations.where('title ilike ?', "%#{correct_district_name}%").first
+        result = district_name
+        district = result.last
       end
 
-      return result if district.blank?
-      result << superparent
-      result << district
 
-      correct_address_name = address_name.to_s
-                                 .gsub(/х\./i, '')
-                                 .gsub(/с\./i, '')
-                                 .gsub(/п\./i, '')
-                                 .gsub(/СНТ/, '')
-                                 .gsub(/СТ/, '')
-                                 .gsub(/СТ/, '')
-                                 .gsub(/ост./i, '')
-                                 .gsub(/ул\.?/i, '')
-                                 .gsub(/д\./i, '')
 
-      return result if correct_address_name.blank?
 
-      address_name_list = correct_address_name.split('/').delete_if{ |e| e.blank? }
-      path_list = address_name_list.first.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.first.present?
-      addition_path_list = address_name_list.second.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.second.present?
+      if address_name.is_a?(String) || address_name.is_a?(NilClass)
+        correct_address_name = address_name.to_s
+                                   .gsub(/(?<=^|\s)пос.?(?=\s|[А-Я\/,]|$)/, '')
+                                   .gsub(/(?<=^|\s)ост.?(?=\s|[А-Я\/,]|$)/, '')
+                                   .gsub(/(?<=^|\s)ул\.?(?=\s|[А-Я\/,]|$)/, '')
+                                   .gsub(/(?<=^|\s)ст\.?(?=\s|[А-Я\/,]|$)/, '')
+                                   .gsub(/ДНТ/, '')
+                                   .gsub(/СНТ/, '')
+                                   .gsub(/СТ/, '')
+                                   .gsub(/КП/, '')
+                                   .gsub(/ЖК/, '')
+                                   .gsub(/(?<=^|\s)(х|Х)\.?(?=\s|[А-Я\/,]|$)/, '')
+                                   .gsub(/(?<=^|\s)(с|С)\.?(?=\s|[А-Я\/,]|$)/, '')
+                                   .gsub(/(?<=^|\s)(п|П)\.?(?=\s|[А-Я\/,]|$)/, '')
+                                   .gsub(/(?<=^|\s)(д|Д)\.?(?=\s|[А-Я\/,]|$)/, '')
 
-      address = find_address_locations_in_db district, path_list, result
-      return result if address.blank?
+        return result if correct_address_name.blank?
 
-      find_address_locations_in_db address, addition_path_list, result
+        address_name_list = correct_address_name.split('/').delete_if{ |e| e.blank? }
+        path_list = address_name_list.first.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.first.present?
+        addition_path_list = address_name_list.second.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.second.present?
+
+        address = find_address_locations_in_db district, path_list, result
+        return result if address.blank?
+
+        find_address_locations_in_db address, addition_path_list, result
+      else
+        result << address_name
+      end
+
 
       return result
     end
@@ -72,14 +92,28 @@ namespace :import do
     def get_location loc_params
       district = Matcher.rename_district(loc_params[:dist])
       address = Matcher.rename_district(loc_params[:addr])
+      address = nil if (district.is_a?(String) || district.is_a?(NilClass)) &&
+                       (address.is_a?(String) || address.is_a?(NilClass)) &&
+                       district.to_s.mb_chars.downcase == address.to_s.mb_chars.downcase
       ro = Location.where(title: 'обл Ростовская').first
-      if district.to_s.match(/Область/i)
+      if (district.is_a?(String) || district.is_a?(NilClass)) && district.to_s.match(/Область/i)
         result = find_locations_in_db('обл Ростовская', address, nil)
       else
-        result = find_locations_in_db('г Ростов-на-Дону', district, address, [ro]) || find_locations_in_db('обл Ростовская', district, address)
+        result = find_locations_in_db('г Ростов-на-Дону', district, address, [ro])
+        result =  find_locations_in_db('обл Ростовская', district, address) if result == [ro]
       end
 
-      return (result.presence || [ro]), result.count > 2
+      unless result.count > (address.present? ? 2 : 1)
+        if (district.is_a?(String) || district.is_a?(NilClass)) && district.to_s.match(/Область/i)
+          result = find_locations_in_db('обл Ростовская', address, nil)
+        else
+          result = find_locations_in_db('г Ростов-на-Дону', district, address, [ro])
+          result =  find_locations_in_db('обл Ростовская', district, address) if result == [ro]
+        end
+      end
+
+
+      return (result.presence || [ro]),  result.count > (address.present? && !(district.is_a?(String) && district.to_s.match(/Область/i)) ? 2 : 1)
     end
 
 
@@ -117,12 +151,12 @@ namespace :import do
         #print "\nname=#{name}\n"
 
         adv = Advertisement.new
-        contact = User.get_contact(phone: phone, name: name.presence || 'без имени', source: User::USER_SOURCES.index(:donrio))
+        contact = User.get_contact(phone: phone, name: name.presence || '(имя не указано)', source: User::USER_SOURCES.index(:donrio))
 
         if contact
           adv.user = contact
         else
-          log.warn("could not recognize name=#{name.presence || 'без имени'} & phone=#{phone} or find it in db for #{row[titles['Тел контанк']]}")
+          log.warn("could not recognize name=#{name.presence || '(имя не указано)'} & phone=#{phone} or find it in db for #{row[titles['Тел контанк']]}")
           next
         end
 
@@ -151,6 +185,10 @@ namespace :import do
 
         location = { dist: row[titles['Район']], addr: row[titles['Адрес']]}
         locations, parsed = get_location(location)
+
+        unless parsed
+          log.error("could not recognize address=#{row[titles['Район']]} & #{row[titles['Адрес']]}")
+        end
 
 
         adv.comment = DonrioParser.parse_comment row, titles

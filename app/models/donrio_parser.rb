@@ -16,11 +16,12 @@ class DonrioParser
     if titles.keys.include?('Sуч.Всотках')
       list << "площадь-участка: #{row[titles['Sуч.Всотках']]}" if row[titles['Sуч.Всотках']].present?
     end
+    list << row[titles['Хар']]
     list.join(', ')
   end
 
   def self.parse_landmark row, titles, parsed
-    "#{row[titles['Адрес']]}, #{row[titles['Район']]}" unless parsed
+    "#{row[titles['Район']]}, #{row[titles['Адрес']]}" unless parsed
   end
 
   def self.parse_name_and_phone row, titles
