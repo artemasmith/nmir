@@ -7,10 +7,33 @@ class Matcher
     streets[street].blank? ? street : streets[street]
   end
 
+  def self.escape str
+    return str.to_s
+         .gsub(/(?<=^|\s)пос.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)ост.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)ул\.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)ст\.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/ДНТ/, '')
+         .gsub(/СНТ/, '')
+         .gsub(/СТ/, '')
+         .gsub(/КП/, '')
+         .gsub(/ЖК/, '')
+         .gsub(/(?<=^|\s)(х|Х)\.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)(с|С)\.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)(п|П)\.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)(д|Д)\.?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)(р|Р)\-(н|Н)(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/(?<=^|\s)(г|Г).?(?=\s|[А-Я\/,]|$)/, '')
+         .gsub(/\./i, '')
+         .strip
+  end
+
   def self.rename_district district
     district = district.to_s.strip
     hash_list =
     {
+      'Область' => [Location.where(title: 'обл Ростовская').first],
+
       'Азов' => 'г Азов',
       'Аксай' => [Location.where(title: 'обл Ростовская').first, Location.where(title: 'р-н Аксайский').first, Location.where(title: 'г Аксай').first],
 
@@ -31,7 +54,8 @@ class Matcher
       'Мясниковский р-н' => 'р-н Мясниковский',
       'Кагальницкий р-н' => 'р-н Кагальницкий',
       'Рост. море' => 'Ростовское море',
-      '40 лет Победы' => 'пр-кт 40-летия Победы '
+      '40 лет Победы' => 'пр-кт 40-летия Победы',
+      'Шолохова' => 'пр-кт Шолохова',
     }
     hash_list[district].blank? ? district : hash_list[district]
   end
