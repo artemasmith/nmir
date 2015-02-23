@@ -74,8 +74,9 @@ namespace :import do
         end
       else
         result << address_name
-        return result, nil
       end
+
+      return result, nil
     end
 
     def get_location loc_params
@@ -86,6 +87,10 @@ namespace :import do
       result, unparsed = find_locations_in_db('г Ростов-на-Дону', district, address, [ro])
       result, unparsed =  find_locations_in_db('обл Ростовская', district, address) if result == [ro]
 
+      if unparsed.present?
+        result, unparsed = find_locations_in_db('г Ростов-на-Дону', district, address, [ro])
+        result, unparsed =  find_locations_in_db('обл Ростовская', district, address) if result == [ro]
+      end
       return (result.presence || [ro]), unparsed, unparsed.present?
     end
 
