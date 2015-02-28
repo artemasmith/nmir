@@ -7,17 +7,20 @@ namespace :import do
   task(:donrio, [:file] => :environment) do |_, args|
 
 
+    def find_child parent, title, type = :all
+      parent.children_locations(type).where('title ilike ?', "%#{title}%").first
+    end
 
     def find_address_locations_in_db parent, path, result
       return result, false if path.blank?
 
-      sub_location = parent.children_locations.where('title ilike ?', "%#{path.first}%").first
+      sub_location = find_child parent, path.first
       return nil, false if sub_location.blank?
       result << sub_location
 
       if sub_location.street? && path.second.present? && path.second.to_i > 0
         sub_sub_location = sub_location.children_locations.where(title: path.second.to_i.to_s).first ||
-                           create_address(parent: sub_location, title: path.second.to_i.to_s)
+            create_address(parent: sub_location, title: path.second.to_i.to_s)
         result << sub_sub_location
         return nil, true
       end
@@ -25,24 +28,23 @@ namespace :import do
       return sub_location, false
     end
 
+
+
     def find_locations_in_db parent_name, original_district, original_address, result = []
 
-      district_name = Matcher.rename_district(original_district)
-      original_address = original_address.to_s.gsub(original_district.to_s, '')
-      address_name = Matcher.rename_district(original_address)
+      district_name = Matcher.rename_district(original_district) || ''
+      address_name = Matcher.rename_district(original_address) || ''
 
       if district_name.is_a?(String) || district_name.is_a?(NilClass)
         superparent = Location.where(title: parent_name).first
 
-        correct_district_name = Matcher.escape district_name
-
-        return result, [original_district, original_address].delete_if{|e| e.blank?}.join(', ') if correct_district_name.blank?
+        return result, [original_district, original_address].delete_if{|e| e.blank?}.join(', ') if district_name.blank?
         if superparent.city?
-          district = superparent.children_locations(:admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
-                     superparent.children_locations(:non_admin_area).where('title ilike ?', "%#{correct_district_name}%").first ||
-                     superparent.children_locations(:street).where('title ilike ?', "%#{correct_district_name}%").first
+
+          district = find_child(superparent, district_name, :admin_area) ||
+                     find_child(superparent, district_name, :non_admin_area)
         else
-          district = superparent.children_locations.where('title ilike ?', "%#{correct_district_name}%").first
+          district = find_child(superparent, district_name)
         end
 
         return result, [original_district, original_address].delete_if{|e| e.blank?}.join(', ') if district.blank?
@@ -55,11 +57,10 @@ namespace :import do
       end
 
       if address_name.is_a?(String) || address_name.is_a?(NilClass)
-        correct_address_name = Matcher.escape address_name
 
-        return result, original_address if correct_address_name.blank?
+        return result, original_address if address_name.blank?
 
-        address_name_list = correct_address_name.split('/').delete_if{ |e| e.blank? }
+        address_name_list = address_name.split('/').delete_if{ |e| e.blank? }
         path_list = address_name_list.first.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.first.present?
         addition_path_list = address_name_list.second.split(',').map{ |e| e.to_s.strip }.delete_if{ |e| e.blank? } if address_name_list.second.present?
 
@@ -86,6 +87,12 @@ namespace :import do
       ro = Location.where(title: 'обл Ростовская').first
       result, unparsed = find_locations_in_db('г Ростов-на-Дону', district, address, [ro])
       result, unparsed =  find_locations_in_db('обл Ростовская', district, address) if result == [ro]
+
+      if unparsed.present?
+        result, unparsed = find_locations_in_db('г Ростов-на-Дону', district, address, [ro])
+        result, unparsed = find_locations_in_db('обл Ростовская', district, address) if result == [ro]
+      end
+
 
       return (result.presence || [ro]), unparsed, unparsed.present?
     end
