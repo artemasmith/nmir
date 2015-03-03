@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   match 'upload_donrio' => 'import_uploader#create', via: :post
 
@@ -37,6 +42,7 @@ Rails.application.routes.draw do
 
 
   root 'advertisements#index'
+
 
 
 

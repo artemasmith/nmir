@@ -115,5 +115,7 @@ gem 'redis-rails'
 #JPEG and PNG compression processor for Paperclip. Under the hood, jpegtran and optipng libraries are used.
 gem 'paperclip-compression'
 
+gem 'sinatra', :require => nil
+
 
 
