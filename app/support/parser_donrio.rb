@@ -1,4 +1,4 @@
-class DonrioParser
+class ParserDonrio
 
 
   def self.prepare_char str
