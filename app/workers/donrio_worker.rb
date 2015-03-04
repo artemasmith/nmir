@@ -7,14 +7,14 @@ class DonrioWorker
     def find_address_locations_in_db parent, path, result
       return result, false if path.blank?
 
-      correct_path_first = ParserUtil.rename(path.first)
+      correct_path_first = ParserUtil.rename(:address, path.first)
       return nil, false unless correct_path_first.is_a?(String)
       sub_location = find_child parent, correct_path_first
       return nil, false if sub_location.blank?
       result << sub_location
 
 
-      correct_path_second = ParserUtil.rename(path.second)
+      correct_path_second = ParserUtil.rename(:address, path.second)
       return sub_location, false unless correct_path_second.is_a?(String)
 
       if sub_location.street? && path.second.present? && correct_path_second.to_i > 0
@@ -29,8 +29,8 @@ class DonrioWorker
 
     def find_locations_in_db parent_name, original_district, original_address, result = []
 
-      district_name = ParserUtil.rename(original_district)
-      address_name = ParserUtil.rename(original_address)
+      district_name = ParserUtil.rename(:address, original_district)
+      address_name = ParserUtil.rename(:address, original_address)
 
       if district_name.is_a?(String) || district_name.is_a?(NilClass)
         superparent = Location.where(title: parent_name).first
