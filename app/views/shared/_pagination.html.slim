@@ -7,14 +7,23 @@
           li
             a href=url_path.call(url_params.merge(current_page - 1 != 1 ? {:page => current_page - 1} : {}))
               | &laquo;
+        - is_first_skip = true
         - (1..pages).each do |page|
-          li class="#{'disabled' if page == current_page}"
-            - if page == current_page
+          - if page == 1 || page == pages || ((current_page - page).abs < 5)
+            - is_first_skip = true
+            li class="#{'disabled' if page == current_page}"
+              - if page == current_page
+                span
+                  = page
+              - else
+                a href=(url_path.call(url_params.merge(page != 1 ? {:page => page} : {})))
+                  = page
+          - elsif is_first_skip
+            - is_first_skip = false
+            li.disabled'
               span
-                = page
-            - else
-              a href=(url_path.call(url_params.merge(page != 1 ? {:page => page} : {})))
-                = page
+                | ...
+
         -if current_page < pages
           li
             a href=url_path.call(url_params.merge!(current_page + 1 != 1 ? {:page => current_page + 1} : {}))
