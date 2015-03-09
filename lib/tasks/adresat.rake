@@ -12,13 +12,16 @@ namespace :import do
     readed_rows = 0
     temp =[]
 
-
     workbook = Spreadsheet.open(args.file).worksheets
     workbook.each do |worksheet|
-      titles.clear
 
       worksheet.each do |row|
-        if row[0].match /РЕЗУЛЬТАТ/
+        if row[0].to_s.match /РЕЗУЛЬТАТ/i
+          if titles.present? && list.present?
+            schedule_import list, titles
+          end
+          titles.clear
+          list.clear
           row.each_with_index do |column, index|
             titles[column] = index if column.present?
           end
@@ -34,17 +37,16 @@ namespace :import do
           readed_rows = 0
           temp = []
         end
-
       end
     end
 
+    schedule_import list, titles
+
+  end
+
+  def schedule_import list, titles
     ParserUtil.schedule(list) do |delay, row|
-      AdresatWorker.perform(row.to_a, titles)
+      AdresatWorker.delay_for(delay, :retry => false).perform(row.to_a, titles)
     end
-    #print "list = \n"
-    #print "#{list[1]}\n"
-    #print "titles= #{titles}\n"
-    #print "comment = #{list[1][titles[:comment]]}"
-    #print "\n\n#{list}\n"
   end
 end

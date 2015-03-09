@@ -3,11 +3,9 @@ class AdresatWorker
 
     def perform row, titles
       name, phone = ParserAdresat.parse_name_and_phone row, titles
-      puts "name phone #{name} #{phone}"
 
       adv = Advertisement.new
       contact = User.get_contact(phone: phone, name: (name.presence || '(имя не указано)'), source: User::USER_SOURCES.index(:unknown))
-      puts "contact = #{contact}"
 
       if contact
         adv.user = contact
@@ -15,8 +13,8 @@ class AdresatWorker
         return
       end
 
-      adv.offer_type = ParserAdresat.parse_offer_type row
-      adv.category = ParserAdresat.parse_category row
+      adv.offer_type = ParserAdresat.parse_offer_type titles
+      adv.category = ParserAdresat.parse_category titles
 
       floor_from = ParserAdresat.parse_floor_from row, titles
       adv.floor_from = floor_from if floor_from.present? && floor_from > 0
@@ -24,7 +22,7 @@ class AdresatWorker
       adv.floor_cnt_from = floor_cnt_from if floor_cnt_from.present? && floor_cnt_from > 0
 
 
-      room_from = ParserAdresat.parse_room row, titles
+      room_from = ParserAdresat.parse_room_from row, titles
       adv.room_from = room_from if room_from.present? && room_from > 0
 
       space_from = ParserAdresat.parse_space_from row, titles
@@ -34,12 +32,12 @@ class AdresatWorker
       outdoors_space_from = ParserAdresat.parse_outdoors_space_from row, titles
       adv.outdoors_space_from = outdoors_space_from if outdoors_space_from.present? && outdoors_space_from > 0
 
-      adv.price_from = ParserAdresat.parse_price row
+      adv.price_from = ParserAdresat.parse_price row, titles
 
 
       street, address = ParserAdresat.parse_street_address row, titles
 
-      location = { dist: row[titles['район']], addr: street + ' ' + address}
+      location = { dist: row[titles['район']], addr: street + '/' + address}
       locations, unparsed = ParserUtil.get_location(location)
 
       adv.comment = ParserAdresat.parse_comment row, titles
@@ -54,9 +52,7 @@ class AdresatWorker
 
       adv.get_remote_coords unless cadv
 
-      puts "adv = #{adv}\n\n"
-
-
+      adv.save unless cadv
     end
   end
 end
