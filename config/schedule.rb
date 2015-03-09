@@ -32,8 +32,8 @@ every 1.day, :at => '2:00 am' do
   rake 'log:clear'
 end
 
-every 10.minutes do
-  rake 'ts:in:delta'
+every 25.minutes do
+  rake 'ts:index'
 end
 
 
