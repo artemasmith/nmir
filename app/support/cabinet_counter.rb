@@ -1,5 +1,5 @@
 class CabinetCounter
-  EXPIRE = 4.hours
+  EXPIRE = 25.minutes
 
   def self.total_adv_count(user_id)
     key = hash_cabinet_total_adv_count(user_id)

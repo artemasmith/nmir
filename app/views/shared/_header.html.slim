@@ -72,7 +72,7 @@
 
 
       ul.nav.navbar-nav.navbar-left
-        li class="#{'active' if current_page?(controller: :advertisements, action: :new) || current_page?(controller: :advertisements, action: :create) }"
+        li class="#{'active' if current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create) }"
           = link_to new_advertisement_path
             i.fa.fa-cloud-upload.fa-lg
             '
