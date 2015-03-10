@@ -78,11 +78,6 @@ class ParserAdresat
     return street, address
   end
 
-  def self.parse_landmark unparsed
-    unparsed.presence
-  end
-
-
 
   VALUES = {
       floor_from: { name: 'эт', type: 'to_i' },
@@ -92,7 +87,7 @@ class ParserAdresat
       floor_cnt_from: { name: 'э-н', type: 'to_i' },
       room_from: { name: 'ком', type: 'to_i' },
       price: { name: 'цена', type: 'to_d' },
-      landmark: { name: 'ориентир', type: 'to_d' },
+      landmark: { name: 'ориентир', type: 'to_s' },
 
       year: { name: 'год', type: 'to_s' },
       balcony: { name: 'бал', type: 'to_s' },
@@ -123,6 +118,7 @@ class ParserAdresat
 
       result = args[0][args[1][field]].to_s.strip.send(type)
       result = ParserUtil.rename name.to_sym, result if VALUES[name.to_sym][:type] == 'to_s'
+      result = nil if result == '?'
       result
 
     rescue
