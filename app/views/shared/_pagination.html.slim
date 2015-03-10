@@ -26,7 +26,7 @@
 
         -if current_page < pages
           li
-            a href=url_path.call(url_params.merge!(current_page + 1 != 1 ? {:page => current_page + 1} : {}))
+            a href=url_path.call(url_params.merge(current_page + 1 != 1 ? {:page => current_page + 1} : {}))
               | &raquo;
       .btn-group.pagination.pull-right
         .button-dropdown
