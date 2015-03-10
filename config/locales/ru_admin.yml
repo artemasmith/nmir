@@ -43,6 +43,10 @@ ru:
         menu: 'импорт donrio'
         breadcrumb: 'импорт donrio'
         title: 'Импорт из donrio'
+      import_adresat:
+        menu: 'импорт adresat'
+        breadcrumb: 'импорт adresat'
+        title: 'Импорт из adresat'
       dashboard:
         title: "Управление сайтом"
         menu: "Панель управления"

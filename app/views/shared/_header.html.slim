@@ -44,7 +44,7 @@
             .button.btn.navbar-btn.btn-default data-toggle="modal" data-target=".sign_in_modal"
               i.fa.fa-lock
               '
-              |Войти
+              | Войти
             .modal.sign_in_modal aria-hidden="true" aria-labelledby="Авторизация" role="dialog"
               .modal-dialog.modal-sm
                 .modal-content
@@ -58,7 +58,7 @@
                       .form-group
                         = f.email_field :email, autofocus: true, class: 'form-control', placeholder: 'mail@example.com', required: true
                       .form-group
-                        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: "********"
+                        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '********'
                       .checkbox
                         = f.label :remember_me, class: 'checkbox' do
                           = f.check_box :remember_me, checked: true
@@ -72,13 +72,22 @@
 
 
       ul.nav.navbar-nav.navbar-left
-        li.nav.navbar-nav
-          .navbar-btn.nav-font-color
-            = link_to new_advertisement_path
-              .btn.btn-warning
-                i.fa.fa-bullhorn.fa-lg
+        li class="#{'active' if current_page?(controller: :advertisements, action: :new) || current_page?(controller: :advertisements, action: :create) }"
+          = link_to new_advertisement_path
+            i.fa.fa-cloud-upload.fa-lg
+            '
+            | Разместить объявление
+        - if user_signed_in?
+          - active_adv_count = CabinetCounter.active_adv_count(current_user.id)
+          - if active_adv_count > 0
+            li class="#{'active' if current_page?(controller: :cabinet)}"
+              = link_to cabinet_index_path('advertisement[expired]' => 0)
+                i.fa.fa-list.fa-lg
                 '
-                |Разместить объявление
+                | Мои объявления
+                '
+                span.badge
+                  = active_adv_count
         - if @root_section.present? && (can? :access, :rails_admin)
           li
             a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)

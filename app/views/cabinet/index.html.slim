@@ -1,0 +1,28 @@
+= content_for :title
+  | Мои объявления
+
+= content_for :meta
+  meta name="robots" content="noindex, nofollow"
+
+= content_for :header
+  .well.well-sm
+    ul.nav.nav-pills
+      li class="#{'active' if current_page?(controller: :cabinet, action: :index, 'advertisement[expired]' => 0, page: params[:page], per_page: params[:per_page])}"
+        = link_to cabinet_index_path('advertisement[expired]' => 0)
+          i.fa.fa-list
+          '
+          | Активные
+          span.badge
+            = CabinetCounter.active_adv_count(current_user.id)
+      li class="#{'active' if current_page?(controller: :cabinet, action: :index, 'advertisement[expired]' => 1, page: params[:page], per_page: params[:per_page])}"
+        = link_to cabinet_index_path('advertisement[expired]' => 1)
+          i.fa.fa-pause
+          '
+          | Неактивные
+          span.badge
+            = CabinetCounter.expired_adv_count(current_user.id)
+
+.well.well-sm
+  = render 'advertisements/search_results'
+  = advertisements_pagination
+

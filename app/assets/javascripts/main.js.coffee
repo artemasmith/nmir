@@ -668,6 +668,11 @@ $('[name="advertisement[price_from]"], [name="advertisement[price_to]"]').livequ
     centsLimit: 0
     clearPrefix: true
   })
+  $(this).focusout ->
+    if $(this).val() is '0'
+      $(this).val('')
+    return
+  return
 
 
 $('.formatRub').livequery ->

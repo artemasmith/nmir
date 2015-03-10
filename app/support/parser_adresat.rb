@@ -78,9 +78,10 @@ class ParserAdresat
     return street, address
   end
 
-  def self.parse_landmark row, titles
-    street = ParserUtil.rename :address, row[titles['ориентир']] if titles['ориентир'].present?
+  def self.parse_landmark unparsed
+    unparsed.presence
   end
+
 
 
   VALUES = {

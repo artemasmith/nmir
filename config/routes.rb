@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
-  match 'upload_donrio' => 'import_uploader#create', via: :post
+  match 'import_uploader' => 'import_uploader#create', via: :post
 
   resources :photos
 
@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   get '/entity', to: redirect('/')
 
+  resources :cabinet
   resources :advertisements, :path => 'entity' do
     member do
       get 'top'

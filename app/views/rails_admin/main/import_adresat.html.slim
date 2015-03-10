@@ -1,7 +1,7 @@
 h2= t('admin.form.upload_file')
 
 =form_tag '/import_uploader', method: :post, multipart: true do
- = hidden_field_tag 'type', 'donrio'
+ = hidden_field_tag 'type', 'adresat'
  = file_field_tag 'file', required: true, accept: 'xls'
  br
  =submit_tag t('admin.form.save'), class: 'btn btn-default btn-success'

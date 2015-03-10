@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 
   enum :role => AdvEnums::USER_ROLES
 
-  USER_SOURCES = [:unknown, :donrio]
+  USER_SOURCES = [:unknown, :donrio, :adresat]
   enum :source => User::USER_SOURCES
   before_validation :set_params, :on => :create
   after_update :change_adv_role, :if => :role_changed?

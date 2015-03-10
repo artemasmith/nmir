@@ -7,21 +7,29 @@ namespace :import do
 
     #TASK STARTS
     args.file ||= '/home/tea/RubymineProjects/nmir/public/import/first_test_adresat.xls'
-    titles = {}
-    list = []
-    readed_rows = 0
-    temp =[]
+
 
     workbook = Spreadsheet.open(args.file).worksheets
     workbook.each do |worksheet|
+      titles = {}
+      list = []
+      readed_rows = 0
+      temp = []
 
       worksheet.each do |row|
+        next if row.count == 0 || row.compact.count == 0
+
         if row[0].to_s.match /РЕЗУЛЬТАТ/i
+
           if titles.present? && list.present?
             schedule_import list, titles
           end
+
           titles.clear
           list.clear
+          readed_rows = 0
+          temp.clear
+
           row.each_with_index do |column, index|
             titles[column] = index if column.present?
           end
@@ -29,7 +37,7 @@ namespace :import do
           titles[:comment] = titles.count
           next
         end
-        next if row.count == 0 || row.compact.count == 0
+
         row.to_a.each { |column| temp << column if column.present? }
         readed_rows += 1
         if readed_rows == 2
@@ -38,9 +46,10 @@ namespace :import do
           temp = []
         end
       end
+      schedule_import list, titles
     end
 
-    schedule_import list, titles
+
 
   end
 

@@ -31,6 +31,10 @@ RailsAdmin.config do |config|
       only Advertisement
     end
 
+    collection :import_adresat do
+      only Advertisement
+    end
+
     ## With an audit adapter, you can add:
     # history_index
     # history_show

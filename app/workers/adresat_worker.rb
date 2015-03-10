@@ -5,7 +5,7 @@ class AdresatWorker
       name, phone = ParserAdresat.parse_name_and_phone row, titles
 
       adv = Advertisement.new
-      contact = User.get_contact(phone: phone, name: (name.presence || '(имя не указано)'), source: User::USER_SOURCES.index(:unknown))
+      contact = User.get_contact(phone: phone, name: (name.presence || '(имя не указано)'), source: User::USER_SOURCES.index(:adresat))
 
       if contact
         adv.user = contact
@@ -40,9 +40,9 @@ class AdresatWorker
       location = { dist: row[titles['район']], addr: street + '/' + address}
       locations, unparsed = ParserUtil.get_location(location)
 
-      adv.comment = ParserAdresat.parse_comment row, titles
+      adv.landmark = ParserAdresat.parse_landmark unparsed
 
-      adv.landmark = ParserAdresat.parse_landmark row, titles
+      adv.comment = ParserAdresat.parse_comment row, titles
 
       adv_params = { locations: locations, offer_type: adv.offer_type, category: adv.category, property_type: adv.property_type,
                      user_id: adv.user_id, price: adv.price_from }

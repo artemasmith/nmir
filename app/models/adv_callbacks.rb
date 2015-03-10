@@ -9,6 +9,7 @@ module AdvCallbacks
     before_destroy :delete_advertisement
 
     def delete_advertisement
+      CabinetCounter.drop_adv_count(self.user_id)
       return if section.blank?
       deleted_advertisement = DeletedAdvertisement.new
       deleted_advertisement.advertisement_id = self.id
@@ -17,6 +18,7 @@ module AdvCallbacks
     end
 
     def generate_sections
+      CabinetCounter.drop_adv_count(self.user_id)
       self.locations.each do |loc|
         locations_chain_array = locations_chain_array_from(loc)
         locations_chain_url = SectionGenerator.chain_url(locations_chain_array.map(&:title))
