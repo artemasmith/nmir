@@ -180,7 +180,7 @@ class ParserUtil
 
     }
     value = hash_list[field].present? ? hash_list[field][name] : name
-    value = nil if value == '?'
+    value = 'не указано' if name == '?'
     return (value.blank? ? ParserUtil.escape(name) : value) || ''
   end
 

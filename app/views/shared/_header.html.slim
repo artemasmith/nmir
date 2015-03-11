@@ -22,24 +22,38 @@
                 | Зарегистрироваться
         li.nav.navbar-nav
           - if @current_user
-            .button.btn.navbar-btn.btn-default data-toggle="modal" data-target=".log_out_modal"
-              .i.fa.fa-sign-out
-              '
-              = @current_user.email
-            .modal.log_out_modal aria-hidden="true" aria-labelledby="Выйти" role="dialog"
-              .modal-dialog.modal-sm
-                .modal-content
-                  .modal-header
-                    button.close data-dismiss="modal" type="button"
-                      span aria-hidden="true"  &times;
-                      span.sr-only Close
-                    h4.modal-title Выход
-                  .modal-body
-                    | Вы уверены что хотите выйти?
-                  .modal-footer
-                    = link_to 'Выйти', destroy_user_session_path, method: :delete, class: "btn btn-danger"
-                    a href="#" data-dismiss="modal" class="btn btn-default" type="button"
-                      | Отмена
+            li.dropdown.nav
+              a.dropdown-toggle data-toggle="dropdown" href="#"
+                i.fa.fa-user.fa-lg
+                  = @current_user.name || @current_user.email
+                i.caret
+              ul.dropdown-menu.sub-menu
+                li
+                  = link_to cabinet_index_path do
+                    i.fa.fa-gear.fa-spin
+                    |&nbsp
+                    | Настройки
+                /li
+                  a href="#"
+                    i.fa.fa-money
+                    | Кошелёк
+                /li.divider
+                /li
+                  a href="#"
+                    i.fa.fa-male
+                    i.fa.fa-female
+                    | Агенты
+                /li
+                  a href="#"
+                    i.fa.fa-wrench
+                    | Агентство
+                li.divider
+                li
+                  = link_to destroy_user_session_path, method: :delete do
+                    i.fa.fa-power-off
+                    |&nbsp
+                    | Выход
+
           - else
             .button.btn.navbar-btn.btn-default data-toggle="modal" data-target=".sign_in_modal"
               i.fa.fa-lock
