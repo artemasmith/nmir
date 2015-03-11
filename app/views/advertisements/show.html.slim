@@ -26,7 +26,7 @@ h1
           p.text-center.first_photo_comment_action
             = @photos.first.comment
           - @photos.each do |photo|
-            a.show_photo_action href="#" full_scr=photo.advertisement_photo(:thumb) comment=photo.comment
+            a.show_photo_action href="#" full_scr=photo.advertisement_photo(:medium) comment=photo.comment
               = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail'
       p
         span.small.text-muted
@@ -163,12 +163,37 @@ h1
       .col-lg-5
         | ещё можно:
         '
-        a.btn.btn-danger.btn-xs
+        a.btn.btn-danger.btn-xs.abuse_popover_action data-adv_id=@adv.id href="#" data-toggle="tooltip"
           i.fa.fa-ban
           '
           | пожаловаться
+        .container.hidden.abuse_form_action
+          = form_for Abuse.new, html: {class: 'form withoutBootstrapValidator'}, remote: true, role:'form' do |f|
+            = f.hidden_field :advertisement_id, value: @adv.id
+            .form-group
+              - if @adv.user_role == 'owner'
+                .radio
+                  label
+                    input checked=true name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:agent)}"
+                    | агент(-ство)
+              .radio
+                label
+                  input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:expired)}"
+                  | сдано/продано
+              .radio
+                label
+                  input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:deception)}"
+                  | замануха
+              .radio
+                label
+                  input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:engaged)}"
+                  | абонент недоступен
+            .form-group
+              textarea.form-control name="abuse[comment]" placeholder="Описание" rows="3"
+            = f.button class: 'btn btn-default', type: 'submit', name: 'button'
+              i.fa.fa-magic Очистить базу!
         '
-        - if can? :manage, @adv
+        - if can? :update, @adv
           a.btn.btn-default.btn-xs href="#{edit_advertisement_path(@adv)}"
             i.fa.fa-edit
             '
@@ -178,6 +203,7 @@ h1
             i.fa.fa-level-up
             '
             | обновить
+        - if can? :destroy, @adv
           '
           = link_to advertisement_path(@adv), class: 'btn btn-default btn-xs', method: :delete, data: { confirm: 'Удалить это объявление?' } do
             i.fa.fa-trash

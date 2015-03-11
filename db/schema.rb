@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150219001945) do
+ActiveRecord::Schema.define(version: 20150311002048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,19 @@ ActiveRecord::Schema.define(version: 20150219001945) do
     t.string  "normdoc",    limit: 36
     t.integer "counter"
   end
+
+  create_table "abuses", force: true do |t|
+    t.integer  "advertisement_id"
+    t.string   "comment"
+    t.integer  "user_id"
+    t.integer  "abuse_type"
+    t.integer  "status"
+    t.string   "moderator_comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "abuses", ["advertisement_id"], name: "index_abuses_on_advertisement_id", using: :btree
 
   create_table "advertisement_counters", force: true do |t|
     t.integer  "advertisement_id"

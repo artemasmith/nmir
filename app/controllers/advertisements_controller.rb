@@ -312,7 +312,7 @@ class AdvertisementsController < ApplicationController
       raise ActionController::RoutingError.new('Not Found Adv')
     end
 
-    if @adv.expired? && !can?(:manage, @adv)
+    if @adv.expired? && !can?(:read, @adv)
       return redirect_to @adv.section.url
     end
 
@@ -502,7 +502,8 @@ class AdvertisementsController < ApplicationController
   end
 
   def authorize_resource!
-    raise CanCan::AccessDenied unless can?(:manage, @adv)
+    raise CanCan::AccessDenied unless can?(:update, @adv) if [:edit, :update, :top].include?(params[:action].to_sym)
+    raise CanCan::AccessDenied unless can?(:destroy, @adv) if [:destroy].include?(params[:action].to_sym)
   end
 
   def search_params

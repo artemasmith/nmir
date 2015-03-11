@@ -393,8 +393,23 @@ $('#map').livequery ->
       $(this).data('editable')
   )
 
+$('.abuse_popover_action').livequery ->
+  $(this).click (event)->
+    cancelEvent(event)
+    return
+  $(this).popover
+    container: 'body'
+    html: true
+    placement: 'bottom'
+    title: ->
+      'Жалоба на'
+    content: ->
+      html = $('.abuse_form_action').html()
+      $('.abuse_form_action').remove()
+      html
+  return
 
-$('form:not(".withoutBootstrapValidator")').livequery ->
+$('form:not(".withoutBootstrapValidator"):visible').livequery ->
   $(this).bootstrapValidator({
     feedbackIcons:
       valid: 'glyphicon glyphicon-ok'
@@ -691,6 +706,8 @@ $('.formatRub').livequery ->
       i--
     result
   $(this).text(formatRub($(this).text()))
+
+
 
 
 

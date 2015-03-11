@@ -43,4 +43,12 @@ RailsAdmin.config do |config|
   config.navigation_static_links = {
       'sidekiq' => '/sidekiq'
   }
+
+  config.model Abuse do
+    field :status, :enum do
+      enum do
+        [[:wait, 0], [:accepted, 1], [:not_accepted, 2]]
+      end
+    end
+  end
 end
