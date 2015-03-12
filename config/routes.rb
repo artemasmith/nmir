@@ -27,7 +27,8 @@ Rails.application.routes.draw do
   end
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'
   match '/' => 'advertisements#index', via: [:get]
-  devise_for :users
+
+  devise_for :users, :controllers => { :registrations => :registrations }
 
   namespace :api do
     resources :validation

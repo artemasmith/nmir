@@ -21,8 +21,14 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) do |u| 
-      u.permit(:name, {:phones_attributes => [:id, :original, :_destroy]}, :email, :password, :password_confirmation, :role)
+    devise_parameter_sanitizer.for(:sign_up) do |u|
+      u.permit(:name, :email, :password, :password_confirmation, :role, {:phones_attributes => [:id, :original, :_destroy]})
     end
+
+    #devise_parameter_sanitizer.for(:account_update).push(:role)
+    #devise_parameter_sanitizer.for(:edit).push(:role)
+    #devise_parameter_sanitizer.for(:edit){|u| u.permit(:name, :email, :password, :password_confirmation, :role, {:phones_attributes => [:id, :original, :_destroy]})}
+    devise_parameter_sanitizer.for(:account_update){|u| u.permit(:name, :email, :current_password, :password, :password_confirmation, :role, {:phones_attributes => [:id, :original, :_destroy]})}
+
   end
 end

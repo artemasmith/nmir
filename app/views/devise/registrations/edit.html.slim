@@ -33,7 +33,7 @@ h2= "настройки учетной записи"
         .control-label.col-sm-3
           = f.label t('activerecord.attributes.user.role')
         .col-sm-4
-          = f.select :role, (options_for_select([['собственник',0],['агент',1]])), {},  {class: ' form-control'}
+          = f.select :role, (options_for_select([['собственник',0],['агент',1]],resource.role)), {},  {class: ' form-control'}
       .form-group
         .control-label.col-sm-3
         .col-sm-4
