@@ -35,6 +35,7 @@ class CabinetController < ApplicationController
 
   end
 
+
   private
 
   def search_params

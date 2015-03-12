@@ -194,6 +194,7 @@ ru:
       submit: Сохранить
       update: Сохранить
       confirm: Подтверждение
+      delete: Удалить
     navigate:
       back: Назад
 
