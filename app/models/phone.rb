@@ -13,12 +13,23 @@ class Phone < ActiveRecord::Base
   has_many :advertisements, through: :user
 
 
+  validate :phone_number
+
   validates_presence_of :original
   validates_uniqueness_of :number
+
+
 
   before_validation :normalize
 
   after_save :update_advs
+
+  def phone_number
+    if self.original.to_s.scan(/\d/).join('').size < 6
+      self.errors.add(:phone_number, '^В номере не хватает цифр')
+    end
+  end
+
   def normalize
     self.number = Phone.normalize(original)
   end
