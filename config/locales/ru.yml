@@ -312,7 +312,7 @@ ru:
       price_from: 'Цена'
       not_for_agents: 'Не для агентов'
       mortgage: 'Ипотека'
-      owner: 'Частные'
+      owner: 'частные'
       comment: 'Комментарий'
       private_comment: 'Скрытый комментарий'
       expired: 'Устаревшие'

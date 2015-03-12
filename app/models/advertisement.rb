@@ -67,7 +67,7 @@ class Advertisement < ActiveRecord::Base
   include AdvRemoteCoords
 
   belongs_to :user
-  has_many   :abuses, :dependent => :destroy
+  has_many   :abuses, :dependent => :destroy, :class_name => 'Abuse'
   has_many   :photos, :dependent => :destroy
   has_one   :advertisement_counter, :dependent => :destroy
   has_many :notepads, :dependent => :destroy

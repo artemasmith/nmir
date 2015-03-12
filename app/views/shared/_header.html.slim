@@ -12,6 +12,28 @@
           '
           | multilisting.su
     .collapse.navbar-collapse
+      ul.nav.navbar-nav
+        li class="#{'active' if current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create) }"
+          = link_to new_advertisement_path
+            i.fa.fa-bullhorn.fa-lg
+            '
+            | Разместить объявление
+        - if user_signed_in?
+          li class="#{'active' if current_page?(controller: :cabinet)}"
+            = link_to cabinet_index_path('advertisement[expired]' => 0)
+              i.fa.fa-list.fa-lg
+              '
+              | Мои объявления
+              '
+              span.badge
+                = CabinetCounter.active_adv_count(current_user.id)
+        - if @root_section.present? && (can? :access, :rails_admin)
+          li
+            a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
+              i.fa.fa-tag.fa-lg
+              '
+              | Сео
+
       ul.nav.navbar-nav.navbar-right
         - unless current_user.present?
           li.nav.navbar-nav
@@ -24,15 +46,16 @@
           - if @current_user
             li.dropdown.nav
               a.dropdown-toggle data-toggle="dropdown" href="#"
-                i.fa.fa-user.fa-lg
-                  = @current_user.name || @current_user.email
+                i.fa.fa-user
+                '
+                = @current_user.email
                 i.caret
               ul.dropdown-menu.sub-menu
-                li
-                  = link_to cabinet_index_path do
-                    i.fa.fa-gear.fa-spin
-                    |&nbsp
-                    | Настройки
+                /li
+                /  = link_to cabinet_index_path do
+                /    i.fa.fa-gear.fa-spin
+                /    |&nbsp
+                /    | Настройки
                 /li
                   a href="#"
                     i.fa.fa-money
@@ -47,7 +70,7 @@
                   a href="#"
                     i.fa.fa-wrench
                     | Агентство
-                li.divider
+                /li.divider
                 li
                   = link_to destroy_user_session_path, method: :delete do
                     i.fa.fa-power-off
@@ -83,31 +106,6 @@
                         | Войти
                       '
                       = link_to "Забыли пароль?", new_password_path(resource_name)
-
-
-      ul.nav.navbar-nav.navbar-left
-        li class="#{'active' if current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create) }"
-          = link_to new_advertisement_path
-            i.fa.fa-bullhorn.fa-lg
-            '
-            | Разместить объявление
-        - if user_signed_in?
-          li class="#{'active' if current_page?(controller: :cabinet)}"
-            = link_to cabinet_index_path('advertisement[expired]' => 0)
-              i.fa.fa-list.fa-lg
-              '
-              | Мои объявления
-              '
-              span.badge
-                = CabinetCounter.active_adv_count(current_user.id)
-        - if @root_section.present? && (can? :access, :rails_admin)
-          li
-            a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
-              i.fa.fa-tag.fa-lg
-              '
-              | Сео
-
-
 
 
 

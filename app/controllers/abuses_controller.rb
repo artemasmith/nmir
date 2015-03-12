@@ -7,6 +7,7 @@ class AbusesController < ApplicationController
     @abuse.save!
   end
 
+  private
 
   def abuse_params
     params.require(:abuse).permit(:comment, :abuse_type, :advertisement_id)

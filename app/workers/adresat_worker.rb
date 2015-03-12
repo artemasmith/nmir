@@ -27,20 +27,18 @@ class AdresatWorker
 
       space_from = ParserAdresat.parse_space_from row, titles
       adv.space_from = space_from if space_from.present? && space_from > 0
-
-
       outdoors_space_from = ParserAdresat.parse_outdoors_space_from row, titles
       adv.outdoors_space_from = outdoors_space_from if outdoors_space_from.present? && outdoors_space_from > 0
 
       adv.price_from = ParserAdresat.parse_price row, titles
 
 
-      street, address = ParserAdresat.parse_street_address row, titles
+      district, street, address = ParserAdresat.parse_street_address row, titles
 
-      location = { dist: row[titles['район']], addr: street + '/' + address}
+      location = { dist: district, addr: street + ',' + address}
       locations, unparsed = ParserUtil.get_location(location)
 
-      adv.landmark = ParserAdresat.parse_landmark unparsed
+      adv.landmark = ParserAdresat.parse_landmark row, titles, unparsed
 
       adv.comment = ParserAdresat.parse_comment row, titles
 

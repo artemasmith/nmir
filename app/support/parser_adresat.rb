@@ -32,13 +32,23 @@ class ParserAdresat
   def self.parse_name_and_phone row, titles
     begin
       unparsed_contact = row[titles[:comment]].to_s.split('|')[1].strip.split('-')
-      puts "unparsed contcat #{unparsed_contact}"
-      phone = unparsed_contact[1].gsub(/[-+\(\)\,\s]/, '') if unparsed_contact[1].match(/\d/)
-      name = unparsed_contact[0].strip.gsub(/[-+\(\)\,]/, '') if unparsed_contact[0].match(/[A-Za-z_А-Яа-я]/)
+      phone = unparsed_contact[1].split(',').first.to_s.strip.gsub(/[-+\(\)\,\s]/, '') if unparsed_contact[1].match(/\d/)
+      name = unparsed_contact[0].split(',').first.to_s.strip.gsub(/[-+\(\)\,]/, '') if unparsed_contact[0].match(/[A-Za-z_А-Яа-я]/)
       return name, phone
     rescue
        return nil, nil
     end
+  end
+
+  def self.parse_price row, titles
+    row[titles['цена']].to_i * 1000
+  end
+
+  def self.parse_landmark row, titles, unparsed
+    list = []
+    list << unparsed if unparsed.present?
+    list << row[titles['ориентир']] if row[titles['ориентир']].present? && row[titles['ориентир']].to_s.strip != '?'
+    list.join(', ')
   end
 
   def self.parse_comment row, titles
@@ -47,7 +57,7 @@ class ParserAdresat
     comment << "комнат: #{self.parse_room_from(row, titles)}" if titles['ком'].present? && row[titles['ком']].present?
     comment << "цена:  #{self.parse_price(row, titles)}" if titles['цена'].present? && row[titles['цена']].present?
     comment << "площадь: #{self.parse_space_from(row, titles)}" if titles['Sоб'].present? && row[titles['Sоб']].present?
-    comment << "площадь-участка: #{self.parse_space_outdoor_from(row, titles)}" if titles['Sуч'].present? && row[titles['Sуч']].present?
+    comment << "площадь-участка: #{self.parse_outdoors_space_from(row, titles)}" if titles['Sуч'].present? && row[titles['Sуч']].present?
     comment << "отделка: #{self.parse_char(row, titles)}" if titles['отд.хар'].present? && row[titles['отд.хар']].present?
     comment << "год: #{self.parse_year(row, titles)}" if titles['год'].present? && row[titles['год']].present?
     comment << "балкон: #{self.parse_balcony(row, titles)}" if titles['бал'].present? && row[titles['бал']].present?
@@ -71,18 +81,19 @@ class ParserAdresat
 
 
   def self.parse_street_address row, titles
+    district = row[titles['район']].to_s.strip
+    district = '' if district == '?'
+
     address = row[titles[:comment]].split('|')[0]
-    street, address =  address.split(',')
-    street = ParserUtil.rename :address, street
-    address = address.gsub(' ','')
-    return street, address
+    street, address = address.split(',').map{|e| e.strip}.delete_if{|e| e == '?'}
+    return district, street, address
   end
 
 
   VALUES = {
       floor_from: { name: 'эт', type: 'to_i' },
       space_from: { name: 'Sоб', type: 'to_d' },
-      space_outdoor_from: { name: 'Sуч', type: 'to_d' },
+      outdoors_space_from: { name: 'Sуч', type: 'to_d' },
       #address: { name: 'отд.хар', type: 'to_s' },
       floor_cnt_from: { name: 'э-н', type: 'to_i' },
       room_from: { name: 'ком', type: 'to_i' },
@@ -109,6 +120,10 @@ class ParserAdresat
 
   }
 
+
+
+
+
   def self.method_missing(name, *args)
     begin
       name = name.to_s.gsub('parse_', '')
@@ -120,7 +135,6 @@ class ParserAdresat
       result = ParserUtil.rename name.to_sym, result if VALUES[name.to_sym][:type] == 'to_s'
       result = nil if result == '?'
       result
-
     rescue
       return nil
     end

@@ -55,7 +55,8 @@ namespace :import do
 
   def schedule_import list, titles
     ParserUtil.schedule(list) do |delay, row|
-      AdresatWorker.delay_for(delay, :retry => false).perform(row.to_a, titles)
+      AdresatWorker.perform(row.to_a, titles)
+      # AdresatWorker.delay_for(delay, :retry => false).perform(row.to_a, titles)
     end
   end
 end
