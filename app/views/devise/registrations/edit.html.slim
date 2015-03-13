@@ -1,45 +1,71 @@
 h2= "настройки учетной записи"
 .well.clearfix
-  = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form form-horizontal' }) do |f|
+  = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form form-horizontal' }) do |f|
     = devise_error_messages!
-    .fieldset
+    .form.form-horizontal role="form"
       .form-group
-        .control-label.col-sm-3
-          = f.label :email
+        label.control-label.col-sm-4
+          i.fa.fa-user
+            '
+            | имя
+        .col-sm-4
+          = f.text_field :name, class: 'form-control col-md-4'
+      .form-group
+        label.control-label.col-sm-4
+          i.fa.fa-envelope-o
+            '
+            | почта
         .col-sm-4
           = f.email_field :email, autofocus: true, class: 'form-control col-md-4'
         /if devise_mapping.confirmable? && resource.pending_reconfirmation?
           div= "Currently waiting confirmation for: #{resource.unconfirmed_email}"
       .form-group
-        .control-label.col-sm-3
-          = f.label :password
+        label.control-label.col-sm-4
+          i.fa.fa-unlock
+            '
+            | пароль
         .col-sm-4
           = f.password_field :password, autocomplete: "off", class: 'form-control'
           i
-            |(оставьте пустым, если вы не хотитеизменить его)
+            |(оставьте пустым, если вы не хотите изменить его)
       .form-group
-        .control-label.col-sm-3
-          = f.label :password_confirmation
+        label.control-label.col-sm-4
+          i.fa.fa-unlock
+            '
+            | пароль еще раз
         .col-sm-4
           = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+
       .form-group
-        .control-label.col-sm-3
-          = f.label t('activerecord.attributes.user.current_password')
+        label.control-label.col-sm-4 for="radios"
         .col-sm-4
-          = f.password_field :current_password, autocomplete: "off", class: 'form-control'
-          i
-            |(нам нужно ваш текущий пароль для подтверждения изменений)
+          - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
+            /.col-sm-6.zero-left
+            = f.label :role, class: 'radio-inline', for: "advertisement_user_attributes_role_#{role}" do
+              = f.radio_button :role, role.to_sym, required: true, id: "advertisement_user_attributes_role_#{role}"
+              = t "activerecord.attributes.user.roles.#{role}"
       .form-group
-        .control-label.col-sm-3
-          = f.label t('activerecord.attributes.user.role')
-        .col-sm-4
-          = f.select :role, (options_for_select([['собственник',0],['агент',1]],resource.role)), {},  {class: ' form-control'}
+        label.control-label.col-sm-4
+          i.fa.fa-phone
+          '
+          | телефон
+          '
+        .col-sm-4#reg-phones2
+          = f.fields_for :phones, (f.object.phones.presence || f.object.phones.build) do |phone_form|
+            .input-group
+              = phone_form.text_field :original, class: "form-control", required: true, placeholder: '+7(863) 2-12-85-06'
+              span.input-group-btn
+                = phone_form.link_to_remove class: 'btn btn-default dell-phone-number ' do
+                  i.fa.fa-minus
+                = f.link_to_add :phones, :data => { :target => "#reg-phones2" }, class: 'btn btn-default add-phone-number hidden' do
+                  i.fa.fa-plus
       .form-group
-        .control-label.col-sm-3
+        .control-label.col-sm-4
         .col-sm-4
           = f.submit t("helpers.submit.update"), class: 'btn btn-primary btn-large'
 .well.clearfix
   h3 удалить учетную запись
   p
   = button_to t("helpers.submit.delete"), registration_path(resource_name), data: { confirm: "Are you sure?"  }, method: :delete, class: 'btn btn-danger'
-  = link_to t("helpers.navigate.back"), :back
+  p
+  = link_to t("helpers.navigate.back"), :back, class: 'btn btn-primary'

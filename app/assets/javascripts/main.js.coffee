@@ -344,13 +344,22 @@ $('.location-group[state]').livequery ->
 
   return
 
+$('#reg-phones2').livequery ->
+  $(this).find('.dell-phone-number').first().addClass('hidden')
+  $(this).find('.add-phone-number').first().removeClass('hidden')
+  $(this).on 'nested:fieldAdded', (e) ->
+    parent = e.target
+    time = new Date()
+    $(parent).find('.form-control').attr('id', "#{time.getMinutes()} #{time.getSeconds()}")
+    $(parent).find('.form-control').attr('name', "user[phones_attributes][#{time.getMinutes()}#{time.getSeconds()}][original]")
+    return
+
 $('#reg-phones').livequery ->
   $(this).on 'nested:fieldAdded', (e) ->
     parent = e.target
     $(parent).find('.add-phone-number').addClass('hidden')
     $(parent).find('.dell-phone-number').removeClass('hidden')
     time = new Date()
-    #console.log(time.getSeconds())
     $(parent).find('.form-control').attr('id', "#{time.getMinutes()} #{time.getSeconds()}")
     $(parent).find('.form-control').attr('name', "advertisement[user_attributes][phones_attributes][#{time.getMinutes()}#{time.getSeconds()}][original]")
     return
