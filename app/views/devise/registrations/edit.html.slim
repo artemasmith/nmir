@@ -1,68 +1,78 @@
 h2= "настройки учетной записи"
-.well.clearfix
-  = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form form-horizontal' }) do |f|
+.well
+  = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'form-horizontal'}) do |f|
     = devise_error_messages!
-    .form.form-horizontal role="form"
+    fieldset
+      = render 'devise/registrations/fields', f: f, additional_params: true, check_phone: false, phone_id: 2, password_required: false
       .form-group
-        label.control-label.col-sm-4
-          i.fa.fa-user
-            '
-            | имя
-        .col-sm-4
-          = f.text_field :name, class: 'form-control col-md-4'
-      .form-group
-        label.control-label.col-sm-4
-          i.fa.fa-envelope-o
-            '
-            | почта
-        .col-sm-4
-          = f.email_field :email, autofocus: true, class: 'form-control col-md-4'
-        /if devise_mapping.confirmable? && resource.pending_reconfirmation?
-          div= "Currently waiting confirmation for: #{resource.unconfirmed_email}"
-      .form-group
-        label.control-label.col-sm-4
-          i.fa.fa-unlock
-            '
-            | пароль
-        .col-sm-4
-          = f.password_field :password, autocomplete: "off", class: 'form-control'
-          i
-            |(оставьте пустым, если вы не хотите изменить его)
-      .form-group
-        label.control-label.col-sm-4
-          i.fa.fa-unlock
-            '
-            | пароль еще раз
-        .col-sm-4
-          = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
-
-      .form-group
-        label.control-label.col-sm-4 for="radios"
-        .col-sm-4
-          - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
-            /.col-sm-6.zero-left
-            = f.label :role, class: 'radio-inline', for: "advertisement_user_attributes_role_#{role}" do
-              = f.radio_button :role, role.to_sym, required: true, id: "advertisement_user_attributes_role_#{role}"
-              = t "activerecord.attributes.user.roles.#{role}"
-      .form-group
-        label.control-label.col-sm-4
-          i.fa.fa-phone
-          '
-          | телефон
-          '
-        .col-sm-4#reg-phones2
-          = f.fields_for :phones, (f.object.phones.presence || f.object.phones.build) do |phone_form|
+        .col-sm-4.col-sm-offset-4
+          .form-group
             .input-group
-              = phone_form.text_field :original, class: "form-control", required: true, placeholder: '+7(863) 2-12-85-06'
-              span.input-group-btn
-                = phone_form.link_to_remove class: 'btn btn-default dell-phone-number ' do
-                  i.fa.fa-minus
-                = f.link_to_add :phones, :data => { :target => "#reg-phones2" }, class: 'btn btn-default add-phone-number hidden' do
-                  i.fa.fa-plus
-      .form-group
-        .control-label.col-sm-4
-        .col-sm-4
-          = f.submit t("helpers.submit.update"), class: 'btn btn-primary btn-large'
+              = f.submit 'Зарегистрироваться', class: 'btn btn-primary'
+/.well.clearfix
+/  = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form form-horizontal' }) do |f|
+/    = devise_error_messages!
+/    .form.form-horizontal role="form"
+/      .form-group
+/        label.control-label.col-sm-4
+/          i.fa.fa-user
+/            '
+/            | имя
+/        .col-sm-4
+/          = f.text_field :name, class: 'form-control col-md-4'
+/      .form-group
+/        label.control-label.col-sm-4
+/          i.fa.fa-envelope-o
+/            '
+/            | почта
+/        .col-sm-4
+/          = f.email_field :email, autofocus: true, class: 'form-control col-md-4'
+/        /if devise_mapping.confirmable? && resource.pending_reconfirmation?
+/          div= "Currently waiting confirmation for: #{resource.unconfirmed_email}"
+/      .form-group
+/        label.control-label.col-sm-4
+/          i.fa.fa-unlock
+/            '
+/            | пароль
+/        .col-sm-4
+/          = f.password_field :password, autocomplete: "off", class: 'form-control'
+/          i
+/            |(оставьте пустым, если вы не хотите изменить его)
+/      .form-group
+/        label.control-label.col-sm-4
+/          i.fa.fa-unlock
+/            '
+/            | пароль еще раз
+/        .col-sm-4
+/          = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+/
+/      .form-group
+/        label.control-label.col-sm-4 for="radios"
+/        .col-sm-4
+/          - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
+/            /.col-sm-6.zero-left
+/            = f.label :role, class: 'radio-inline', for: "advertisement_user_attributes_role_#{role}" do
+/              = f.radio_button :role, role.to_sym, required: true, id: "advertisement_user_attributes_role_#{role}"
+/              = t "activerecord.attributes.user.roles.#{role}"
+/      .form-group
+/        label.control-label.col-sm-4
+/          i.fa.fa-phone
+/          '
+/          | телефон
+/          '
+/        .col-sm-4#reg-phones2
+/          = f.fields_for :phones, (f.object.phones.presence || f.object.phones.build) do |phone_form|
+/            .input-group
+/              = phone_form.text_field :original, class: "form-control", required: true, placeholder: '+7(863) 2-12-85-06'
+/              span.input-group-btn
+/                = phone_form.link_to_remove class: 'btn btn-default dell-phone-number ' do
+/                  i.fa.fa-minus
+/                = f.link_to_add :phones, :data => { :target => "#reg-phones2" }, class: 'btn btn-default add-phone-number hidden' do
+/                  i.fa.fa-plus
+/      .form-group
+/        .control-label.col-sm-4
+/        .col-sm-4
+/          = f.submit t("helpers.submit.update"), class: 'btn btn-primary btn-large'
 .well.clearfix
   h3 удалить учетную запись
   p
