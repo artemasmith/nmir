@@ -9,16 +9,17 @@ class ParserDonrio
 
   def self.parse_comment row, titles
     list = []
-    list << "цена: #{row[1]} т.р." if row[1].present?
-    list << "этажей: #{row[titles['Эт.']]}" if row[titles['Эт.']].present?
-    list << "комнат: #{row[titles['ком.']]}" if row[titles['ком.']].present?
-    list << "площадь: #{row[titles['Площадь']]}" if row[titles['Площадь']].present?
-    if titles.keys.include?('Sуч.Всотках')
-      list << "площадь-участка: #{row[titles['Sуч.Всотках']]}" if row[titles['Sуч.Всотках']].present?
-    end
+
+    list << "#{row[titles['Эт.']]}" if row[titles['Эт.']].present?
+    list << "#{row[titles['ком.']]}" if row[titles['ком.']].present? &&  row[titles['ком.']].to_s.strip != 'к'
+    list << "#{row[titles['Площадь']]}" if row[titles['Площадь']].present?
+    #if titles.keys.include?('Sуч.Всотках')
+    #  list << "площадь-участка: #{row[titles['Sуч.Всотках']]}" if row[titles['Sуч.Всотках']].present?
+    #end
     list << row[titles['Хар']].to_s.gsub(/\d{1,2}\.\d{1,2}\.\d{4}\-\d+т\.р\./, '').strip if row[titles['Хар']].present?
-    list << "район: #{row[titles['Район']]}" if row[titles['Район']].present?
-    list << "адрес: #{row[titles['Адрес']]}" if row[titles['Адрес']].present?
+    list << "#{row[titles['Район']]}" if row[titles['Район']].present?
+    list << "#{row[titles['Адрес']]}" if row[titles['Адрес']].present?
+    #list << "цена: #{row[1]} т.р." if row[1].present?
     list.join(', ')
   end
 

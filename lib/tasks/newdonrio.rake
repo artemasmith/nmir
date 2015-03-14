@@ -30,6 +30,7 @@ namespace :import do
       raise 'blank titles' if titles.blank?
       ParserUtil.schedule(list) do |delay, row|
         DonrioWorker.delay_for(delay, :retry => false).perform(row.to_a, titles)
+        #DonrioWorker.perform(row.to_a, titles)
       end
     end
   end
