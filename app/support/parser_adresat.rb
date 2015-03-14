@@ -2,9 +2,12 @@ class ParserAdresat
 
   def self.parse_category row
      case
-       when row.keys[0].mb_chars.downcase.to_s.match(/квартир/) then :flat
-       when row.keys[0].mb_chars.downcase.to_s.match(/дом/) then :house
-       when row.keys[0].mb_chars.downcase.to_s.match(/участ[ки|ок]{0,1}/) then :ijs
+       when row[0].mb_chars.downcase.to_s.match(/квартир/i) then :flat
+       when row[0].mb_chars.downcase.to_s.match(/комна/i) then :room
+       when row[0].mb_chars.downcase.to_s.match(/овостр/i) then :newbuild
+       when row[0].mb_chars.downcase.to_s.match(/дом/i) then :house
+       when row[0].mb_chars.downcase.to_s.match(/участ/i) then :ijs
+       when row[0].mb_chars.downcase.to_s.match(/гостинка/i) then :hotel
        else nil
      end
   end
@@ -53,11 +56,15 @@ class ParserAdresat
 
   def self.parse_comment row, titles
     comment = []
-    obj = self.parse_category titles
+    obj = self.parse_category row
     obj = case obj
             when :flat then "квартиру"
             when :ijs then "участок"
             when :house then "дом"
+            when :room then 'комнату'
+            when :newbuild then 'квартиру в новостройке'
+            when :hotel then 'гостиницу'
+            else 'квартиру'
           end
 
     d,s,a = self.parse_street_address row, titles
@@ -68,7 +75,7 @@ class ParserAdresat
     uc = ParserUtil.rename :comment, uc
 
     comment << "Продаю #{obj},"
-    if obj == "квартиру"
+    if obj.match("квартир") || obj.match('комнат') || obj.match('гостиницу')
       comment << "#{self.parse_room_from(row, titles)}к" if titles['ком'].present? && row[titles['ком']].present?
       comment << "#{self.parse_floor_from(row, titles)}/#{self.parse_floor_cnt_from(row, titles)}" if titles['э-н'].present? &&
           row[titles['э-н']].present? &&  titles['эт'].present? && row[titles['эт']].present?
