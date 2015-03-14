@@ -20,14 +20,14 @@
     i.fa.fa-phone
     '
     | телефон
-  .col-sm-4 id="reg-phones#{phone_id}"
+  .col-sm-4#reg-phones
     = f.fields_for :phones, (f.object.phones.presence || f.object.phones.build) do |phone_form|
       .input-group
         = phone_form.text_field :original, class: "form-control#{check_phone ? ' checkPhone': ''}", required: true, placeholder: '+7(863) 2-12-85-06'
         span.input-group-btn
-          = phone_form.link_to_remove class: 'btn btn-default dell-phone-number hidden' do
+          = phone_form.link_to_remove class: 'btn btn-default dell-phone-number ' do
             i.fa.fa-minus
-          = f.link_to_add :phones, :data => { :target => "#reg-phones#{phone_id}" }, class: 'btn btn-default add-phone-number' do
+          = f.link_to_add :phones, :data => { :target => "#reg-phones" }, class: 'btn btn-default add-phone-number hidden' do
             i.fa.fa-plus
 - if additional_params
   .form-group
@@ -43,6 +43,7 @@
       i.fa.fa-unlock
       '
       | пароль
+    -password_required = password_required == false ? false : true
     .col-sm-4
       .form-group
         = f.password_field :password, autocomplete: "off", class: 'form-control', required: password_required, placeholder: '******', minlength: 6
