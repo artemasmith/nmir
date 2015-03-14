@@ -14,7 +14,6 @@ class AdresatWorker
       end
 
       adv.offer_type = ParserAdresat.parse_offer_type titles
-      puts "row #{row}\n"
       adv.category = ParserAdresat.parse_category row
 
       floor_from = ParserAdresat.parse_floor_from row, titles
