@@ -124,7 +124,6 @@ class ParserAdresat
       comment << "въезд для #{self.parse_parking(row, titles)}." if field_valid?('въезд', row, titles)
     end
 
-
     comment.join(' ')
   end
 
