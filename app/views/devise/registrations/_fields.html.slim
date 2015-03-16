@@ -39,7 +39,7 @@
     .col-sm-4
       .form-group
         = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
-  - unless password_required
+  - if @adv.new_record? && !can?(:create_from_admin, @adv)
     .form-group
       label.control-label.col-sm-3
         i.fa.fa-unlock
