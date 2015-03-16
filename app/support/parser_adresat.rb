@@ -56,7 +56,7 @@ class ParserAdresat
 
 
   def self.field_valid? field, row, titles
-    titles[field].present? && row[titles[field]].present? && !row[titles[field]].to_s.match('\?') && !row[titles[field]].to_s.match('0')
+    titles[field].present? && row[titles[field]].present? && !row[titles[field]].to_s.match('\?') && !row[titles[field]].to_s.strip.match(/^0$/)
   end
 
   def self.parse_comment row, titles
@@ -123,7 +123,6 @@ class ParserAdresat
       comment << "двор #{self.parse_front_standalone(row, titles)}," if field_valid?('обособл', row, titles)
       comment << "въезд для #{self.parse_parking(row, titles)}." if field_valid?('въезд', row, titles)
     end
-
     comment.join(' ')
   end
 
