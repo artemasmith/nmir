@@ -11,9 +11,9 @@ h2= "Настройки учетной записи"
               = f.submit 'Сохранить', class: 'btn btn-primary'
 .phone-target-field value="user[phones_attributes]"
 
-.well.clearfix
-  h3 Удалить учетную запись
-  p
-  = button_to t("helpers.submit.delete"), registration_path(resource_name), data: { confirm: "Уверены?"  }, method: :delete, class: 'btn btn-danger'
-  p
-  = link_to t("helpers.navigate.back"), :back, class: 'btn btn-primary'
+/.well.clearfix
+/  h3 Удалить учетную запись
+/  p
+/  = button_to t("helpers.submit.delete"), registration_path(resource_name), data: { confirm: "Уверены?"  }, method: :delete, class: 'btn btn-danger'
+/  p
+/  = link_to t("helpers.navigate.back"), :back, class: 'btn btn-primary'
