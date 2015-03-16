@@ -106,8 +106,8 @@ class ParserAdresat
       comment << full_address
       comment << "Дорога к участку #{self.parse_road(row, titles)}," if field_valid?('дорога к', row, titles)
       comment << "въезд для #{self.parse_parking(row, titles)}." if field_valid?('въезд', row, titles)
-      comment << "#{self.parse_gas(row, titles)}," if field_valid?('газ', row, titles)
       comment << "#{self.parse_power(row, titles)}," if field_valid?('элек', row, titles)
+      comment << "#{self.parse_gas(row, titles)}," if field_valid?('газ', row, titles)
       comment << "#{self.parse_water(row, titles)}," if field_valid?('вода', row, titles)
       comment << "канализация #{self.parse_plumbing(row, titles)}," if field_valid?('кан', row, titles)
       comment <<  uc if uc != '0' && uc.present?
@@ -116,6 +116,7 @@ class ParserAdresat
       comment << "#{self.parse_space_from(row, titles)}" if field_valid?('Sоб', row, titles)
       comment << "#{self.parse_walls(row, titles)}," if field_valid?('стены', row, titles)
       comment << "участок #{self.parse_outdoors_space_from(row, titles)}." if field_valid?('Sуч', row, titles)
+      comment << full_address
       comment << "Удобства #{self.parse_facilities(row, titles)}," if field_valid?('уд', row, titles)
       comment << "состояние #{self.parse_renovation(row, titles)}," if field_valid?('отд.кач', row, titles)
       comment << uc if uc != '0' && uc.present?
