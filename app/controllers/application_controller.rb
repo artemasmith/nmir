@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     render :file => "#{Rails.root}/public/403.html", :status => 403, :layout => false
   end
-  
+
   private
 
   def set_current_user
@@ -21,8 +21,10 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) do |u| 
-      u.permit(:name, {:phones_attributes => [:id, :original, :_destroy]}, :email, :password, :password_confirmation, :role)
+    devise_parameter_sanitizer.for(:sign_up) do |u|
+      u.permit(:name, :email, :password, :password_confirmation, :role, {:phones_attributes => [:id, :original, :_destroy]})
     end
+    devise_parameter_sanitizer.for(:account_update){|u| u.permit(:name, :email, :current_password, :password, :password_confirmation, :role, {:phones_attributes => [:id, :original, :_destroy]})}
   end
+
 end

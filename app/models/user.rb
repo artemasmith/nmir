@@ -37,6 +37,7 @@ class User < ActiveRecord::Base
   enum :source => User::USER_SOURCES
   before_validation :set_params, :on => :create
   after_update :change_adv_role, :if => :role_changed?
+  after_update :change_advs, if: :name_changed?
   validates_presence_of :role
 
 
@@ -73,6 +74,11 @@ class User < ActiveRecord::Base
       user.phones.create(original: cinfo[:phone])
       return user
     end
+  end
+
+
+  def change_advs
+    self.advertisements.update_all(name: self.name)
   end
 
 end

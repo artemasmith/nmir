@@ -345,14 +345,16 @@ $('.location-group[state]').livequery ->
   return
 
 $('#reg-phones').livequery ->
+  $(this).find('.dell-phone-number').first().addClass('hidden')
+  $(this).find('.add-phone-number').first().removeClass('hidden')
   $(this).on 'nested:fieldAdded', (e) ->
     parent = e.target
     $(parent).find('.add-phone-number').addClass('hidden')
     $(parent).find('.dell-phone-number').removeClass('hidden')
     time = new Date()
-    #console.log(time.getSeconds())
     $(parent).find('.form-control').attr('id', "#{time.getMinutes()} #{time.getSeconds()}")
-    $(parent).find('.form-control').attr('name', "advertisement[user_attributes][phones_attributes][#{time.getMinutes()}#{time.getSeconds()}][original]")
+    target_input = $('.phone-target-field ').attr('value')
+    $(parent).find('.form-control').attr('name', target_input + "[#{time.getMinutes()}#{time.getSeconds()}][original]")
     return
 
 $('.AdvProperty').livequery ->

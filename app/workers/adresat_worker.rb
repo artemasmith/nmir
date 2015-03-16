@@ -14,7 +14,7 @@ class AdresatWorker
       end
 
       adv.offer_type = ParserAdresat.parse_offer_type titles
-      adv.category = ParserAdresat.parse_category titles
+      adv.category = ParserAdresat.parse_category row
 
       floor_from = ParserAdresat.parse_floor_from row, titles
       adv.floor_from = floor_from if floor_from.present? && floor_from > 0

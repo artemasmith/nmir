@@ -3,7 +3,7 @@
     legend Контакт
     .form.form-horizontal role="form"
       = f.fields_for :user, (@adv.user.presence || @adv.build_user) do |f|
-        = render 'devise/registrations/fields', f: f, additional_params: false, check_phone: true
+        = render 'devise/registrations/fields', f: f, additional_params: false, check_phone: true, password_required: true
         - if !@save_with_errors && @adv.new_record?
           .form-group
             .col-sm-offset-3.col-sm-4
@@ -14,6 +14,8 @@
     legend Контакт
     .form.form-horizontal role="form"
       = f.fields_for :user, (@adv.user.presence || @adv.build_user) do |f|
-        = render 'devise/registrations/fields', f: f, additional_params: true, check_phone: false
+        = render 'devise/registrations/fields', f: f, additional_params: true, check_phone: false, password_required: true, phone_id: ''
 
+
+.phone-target-field value="advertisement[user_attributes][phones_attributes]"
 

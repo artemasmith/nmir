@@ -19,7 +19,7 @@
             '
             | Разместить объявление
         - if user_signed_in?
-          li class="#{'active' if current_page?(controller: :cabinet)}"
+          li class="#{'active' if current_page?(controller: '/cabinet')}"
             = link_to cabinet_index_path('advertisement[expired]' => 0)
               i.fa.fa-list.fa-lg
               '
@@ -51,11 +51,11 @@
                 = @current_user.email
                 i.caret
               ul.dropdown-menu.sub-menu
-                /li
-                /  = link_to cabinet_index_path do
-                /    i.fa.fa-gear.fa-spin
-                /    |&nbsp
-                /    | Настройки
+                li
+                  = link_to edit_user_registration_path() do
+                    i.fa.fa-gear.fa-spin
+                    |&nbsp
+                    | Настройки
                 /li
                   a href="#"
                     i.fa.fa-money
