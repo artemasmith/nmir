@@ -47,8 +47,28 @@ RailsAdmin.config do |config|
   config.model Abuse do
     field :status, :enum do
       enum do
-        [[:wait, 0], [:accepted, 1], [:not_accepted, 2]]
+        [:wait, :accepted, :not_accepted]
       end
+    end
+  end
+
+  config.model User do
+    # edit do
+    field :email, :string
+    field :role, :enum do
+      enum do
+        [:owner, :agent, :admin]
+      end
+    end
+    field :name, :string
+    field :phones
+    field :source, :enum do
+      enum do
+        [:unknown, :donrio, :adresat]
+      end
+    end
+    field :advertisements do
+      nested_form false
     end
   end
 end

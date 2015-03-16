@@ -1,11 +1,12 @@
-.form-group
-  label.control-label.col-sm-3 for="radios"
-  .col-sm-4.zero-left
-    - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
-      /.col-sm-6.zero-left
-      = f.label :role, class: 'radio-inline', for: "advertisement_user_attributes_role_#{role}" do
-        = f.radio_button :role, role.to_sym, required: true, id: "advertisement_user_attributes_role_#{role}"
-        = t "activerecord.attributes.user.roles.#{role}"
+- if f.object.new_record?
+  .form-group
+    label.control-label.col-sm-3 for="radios"
+    .col-sm-4.zero-left
+      - (AdvEnums::USER_ROLES - [:admin]).each_with_index  do |role, index|
+        /.col-sm-6.zero-left
+        = f.label :role, class: 'radio-inline', for: "advertisement_user_attributes_role_#{role}" do
+          = f.radio_button :role, role.to_sym, required: true, id: "advertisement_user_attributes_role_#{role}"
+          = t "activerecord.attributes.user.roles.#{role}"
 
 .form-group
   label.control-label.col-sm-3 for="textinput"
@@ -30,28 +31,30 @@
           = f.link_to_add :phones, :data => { :target => "#reg-phones" }, class: 'btn btn-default add-phone-number hidden' do
             i.fa.fa-plus
 - if additional_params
-  .form-group
-    label.control-label.col-sm-3
-      i.fa.fa-envelope-o
-      '
-      | почта
-    .col-sm-4
-      .form-group
-        = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
-  .form-group
-    label.control-label.col-sm-3
-      i.fa.fa-unlock
-      '
-      | пароль
-    -password_required = password_required == false ? false : true
-    .col-sm-4
-      .form-group
-        = f.password_field :password, autocomplete: "off", class: 'form-control', required: password_required, placeholder: '******', minlength: 6
-  .form-group
-    label.control-label.col-sm-3
-      i.fa.fa-unlock
-      '
-      | подтверждение пароля
-    .col-sm-4
-      .form-group
-        = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: password_required, placeholder: '******', minlength: 6
+  - if f.object.new_record? && !can?(:create_from_admin, f.object)
+    .form-group
+      label.control-label.col-sm-3
+        i.fa.fa-envelope-o
+        '
+        | почта
+      .col-sm-4
+        .form-group
+          = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
+
+    .form-group
+      label.control-label.col-sm-3
+        i.fa.fa-unlock
+        '
+        | пароль
+      -
+      .col-sm-4
+        .form-group
+          = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6
+    .form-group
+      label.control-label.col-sm-3
+        i.fa.fa-unlock
+        '
+        | подтверждение пароля
+      .col-sm-4
+        .form-group
+          = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6

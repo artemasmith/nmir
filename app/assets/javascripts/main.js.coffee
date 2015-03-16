@@ -708,6 +708,8 @@ $('.formatRub').livequery ->
       i--
     result
   $(this).text(formatRub($(this).text()))
+  return
+
 
 
 

@@ -209,6 +209,12 @@ h1
             i.fa.fa-trash
             '
             | Удалить
+        - if (can? :access, :rails_admin)
+          '
+          = link_to rails_admin.edit_path(model_name: 'user', id: @adv.user_id), class: 'btn btn-default btn-xs'
+            i.fa.fa-edit
+            '
+            | изменить пользователя
 
   - if @search_results.present?
     h4
