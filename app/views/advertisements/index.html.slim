@@ -7,7 +7,7 @@
       meta name="description" content=@root_section.description
     - if @root_section.keywords.present?
       meta name="keywords" content=@root_section.keywords
-    - if params[:page].present?
+    - if params[:page].present? || params[:per_page].present?
       meta name="robots" content="noindex, follow"
     - elsif params[:advertisement].present?
       link rel="canonical" href=@root_section.url
