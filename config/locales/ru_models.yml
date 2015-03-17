@@ -12,7 +12,14 @@ ru:
         current_password: текущий пароль
         name: Имя
         phones: Телефоны
-      
+
+      abuse:
+        class: 'жалобы'
+        status: 'статус'
+        comment: 'комментарий'
+        moderator_comment: 'комментарий модератора'
+        user: 'автор'
+        abuse_type: 'тип жалобы'
       phone:
         original: Номер телефона
         number: Номер телефона

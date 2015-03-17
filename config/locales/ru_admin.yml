@@ -30,6 +30,9 @@ ru:
       model_not_found: "Модель '%{model}' не найден"
       object_not_found: "Объект %{model} с id '%{id}' не найден"
     table_headers:
+      abuses: 'Жалобы'
+      advertisements: 'Объявления'
+      locations: 'Местоположения'
       model_name: "Название модели"
       last_used: "Последнее раз использовалось"
       records: "Записи"
