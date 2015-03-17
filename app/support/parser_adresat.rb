@@ -54,6 +54,11 @@ class ParserAdresat
     list.join(', ')
   end
 
+
+  def self.field_valid? field, row, titles
+    titles[field].present? && row[titles[field]].present? && !row[titles[field]].to_s.match('\?') && !row[titles[field]].to_s.strip.match(/^0$/)
+  end
+
   def self.parse_comment row, titles
     comment = []
     obj = self.parse_category row
@@ -76,54 +81,49 @@ class ParserAdresat
 
     comment << "Продаю #{obj},"
     if obj.match("квартир") || obj.match('комнат') || obj.match('гостиницу')
-      comment << "#{self.parse_room_from(row, titles)}к" if titles['ком'].present? && row[titles['ком']].present?
-      comment << "#{self.parse_floor_from(row, titles)}/#{self.parse_floor_cnt_from(row, titles)}" if titles['э-н'].present? &&
-          row[titles['э-н']].present? &&  titles['эт'].present? && row[titles['эт']].present?
-      comment << "#{self.parse_walls(row, titles)}," if titles['стены'].present? && row[titles['стены']].present?
+      comment << "#{self.parse_room_from(row, titles)}к" if field_valid? 'ком', row, titles
+      comment << "#{self.parse_floor_from(row, titles)}/#{self.parse_floor_cnt_from(row, titles)}" if field_valid?('э-н', row, titles) &&
+          field_valid?('эт', row, titles)
+      comment << "#{self.parse_walls(row, titles)}," if field_valid?('стены', row, titles)
 
-      comment << "#{self.parse_space_from(row, titles)}/#{self.parse_spl(row, titles)}/#{self.parse_spk(row, titles)}" if titles['Sоб'].present? &&
-          row[titles['Sоб']].present? && titles['Sж'].present? && row[titles['Sж']].present?  &&
-          titles['Sк'].present? && row[titles['Sк']].present?
-      comment << "санузел #{self.parse_bath(row, titles)}," if titles['су'].present? && row[titles['су']].present?
-      comment << "балкон #{self.parse_balcony(row, titles)}," if titles['бал'].present? && row[titles['бал']].present? &&
-          !row[titles['бал']].match('\?')
-      comment << "окна #{self.parse_windows(row, titles)}," if titles['окна'].present? && row[titles['окна']].present?
-      comment << "комнаты #{self.parse_blueprint(row, titles)}," if titles['план.1'].present? && row[titles['план.1']].present? &&
-          !row[titles['план.1']].match('\?')
-      comment << "состояние #{self.parse_char(row, titles)}," if titles['отд.хар'].present? && row[titles['отд.хар']].present? &&
-          !row[titles['отд.хар']].match('\?')
-      comment << "дом построен в #{self.parse_year(row, titles)} г.," if titles['год'].present? && row[titles['год']].present?
+      space = ""
+      space = "#{self.parse_space_from(row, titles)}" if field_valid?('Sоб', row, titles)
+      space += "/#{self.parse_spl(row, titles)}" if field_valid?('Sж', row, titles)
+      space += "/#{self.parse_spk(row, titles)}" if field_valid?('Sк', row, titles)
+
+      comment << space if space.present?
+
+      comment << "санузел #{self.parse_bath(row, titles)}," if field_valid?('су', row, titles)
+      comment << "балкон #{self.parse_balcony(row, titles)}," if field_valid?('бал', row, titles)
+      comment << "окна #{self.parse_windows(row, titles)}," if field_valid?('окна', row, titles)
+      comment << "комнаты #{self.parse_blueprint(row, titles)}," if field_valid?('план.1', row, titles)
+      comment << "состояние #{self.parse_char(row, titles)}," if field_valid?('отд.хар', row, titles)
+      comment << "дом построен в #{self.parse_year(row, titles)} г.," if field_valid?('год', row, titles)
       comment <<  uc + ',' if uc != '0' && uc.present?
       comment << full_address
     elsif obj == "участок"
-      comment << "#{self.parse_outdoors_space_from(row, titles)} сот." if titles['Sуч'].present? && row[titles['Sуч']].present?
+      comment << "#{self.parse_outdoors_space_from(row, titles)} сот." if field_valid?('Sуч', row, titles)
       comment << full_address
-      comment << "Дорога к участку #{self.parse_road(row, titles)}," if titles['дорога к'].present? && row[titles['дорога к']].present?
-      comment << "въезд для #{self.parse_parking(row, titles)}." if titles['въезд'].present? && row[titles['въезд']].present? &&
-          !row[titles['въезд']].match('\?')
-      comment << "#{self.parse_gas(row, titles)}," if titles['газ'].present? && row[titles['газ']].present? &&
-          !row[titles['газ']].match('\?')
-      comment << "#{self.parse_power(row, titles)}," if titles['элек'].present? && row[titles['элек']].present?
-      comment << "#{self.parse_water(row, titles)}," if titles['вода'].present? && row[titles['вода']].present?
-      comment << "канализация #{self.parse_plumbing(row, titles)}," if titles['кан'].present? && row[titles['кан']].present? &&
-          !row[titles['кан']].match('\?')
+      comment << "Дорога к участку #{self.parse_road(row, titles)}," if field_valid?('дорога к', row, titles)
+      comment << "въезд для #{self.parse_parking(row, titles)}." if field_valid?('въезд', row, titles)
+      comment << "#{self.parse_power(row, titles)}," if field_valid?('элек', row, titles)
+      comment << "#{self.parse_gas(row, titles)}," if field_valid?('газ', row, titles)
+      comment << "#{self.parse_water(row, titles)}," if field_valid?('вода', row, titles)
+      comment << "канализация #{self.parse_plumbing(row, titles)}," if field_valid?('кан', row, titles)
       comment <<  uc if uc != '0' && uc.present?
 
     else
-      comment << "#{self.parse_space_from(row, titles)}" if titles['Sоб'].present? && row[titles['Sоб']].present?
-      comment << "#{self.parse_walls(row, titles)}," if titles['стены'].present? && row[titles['стены']].present?
-      comment << "участок #{self.parse_outdoors_space_from(row, titles)}." if titles['Sуч'].present? && row[titles['Sуч']].present?
-      comment << "Удобства #{self.parse_facilities(row, titles)}," if titles['уд'].present? && row[titles['уд']].present?
-      comment << "состояние #{self.parse_renovation(row, titles)}," if titles['отд.кач'].present? && row[titles['отд.кач']].present? &&
-        !row[titles['отд.кач']].match('\?')
+      comment << "#{self.parse_space_from(row, titles)}" if field_valid?('Sоб', row, titles)
+      comment << "#{self.parse_walls(row, titles)}," if field_valid?('стены', row, titles)
+      comment << "участок #{self.parse_outdoors_space_from(row, titles)}." if field_valid?('Sуч', row, titles)
+      comment << full_address
+      comment << "Удобства #{self.parse_facilities(row, titles)}," if field_valid?('уд', row, titles)
+      comment << "состояние #{self.parse_renovation(row, titles)}," if field_valid?('отд.кач', row, titles)
       comment << uc if uc != '0' && uc.present?
-      comment << "фасад #{self.parse_front(row, titles)}," if titles['фасад'].present? && row[titles['фасад']].present?
-      comment << "двор #{self.parse_front_standalone(row, titles)}," if titles['обособл'].present? && row[titles['обособл']].present?
-      comment << "въезд для #{self.parse_parking(row, titles)}." if titles['въезд'].present? && row[titles['въезд']].present? &&
-          !row[titles['въезд']].match('\?')
+      comment << "фасад #{self.parse_front(row, titles)}," if field_valid?('фасад', row, titles)
+      comment << "двор #{self.parse_front_standalone(row, titles)}," if field_valid?('обособл', row, titles)
+      comment << "въезд для #{self.parse_parking(row, titles)}." if field_valid?('въезд', row, titles)
     end
-
-
     comment.join(' ')
   end
 
