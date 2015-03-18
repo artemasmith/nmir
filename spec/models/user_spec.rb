@@ -14,6 +14,7 @@
 #  blocked                :boolean          default(FALSE)
 #  from_admin             :boolean          default(FALSE)
 #  role                   :integer
+#  source                 :integer          default(0)
 #
 
 require 'rails_helper'

@@ -8,10 +8,13 @@
 #  location_type     :integer
 #  location_id       :integer
 #  children_count    :integer          default(0)
+#  aoguid            :string(255)
+#  parentguid        :string(255)
 #  admin_area_id     :integer
 #  non_admin_area_id :integer
 #  city_id           :integer
 #  loaded_resource   :boolean          default(FALSE), not null
+#  status_type       :integer          default(0)
 #
 
 class Location < ActiveRecord::Base

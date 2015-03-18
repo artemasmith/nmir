@@ -59,6 +59,7 @@
 #  preview_url              :string(255)
 #  preview_alt              :string(255)
 #  user_role                :integer
+#  zoom                     :integer          default(12), not null
 #
 
 require 'rails_helper'
