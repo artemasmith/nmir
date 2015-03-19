@@ -50,12 +50,25 @@ class Abuse < ActiveRecord::Base
   protected
 
   def inform_users
+    #update other abuses on this advertisement
     Abuse.where(advertisement_id: self.advertisement_id).update_all(status: self.status)
+
+    #inform users
     users = Abuse.where(advertisement_id: self.advertisement_id).map(&:user_id).delete_if { |id| id.blank? }
     users << self.advertisement.user_id
     puts "users = #{users}\n"
     emails = users.map { |u| User.find(u).email }
-    body = ""
     AbuseMailer.inform(emails, self).deliver
+
+    #update user role
+    if self.status == 'accepted' && self.abuse_type == 'agent'
+      self.advertisement.user.update(role: :agent)
+    end
+
+    #update advertisement status_type
+    if self.status == 'accepted'
+      self.advertisement.update(status_type: 2)
+    end
   end
+
 end

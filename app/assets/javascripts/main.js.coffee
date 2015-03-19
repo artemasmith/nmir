@@ -2,6 +2,7 @@ $().ready ->
   $('.control_hide_action').addClass('hidden')
   $('.control_show_action').removeClass('hidden')
   $('.control_remove_action').remove()
+  $('[data-toggle="tooltip"]').tooltip()
 
 @set_property = (hid, multi, oval) ->
   val = ''
