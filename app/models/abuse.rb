@@ -27,7 +27,7 @@ class Abuse < ActiveRecord::Base
   after_update :inform_users, if: Proc.new { |abuse| abuse.status == 'accepted' || abuse.status == 'not_accepted' }
 
   rails_admin do
-    firld :created_at
+    field :created_at
     field :status, :enum do
       enum do
         STATUSES

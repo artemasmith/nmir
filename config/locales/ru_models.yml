@@ -20,10 +20,8 @@ ru:
         moderator_comment: 'комментарий модератора'
         user: 'автор'
         abuse_type: 'тип жалобы'
-        status:
-          accepted: 'принята'
-          wait: 'в ожидании'
-          not_accepted: 'отклонена'
+        created_at: 'создана'
+
       phone:
         original: Номер телефона
         number: Номер телефона
