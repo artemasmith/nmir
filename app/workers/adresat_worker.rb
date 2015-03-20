@@ -16,14 +16,16 @@ class AdresatWorker
       adv.offer_type = ParserAdresat.parse_offer_type titles
       adv.category = ParserAdresat.parse_category row
 
+
       floor_from = ParserAdresat.parse_floor_from row, titles
       adv.floor_from = floor_from if floor_from.present? && floor_from > 0
       floor_cnt_from = ParserAdresat.parse_floor_cnt_from row, titles
       adv.floor_cnt_from = floor_cnt_from if floor_cnt_from.present? && floor_cnt_from > 0
 
-
-      room_from = ParserAdresat.parse_room_from row, titles
-      adv.room_from = room_from if room_from.present? && room_from > 0
+      if adv.category != 'house'
+        room_from = ParserAdresat.parse_room_from row, titles
+        adv.room_from = room_from if room_from.present? && room_from > 0
+      end
 
       space_from = ParserAdresat.parse_space_from row, titles
       adv.space_from = space_from if space_from.present? && space_from > 0

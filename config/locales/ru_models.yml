@@ -20,6 +20,8 @@ ru:
         moderator_comment: 'комментарий модератора'
         user: 'автор'
         abuse_type: 'тип жалобы'
+        created_at: 'создана'
+
       phone:
         original: Номер телефона
         number: Номер телефона
