@@ -21,13 +21,35 @@ h1
   .row
     .col-md-9.col-lg-7
       - if @photos.present?
-        .clearfix style="margin-bottom: 15px"
-          = image_tag @photos.first.advertisement_photo(:medium), class: 'first_photo_img_action img-responsive search-photo-size', style: "height: 400px;"
-          p.text-center.first_photo_comment_action
-            = @photos.first.comment
-          - @photos.each do |photo|
-            a.show_photo_action href="#" full_scr=photo.advertisement_photo(:medium) comment=photo.comment
-              = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail'
+        .connected-carousels
+          .stage
+            .carousel.carousel-stage
+              ul
+                - @photos.each do |photo|
+                  li
+                    img alt="" height="400" src=('http://multilisting.su/' + photo.advertisement_photo(:medium)) width="600"
+            a.prev.prev-stage href="#"
+              span ‹
+            a.next.next-stage href="#"
+              span ›
+          .navigation-cont
+            .navigation
+              - if @photos.count > 5
+                a.prev.prev-navigation href="#"  ‹
+                a.next.next-navigation href="#"  ›
+              .carousel.carousel-navigation
+                ul
+                  - @photos.each do |photo|
+                    li
+                      img alt="" height="50" src=('http://multilisting.su/' + photo.advertisement_photo(:thumb)) width="50"
+
+      /.clearfix style="margin-bottom: 15px"
+      /  = image_tag @photos.first.advertisement_photo(:medium), class: 'first_photo_img_action img-responsive search-photo-size', style: "height: 400px;"
+      /  p.text-center.first_photo_comment_action
+      /    = @photos.first.comment
+      /  - @photos.each do |photo|
+      /    a.show_photo_action href="#" full_scr=photo.advertisement_photo(:medium) comment=photo.comment
+      /      = image_tag photo.advertisement_photo(:thumb), class: 'col-xs-2 thumbnail'
       p
         span.small.text-muted
           - if @adv.created_at >= @adv.updated_at

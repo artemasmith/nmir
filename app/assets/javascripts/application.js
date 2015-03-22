@@ -28,7 +28,7 @@
 //= require jquery-fileupload
 //= require vendor/moment
 //= require vendor/daterangepicker
-
+//= require vendor/jquery.jcarousel.min
 
 
 //= require extend

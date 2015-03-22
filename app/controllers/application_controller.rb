@@ -12,6 +12,10 @@ class ApplicationController < ActionController::Base
     render :file => "#{Rails.root}/public/403.html", :status => 403, :layout => false
   end
 
+  rescue_from ActionController::UnpermittedParameters do |exception|
+    raise ActionController::RoutingError.new(exception)
+  end if Rails.env.production?
+
   private
 
   def set_current_user

@@ -2,6 +2,7 @@ class AdvertisementsController < ApplicationController
   before_action :overload_params
   before_action :find_adv, only: [:edit, :update, :destroy, :top]
   before_action :authorize_resource!, only: [:edit, :update, :destroy, :top]
+  before_action :permitting, only: [:index]
 
 
   def index
@@ -64,10 +65,10 @@ class AdvertisementsController < ApplicationController
       end
 
       if (location_section && offer_type_section && category_section) ||
-         (location_section && offer_type_section && property_type_section) ||
-         (offer_type_section && property_type_section) ||
-         (location_section) ||
-         (offer_type_section && category_section)
+          (location_section && offer_type_section && property_type_section) ||
+          (offer_type_section && property_type_section) ||
+          (location_section) ||
+          (offer_type_section && category_section)
         @section = Section.where(offer_type: offer_type, category: category, location_id: location_id, property_type: property_type).first
       end
 
@@ -455,9 +456,9 @@ class AdvertisementsController < ApplicationController
 
   def check_phone
     @search_results = Advertisement
-      .joins('INNER JOIN "phones" ON "advertisements"."user_id" = "phones"."user_id"')
-      .where('phones.number' => params[:phones].split(',').map{|phone| Phone.normalize(phone)})
-      .all
+                          .joins('INNER JOIN "phones" ON "advertisements"."user_id" = "phones"."user_id"')
+                          .where('phones.number' => params[:phones].split(',').map{|phone| Phone.normalize(phone)})
+                          .all
   end
 
   def destroy
@@ -475,12 +476,12 @@ class AdvertisementsController < ApplicationController
 
   def load_location_state!(locations = nil)
     @locations =
-    if locations.is_a?(Array) && locations.size > 0 && locations.first.is_a?(Location)
-      locations
-    else
-      ids = locations || params[:advertisement][:location_ids] || []
-      ids.present? ? Location.where(id: ids).all : []
-    end
+        if locations.is_a?(Array) && locations.size > 0 && locations.first.is_a?(Location)
+          locations
+        else
+          ids = locations || params[:advertisement][:location_ids] || []
+          ids.present? ? Location.where(id: ids).all : []
+        end
     @location_state  = @locations.map do |l|
       {
           id: l.id,
@@ -510,26 +511,61 @@ class AdvertisementsController < ApplicationController
     params[:advertisement]
   end
 
+  def permitting
+    params.permit(:page, :url, :per_page, :advertisement => [
+                           :description,
+                           :date_interval,
+                           :owner,
+                           :category,
+                           :offer_type,
+                           :property_type,
+                           :landmark,
+                           :comment,
+                           :price_from,
+                           :price_to,
+                           :not_for_agents,
+                           :district,
+                           :floor_from,
+                           :floor_to,
+                           :floor_cnt_from,
+                           :floor_cnt_to,
+                           :space_from,
+                           :space_to,
+                           :outdoors_space_from,
+                           :outdoors_space_to,
+                           :mortgage,
+                           :adv_type,
+                           offer_type: [],
+                           category: [],
+                           photo_ids: [],
+                           location_ids: [],
+                           room: {'1' => {},
+                                  '2' => {},
+                                  '3' => {},
+                                  '4' => {}
+                           }])
+  end
+
   def advertisement_params
     params.require(:advertisement).permit(:category, :offer_type, :property_type,
-    :landmark, :comment,
-    :price_from, :price_to,
-    :not_for_agents,
-    :district,
-    :user_id,
-    :floor_from, :floor_to,
-    :floor_cnt_from, :floor_cnt_to,
-    :space_from, :space_to,
-    :outdoors_space_from, :outdoors_space_to,
-    :room_from, :room_to,
+                                          :landmark, :comment,
+                                          :price_from, :price_to,
+                                          :not_for_agents,
+                                          :district,
+                                          :user_id,
+                                          :floor_from, :floor_to,
+                                          :floor_cnt_from, :floor_cnt_to,
+                                          :space_from, :space_to,
+                                          :outdoors_space_from, :outdoors_space_to,
+                                          :room_from, :room_to,
 
 
-    :phone, :adv_type,
-    :latitude, :longitude, :zoom,
+                                          :phone, :adv_type,
+                                          :latitude, :longitude, :zoom,
 
-    :mortgage,
-    adv_type: [], offer_type: [], category: [], photo_ids: [], location_ids: [],
-    user_attributes: [:name, :role, :password, :email, phones_attributes: [:id, :original, :_destroy]])
+                                          :mortgage,
+                                          adv_type: [], offer_type: [], category: [], photo_ids: [], location_ids: [],
+                                          user_attributes: [:name, :role, :password, :password_confirmation, :email, phones_attributes: [:id, :original, :_destroy]])
   end
 
   def overload_params

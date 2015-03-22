@@ -26,5 +26,7 @@ module Nmir
     config.assets.initialize_on_precompile = true
     config.time_zone = 'Moscow'
     config.active_record.default_timezone = :local
+
+    config.action_controller.action_on_unpermitted_parameters = :raise
   end
 end

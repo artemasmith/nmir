@@ -711,6 +711,67 @@ $('.formatRub').livequery ->
   return
 
 
+$('.connected-carousels').livequery ->
+  # This is the connector function.
+  # It connects one item from the navigation carousel to one item from the
+  # stage carousel.
+  # The default behaviour is, to connect items with the same index from both
+  # carousels. This might _not_ work with circular carousels!
+
+  connector = (itemNavigation, carouselStage) ->
+    carouselStage.jcarousel('items').eq itemNavigation.index()
+
+  carouselStage = $('.carousel-stage').jcarousel()
+  carouselNavigation = $('.carousel-navigation').jcarousel()
+  # We loop through the items of the navigation carousel and set it up
+  # as a control for an item from the stage carousel.
+  carouselNavigation.jcarousel('items').each ->
+    item = $(this)
+    # This is where we actually connect to items.
+    target = connector(item, carouselStage)
+    item.on('jcarouselcontrol:active', ->
+      carouselNavigation.jcarousel 'scrollIntoView', this
+      item.addClass 'active'
+      return
+    ).on('jcarouselcontrol:inactive', ->
+      item.removeClass 'active'
+      return
+    ).jcarouselControl
+      target: target
+      carousel: carouselStage
+    return
+  # Setup controls for the stage carousel
+  $('.prev-stage').on('jcarouselcontrol:inactive', ->
+    $(this).addClass 'inactive'
+    return
+  ).on('jcarouselcontrol:active', ->
+    $(this).removeClass 'inactive'
+    return
+  ).jcarouselControl target: '-=1'
+  $('.next-stage').on('jcarouselcontrol:inactive', ->
+    $(this).addClass 'inactive'
+    return
+  ).on('jcarouselcontrol:active', ->
+    $(this).removeClass 'inactive'
+    return
+  ).jcarouselControl target: '+=1'
+  # Setup controls for the navigation carousel
+  $('.prev-navigation').on('jcarouselcontrol:inactive', ->
+    $(this).addClass 'inactive'
+    return
+  ).on('jcarouselcontrol:active', ->
+    $(this).removeClass 'inactive'
+    return
+  ).jcarouselControl target: '-=1'
+  $('.next-navigation').on('jcarouselcontrol:inactive', ->
+    $(this).addClass 'inactive'
+    return
+  ).on('jcarouselcontrol:active', ->
+    $(this).removeClass 'inactive'
+    return
+  ).jcarouselControl target: '+=1'
+  return
+
 
 
 

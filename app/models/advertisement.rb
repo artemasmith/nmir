@@ -68,7 +68,6 @@ class Advertisement < ActiveRecord::Base
 
   belongs_to :user
   has_many   :abuses, :dependent => :destroy, :class_name => 'Abuse'
-  has_many   :photos, :dependent => :destroy
   has_one   :advertisement_counter, :dependent => :destroy
   has_many :notepads, :dependent => :destroy
   has_many :advertisement_counters, :dependent => :destroy
@@ -216,7 +215,7 @@ class Advertisement < ActiveRecord::Base
 
   [:price, :floor, :floor_cnt, :space, :outdoors_space, :room].each do |m|
     define_method("#{m}_from=") do |value|
-      write_attribute("#{m}_to", value) if read_attribute("#{m}_to").blank?
+      write_attribute("#{m}_to", value) if read_attribute("#{m}_to").blank? || (!self.buy? && !self.rent?)
       super(value)
     end
 

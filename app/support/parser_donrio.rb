@@ -29,7 +29,7 @@ class ParserDonrio
 
   def self.parse_name_and_phone row, titles
     begin
-      prepare = row[titles['Тел контанк']].gsub(/агент на % не претендует/i, '').gsub(/посредник % на не претендует/i, '').gsub(/у нас как агент/i, '').strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
+      prepare = row[titles['Тел контанк']].gsub(/агент на не претендует/i, '').gsub(/агент на % не претендует/i, '').gsub(/посредник % на не претендует/i, '').gsub(/у нас как агент/i, '').strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
       list = prepare.map do |e|
          e.gsub(/[-+\(\)\s]/, '').strip
       end.delete_if do |e|
