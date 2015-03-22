@@ -30,7 +30,7 @@ module AdvEnums
 
   PROPERTY_TYPES = [:commerce, :residental]
 
-  STATUSES = [:active, :expired]
+  STATUSES = [:active, :expired, :rejected]
 
   USER_ROLES = [:owner, :agent, :admin]
 
