@@ -1,0 +1,15 @@
+- if @adv.user_role == 'owner'
+  i.fa.fa-check
+  '
+  = t('activerecord.attributes.user.roles.owner')
+  '
+-else
+  i.fa.fa-cube
+  '
+  = t('activerecord.attributes.user.roles.agent')
+  '
+= @adv.name
+'
+span.btn.btn-default.btn-xs.HideAdvPhone
+  = @adv.phone
+  '

@@ -1,0 +1,22 @@
+- if @photos.present?
+  .connected-carousels
+    .stage
+      .carousel.carousel-stage
+        ul
+          - @photos.each do |photo|
+            li
+              img alt="" height="400" src=('http://multilisting.su/' + photo.advertisement_photo(:medium)) width="600"
+      a.prev.prev-stage href="#"
+        span ‹
+      a.next.next-stage href="#"
+        span ›
+    .navigation-cont
+      .navigation
+        - if @photos.count > 5
+          a.prev.prev-navigation href="#"  ‹
+          a.next.next-navigation href="#"  ›
+        .carousel.carousel-navigation
+          ul
+            - @photos.each do |photo|
+              li
+                img alt="" height="50" src=('http://multilisting.su/' + photo.advertisement_photo(:thumb)) width="50"

@@ -1,0 +1,29 @@
+a.btn.btn-danger.btn-xs.abuse_popover_action data-adv_id=@adv.id href="#" data-placement="top" data-toggle="tooltip" type="button" title= "Пожалуйста, поддерживайте чистоту базы!"
+  i.fa.fa-ban
+  '
+  | пожаловаться
+.container.hidden.abuse_form_action
+  = form_for Abuse.new, html: {class: 'form withoutBootstrapValidator'}, remote: true, role:'form' do |f|
+    = f.hidden_field :advertisement_id, value: @adv.id
+    .form-group
+      - if @adv.user_role == 'owner'
+        .radio
+          label
+            input checked=true name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:agent)}"
+            | агент(-ство)
+      .radio
+        label
+          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:expired)}"
+          | сдано/продано
+      .radio
+        label
+          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:deception)}"
+          | замануха
+      .radio
+        label
+          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:engaged)}"
+          | абонент недоступен
+    .form-group
+      textarea.form-control name="abuse[comment]" placeholder="Описание" rows="3"
+    = f.button class: 'btn btn-default', type: 'submit', name: 'button'
+      i.fa.fa-magic Очистить базу!
