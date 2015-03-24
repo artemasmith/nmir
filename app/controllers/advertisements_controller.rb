@@ -513,7 +513,7 @@ class AdvertisementsController < ApplicationController
   end
 
   def permitting
-    params.permit(:page, :url, :per_page, :advertisement => [
+    params.permit(:utf8, :page, :url, :per_page, :advertisement => [
                            :description,
                            :date_interval,
                            :owner,
