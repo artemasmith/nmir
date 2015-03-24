@@ -374,14 +374,22 @@ $('.DuplicatePhones').livequery ->
 
 $('.HideAdvPhone').livequery ->
   $this = $(this)
-  $this.replaceWith("<div class=\"btn btn-default btn-xs ShowAdvPhone\" data-phone=\"" + $this.text() + "\">показать телефон</div>")
+  $this.replaceWith("<div class=\"btn btn-success btn-xs ShowAdvPhone\" data-phone=\"" + $this.text() + "\">показать телефон</div>")
   return
 
 $('.ShowAdvPhone').livequery ->
   $this = $(this)
-  $this.click ->
-    $this.replaceWith("<div class=\"btn btn-default btn-xs\">" + $this.data('phone') + "</div>")
+  $this.click (event)->
+    cancelEvent(event)
     return
+  $this.popover
+    container: 'body'
+    html: true
+    placement: 'top'
+    content: ->
+      html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
+      html += "<p>" + $('.Anumber').attr('data') + " на сайте мультилистинг су</p>"
+      html
   return
 
 $('.dropdown-menu').find('form').livequery ->

@@ -1,0 +1,22 @@
+- if can? :update, @adv
+  a.btn.btn-default.btn-xs href="#{edit_advertisement_path(@adv)}"
+    i.fa.fa-edit
+    '
+    | редактировать
+  '
+  a.btn.btn-default.btn-xs href=top_advertisement_path(@adv.id) data-remote=true
+    i.fa.fa-level-up
+    '
+    | обновить
+- if can? :destroy, @adv
+  '
+  = link_to advertisement_path(@adv), class: 'btn btn-default btn-xs', method: :delete, data: { confirm: 'Удалить это объявление?' } do
+    i.fa.fa-trash
+    '
+    | Удалить
+- if (can? :access, :rails_admin)
+  '
+  = link_to rails_admin.edit_path(model_name: 'user', id: @adv.user_id), class: 'btn btn-default btn-xs'
+    i.fa.fa-edit
+    '
+    | изменить пользователя

@@ -12,9 +12,7 @@
       - if section.present?
         li
           = link_to location.title, section.url
-    li.active
-      span
-        = "Объявление № #{@adv.id}"
+  .hidden.Anumber data= "Объявление № #{@adv.id}"
 h1
   = @adv.h1
 .well.well-sm.clearfix
@@ -105,14 +103,9 @@ h1
 
       = render 'advertisements/show_blocks/user_phone'
 
-
-
-    - if @adv.latitude.present? && @adv.longitude.present?
-      .col-xs-12.col-lg-5
-        .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='false' data-zoom=@adv.zoom
-  .panel.panel-body
-    .row
-      .col-lg-7
+      p
+        br
+      p
         | cохраните объявление, чтобы легче было потом найти:
         '
         a.btn.btn-default.btn-xs
@@ -122,33 +115,17 @@ h1
         '
         = render 'advertisements/show_blocks/social_btns'
 
-      .col-lg-5
+      p
         | ещё можно:
         '
-        =render 'advertisements/show_blocks/abuse'
-        '
-        - if can? :update, @adv
-          a.btn.btn-default.btn-xs href="#{edit_advertisement_path(@adv)}"
-            i.fa.fa-edit
-            '
-            | редактировать
-          '
-          a.btn.btn-default.btn-xs href=top_advertisement_path(@adv.id) data-remote=true
-            i.fa.fa-level-up
-            '
-            | обновить
-        - if can? :destroy, @adv
-          '
-          = link_to advertisement_path(@adv), class: 'btn btn-default btn-xs', method: :delete, data: { confirm: 'Удалить это объявление?' } do
-            i.fa.fa-trash
-            '
-            | Удалить
-        - if (can? :access, :rails_admin)
-          '
-          = link_to rails_admin.edit_path(model_name: 'user', id: @adv.user_id), class: 'btn btn-default btn-xs'
-            i.fa.fa-edit
-            '
-            | изменить пользователя
+        = render 'advertisements/show_blocks/abuse'
+        = render 'advertisements/show_blocks/edit_btns'
+
+    - if @adv.latitude.present? && @adv.longitude.present?
+      .col-xs-12.col-lg-5
+        .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='false' data-zoom=@adv.zoom
+
+
 
   - if @search_results.present?
     h4
