@@ -10,7 +10,7 @@
     | обновить
 - if can? :destroy, @adv
   '
-  = link_to advertisement_path(@adv), class: 'btn btn-default btn-xs', method: :delete, data: { confirm: 'Удалить это объявление?' } do
+  = link_to advertisement_path(@adv), class: 'btn btn-default btn-xs yaSend', yaparam: 'entity_delete', method: :delete, data: { confirm: 'Удалить это объявление?' } do
     i.fa.fa-trash
     '
     | Удалить

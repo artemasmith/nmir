@@ -374,7 +374,7 @@ $('.DuplicatePhones').livequery ->
 
 $('.HideAdvPhone').livequery ->
   $this = $(this)
-  $this.replaceWith("<div class=\"btn btn-success btn-xs ShowAdvPhone\" data-phone=\"" + $this.text() + "\">показать телефон</div>")
+  $this.replaceWith("<div class=\"btn btn-success btn-xs ShowAdvPhone yaSend\" yaparam=\"phone_num_open\"data-phone=\"" + $this.text() + "\">показать телефон</div>")
   return
 
 $('.ShowAdvPhone').livequery ->
@@ -406,6 +406,7 @@ $('#map').livequery ->
 
 $('.abuse_popover_action').livequery ->
   $(this).click (event)->
+    send_ya_metrika($(this).attr('yaparam'))
     cancelEvent(event)
     return
   $(this).popover
@@ -781,7 +782,15 @@ $('.connected-carousels').livequery ->
   ).jcarouselControl target: '+=1'
   return
 
+@send_ya_metrika = (goal) ->
+  console.log(goal)
+  yaCounter28695786.reachGoal(goal)
+  return
 
+$('.yaSend').livequery ->
+  $(this).click ->
+    send_ya_metrika($(this).attr('yaparam'))
+    return
 
 
 
