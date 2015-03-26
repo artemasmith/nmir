@@ -406,7 +406,6 @@ $('#map').livequery ->
 
 $('.abuse_popover_action').livequery ->
   $(this).click (event)->
-    send_ya_metrika($(this).attr('yaparam'))
     cancelEvent(event)
     return
   $(this).popover
@@ -783,7 +782,6 @@ $('.connected-carousels').livequery ->
   return
 
 @send_ya_metrika = (goal) ->
-  console.log(goal)
   yaCounter28695786.reachGoal(goal)
   return
 
