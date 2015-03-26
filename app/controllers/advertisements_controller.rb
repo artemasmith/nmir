@@ -326,7 +326,8 @@ class AdvertisementsController < ApplicationController
     @today_counter, @all_days_counter = AdvertisementCounter.get_and_increase_count_for_adv(@adv.id)
     @grouped_allowed_attributes =  @adv.grouped_allowed_attributes
 
-    @sorted_locations = @adv.locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}
+    @sorted_locations = @adv.locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}.
+        delete_if{ |address| Location.location_types[address.location_type] >= 5 }
 
     with = {}
     conditions = {}

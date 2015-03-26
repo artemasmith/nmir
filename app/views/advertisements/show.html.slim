@@ -12,36 +12,12 @@
       - if section.present?
         li
           = link_to location.title, section.url
-    li.active
-      span
-        = "Объявление № #{@adv.id}"
+  .hidden.Anumber data= "Объявление № #{@adv.id}"
 h1
   = @adv.h1
 .well.well-sm.clearfix
   .row
     .col-md-9.col-lg-7
-      - if @photos.present?
-        .connected-carousels
-          .stage
-            .carousel.carousel-stage
-              ul
-                - @photos.each do |photo|
-                  li
-                    img alt="" height="400" src=('http://multilisting.su/' + photo.advertisement_photo(:medium)) width="600"
-            a.prev.prev-stage href="#"
-              span ‹
-            a.next.next-stage href="#"
-              span ›
-          .navigation-cont
-            .navigation
-              - if @photos.count > 5
-                a.prev.prev-navigation href="#"  ‹
-                a.next.next-navigation href="#"  ›
-              .carousel.carousel-navigation
-                ul
-                  - @photos.each do |photo|
-                    li
-                      img alt="" height="50" src=('http://multilisting.su/' + photo.advertisement_photo(:thumb)) width="50"
 
       /.clearfix style="margin-bottom: 15px"
       /  = image_tag @photos.first.advertisement_photo(:medium), class: 'first_photo_img_action img-responsive search-photo-size', style: "height: 400px;"
@@ -78,6 +54,8 @@ h1
           '
           strong
             = @today_counter.count
+        =render 'advertisements/show_blocks/photos'
+        =render 'advertisements/show_blocks/small_breadcrumbs'
         - if @adv.comment.present?
           br
           = @adv.comment
@@ -123,38 +101,11 @@ h1
                   - if attr_to == 'price_to'
                     i.fa.fa-rouble
 
-      - if @adv.user_role == 'owner'
-        i.fa.fa-check
-        '
-        = t('activerecord.attributes.user.roles.owner')
-        '
-      -else
-        i.fa.fa-cube
-        '
-        = t('activerecord.attributes.user.roles.agent')
-        '
-      = @adv.name
-      '
-      span.btn.btn-default.btn-xs.HideAdvPhone
-        = @adv.phone
-      - if @near_sections.present?
+      = render 'advertisements/show_blocks/user_phone'
+
+      p
         br
-        br
-        = "#{t("activerecord.attributes.section.enum_title.#{@adv.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{@adv.category}")}"
-        '
-        - @near_sections.each do |near_section|
-          = link_to near_section.short_title, near_section.url if near_section.short_title.present?
-          '
-
-
-
-
-    - if @adv.latitude.present? && @adv.longitude.present?
-      .col-xs-12.col-lg-5
-        .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='false' data-zoom=@adv.zoom
-  .panel.panel-body
-    .row
-      .col-lg-7
+      p
         | cохраните объявление, чтобы легче было потом найти:
         '
         a.btn.btn-default.btn-xs
@@ -162,81 +113,19 @@ h1
           '
           | в избранное
         '
-        noindex
-          a.btn.btn-default.btn-xs rel="nofollow" href="http://twitter.com/share?url=#{advertisement_url(@adv)}-#{@adv.url}&text=#{@adv.comment}&via=multilisting.su"
-            '
-            i.fa.fa-twitter.fa-lg.tw
-          '
-          a.btn.btn-default.btn-xs rel="nofollow" href="http://vk.com/share.php?url=#{advertisement_url(@adv)}-#{@adv.url}&title=#{@adv.title}&description=#{@adv.comment}&image=#{@photos.first.present? ? @photos.first.advertisement_photo(:thumb) : ''}"
-            '
-            i.fa.fa-vk.fa-lg.vk
-          '
-          a.btn.btn-default.btn-xs rel="nofollow" href="http://www.facebook.com/plugins/like.php?href=#{advertisement_url(@adv)}-#{@adv.url}"
-            '
-            i.fa.fa-facebook.fa-lg
-          '
-          a.btn.btn-default.btn-xs rel="nofollow" href="http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=#{advertisement_url(@adv)}-#{@adv.url}&st.comments=#{@adv.comment}"
-            | ok
-          '
-          a.btn.btn-default.btn-xs rel="nofollow" href="https://plus.google.com/share?url=#{advertisement_url(@adv)}-#{@adv.url}"
-            '
-            i.fa.fa-lg.fa-google-plus
+        = render 'advertisements/show_blocks/social_btns'
 
-      .col-lg-5
+      p
         | ещё можно:
         '
-        a.btn.btn-danger.btn-xs.abuse_popover_action data-adv_id=@adv.id href="#" data-placement="top" data-toggle="tooltip" type="button" title= "Пожалуйста, поддерживайте чистоту базы!"
-          i.fa.fa-ban
-          '
-          | пожаловаться
-        .container.hidden.abuse_form_action
-          = form_for Abuse.new, html: {class: 'form withoutBootstrapValidator'}, remote: true, role:'form' do |f|
-            = f.hidden_field :advertisement_id, value: @adv.id
-            .form-group
-              - if @adv.user_role == 'owner'
-                .radio
-                  label
-                    input checked=true name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:agent)}"
-                    | агент(-ство)
-              .radio
-                label
-                  input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:expired)}"
-                  | сдано/продано
-              .radio
-                label
-                  input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:deception)}"
-                  | замануха
-              .radio
-                label
-                  input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:engaged)}"
-                  | абонент недоступен
-            .form-group
-              textarea.form-control name="abuse[comment]" placeholder="Описание" rows="3"
-            = f.button class: 'btn btn-default', type: 'submit', name: 'button'
-              i.fa.fa-magic Очистить базу!
-        '
-        - if can? :update, @adv
-          a.btn.btn-default.btn-xs href="#{edit_advertisement_path(@adv)}"
-            i.fa.fa-edit
-            '
-            | редактировать
-          '
-          a.btn.btn-default.btn-xs href=top_advertisement_path(@adv.id) data-remote=true
-            i.fa.fa-level-up
-            '
-            | обновить
-        - if can? :destroy, @adv
-          '
-          = link_to advertisement_path(@adv), class: 'btn btn-default btn-xs', method: :delete, data: { confirm: 'Удалить это объявление?' } do
-            i.fa.fa-trash
-            '
-            | Удалить
-        - if (can? :access, :rails_admin)
-          '
-          = link_to rails_admin.edit_path(model_name: 'user', id: @adv.user_id), class: 'btn btn-default btn-xs'
-            i.fa.fa-edit
-            '
-            | изменить пользователя
+        = render 'advertisements/show_blocks/abuse'
+        = render 'advertisements/show_blocks/edit_btns'
+
+    - if @adv.latitude.present? && @adv.longitude.present?
+      .col-xs-12.col-lg-5
+        .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='false' data-zoom=@adv.zoom
+
+
 
   - if @search_results.present?
     h4

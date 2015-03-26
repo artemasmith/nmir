@@ -14,7 +14,7 @@
                 a.btn-link href=edit_advertisement_path(adv)
                   i.fa.fa-edit.fa-lg
                 '
-                = link_to top_advertisement_path(adv, from_full_card: true), class: 'btn-link', remote: true do
+                = link_to top_advertisement_path(adv, from_full_card: true), class: 'btn-link yaSend', yaparam: "entity_top", remote: true do
                   i.fa.fa-level-up.fa-lg
               - if can? :destroy, adv
                 '
