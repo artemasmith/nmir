@@ -9,6 +9,8 @@
       meta name="keywords" content=@root_section.keywords
     - if params[:page].present? || params[:per_page].present?
       meta name="robots" content="noindex, follow"
+    - elsif @street_section.present?
+      link rel="canonical" href=@street_section.url
     - elsif params[:advertisement].present?
       link rel="canonical" href=@root_section.url
 = content_for :header

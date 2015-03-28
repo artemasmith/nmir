@@ -56,17 +56,38 @@ RailsAdmin.config do |config|
     # edit do
     field :email, :string
     field :role, :enum do
+      searchable false
       enum do
-        [:owner, :agent, :admin]
+        [:owner, :agent, :admin].map { |k,_| [k.to_s.titleize, k] }
+      end
+
+      pretty_value do
+        bindings[:object].send(:role).titleize
+      end
+
+      def form_value
+        bindings[:object].role
       end
     end
     field :name, :string
     field :phones
+
     field :source, :enum do
+      searchable false
       enum do
-        [:unknown, :donrio, :adresat]
+        [:unknown, :donrio, :adresat].map { |k,_| [k.to_s.titleize, k] }
+      end
+
+      pretty_value do
+        bindings[:object].send(:source).titleize
+      end
+
+      def form_value
+        bindings[:object].source
       end
     end
+
+
     field :advertisements do
       nested_form false
     end

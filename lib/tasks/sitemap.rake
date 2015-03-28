@@ -28,8 +28,9 @@ namespace :sitemap do
       Section.not_empty.find_in_batches(batch_size: 10000) do |group|
       index += 1
       doc =  Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-        xml.urlset(xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9") do
+        xml.urlset(xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9') do
           group.each do |section|
+            next if section.location_id.present? && Location.where(id: section.location_id).first.address?
             xml.url do
               if section.url != '/'
                 xml.loc "#{host}#{section.url}"

@@ -223,7 +223,7 @@ class AdvertisementsController < ApplicationController
 
     if @root_section.present?
       if @root_section.location_id.present?
-        @hidden_sections = begin# Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 15.minutes) do
+        @hidden_sections = Rails.cache.fetch("hidden_locations:#{@root_section.id}", expires_in: 15.minutes) do
           hidden_sections = Section.great_than_10
           hidden_sections = hidden_sections.where.not(id: @root_section.id)
           hidden_sections = hidden_sections.where(location_id: @root_section.location_id)
@@ -238,6 +238,18 @@ class AdvertisementsController < ApplicationController
         end
       end
 
+      @parent_section, @street_section = Rails.cache.fetch("parent_section:#{@root_section.id}", expires_in: 15.minutes) do
+        parent_location = @locations.find{|location| location.id == @root_section.location_id}
+        parent_section = Section
+        parent_section = parent_section.where(location_id: parent_location.location_id) if parent_location.present?
+        parent_section = parent_section.where(offer_type: Section.offer_types[@root_section.offer_type]) if @root_section.offer_type.present?
+        parent_section = parent_section.where(category: Section.categories[@root_section.category]) if @root_section.category.present?
+        parent_section = parent_section.where(property_type: Section.property_types[@root_section.property_type]) if @root_section.property_type.present?
+        parent_section = parent_section.first
+
+        street_section = parent_section if parent_location.present? && parent_location.address?
+        [parent_section, street_section]
+      end
 
 
       @hidden_location_sections = Rails.cache.fetch("hidden_location_sections:#{@root_section.id}", expires_in: 15.minutes) do
@@ -265,7 +277,7 @@ class AdvertisementsController < ApplicationController
 
 
       if @root_section.offer_type.present? && (@root_section.category.present? || @root_section.property_type.present?) && @root_section.location_id.present?
-        @current_sections = begin #Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
+        @current_sections = Rails.cache.fetch("current_sections:#{@root_section.id}", expires_in: 15.minutes) do
           parent_location = @locations.find{|location| location.id == @root_section.location_id}
           neighborhood_ids = []
           hidden_location_ids = []
@@ -288,6 +300,7 @@ class AdvertisementsController < ApplicationController
           current_sections.to_a
         end
       end
+
     end
 
     if ((params[:page].to_i > 1) && (@search_results.blank?))
@@ -295,9 +308,7 @@ class AdvertisementsController < ApplicationController
     end
 
     if (@section.present? && @section.url != '/' && (@search_results.blank?) && params[:advertisement].blank?)
-      parent_location = @locations.find{|location| location.id == @root_section.location_id}
-      section = @current_sections.find{|section| section.location_id == parent_location.location_id} if @current_sections.present?
-      return redirect_to section.url if section.present?
+      return redirect_to @parent_section.url if @parent_section.present?
     end
 
   end

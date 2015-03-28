@@ -374,22 +374,34 @@ $('.DuplicatePhones').livequery ->
 
 $('.HideAdvPhone').livequery ->
   $this = $(this)
-  $this.replaceWith("<div class=\"btn btn-success btn-xs ShowAdvPhone yaSend\" yaparam=\"phone_num_open\"data-phone=\"" + $this.text() + "\">показать телефон</div>")
+  n = $this.data('n')
+  $this.replaceWith("<div data-n=\"#{n}\" class=\"btn btn-success btn-xs ShowAdvPhone yaSend\" yaparam=\"phone_num_open\" data-phone=\"#{$this.text()}\">показать телефон</div>")
   return
 
 $('.ShowAdvPhone').livequery ->
   $this = $(this)
   $this.click (event)->
+    $this.popover
+      container: 'body'
+      html: true
+      placement: 'top'
+
+      content: ->
+        html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
+        html += "<p>№" + $this.data('n') + " на сайте мультилистинг су</p>"
+        html
+
+    $('body').on 'click', (e) ->
+      if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
+        $this.popover 'destroy'
+    $this.popover 'show'
     cancelEvent(event)
     return
-  $this.popover
-    container: 'body'
-    html: true
-    placement: 'top'
-    content: ->
-      html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
-      html += "<p>" + $('.Anumber').attr('data') + " на сайте мультилистинг су</p>"
-      html
+
+  return
+
+
+  #    .Anumber data= "Объявление № #{@adv.id}"
   return
 
 $('.dropdown-menu').find('form').livequery ->

@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
   end
 
   def change_adv_role
-    Advertisement.where(user_id: self.id).update_all({user_role: self.role})
+    Advertisement.where(user_id: self.id).update_all({user_role: AdvEnums::USER_ROLES.index(self.role.to_sym)})
   end
 
   def self.get_contact cinfo

@@ -1,16 +1,16 @@
 class AbusesController < ApplicationController
   def create
     @adv = Advertisement.find(abuse_params[:advertisement_id])
-    @abuse = Abuse.new abuse_params
-    @abuse.abuse_type = abuse_params[:abuse_type].to_i
+    @abuse = @adv.abuses.new abuse_params
     @abuse.user_id = current_user.try(:id)
-    @abuse.advertisement_id = @adv.id
     @abuse.save!
   end
 
   private
 
   def abuse_params
-    params.require(:abuse).permit(:comment, :abuse_type, :advertisement_id)
+    params.require(:abuse).permit(:comment, :abuse_type, :advertisement_id).tap do |w|
+      w[:abuse_type] = w[:abuse_type].to_i if w[:stream_type].present?
+    end
   end
 end
