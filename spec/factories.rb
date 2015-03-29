@@ -22,5 +22,6 @@ FactoryGirl.define do
     advertisement_id 1
     comment 'WTF'
     abuse_type 0
+    user
   end
 end

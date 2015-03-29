@@ -1,0 +1,31 @@
+= content_for :title
+  | Мои жалобы
+
+= content_for :meta
+  meta name="robots" content="noindex, nofollow"
+
+.well
+  table.table.table-bordered
+    tr
+      th
+        |№
+      th
+        |Коментарий
+      th
+        |Коментарий модератора
+      th
+        |Объявление
+      th
+        |Статус
+    -@abuses.each do |abuse|
+      tr
+        td
+          = abuse.id
+        td
+          = abuse.comment
+        td
+          = abuse.moderator_comment
+        td
+          = link_to abuse.advertisement_id, advertisement_path(abuse.advertisement_id)
+        td
+          = t("activerecord.attributes.abuse.status.#{abuse.status}")

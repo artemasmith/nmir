@@ -13,7 +13,11 @@ Rails.application.routes.draw do
 
   get '/entity', to: redirect('/')
   resources :abuses
-  resources :cabinet
+  resources :cabinet do
+    collection do
+      get 'abuses'
+    end
+  end
   resources :advertisements, :path => 'entity' do
     member do
       get 'top'

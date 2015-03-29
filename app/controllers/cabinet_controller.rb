@@ -35,6 +35,13 @@ class CabinetController < ApplicationController
 
   end
 
+  def abuses
+    @waiting_abuses = Abuse.where(user_id: @current_user.id).where(status: 0)
+    @considered_abuses = Abuse.where(user_id: @current_user.id).where('status > 0')
+    @abuses = @considered_abuses || []
+    @abuses = @waiting_abuses if params[:status] == 'considered'
+  end
+
 
   private
 
