@@ -21,10 +21,6 @@ ru:
         user: 'автор'
         abuse_type: 'тип жалобы'
         created_at: 'создана'
-        status:
-          wait: 'в обработке'
-          accepted: 'принята'
-          not_accepted: 'отклонена'
 
       phone:
         original: Номер телефона

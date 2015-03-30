@@ -42,17 +42,17 @@ class CabinetCounter
 
   #Abuse
 
-  def self.total_abuse_count(user_id)
-    get_from_redis(user_id, 'hash_cabinet_total_abuse_count', 'calc_abuse_count', :total)
-  end
-
-  def self.considered_abuse_count(user_id)
-    get_from_redis(user_id, 'hash_cabinet_considered_abuse_count', 'calc_abuse_count', :considered)
-  end
-
-  def self.waiting_abuse_count(user_id)
-    get_from_redis(user_id, 'hash_cabinet_waiting_abuse_count', 'calc_abuse_count', :waiting)
-  end
+  # def self.total_abuse_count(user_id)
+  #   get_from_redis(user_id, 'hash_cabinet_total_abuse_count', 'calc_abuse_count', :total)
+  # end
+  #
+  # def self.considered_abuse_count(user_id)
+  #   get_from_redis(user_id, 'hash_cabinet_considered_abuse_count', 'calc_abuse_count', :considered)
+  # end
+  #
+  # def self.waiting_abuse_count(user_id)
+  #   get_from_redis(user_id, 'hash_cabinet_waiting_abuse_count', 'calc_abuse_count', :waiting)
+  # end
 
   private
 
@@ -66,14 +66,14 @@ class CabinetCounter
     return value.to_i
   end
 
-  def self.calc_abuse_count(user_id, status = nil)
-    cond = { user_id: user_id }
-    case status
-      when :considered then cond = "user_id = #{user_id} AND status > 0"
-      when :waiting then cond[:status] = 0
-    end
-    Abuse.where(cond).count
-  end
+  # def self.calc_abuse_count(user_id, status = nil)
+  #   cond = { user_id: user_id }
+  #   case status
+  #     when :considered then cond = "user_id = #{user_id} AND status > 0"
+  #     when :waiting then cond[:status] = 0
+  #   end
+  #   Abuse.where(cond).count
+  # end
 
 
   def self.calc_adv_count(user_id, status = :all)
@@ -102,15 +102,15 @@ class CabinetCounter
     "hash_cabinet_active_adv_count:#{user_id}"
   end
   #abuses
-  def self.hash_cabinet_total_abuse_count(user_id)
-    "hash_cabinet_total_abuse_count:#{user_id}"
-  end
-
-  def self.hash_cabinet_considered_abuse_count(user_id)
-    "hash_cabinet_considered_abuse_count:#{user_id}"
-  end
-
-  def self.hash_cabinet_waiting_abuse_count(user_id)
-    "hash_cabinet_waiting_abuse_count:#{user_id}"
-  end
+  # def self.hash_cabinet_total_abuse_count(user_id)
+  #   "hash_cabinet_total_abuse_count:#{user_id}"
+  # end
+  #
+  # def self.hash_cabinet_considered_abuse_count(user_id)
+  #   "hash_cabinet_considered_abuse_count:#{user_id}"
+  # end
+  #
+  # def self.hash_cabinet_waiting_abuse_count(user_id)
+  #   "hash_cabinet_waiting_abuse_count:#{user_id}"
+  # end
 end
