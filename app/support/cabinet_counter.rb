@@ -40,19 +40,6 @@ class CabinetCounter
     $redis.del(key) rescue nil
   end
 
-  #Abuse
-
-  # def self.total_abuse_count(user_id)
-  #   get_from_redis(user_id, 'hash_cabinet_total_abuse_count', 'calc_abuse_count', :total)
-  # end
-  #
-  # def self.considered_abuse_count(user_id)
-  #   get_from_redis(user_id, 'hash_cabinet_considered_abuse_count', 'calc_abuse_count', :considered)
-  # end
-  #
-  # def self.waiting_abuse_count(user_id)
-  #   get_from_redis(user_id, 'hash_cabinet_waiting_abuse_count', 'calc_abuse_count', :waiting)
-  # end
 
   private
 
@@ -101,16 +88,5 @@ class CabinetCounter
   def self.hash_cabinet_active_adv_count(user_id)
     "hash_cabinet_active_adv_count:#{user_id}"
   end
-  #abuses
-  # def self.hash_cabinet_total_abuse_count(user_id)
-  #   "hash_cabinet_total_abuse_count:#{user_id}"
-  # end
-  #
-  # def self.hash_cabinet_considered_abuse_count(user_id)
-  #   "hash_cabinet_considered_abuse_count:#{user_id}"
-  # end
-  #
-  # def self.hash_cabinet_waiting_abuse_count(user_id)
-  #   "hash_cabinet_waiting_abuse_count:#{user_id}"
-  # end
+
 end

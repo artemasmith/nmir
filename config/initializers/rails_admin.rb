@@ -25,8 +25,8 @@ RailsAdmin.config do |config|
     bulk_delete
 
     member :accept do
+      link_icon 'icon-thumbs-up'
       only Abuse
-      pjax false
       controller do
         proc do
           @object.update(status: 1)
@@ -37,8 +37,8 @@ RailsAdmin.config do |config|
     end
 
     member :decline do
+      link_icon 'icon-thumbs-down'
       only Abuse
-      pjax false
       controller do
         proc do
           @object.update(status: 2)
@@ -68,13 +68,7 @@ RailsAdmin.config do |config|
       'sidekiq' => '/sidekiq'
   }
 
-  config.model Abuse do
-    field :status, :enum do
-      enum do
-        [:wait, :accepted, :not_accepted]
-      end
-    end
-  end
+
 
   config.model User do
     # edit do
