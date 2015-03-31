@@ -23,6 +23,30 @@ RailsAdmin.config do |config|
     index                         # mandatory
     new
     bulk_delete
+
+    member :accept do
+      only Abuse
+      pjax false
+      controller do
+        proc do
+          @object.update(status: 1)
+          flash[:notice] = "Accepted  #{@object.id}"
+          redirect_to rails_admin.index_path(model_name: :abuse)
+        end
+      end
+    end
+
+    member :decline do
+      only Abuse
+      pjax false
+      controller do
+        proc do
+          @object.update(status: 2)
+          flash[:notice] = "Declined  #{@object.id}"
+          redirect_to rails_admin.index_path(model_name: :abuse)
+        end
+      end
+    end
     show
     edit
     delete
