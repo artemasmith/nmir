@@ -388,7 +388,7 @@ $('.ShowAdvPhone').livequery ->
 
       content: ->
         html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
-        html += "<p>№" + $this.data('n') + " на сайте мультилистинг су</p>"
+        html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
         html
 
     $('body').on 'click', (e) ->
