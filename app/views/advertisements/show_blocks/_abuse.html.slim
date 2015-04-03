@@ -23,6 +23,10 @@ a.btn.btn-default.btn-xs.abuse_popover_action.yaSend yaparam="abuse_open"  data-
         label
           input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:engaged)}"
           | абонент недоступен
+      .radio
+        label
+          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:other)}"
+          | прочее
     .form-group
       textarea.form-control name="abuse[comment]" placeholder="Описание" rows="3"
     = f.button class: 'btn btn-default yaSend', yaparam: 'abuse_send', type: 'submit', name: 'button'
