@@ -52,10 +52,6 @@ $().ready ->
   set_property(hid, multi, value)
   return
 
-@mark_as_active = (element) ->
-  if $(element).hasClass('active') then $(element).removeClass('active') else $(element).addClass('active')
-  return
-
 @create_start = (map, x, y, editable) ->
   placemark = new ymaps.Placemark([x, y],
     {hintContent: 'Местоположение объекта'},
@@ -183,6 +179,7 @@ $().ready ->
     Routes.get_locations_advertisements_path(params)
   )
   return
+
 
 $(".location-button").livequery ->
   $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
@@ -422,12 +419,20 @@ $('#map').livequery ->
       $(this).data('editable')
   )
 
+
+
+@mark_as_active = (element) ->
+  if $(element).hasClass('active') then $(element).removeClass('active') else $(element).addClass('active')
+  return
+
+
 $('.abuse_popover_action').livequery ->
-  $(this).tooltip
+  $this = $(this)
+  $this.tooltip
     container: 'body'
     title: "Пожалуйста, поддерживайте чистоту базы!"
     placement: 'top'
-  $(this).popover
+  $this.popover
     container: 'body'
     html: true
     placement: 'bottom'
@@ -437,8 +442,12 @@ $('.abuse_popover_action').livequery ->
       html = $('.abuse_form_action').html()
       $('.abuse_form_action').remove()
       html
-  $(this).click (event)->
-    mark_as_active($(this))
+  $this.click (event)->
+    mark_as_active($this)
+    $('body').on 'click', (e) ->
+      if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
+        $this.popover 'hide'
+        $this.removeClass('active')
     cancelEvent(event)
     return
 
