@@ -9,22 +9,22 @@ module AdvRailsAdmin
       # edit do
         field :adv_type, :enum do
           enum do
-            AdvEnums::ADV_TYPES
+            AdvEnums::ADV_TYPES.each_with_index.map { |i,j| [i,j]}
           end
         end
         field :category, :enum do
           enum do
-            AdvEnums::CATEGORIES
+            AdvEnums::CATEGORIES.each_with_index.map { |i,j| [i,j]}
           end
         end
         field :property_type, :enum do
           enum do
-            AdvEnums::PROPERTY_TYPES
+            AdvEnums::PROPERTY_TYPES.each_with_index.map { |i,j| [i,j]}
           end
         end
         field :offer_type, :enum do
           enum do
-            AdvEnums::OFFER_TYPES
+            AdvEnums::OFFER_TYPES.each_with_index.map { |i,j| [i,j]}
           end
         end
         field :distance, :integer

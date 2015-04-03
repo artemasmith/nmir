@@ -30,31 +30,33 @@ class Abuse < ActiveRecord::Base
     field :created_at
     field :status, :enum do
       enum do
-        STATUSES
+        STATUSES.each_with_index.map { |i,j| [i,j]}
       end
     end
     field :abuse_type, :enum do
       enum do
-        ABUSE_TYPES
+        ABUSE_TYPES.each_with_index.map { |i,j| [i,j]}
       end
     end
     field :moderator_comment, :string
     field :comment, :string
     field :user do
-
     end
-    #field :advertisement
-    include_all_fields
+    field :advertisement do
+    end
+    #include_all_fields
   end
 
   protected
 
   def inform_users
     #update other abuses on this advertisement
-    Abuse.where(advertisement_id: self.advertisement_id).update_all(status: self.status)
+    puts "SELF STATUS = #{self.status} STATUS = #{status}\n\n"
+    Abuse.where(advertisement_id: self.advertisement_id).update_all(status: STATUSES.index(self.status.to_sym))
+
 
     #inform users
-    users = Abuse.where(advertisement_id: self.advertisement_id).map(&:user_id).delete_if { |id| id.blank? }
+    users = Abuse.where(advertisement_id: self.advertisement_id).map(&:user_id).uniq.delete_if { |id| id.blank? }
     users << self.advertisement.user_id
     puts "users = #{users}\n"
     emails = users.map { |u| User.find(u).email }
