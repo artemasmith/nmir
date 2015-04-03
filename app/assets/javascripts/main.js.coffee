@@ -375,28 +375,31 @@ $('.DuplicatePhones').livequery ->
 $('.HideAdvPhone').livequery ->
   $this = $(this)
   n = $this.data('n')
-  $this.replaceWith("<div data-n=\"#{n}\" class=\"btn btn-success btn-xs ShowAdvPhone yaSend\" yaparam=\"phone_num_open\" data-phone=\"#{$this.text()}\">показать телефон</div>")
+  $this.replaceWith("<div data-n=\"#{n}\" data-shown=\"0\" class=\"btn btn-success btn-xs ShowAdvPhone yaSend\" yaparam=\"phone_num_open\" data-phone=\"#{$this.text()}\">показать телефон</div>")
   return
 
 $('.ShowAdvPhone').livequery ->
   $this = $(this)
-  $this.click (event)->
-    $this.popover
-      container: 'body'
-      html: true
-      placement: 'top'
+  $this.popover
+    container: 'body'
+    html: true
+    placement: 'top'
 
-      content: ->
-        html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
-        html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
-        html
+    content: ->
+      html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
+      html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
+      html
+  $this.click (event)->
+    if $this.hasClass('active') then $this.removeClass('active') else $this.addClass('active')
+    $this.data('shown',$this.data('shown') + 1)
 
     $('body').on 'click', (e) ->
       if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
-        $this.popover 'destroy'
-    $this.popover 'show'
+        $this.popover 'hide'
+        $this.removeClass('active')
     cancelEvent(event)
     return
+
 
   return
 
