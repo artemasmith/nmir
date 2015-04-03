@@ -106,7 +106,6 @@ $().ready ->
 
       map.behaviors.disable("scrollZoom")
       map.controls.remove("trafficControl")
-      .remove("searchControl")
       .remove("rulerControl")
       .remove("fullscreenControl")
       .remove("typeSelector")

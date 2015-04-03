@@ -1,15 +1,22 @@
 <legend>Фото</legend>
+
 <div class="fileupload_context">
+
     <span class="btn btn-success fileinput-button">
-          <i class="icon-plus icon-white"></i>
-          <span>Добавить файлы</span>
+          <i class="i fa fa-photo"></i>
+          <span>добавить фото</span>
       <%= file_field_tag 'advertisement_photo[]', multiple: true%>
     </span>
+    <span class="span help-block small" >
+        Оптимально выглядят горизонтально ориентированые снимки
+    </span>
+
 
       <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
       <div class="form form-horizontal">
-
         <div class="col-sm-9">
+
+
           <!-- The global progress bar -->
           <div class="progress progress-success progress-striped active fade">
             <div class="bar zero-width" ></div>
@@ -17,10 +24,15 @@
         </div>
       </div>
       <!-- The loading indicator is shown during image processing -->
+
       <div class="fileupload-loading"></div>
+
       <!-- The table listing the files available for upload/download -->
       <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
+
       </table>
+
+
 </div>
 
 

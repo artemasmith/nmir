@@ -67,9 +67,9 @@ h1
                   = f.radio_button :category,  "#{category}"
                   = t "advertisement.category.#{category}"
 
+      = render '/advertisements/comment', f: f
       = render '/advertisements/locations', f: f
       = render '/advertisements/attributes_place', f: f
-      = render '/advertisements/map', f: f
       = render '/advertisements/photos', f: f
       .fields
         .col-sm-offset-3.form.form-horizontal

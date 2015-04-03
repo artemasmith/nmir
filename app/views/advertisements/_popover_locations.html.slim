@@ -36,7 +36,7 @@
           label
             i.fa.fa-search
           '
-          = text_field_tag 'location[title]', nil, class: 'search-or-create-street-action', placeholder: ' найти по названию'
+          = text_field_tag 'location[title]', nil, class: 'search-or-create-street-action', placeholder: ' найти по названию', autocomplete: 'off'
           = hidden_field_tag 'location[location_type]', :address
           = hidden_field_tag 'location[location_id]',  @location.id
           '

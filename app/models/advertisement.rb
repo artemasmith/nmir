@@ -148,9 +148,6 @@ class Advertisement < ActiveRecord::Base
   def allowed_attributes
     return @allowed_attributes if defined?(@allowed_attributes)
     @allowed_attributes = AdvConformity::ATTR_VISIBILITY[adv_type][category] rescue []
-    @allowed_attributes = @allowed_attributes.delete_if do |attr|
-      attr == 'mortgage' && (self.rent? || self.for_rent? || self.day?)
-    end
   end
 
   # define methods like :price, from pirce_from attr

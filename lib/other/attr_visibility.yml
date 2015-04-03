@@ -6,8 +6,6 @@ offer:
     - room_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   flat:
     - floor_from
@@ -16,8 +14,6 @@ offer:
     - room_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   hotel:
     - floor_from
@@ -25,24 +21,18 @@ offer:
     - space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   house:
     - space_from
     - outdoors_space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
 
   ijs:
     - outdoors_space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   room:
     - floor_from
@@ -51,58 +41,42 @@ offer:
     - room_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   garage:
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   office:
     - space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   trade:
     - space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   storage:
     - space_from
     - outdoors_space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   cafe:
     - space_from
     - outdoors_space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   land:
     - outdoors_space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
   free_appointment:
     - space_from
     - price_from
     - not_for_agents
-    - mortgage
-    - comment
 
 demand:
   hotel:
@@ -111,7 +85,6 @@ demand:
     - space_from
     - price_from
     - not_for_agents
-    - comment
   newbuild:
     - floor_from
     - floor_to
@@ -124,8 +97,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   flat:
     - floor_from
@@ -139,8 +111,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   house:
     - space_from
@@ -150,8 +121,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
 
   ijs:
@@ -160,8 +130,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
     
   room:
     - floor_from
@@ -175,15 +144,13 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   garage:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   office:
     - space_from
@@ -191,8 +158,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   trade:
     - space_from
@@ -200,8 +166,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   storage:
     - space_from
@@ -211,8 +176,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   cafe:
     - space_from
@@ -222,8 +186,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   land:
     - outdoors_space_from
@@ -231,8 +194,7 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
 
   free_appointment:
     - space_from
@@ -240,5 +202,4 @@ demand:
     - price_from
     - price_to
     - not_for_agents
-    - comment
-     
+
