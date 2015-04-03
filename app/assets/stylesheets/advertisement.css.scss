@@ -72,3 +72,9 @@
   margin-left: -10px;
 }
 
+.popover.popover-medium {
+  min-width: 150px;
+  max-width: 350px;
+  width: 250px;
+}
+.popover-medium .popover-title { display: none; }

@@ -2,7 +2,7 @@ $().ready ->
   $('.control_hide_action').addClass('hidden')
   $('.control_show_action').removeClass('hidden')
   $('.control_remove_action').remove()
-  $('[data-toggle="tooltip"]').tooltip()
+
 
 @set_property = (hid, multi, oval) ->
   val = ''
@@ -52,6 +52,9 @@ $().ready ->
   set_property(hid, multi, value)
   return
 
+@mark_as_active = (element) ->
+  if $(element).hasClass('active') then $(element).removeClass('active') else $(element).addClass('active')
+  return
 
 @create_start = (map, x, y, editable) ->
   placemark = new ymaps.Placemark([x, y],
@@ -375,7 +378,7 @@ $('.DuplicatePhones').livequery ->
 $('.HideAdvPhone').livequery ->
   $this = $(this)
   n = $this.data('n')
-  $this.replaceWith("<div data-n=\"#{n}\" data-shown=\"0\" class=\"btn btn-success btn-xs ShowAdvPhone yaSend\" yaparam=\"phone_num_open\" data-phone=\"#{$this.text()}\">показать телефон</div>")
+  $this.replaceWith("<div data-n=\"#{n}\" class=\"btn btn-success btn-xs ShowAdvPhone yaSend\" yaparam=\"phone_num_open\" data-phone=\"#{$this.text()}\">показать телефон</div>")
   return
 
 $('.ShowAdvPhone').livequery ->
@@ -390,8 +393,8 @@ $('.ShowAdvPhone').livequery ->
       html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
       html
   $this.click (event)->
-    if $this.hasClass('active') then $this.removeClass('active') else $this.addClass('active')
-    $this.data('shown',$this.data('shown') + 1)
+    mark_as_active($this)
+    #if $this.hasClass('active') then $this.removeClass('active') else $this.addClass('active')
 
     $('body').on 'click', (e) ->
       if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
@@ -420,19 +423,25 @@ $('#map').livequery ->
   )
 
 $('.abuse_popover_action').livequery ->
-  $(this).click (event)->
-    cancelEvent(event)
-    return
+  $(this).tooltip
+    container: 'body'
+    title: "Пожалуйста, поддерживайте чистоту базы!"
+    placement: 'top'
   $(this).popover
     container: 'body'
     html: true
     placement: 'bottom'
-    title: ->
-      'Жалоба на'
+    title: ' '
+    template: '<div class="popover popover-medium"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title style="display: none"></h3><div class="popover-content"><p></p></div></div></div>'
     content: ->
       html = $('.abuse_form_action').html()
       $('.abuse_form_action').remove()
       html
+  $(this).click (event)->
+    mark_as_active($(this))
+    cancelEvent(event)
+    return
+
   return
 
 $('form:not(".withoutBootstrapValidator"):visible').livequery ->
