@@ -42,6 +42,18 @@ ru:
       item: "Элемент"
       message: "Сообщение"
     actions:
+      accept:
+        menu: 'Утвердить'
+        breadcrumb: 'Утвердить'
+        title: 'Утвердить'
+        link: "Утвердить"
+        done: "Жалоба утверждена"
+      decline:
+        menu: 'Отклонить'
+        breadcrumb: 'Отклонить'
+        title: 'Отклонить'
+        link: "Отклонить"
+        done: "Жалоба отклонена"
       import_donrio:
         menu: 'импорт donrio'
         breadcrumb: 'импорт donrio'

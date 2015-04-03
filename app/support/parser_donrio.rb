@@ -27,9 +27,31 @@ class ParserDonrio
     unparsed.presence
   end
 
+  def self.assemble_phone phone_array
+    phones =[]
+    temp_phone = []
+    phone_array.each do |phone_part|
+      if phone_part.length <= 7
+        temp_phone << phone_part
+      end
+      if phone_part.length == 7
+        phones << temp_phone.join
+        temp_phone.clear
+      end
+      if phone_part.length > 7
+        phones << phone_part
+      end
+    end
+    phones
+  end
+
+  AGENT_PHRASES = ['агент на не претендует', 'агент на % не претендует', 'посредник % на не претендует', 'у нас как агент', 'агент на %не претендут', 'агент  на% не претендует' ]
+
   def self.parse_name_and_phone row, titles
     begin
-      prepare = row[titles['Тел контанк']].gsub(/агент на не претендует/i, '').gsub(/агент на % не претендует/i, '').gsub(/посредник % на не претендует/i, '').gsub(/у нас как агент/i, '').strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
+      prepare = row[titles['Тел контанк']]
+      AGENT_PHRASES.each { |pattern| prepare = prepare.gsub(/#{pattern}/i, '') }
+      prepare = prepare.strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
       list = prepare.map do |e|
          e.gsub(/[-+\(\)\s]/, '').strip
       end.delete_if do |e|
@@ -41,11 +63,17 @@ class ParserDonrio
                        .join(' ')
                        .strip
       end.tap do |t|
+        if t[false].count > 1
+          t[false] = assemble_phone(t[false])
+        end
         (t[false] || []).map! do |e|
           (e.first =~ /\d/) && (e.length == 7) ? "+7863#{e}" : e
         end.map! do |e|
           (e.first =~ /\d/) && (e.length == 10) ? "+7#{e}" : e
         end
+      end
+      if list[false].count > 1
+
       end
       return list[true], list[false].first
     rescue
