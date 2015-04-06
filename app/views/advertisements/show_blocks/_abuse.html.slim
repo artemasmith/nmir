@@ -13,7 +13,7 @@ a.btn.btn-default.btn-xs.abuse_popover_action.yaSend yaparam="abuse_open"  data-
             | агент(-ство)
       .radio
         label
-          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:expired)}"
+          input name="abuse[abuse_type]" checked=(@adv.user_role != 'owner') type="radio" value="#{Abuse::ABUSE_TYPES.index(:expired)}"
           | сдано/продано
       .radio
         label

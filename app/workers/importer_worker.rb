@@ -2,6 +2,7 @@ class ImporterWorker
   include Sidekiq::Worker
 
   def perform file_path, email, type
+    require 'open3'
 
     _, stdout, stderr = Open3.popen3("RAILS_ENV=\"production\" bundle exec rake import:#{type}[\"#{file_path}\"]")
     body = stdout.read + stderr.read

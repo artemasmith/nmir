@@ -1,4 +1,4 @@
 = label_tag name_from, t("advertisement.attributes.#{name_from}"), class:'col-sm-3 control-label'
 .controls
   .col-sm-6
-    = text_field_tag("advertisement[#{name_from}]", value_from, class: 'form-control', placeholder: 'текст')
+    = text_field_tag("advertisement[#{name_from}]", value_from, class: 'form-control', placeholder: 'перекрёсток, общественный объект и т.п.', maxlength: 70)
