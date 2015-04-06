@@ -840,4 +840,3 @@ $('.yaSend').livequery ->
 
 
 
-
