@@ -71,7 +71,7 @@ class User < ActiveRecord::Base
       user = User.create(email: "#{cinfo[:phone]}@.gmail.com",
                          name: "#{cinfo[:name]}",
                          password: "#{Time.now.to_i}",
-                         role: 0,
+                         role: cinfo[:agent].present? ? cinfo[:agent] : 0,
                          from_admin: true,
                          source: cinfo[:source])
       user.phones.create(original: cinfo[:phone])

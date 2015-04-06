@@ -3,10 +3,10 @@ class DonrioWorker
 
 
     def perform row, titles
-      name, phone = ParserDonrio.parse_name_and_phone row, titles
+      name, phone, agent = ParserDonrio.parse_name_and_phone row, titles
 
       adv = Advertisement.new
-      contact = User.get_contact(phone: phone, name: name.presence || '(имя не указано)', source: User::USER_SOURCES.index(:donrio))
+      contact = User.get_contact(phone: phone, name: name.presence || '(имя не указано)', agent: agent, source: User::USER_SOURCES.index(:donrio))
 
       if contact
         adv.user = contact
