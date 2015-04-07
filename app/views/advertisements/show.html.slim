@@ -115,12 +115,16 @@ h1
         = render 'advertisements/show_blocks/social_btns'
 
       p
-        | ещё можно:
-        '
-        = render 'advertisements/show_blocks/abuse'
-        = render 'advertisements/show_blocks/edit_btns'
+        /blyat!!!! nu kak tak-to!
+        div
+          | ещё можно:
+          '
+          = render 'advertisements/show_blocks/abuse'
+          = render 'advertisements/show_blocks/edit_btns'
 
     - if @adv.latitude.present? && @adv.longitude.present?
+      p
+        br
       .col-xs-12.col-lg-5
         .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='false' data-zoom=@adv.zoom
 
