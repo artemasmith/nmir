@@ -16,7 +16,7 @@
 class Abuse < ActiveRecord::Base
   belongs_to :advertisement
   belongs_to :user
-  ABUSE_TYPES = [:agent, :expired, :deception, :engaged]
+  ABUSE_TYPES = [:agent, :expired, :deception, :engaged, :other]
   STATUSES = [:wait, :accepted, :not_accepted]
   enum abuse_type: ABUSE_TYPES
   enum status: STATUSES

@@ -2,7 +2,7 @@ $().ready ->
   $('.control_hide_action').addClass('hidden')
   $('.control_show_action').removeClass('hidden')
   $('.control_remove_action').remove()
-  $('[data-toggle="tooltip"]').tooltip()
+
 
 @set_property = (hid, multi, oval) ->
   val = ''
@@ -51,7 +51,6 @@ $().ready ->
   value = this.getAttribute('value')
   set_property(hid, multi, value)
   return
-
 
 @create_start = (map, x, y, editable) ->
   placemark = new ymaps.Placemark([x, y],
@@ -179,6 +178,7 @@ $().ready ->
     Routes.get_locations_advertisements_path(params)
   )
   return
+
 
 $(".location-button").livequery ->
   $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
@@ -379,23 +379,26 @@ $('.HideAdvPhone').livequery ->
 
 $('.ShowAdvPhone').livequery ->
   $this = $(this)
-  $this.click (event)->
-    $this.popover
-      container: 'body'
-      html: true
-      placement: 'top'
+  $this.popover
+    container: 'body'
+    html: true
+    placement: 'top'
 
-      content: ->
-        html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
-        html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
-        html
+    content: ->
+      html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
+      html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
+      html
+  $this.click (event)->
+    mark_as_active($this)
+    #if $this.hasClass('active') then $this.removeClass('active') else $this.addClass('active')
 
     $('body').on 'click', (e) ->
       if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
-        $this.popover 'destroy'
-    $this.popover 'show'
+        $this.popover 'hide'
+        $this.removeClass('active')
     cancelEvent(event)
     return
+
 
   return
 
@@ -415,20 +418,38 @@ $('#map').livequery ->
       $(this).data('editable')
   )
 
+
+
+@mark_as_active = (element) ->
+  if $(element).hasClass('active') then $(element).removeClass('active') else $(element).addClass('active')
+  return
+
+
 $('.abuse_popover_action').livequery ->
-  $(this).click (event)->
-    cancelEvent(event)
-    return
-  $(this).popover
+  $this = $(this)
+  $this.tooltip
+    container: 'body'
+    title: "Пожалуйста, поддерживайте чистоту базы!"
+    placement: 'top'
+  $this.popover
     container: 'body'
     html: true
     placement: 'bottom'
-    title: ->
-      'Жалоба на'
+    title: ' '
+    template: '<div class="popover popover-medium"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title style="display: none"></h3><div class="popover-content"><p></p></div></div></div>'
     content: ->
       html = $('.abuse_form_action').html()
       $('.abuse_form_action').remove()
       html
+  $this.click (event)->
+    mark_as_active($this)
+    $('body').on 'click', (e) ->
+      if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
+        $this.popover 'hide'
+        $this.removeClass('active')
+    cancelEvent(event)
+    return
+
   return
 
 $('form:not(".withoutBootstrapValidator"):visible').livequery ->
@@ -800,7 +821,6 @@ $('.yaSend').livequery ->
   $(this).click ->
     send_ya_metrika($(this).attr('yaparam'))
     return
-
 
 
 

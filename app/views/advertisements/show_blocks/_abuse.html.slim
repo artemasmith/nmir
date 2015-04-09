@@ -1,4 +1,4 @@
-a.btn.btn-default.btn-xs.abuse_popover_action.yaSend yaparam="abuse_open" data-adv_id=@adv.id href="#" data-placement="top" data-toggle="tooltip" type="button" title= "Пожалуйста, поддерживайте чистоту базы!"
+a.btn.btn-default.btn-xs.abuse_popover_action.yaSend yaparam="abuse_open"  data-adv_id=@adv.id href="#" type="button"
   i.fa.fa-ban
   '
   | пожаловаться
@@ -23,7 +23,13 @@ a.btn.btn-default.btn-xs.abuse_popover_action.yaSend yaparam="abuse_open" data-a
         label
           input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:engaged)}"
           | абонент недоступен
+      .radio
+        label
+          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:other)}"
+          | прочее
     .form-group
       textarea.form-control name="abuse[comment]" placeholder="Описание" rows="3"
     = f.button class: 'btn btn-default yaSend', yaparam: 'abuse_send', type: 'submit', name: 'button'
-      i.fa.fa-magic Очистить базу!
+      i.fa.fa-magic
+      '
+      |очистить базу

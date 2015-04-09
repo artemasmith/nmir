@@ -50,6 +50,7 @@ class ParserDonrio
   def self.parse_name_and_phone row, titles
     begin
       prepare = row[titles['Тел контанк']]
+      agent = prepare.match(/(агент|посредник)/i) ? 1 : 0
       AGENT_PHRASES.each { |pattern| prepare = prepare.gsub(/#{pattern}/i, '') }
       prepare = prepare.strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
       list = prepare.map do |e|
@@ -75,9 +76,9 @@ class ParserDonrio
       if list[false].count > 1
 
       end
-      return list[true], list[false].first
+      return list[true], list[false].first, agent
     rescue
-      return nil, nil
+      return nil, nil, nil
     end
   end
 
