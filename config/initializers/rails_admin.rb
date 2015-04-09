@@ -47,6 +47,18 @@ RailsAdmin.config do |config|
         end
       end
     end
+
+    member :make_admin do
+      link_icon 'icon-user'
+      only User
+      controller do
+        proc do
+          @object.update_columns(role: 2)
+          flash[:notice] = "Set user  #{@object.id} as admin"
+          redirect_to rails_admin.index_path(model_name: :user)
+        end
+      end
+    end
     show
     edit
     delete
