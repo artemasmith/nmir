@@ -1,6 +1,4 @@
 - if @location.present? && @location.city?
-  - if @locations.present?
-    = render 'advertisements/popover_locations'
   legend
     = t("activerecord.attributes.location.street")
   .top-buffer
@@ -8,9 +6,12 @@
       .form-group
         label
           i.fa.fa-search
+          '
+          | поиск
         '
         input.autocomplete-search-location parent_id="#{@location.id}" multiple=true placeholder=" введите первые буквы"
-  .row
-    '
+  - if @locations.present?
+    = render 'advertisements/popover_locations'
+
 - else
   = render 'advertisements/popover_locations'
