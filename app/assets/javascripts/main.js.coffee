@@ -469,6 +469,12 @@ $('form:not(".withoutBootstrapValidator"):visible').livequery ->
           stringLength:
             min: 4
             message: "Пароль должен быть не меньще 4 символов"
+      'user[email]':
+        message: "Такой email не допустим"
+        validators:
+          remote:
+            message: ("Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>.")
+            url: Routes.api_validation_index_path()
       'advertisement[user_attributes][email]':
         message: "Такой email не допустим"
         validators:
@@ -502,6 +508,7 @@ $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
         message: ("Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон.")
         url: Routes.api_validation_index_path()
   })
+
 
 
 $("html").on "mouseup", (e) ->

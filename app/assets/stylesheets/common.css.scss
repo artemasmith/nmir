@@ -93,7 +93,13 @@ h2 {
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+.zero-left {
+  margin-left: -15px;
+}
 
+.glyphicon[data-bv-icon-for="advertisement[user_attributes][role]"], .glyphicon[data-bv-icon-for="user[role]"]  {
+  left: 90px;
+}
 
 
 

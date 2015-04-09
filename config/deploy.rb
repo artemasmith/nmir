@@ -14,7 +14,6 @@ set :sidekiq_pid, '/home/tea/var/www/multilisting/run/sidekiq.pid'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/home/tea/var/www/multilisting'
-
 # Default value for :scm is :git
 # set :scm, :git
 
