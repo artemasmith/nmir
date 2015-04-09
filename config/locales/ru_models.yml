@@ -5,6 +5,7 @@ ru:
         roles:
           owner: собственник
           agent: агентство
+          admin: админ
         role: роль
 
         password: Пароль

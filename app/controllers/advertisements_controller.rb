@@ -203,8 +203,8 @@ class AdvertisementsController < ApplicationController
     end
 
     if search_params[:date_interval].present?
-      date_from = (Date.parse(search_params[:date_interval].split('-').first.strip) - 1.day) rescue (DateTime.now - 1.day).to_date
-      date_to = (Date.parse(search_params[:date_interval].split('-').last.strip) + 1.day) rescue (DateTime.now + 1.day).to_date
+      date_from = (Date.parse(search_params[:date_interval].gsub(/\s/, '').split('-').first)) rescue DateTime.now
+      date_to = (Date.parse(search_params[:date_interval].gsub(/\s/, '').split('-').last) + 1.day - 1.minute) rescue (DateTime.now + 1.day - 1.minute)
       date_from, date_to = date_to, date_from if date_to < date_from
       with[:updated_at] = date_from .. date_to
     end
