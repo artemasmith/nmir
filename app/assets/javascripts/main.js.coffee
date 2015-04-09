@@ -395,6 +395,7 @@ $('.ShowAdvPhone').livequery ->
     $('body').on 'click', (e) ->
       if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
         $this.popover 'hide'
+        $(".popover").hide()
         $this.removeClass('active')
     cancelEvent(event)
     return
