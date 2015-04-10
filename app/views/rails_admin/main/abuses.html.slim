@@ -1,0 +1,25 @@
+h2= t 'activerecord.attributes.abuse.class'
+
+table.table.table-bordered
+  tr
+    th= t 'activerecord.attributes.abuse.created_at'
+    th= t 'activerecord.attributes.abuse.status'
+    th= t 'activerecord.attributes.abuse.abuse_type'
+    th= t 'activerecord.attributes.abuse.moderator_comment'
+    th= t 'activerecord.attributes.abuse.comment'
+    th= t 'activerecord.attributes.abuse.user'
+    th= t 'admin.table_headers.advertisements'
+    td
+  - @objects.each do |abuse|
+    tr
+      td= abuse.created_at
+      td= abuse.status
+      td= abuse.abuse_type
+      td= abuse.moderator_comment
+      td= abuse.comment
+      td= abuse.user
+      td= abuse.advertisement
+      td
+        = link_to 'accept', '#'
+        '
+        = link_to 'decline', '#'

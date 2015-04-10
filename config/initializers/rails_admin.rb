@@ -56,6 +56,15 @@ RailsAdmin.config do |config|
       only Advertisement
     end
 
+    collection :abuses do
+      only Abuse
+      controller do
+        proc do
+          @objects = Abuse.where(status: 0) || []
+        end
+      end
+    end
+
     collection :import_adresat do
       only Advertisement
     end
