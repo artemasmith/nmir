@@ -13,7 +13,12 @@ Rails.application.routes.draw do
   match 'photos' => 'photos#create', via: [:post, :patch]
 
   get '/entity', to: redirect('/')
-  resources :abuses
+  resources :abuses do
+    member do
+      patch 'accept'
+      patch 'decline'
+    end
+  end
   resources :cabinet
   resources :advertisements, :path => 'entity' do
     member do
