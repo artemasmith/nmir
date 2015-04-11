@@ -69,13 +69,13 @@ class User < ActiveRecord::Base
     if cinfo[:phone].match /[[:alpha:]]/
       return false
     else
-      user = User.create(email: "#{cinfo[:phone]}@.gmail.com",
+      user = User.create!(email: "#{cinfo[:phone]}@.gmail.com",
                          name: "#{cinfo[:name]}",
                          password: "#{Time.now.to_i}",
                          role: cinfo[:agent].present? ? cinfo[:agent] : 0,
                          from_admin: true,
                          source: cinfo[:source])
-      user.phones.create(original: cinfo[:phone])
+      user.phones.create!(original: cinfo[:phone])
       return user
     end
   end
