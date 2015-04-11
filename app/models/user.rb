@@ -39,9 +39,10 @@ class User < ActiveRecord::Base
   USER_SOURCES = [:unknown, :donrio, :adresat]
   enum :source => User::USER_SOURCES
   before_validation :set_params, :on => :create
+  #before_save :deny_admin_thread
   after_update :change_adv_role, :if => :role_changed?
   after_update :change_advs, if: :name_changed?
-  validates_presence_of :role
+  validates :role, presence: true, format: { with: /(0|1)/, message: 'only 2 roles available' }
 
 
   def set_params

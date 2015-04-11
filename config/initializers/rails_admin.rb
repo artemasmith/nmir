@@ -47,12 +47,22 @@ RailsAdmin.config do |config|
         end
       end
     end
+
     show
     edit
     delete
     show_in_app
     collection :import_donrio do
       only Advertisement
+    end
+
+    collection :abuses do
+      only Abuse
+      controller do
+        proc do
+          @objects = Abuse.where(status: 0) || []
+        end
+      end
     end
 
     collection :import_adresat do
@@ -76,7 +86,7 @@ RailsAdmin.config do |config|
     field :role, :enum do
       searchable false
       enum do
-        [:owner, :agent, :admin].map { |k,_| [k.to_s.titleize, k] }
+        [:owner, :agent].map { |k,_| [k.to_s.titleize, k] }
       end
 
       pretty_value do

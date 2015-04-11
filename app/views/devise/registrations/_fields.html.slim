@@ -6,6 +6,8 @@
         /.col-sm-6.zero-left
         = f.label :role, class: 'radio-inline', for: "advertisement_user_attributes_role_#{role}" do
           = f.radio_button :role, role.to_sym, required: true, id: "advertisement_user_attributes_role_#{role}"
+          = render_icon(role.to_sym)
+          '
           = t "activerecord.attributes.user.roles.#{role}"
 
 .form-group
@@ -30,17 +32,18 @@
             i.fa.fa-minus
           = f.link_to_add :phones, :data => { :target => "#reg-phones" }, class: 'btn btn-default add-phone-number hidden' do
             i.fa.fa-plus
+.form-group
+  label.control-label.col-sm-3
+    i.fa.fa-envelope-o
+    '
+    | почта
+  .col-sm-4
+    .form-group
+      = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
 
 - if additional_params
   - if (f.object.new_record? && !can?(:create_from_admin, f.object))
-    .form-group
-      label.control-label.col-sm-3
-        i.fa.fa-envelope-o
-        '
-        | почта
-      .col-sm-4
-        .form-group
-          = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
+
 
     .form-group
       label.control-label.col-sm-3
