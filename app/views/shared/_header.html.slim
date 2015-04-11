@@ -91,7 +91,7 @@
                       span.sr-only Close
                     h4.modal-title Авторизация
                   .modal-body
-                    = form_for resource, as: resource_name, url: session_path(resource_name), role: "form" do |f|
+                    = form_for resource, as: resource_name, url: session_path(resource_name), html: {role: "form", class: 'easyBootstrapValidator'} do |f|
                       .form-group
                         = f.email_field :email, autofocus: true, class: 'form-control', placeholder: 'mail@example.com', required: true
                       .form-group

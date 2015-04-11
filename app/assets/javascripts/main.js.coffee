@@ -452,8 +452,14 @@ $('.abuse_popover_action').livequery ->
     return
 
   return
-
-$('form:not(".withoutBootstrapValidator"):visible').livequery ->
+$('form.easyBootstrapValidator:visible').livequery ->
+  $(this).bootstrapValidator({
+    feedbackIcons:
+      valid: 'glyphicon glyphicon-ok'
+      invalid: 'glyphicon glyphicon-remove'
+      validating: 'glyphicon glyphicon-refresh'
+  })
+$('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
   $(this).bootstrapValidator({
     feedbackIcons:
       valid: 'glyphicon glyphicon-ok'

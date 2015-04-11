@@ -6,7 +6,7 @@ h1
   - if flash[:alert]
     .alert.alert-danger
       = flash[:alert]
-  = form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form form-horizontal'}) do |f|
+  = form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form form-horizontal easyBootstrapValidator'}) do |f|
     fieldset
       .form-group
         label.control-label.col-sm-4
