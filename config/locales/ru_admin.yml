@@ -42,6 +42,11 @@ ru:
       item: "Элемент"
       message: "Сообщение"
     actions:
+      abuses:
+        menu: 'Жалобы'
+        breadcrumb: 'Жалобы'
+        title: 'Жалобы'
+        link: "Жалобы"
       make_admin:
         menu: 'Утвердить администратора'
         breadcrumb: 'Утвердить администратора'

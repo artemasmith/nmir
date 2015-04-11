@@ -9,6 +9,7 @@ class Ability
       can :dashboard
       can :create_from_admin, Advertisement
       can :read_expired, Advertisement
+      can :update, Abuse
     elsif user.owner?
       can :read, :all
       can [:update, :destroy, :read], Advertisement, user_id: user.id
