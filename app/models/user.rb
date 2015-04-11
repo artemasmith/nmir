@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
   #before_save :deny_admin_thread
   after_update :change_adv_role, :if => :role_changed?
   after_update :change_advs, if: :name_changed?
-  validates :role, presence: true, format: { with: /(0|1)/, message: 'only 2 roles available' }
+  # validates :role, presence: true, format: { with: /(0|1)/, message: 'only 2 roles available' }
 
 
   def set_params
