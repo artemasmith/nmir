@@ -9,7 +9,7 @@ a.btn.btn-default.btn-xs.abuse_popover_action.yaSend yaparam="abuse_open"  data-
       - if @adv.user_role == 'owner'
         .radio
           label
-            input checked=true name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:agent)}"
+            input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:agent)}"
             | агент(-ство)
       .radio
         label
