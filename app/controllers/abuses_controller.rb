@@ -6,24 +6,17 @@ class AbusesController < ApplicationController
     @abuse.save!
   end
 
-  def accept
+  def update
     abuse = Abuse.find(params[:id].to_i)
-    if abuse.present? && abuse.update(status: 1)
-      flash[:notice] = 'updated abuse'
+    abuse.status = params[:status].to_i
+    msg = {}
+    if abuse.present? && abuse.valid? && can?(:update, Abuse)
+      abuse.save
+      msg[:notice] = 'updated abuse'
     else
-      flash[:alert] = 'could not update abuse'
+      msg[:alert] = 'could not update abuse'
     end
-    redirect_to rails_admin.abuses_path(model_name: :abuse)
-  end
-
-  def decline
-    abuse = Abuse.find(params[:id].to_i)
-    if abuse.present? && abuse.update(status: 2)
-      flash[:notice] = 'updated abuse'
-    else
-      flash[:alert] = 'could not update abuse'
-    end
-    redirect_to rails_admin.abuses_path(model_name: :abuse)
+    redirect_to rails_admin.abuses_path(model_name: :abuse), flash: msg
   end
 
   private
