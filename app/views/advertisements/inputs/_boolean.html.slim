@@ -1,7 +1,8 @@
-= label_tag name_from, t("advertisement.attributes.#{name_from}"), class:'col-sm-3 control-label'
-.controls
-  .col-sm-2.zero-left
+/= label_tag name_from, t("advertisement.attributes.#{name_from}"), class:''
+
+.controls.col-sm-offset-3
+  .col-sm-3.zero-left
     .checkbox
-      label
+      label.strong
         = check_box_tag("advertisement[#{name_from}]", 1, value_from)
         = t("advertisement.attributes.#{name_from}")

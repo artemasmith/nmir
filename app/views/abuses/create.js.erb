@@ -1,5 +1,11 @@
 $('.abuse_popover_action').popover('hide');
 $('.abuse_popover_action').addClass('disabled');
-$('.notifications').notify({
-    message: { text: 'Жалоба отправлена' }
-}).show();
+<% if @errors.blank? %>
+    $('.notifications').notify({
+        message: { text: 'Жалоба отправлена' }
+    }).show();
+<% else %>
+    $('.notifications').notify({
+        message: { text: '<%= j @errors %>' }
+    }).show();
+<% end %>

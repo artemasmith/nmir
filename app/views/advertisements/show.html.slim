@@ -51,7 +51,6 @@ h1
           /  '
           /  | в избранное
           /'
-          = render 'advertisements/show_blocks/social_btns'
       =render 'advertisements/show_blocks/photos'
       =render 'advertisements/show_blocks/small_breadcrumbs'
       - if @adv.comment.present?
@@ -101,6 +100,8 @@ h1
 
       = render 'advertisements/show_blocks/user_phone'
       '
+      = render 'advertisements/show_blocks/social_btns'
+      br
       | ещё можно:
       '
       = render 'advertisements/show_blocks/abuse'

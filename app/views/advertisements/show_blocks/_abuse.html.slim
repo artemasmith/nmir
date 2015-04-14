@@ -2,34 +2,34 @@ a.btn.btn-default.btn-xs.abuse_popover_action.yaSend yaparam="abuse_open"  data-
   i.fa.fa-ban
   '
   | пожаловаться
-.container.hidden.abuse_form_action
-  = form_for Abuse.new, html: {class: 'form withoutBootstrapValidator'}, remote: true, role:'form' do |f|
-    = f.hidden_field :advertisement_id, value: @adv.id
-    .form-group
-      - if @adv.user_role == 'owner'
+  .container.hidden.abuse_form_action
+    = form_for Abuse.new, html: {class: 'form withoutBootstrapValidator'}, remote: true, role:'form' do |f|
+      = f.hidden_field :advertisement_id, value: @adv.id
+      .form-group
+        - if @adv.user_role.to_sym == :owner
+          .radio
+            label
+              input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:agent)}" required=true
+              | агент(-ство)
         .radio
           label
-            input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:agent)}"
-            | агент(-ство)
-      .radio
-        label
-          input name="abuse[abuse_type]" checked=(@adv.user_role != 'owner') type="radio" value="#{Abuse::ABUSE_TYPES.index(:expired)}"
-          | сдано/продано
-      .radio
-        label
-          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:deception)}"
-          | замануха
-      .radio
-        label
-          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:engaged)}"
-          | абонент недоступен
-      .radio
-        label
-          input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:other)}"
-          | прочее
-    .form-group
-      textarea.form-control name="abuse[comment]" placeholder="Описание" rows="3"
-    = f.button class: 'btn btn-default yaSend', yaparam: 'abuse_send', type: 'submit', name: 'button'
-      i.fa.fa-magic
-      '
-      |очистить базу
+            input name="abuse[abuse_type]"  type="radio" value="#{Abuse::ABUSE_TYPES.index(:expired)}" required=true
+            | сдано/продано
+        .radio
+          label
+            input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:deception)}" required=true
+            | замануха
+        .radio
+          label
+            input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:engaged)}" required=true
+            | абонент недоступен
+        .radio
+          label
+            input name="abuse[abuse_type]" type="radio" value="#{Abuse::ABUSE_TYPES.index(:other)}" required=true
+            | прочее
+      .form-group
+        textarea.form-control name="abuse[comment]" placeholder="Описание" rows="3"
+      = f.button class: 'btn btn-default yaSend', yaparam: 'abuse_send', type: 'submit', name: 'button'
+        i.fa.fa-magic
+        '
+        |очистить базу

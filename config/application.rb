@@ -19,7 +19,7 @@ module Nmir
     # config.time_zone = 'Central Time (US & Canada)'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
     config.autoload_paths += Dir[File.join(Rails.root, 'lib', 'extensions', '*.rb'),
                                  File.join(Rails.root, 'app', 'support', '*.rb')].each {|l| require l }
     config.i18n.default_locale = :ru

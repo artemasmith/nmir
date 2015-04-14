@@ -68,7 +68,7 @@ class ParserAdresat
             when :house then "дом"
             when :room then 'комнату'
             when :newbuild then 'квартиру в новостройке'
-            when :hotel then 'гостиницу'
+            when :hotel then 'гостинку'
             else 'квартиру'
           end
 
@@ -80,7 +80,7 @@ class ParserAdresat
     uc = ParserUtil.rename :comment, uc
 
     comment << "Продаю #{obj},"
-    if obj.match("квартир") || obj.match('комнат') || obj.match('гостиницу') || obj.match('квартиру в новостройке')
+    if obj.match("квартир") || obj.match('комнат') || obj.match('гостинку') || obj.match('квартиру в новостройке')
       comment << "#{self.parse_room_from(row, titles)}к" if field_valid? 'ком', row, titles
       comment << "#{self.parse_floor_from(row, titles)}/#{self.parse_floor_cnt_from(row, titles)}" if field_valid?('э-н', row, titles) &&
           field_valid?('эт', row, titles)

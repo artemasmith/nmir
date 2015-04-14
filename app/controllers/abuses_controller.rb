@@ -3,7 +3,9 @@ class AbusesController < ApplicationController
     @adv = Advertisement.find(abuse_params[:advertisement_id])
     @abuse = @adv.abuses.new abuse_params
     @abuse.user_id = current_user.try(:id)
-    @abuse.save!
+    unless @abuse.save
+      @errors = @abuse.errors.messages.values.join('. ')
+    end
   end
 
   def update

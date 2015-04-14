@@ -42,8 +42,13 @@ class User < ActiveRecord::Base
   #before_save :deny_admin_thread
   after_update :change_adv_role, :if => :role_changed?
   after_update :change_advs, if: :name_changed?
-  # validates :role, presence: true, format: { with: /(0|1)/, message: 'only 2 roles available' }
+  validate :role_changed
 
+  def role_changed
+    if self.role_changed?
+      errors.add :role, 'Нет прав для смены' if self.role_was.to_sym != :admin && self.role.to_sym == :admin
+    end
+  end
 
   def set_params
     o =  [('a'..'z'), ('A'..'Z'), (0..9)].map{|i| i.to_a}.flatten

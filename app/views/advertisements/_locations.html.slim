@@ -1,6 +1,6 @@
 .form.form-horizontal role="form"
   .form-group
-    label.col-sm-3.control-label
+    label.col-sm-3.control-label for='location_ids'
       i.fa.fa-map-marker.fa-lg
       '
       | местоположение
@@ -12,14 +12,17 @@
             '
             i.caret
       .span.help-block.small
-        | Указывайте как можно больше деталей. Можно указать несколько подходящих местоположений.
+        | можно выбрать до трёх подходящих местоположений
+        br
+        | при выборе номера дома точка на карте ставится автоматически
 
-  .form-group
-    = render_input :landmark,  nil, f.object.landmark , nil
+
+
 
   .form-group
     label.control-label.col-sm-3 for="appendedtext" на карте
     .col-sm-7.zero-left
       .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='true' data-zoom=@adv.zoom
-
+  .form-group
+    = render_input :landmark,  nil, f.object.landmark , nil
 .last-selected-location

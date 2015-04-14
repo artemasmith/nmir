@@ -1,0 +1,22 @@
+.form.form-horizontal
+  .form-group
+    .control-label.col-sm-3
+      label
+        i.fa.fa-camera-retro.fa-lg
+        '
+        | фото
+      .help-block.muted.small оптимально выглядят горизонтально ориентированые снимки
+    .row.col-sm-9
+      .fileupload_context
+        span.btn.btn-default.fileinput-button
+          i.i.fa.fa-plus
+          '
+          span добавить фото
+          = file_field_tag 'advertisement_photo[]', multiple: true
+        .form.form-horizontal
+          .col-sm-9
+            .progress.progress-success.progress-striped.active.fade
+              .bar.zero-width
+        .fileupload-loading
+        table.table.table-striped
+          tbody.files data-target="#modal-gallery" data-toggle="modal-gallery"

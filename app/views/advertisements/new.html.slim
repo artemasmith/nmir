@@ -1,1 +1,8 @@
+= content_for :title
+  - if @adv.new_record?
+    | Дать бесплатное объявление на доску недвижимости
+  - else
+    | Редактирование объявления
+
+
 = render 'advertisements/form'

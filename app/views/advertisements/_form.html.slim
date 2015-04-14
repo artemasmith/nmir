@@ -1,5 +1,5 @@
 .error
-  = @adv.errors.messages if !@adv.errors.blank?
+  = @adv.errors.messages.values.join('. ') if !@adv.errors.blank?
 h1
   - if @adv.new_record?
     | Новое объявление

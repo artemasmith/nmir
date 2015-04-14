@@ -66,17 +66,19 @@ $().ready ->
   map.geoObjects.add placemark
   return placemark
 
-@geoCoding = ->
-  return unless $('#map').data('editable')
-  position = $.grep($("div:not(.SelectLocation)[lid]").map(->
-      if $(this).attr('name') isnt 'non_admin_area' and $(this).attr('name') isnt 'admin_area'
+@position_map = (with_admin_area)->
+  $.grep($("div:not(.SelectLocation)[lid]").map(->
+      if (!with_admin_area && ($(this).attr('name') isnt 'non_admin_area') and ($(this).attr('name') isnt 'admin_area')) or with_admin_area
         $.trim $(this).text()
       else
         null
     ), (n) ->
-    (n isnt "Выбрать") and (n isnt "Место") and n
-  ).join " "
-  #console.log position
+    (n isnt "Выбрать") and (n isnt "Место") and (n isnt "нажмите чтобы выбрать") and n
+  )
+
+@geoCoding = ->
+  return unless $('#map').data('editable')
+  position = @position_map(false).join " "
   if position and window.map and window.ymaps
     ymaps.geocode(position).then (res) ->
       first = res.geoObjects.get(0)
@@ -447,8 +449,10 @@ $('.abuse_popover_action').livequery ->
     $('body').on 'click', (e) ->
       if !$this.is(e.target) and $this.has(e.target).length == 0 and $('.popover').has(e.target).length == 0
         $this.popover 'hide'
+        $(".popover").hide()
         $this.removeClass('active')
     cancelEvent(event)
+
     return
 
   return
