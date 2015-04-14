@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
 
   def role_changed
     if self.role_changed?
-      errors.add :role, 'Нет прав для смены' if self.role_was.to_sym != :admin && self.role.to_sym == :admin
+      errors.add :role, 'Нет прав для смены' if self.role_was.present? && self.role_was.to_sym != :admin && self.role.present? && self.role.to_sym == :admin
     end
   end
 
