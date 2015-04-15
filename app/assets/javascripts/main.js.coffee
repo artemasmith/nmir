@@ -511,7 +511,9 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
 
   })
 $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
+
   $this = $(this)
+  console.log $this.closest('form')
   $this.closest('form').bootstrapValidator('addField', $this, {
     message: "Такой телефон не допустим"
     validators:

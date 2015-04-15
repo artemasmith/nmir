@@ -311,7 +311,7 @@ ru:
       space_from: 'площадь'
       outdoors_space_from: 'площадь участка'
       price_from: 'цена'
-      not_for_agents: 'не для агентов'
+      not_for_agents: 'скрывать это объявление от зарегистрированых на сайте агентов'
       mortgage: 'ипотека'
       owner: 'частные'
       comment: 'комментарий'

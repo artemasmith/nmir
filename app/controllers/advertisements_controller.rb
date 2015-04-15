@@ -319,13 +319,13 @@ class AdvertisementsController < ApplicationController
       deleted_adv = DeletedAdvertisement.where(advertisement_id: params[:id]).first
       if deleted_adv.present?
         section = Section.find(deleted_adv.section_id)
-        return redirect_to section.url, status: 301
+        return redirect_to section.url, status: 302
       end
       raise ActionController::RoutingError.new('Not Found Adv')
     end
 
     if @adv.expired? && !can?(:read, @adv)
-      return redirect_to @adv.section.url
+      return redirect_to @adv.section.url, status: 302
     end
 
 
@@ -525,7 +525,7 @@ class AdvertisementsController < ApplicationController
 
   def permitting
     params.permit(
-
+                   :utm_content,
                    :utm_source,
                    :utm_medium,
                    :utm_campaign,
