@@ -117,5 +117,7 @@ gem 'paperclip-compression'
 
 gem 'sinatra', :require => nil
 
+gem 'newrelic_rpm'
+
 
 
