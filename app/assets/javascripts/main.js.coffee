@@ -222,7 +222,7 @@ easy_button = (multi, editable, lid, value, name)->
 button_size = (type) ->
   if type =='region' or type == 'city' or type == 'district'
     return ''
-  if type == 'street' or 'admin_area' or 'non_admin_area'
+  if type == 'street' or 'admin_area' or 'non_admin_area' or 'cottage' or 'garden' or 'complex'
     return 'btn-sm'
   if type == 'street' or 'address' or 'landmark'
     return 'btn-xs'
@@ -264,10 +264,6 @@ sort_button_list = (context)->
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
   loc = $(".last-selected-location").attr('lid')
   $(".last-selected-location").attr('lid',loc + ' ' + sp['lid'])
-  #VALIDATION CODE!!! IMPORTANT TODO: Can I place this code in validator file on click event?
-  $('#first-advlids').val(sp['lid'])
-  $(".find-location-form").data('bootstrapValidator').resetForm()
-
 
 @mark_last_selection = (lid) ->
   $('.loc-btn').removeClass('active')
@@ -460,8 +456,71 @@ $('.abuse_popover_action').livequery ->
     return
 
   return
+$('form.easyBootstrapValidator:visible').livequery ->
+  $(this).bootstrapValidator({
+    feedbackIcons:
+      valid: 'fa fa-check',
+      invalid: 'fa fa-times',
+      validating: 'fa fa-refresh'
+  })
+$('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
+  $(this).bootstrapValidator({
+    feedbackIcons:
+      valid: 'glyphicon glyphicon-ok'
+      invalid: 'glyphicon glyphicon-remove'
+      validating: 'glyphicon glyphicon-refresh'
+    fields:
+      'advertisement[user_attributes][password]':
+        validators:
+          stringLength:
+            min: 4
+            message: "Пароль должен быть не меньще 4 символов"
+      'advertisement[user_attributes][password_confirmation]':
+        validators:
+          stringLength:
+            min: 4
+            message: "Пароль должен быть не меньще 4 символов"
+      'user[email]':
+        message: "Такой email не допустим"
+        validators:
+          remote:
+            message: ("Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>.")
+            url: Routes.api_validation_index_path()
+      'advertisement[user_attributes][email]':
+        message: "Такой email не допустим"
+        validators:
+          remote:
+            message: ("Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>.")
+            url: Routes.api_validation_index_path()
+      'advertisement[offer_type]':
+        validators:
+          callback:
+            message: "Выберите вид сделки"
+            trigger: 'change'
+            callback:  ->
+              $('[name="advertisement[offer_type]"]').is(':checked')
+
+      'advertisement[category]':
+        validators:
+          callback:
+            message: "Выберите тип недвижимости"
+            trigger: 'change'
+            callback:  ->
+              $('[name="advertisement[category]"]').is(':checked')
 
 
+  })
+$('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
+
+  $this = $(this)
+  console.log $this.closest('form')
+  $this.closest('form').bootstrapValidator('addField', $this, {
+    message: "Такой телефон не допустим"
+    validators:
+      remote:
+        message: ("Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон.")
+        url: Routes.api_validation_index_path()
+  })
 
 
 
@@ -476,6 +535,10 @@ $("html").on "mouseup", (e) ->
 #  $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
 #  return
 
+$('form .attributes input, form .attributes textarea').livequery ->
+  $this = $(this)
+  unless $this.attr('data-bv-field')
+    $(this).closest('form').bootstrapValidator('addField', $(this))
 
 cancelEvent = (event) ->
   event = (event or window.event)
@@ -593,15 +656,22 @@ $('.autocomplete-search-location').livequery ->
   $this.focus()
 
 
+$('input[type="text"][valid-type=integer]').livequery ->
+  $(this).forceNumericOnly()
+
+
+$('input[type="text"][valid-type=float]').livequery ->
+  $(this).forceFloatOnly()
+
 changeSearchButtonStatus = ()->
   if ($('.search-container-action .SelectLocation:visible').length > 0)
-    $('.create-street-action').addClass('hidden').addClass('disabled')
+    $('.create-location-action').addClass('hidden').addClass('disabled')
     $('.empty-search-container-action').addClass('hidden')
   else
-    $('.create-street-action').removeClass('hidden').removeClass('disabled')
+    $('.create-location-action').removeClass('hidden').removeClass('disabled')
     $('.empty-search-container-action').removeClass('hidden')
 
-$('.search-or-create-street-action').livequery ->
+$('.search-or-create-location-action').livequery ->
   $(this).keyup (event)->
     cancelEvent(event)
     query = $(this).val()
@@ -617,16 +687,15 @@ $('.search-or-create-street-action').livequery ->
         return
     else
       $('.search-container-action .SelectLocation').show()
-    #console.log exactResultPresent
     changeSearchButtonStatus()
     if !exactResultPresent and !($.trim(query) is "")
-      $('.create-street-action').removeClass('hidden').removeClass('disabled')
+      $('.create-location-action').removeClass('hidden').removeClass('disabled')
 
 
 
   changeSearchButtonStatus()
 
-$('.create-street-action').livequery ->
+$('.create-location-action').livequery ->
   $this = $(this)
   $this.click ->
     $.ajax(

@@ -39,7 +39,7 @@ class Location < ActiveRecord::Base
 
 
   def self.locations_list
-    %w(region district city admin_area non_admin_area street address landmark)
+    %w(region district city cottage garden complex admin_area non_admin_area street address landmark)
   end
 
 
@@ -53,7 +53,12 @@ class Location < ActiveRecord::Base
                        :non_admin_area,
                        :street, #7
                        :address,
-                       :landmark]
+                       :landmark,
+                       :cottage,
+                       :garden,
+                       :complex
+
+       ]
 
   enum status_type: [:unchecked,
                        :checked,
@@ -102,8 +107,21 @@ class Location < ActiveRecord::Base
 
   def children_locations(type = :all)
     case self.location_type.to_sym
-      when :region, :district, :street, :address, :landmark
+      when :region, :street, :address, :landmark
         self.sublocations
+      when :district
+        case type
+          when :all
+            self.sublocations
+          when :cottage
+            self.sublocations.where(location_type: 8)
+          when :garden
+            self.sublocations.where(location_type: 9)
+          when :complex
+            self.sublocations.where(location_type: 10)
+          else
+            raise 'Invalid type'
+        end
       when :city
         case type
           when :all
@@ -114,6 +132,14 @@ class Location < ActiveRecord::Base
             self.sublocations.where(location_type: 4)
           when :street
             self.sublocations.where(location_type: 5)
+
+          when :cottage
+            self.sublocations.where(location_type: 8)
+          when :garden
+            self.sublocations.where(location_type: 9)
+          when :complex
+            self.sublocations.where(location_type: 10)
+
           else
             raise 'Invalid type'
         end
@@ -121,6 +147,9 @@ class Location < ActiveRecord::Base
         self.sublocations_for_city.where(admin_area_id: self.id)
       when :non_admin_area
         self.sublocations_for_city.where(location_type: 5)
+
+
+
       else
         raise 'Type error'
     end
