@@ -33,13 +33,13 @@
           a.btn.btn-default.dropdown-toggle data-toggle="dropdown" href="#"
             i.fa.fa-list
             '
-            = params[:per_page].presence || 25
+            = params[:per_page].presence || cookies[:per_page].presence || 25
             '
             | объявлений на страницу
             span.caret
           ul.dropdown-menu
             - [25, 50, 75, 100].each do |e|
-              li class="#{'active' if (params[:per_page].presence || 25).to_i == e}"
+              li class="#{'active' if (params[:per_page].presence || cookies[:per_page].presence || 25).to_i == e}"
                 a href=(url_path.call(url_params.merge({:per_page => e})))
                   = "#{e} на страницу"
 

@@ -100,7 +100,8 @@ class AdvertisementsController < ApplicationController
         :classes => [Advertisement]
     }
 
-    @limit = (params[:per_page].presence || 25).to_i
+    @limit = (params[:per_page].presence || cookies[:per_page].presence || 25).to_i
+    cookies[:per_page] = params[:per_page] if params[:per_page].present? && params[:per_page].to_i > 0
 
     options[:page] = (params[:page] || 1).to_i
     options[:per_page] = @limit

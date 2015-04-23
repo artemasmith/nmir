@@ -222,7 +222,7 @@ easy_button = (multi, editable, lid, value, name)->
 button_size = (type) ->
   if type =='region' or type == 'city' or type == 'district'
     return ''
-  if type == 'street' or 'admin_area' or 'non_admin_area'
+  if type == 'street' or 'admin_area' or 'non_admin_area' or 'cottage' or 'garden' or 'complex'
     return 'btn-sm'
   if type == 'street' or 'address' or 'landmark'
     return 'btn-xs'
@@ -459,9 +459,9 @@ $('.abuse_popover_action').livequery ->
 $('form.easyBootstrapValidator:visible').livequery ->
   $(this).bootstrapValidator({
     feedbackIcons:
-      valid: 'glyphicon glyphicon-ok'
-      invalid: 'glyphicon glyphicon-remove'
-      validating: 'glyphicon glyphicon-refresh'
+      valid: 'fa fa-check',
+      invalid: 'fa fa-times',
+      validating: 'fa fa-refresh'
   })
 $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
   $(this).bootstrapValidator({
@@ -665,13 +665,13 @@ $('input[type="text"][valid-type=float]').livequery ->
 
 changeSearchButtonStatus = ()->
   if ($('.search-container-action .SelectLocation:visible').length > 0)
-    $('.create-street-action').addClass('hidden').addClass('disabled')
+    $('.create-location-action').addClass('hidden').addClass('disabled')
     $('.empty-search-container-action').addClass('hidden')
   else
-    $('.create-street-action').removeClass('hidden').removeClass('disabled')
+    $('.create-location-action').removeClass('hidden').removeClass('disabled')
     $('.empty-search-container-action').removeClass('hidden')
 
-$('.search-or-create-street-action').livequery ->
+$('.search-or-create-location-action').livequery ->
   $(this).keyup (event)->
     cancelEvent(event)
     query = $(this).val()
@@ -687,16 +687,15 @@ $('.search-or-create-street-action').livequery ->
         return
     else
       $('.search-container-action .SelectLocation').show()
-    #console.log exactResultPresent
     changeSearchButtonStatus()
     if !exactResultPresent and !($.trim(query) is "")
-      $('.create-street-action').removeClass('hidden').removeClass('disabled')
+      $('.create-location-action').removeClass('hidden').removeClass('disabled')
 
 
 
   changeSearchButtonStatus()
 
-$('.create-street-action').livequery ->
+$('.create-location-action').livequery ->
   $this = $(this)
   $this.click ->
     $.ajax(

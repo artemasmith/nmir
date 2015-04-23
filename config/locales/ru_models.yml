@@ -64,6 +64,9 @@ ru:
         street: 'улицы'
         address: 'адреса'
         landmark: 'ориентиры'
+        cottage: 'коттеджные посёлки'
+        garden: 'сады'
+        complex: 'жилищные комплексы'
 
       advertisement:
 

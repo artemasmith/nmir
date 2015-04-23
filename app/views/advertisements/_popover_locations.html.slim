@@ -3,7 +3,7 @@
     legend
       = t("activerecord.attributes.location.#{value.first[:location_type]}")
     - if value.first[:location_type] == 'address'
-      .search-or-create-street-container-action.hidden
+      .search-or-create-location-container-action.hidden
         .top-buffer
           .col-md-12
             .form-group
@@ -12,12 +12,12 @@
                 '
                 | поиск
               '
-              = text_field_tag 'location[title]', nil, class: 'search-or-create-street-action', placeholder: ' найти по названию', autocomplete: 'off'
+              = text_field_tag 'location[title]', nil, class: 'search-or-create-location-action', placeholder: ' найти по названию', autocomplete: 'off'
               - if can?(:manage, Location)
                 = hidden_field_tag 'location[location_type]', :address
                 = hidden_field_tag 'location[location_id]', @location.id
                 '
-                = button_tag 'Добавить новый адрес', class: 'hidden create-street-action'
+                = button_tag 'Добавить новый адрес', class: 'hidden create-location-action'
     .row.top-buffer
       .col-md-12
         .empty-search-container-action.hidden
