@@ -14,12 +14,29 @@ $('.find-location-form').livequery ->
       valid: 'glyphicon glyphicon-ok'
       invalid: 'glyphicon glyphicon-remove'
       validating: 'glyphicon glyphicon-refresh'
+    #VERY IMPORTANT!!
+    excluded: ':disabled'
+    submitHandler: ->
+      $("button[type='submit']").removeAttr('disabled');
+      return false;
     fields:
       'advertisement[location_ids][]':
         validators:
           notEmpty:
             message: 'Выберите местоположение где искать'
+          remote:
+            message: 'Поиск только по области невозможен'
+            url: Routes.check_if_specific_api_validation_index_path()
   })
+  .on('err.field.fv', (e, data) ->
+    console.log("data " + data)
+    data.fv.disableSubmitButtons(false)
+  )
+  .on('success.field.fv', (e, data) ->
+    data.fv.disableSubmitButtons(false)
+  )
+
+
 
 $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
   $(this).bootstrapValidator({

@@ -233,6 +233,35 @@
           throw new Error("Unknown Rails node type");
       }
     },
+    build_path_spec: function(route, wildcard) {
+      var left, right, type;
+
+      if (wildcard == null) {
+        wildcard = false;
+      }
+      type = route[0], left = route[1], right = route[2];
+      switch (type) {
+        case NodeTypes.GROUP:
+          return "(" + (this.build_path_spec(left)) + ")";
+        case NodeTypes.CAT:
+          return "" + (this.build_path_spec(left)) + (this.build_path_spec(right));
+        case NodeTypes.STAR:
+          return this.build_path_spec(left, true);
+        case NodeTypes.SYMBOL:
+          if (wildcard === true) {
+            return "" + (left[0] === '*' ? '' : '*') + left;
+          } else {
+            return ":" + left;
+          }
+          break;
+        case NodeTypes.SLASH:
+        case NodeTypes.DOT:
+        case NodeTypes.LITERAL:
+          return left;
+        default:
+          throw new Error("Unknown Rails node type");
+      }
+    },
     visit_globbing: function(route, parameters, optional) {
       var left, right, type, value;
 
@@ -262,6 +291,18 @@
         prefix = (prefix.match("/$") ? prefix : "" + prefix + "/");
       }
       return prefix;
+    },
+    route: function(required_parts, optional_parts, route_spec) {
+      var path_fn;
+
+      path_fn = function() {
+        return Utils.build_path(required_parts, optional_parts, route_spec, arguments);
+      };
+      path_fn.required_params = required_parts;
+      path_fn.toString = function() {
+        return Utils.build_path_spec(route_spec);
+      };
+      return path_fn;
     },
     _classToTypeCache: null,
     _classToType: function() {
@@ -309,210 +350,207 @@
     };
     namespace(root, "Routes");
     root.Routes = {
+// abus => /abuses/:id(.:format)
+  // function(id, options)
+  abus_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"abuses",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// abuses => /abuses(.:format)
+  // function(options)
+  abuses_path: Utils.route([], ["format"], [2,[2,[7,"/",false],[6,"abuses",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // advertisement => /entity/:id(.:format)
-  advertisement_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  advertisement_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // advertisements => /entity(.:format)
-  advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  advertisements_path: Utils.route([], ["format"], [2,[2,[7,"/",false],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // api_advertisement => /api/entity/:id(.:format)
-  api_advertisement_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  api_advertisement_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // api_advertisements => /api/entity(.:format)
-  api_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  api_advertisements_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // api_location => /api/locations/:id(.:format)
-  api_location_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  api_location_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // api_locations => /api/locations(.:format)
-  api_locations_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  api_locations_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // api_validation => /api/validation/:id(.:format)
-  api_validation_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  api_validation_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // api_validation_index => /api/validation(.:format)
-  api_validation_index_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  api_validation_index_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// cabinet => /cabinet/:id(.:format)
+  // function(id, options)
+  cabinet_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"cabinet",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// cabinet_index => /cabinet(.:format)
+  // function(options)
+  cabinet_index_path: Utils.route([], ["format"], [2,[2,[7,"/",false],[6,"cabinet",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // cancel_user_registration => /users/cancel(.:format)
-  cancel_user_registration_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"cancel",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  cancel_user_registration_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"cancel",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// check_if_specific_api_validation_index => /api/validation/check_if_specific(.:format)
+  // function(options)
+  check_if_specific_api_validation_index_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[7,"/",false]],[6,"check_if_specific",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // check_phone_advertisements => /entity/check_phone(.:format)
-  check_phone_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"check_phone",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  check_phone_advertisements_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"check_phone",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // destroy_user_session => /users/sign_out(.:format)
-  destroy_user_session_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_out",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  destroy_user_session_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_out",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// edit_abus => /abuses/:id/edit(.:format)
+  // function(id, options)
+  edit_abus_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"abuses",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // edit_advertisement => /entity/:id/edit(.:format)
-  edit_advertisement_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  edit_advertisement_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // edit_api_advertisement => /api/entity/:id/edit(.:format)
-  edit_api_advertisement_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  edit_api_advertisement_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // edit_api_location => /api/locations/:id/edit(.:format)
-  edit_api_location_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  edit_api_location_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // edit_api_validation => /api/validation/:id/edit(.:format)
-  edit_api_validation_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  edit_api_validation_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// edit_cabinet => /cabinet/:id/edit(.:format)
+  // function(id, options)
+  edit_cabinet_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"cabinet",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // edit_photo => /photos/:id/edit(.:format)
-  edit_photo_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  edit_photo_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // edit_user_password => /users/password/edit(.:format)
-  edit_user_password_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"password",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  edit_user_password_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"password",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // edit_user_registration => /users/edit(.:format)
-  edit_user_registration_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  edit_user_registration_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // entity => /entity(.:format)
-  entity_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  entity_path: Utils.route([], ["format"], [2,[2,[7,"/",false],[6,"entity",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // get_attributes_advertisements => /entity/get_attributes(.:format)
-  get_attributes_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_attributes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  get_attributes_advertisements_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_attributes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // get_locations_advertisements => /entity/get_locations(.:format)
-  get_locations_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  get_locations_advertisements_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_locations",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // get_search_attributes_advertisements => /entity/get_search_attributes(.:format)
-  get_search_attributes_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_search_attributes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  get_search_attributes_advertisements_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"get_search_attributes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// import_uploader => /import_uploader(.:format)
+  // function(options)
+  import_uploader_path: Utils.route([], ["format"], [2,[2,[7,"/",false],[6,"import_uploader",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// new_abus => /abuses/new(.:format)
+  // function(options)
+  new_abus_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"abuses",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_advertisement => /entity/new(.:format)
-  new_advertisement_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_advertisement_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_api_advertisement => /api/entity/new(.:format)
-  new_api_advertisement_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_api_advertisement_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_api_location => /api/locations/new(.:format)
-  new_api_location_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_api_location_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"locations",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_api_validation => /api/validation/new(.:format)
-  new_api_validation_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_api_validation_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"validation",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// new_cabinet => /cabinet/new(.:format)
+  // function(options)
+  new_cabinet_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"cabinet",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_photo => /photos/new(.:format)
-  new_photo_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_photo_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_user_password => /users/password/new(.:format)
-  new_user_password_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"password",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_user_password_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"password",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_user_registration => /users/sign_up(.:format)
-  new_user_registration_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_up",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_user_registration_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_up",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // new_user_session => /users/sign_in(.:format)
-  new_user_session_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_in",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  new_user_session_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_in",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // photo => /photos/:id(.:format)
-  photo_path: function(_id, options) {
-  return Utils.build_path(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(id, options)
+  photo_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"photos",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // photos => /photos(.:format)
-  photos_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"photos",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  photos_path: Utils.route([], ["format"], [2,[2,[7,"/",false],[6,"photos",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.dashboard => /management/
-  rails_admin_dashboard_path: function(options) {
-  return Utils.build_path([], [], [2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]], arguments);
-  },
+  // function(options)
+  rails_admin_dashboard_path: Utils.route([], [], [2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]], arguments),
 // rails_admin.index => /management/:model_name(.:format)
-  rails_admin_index_path: function(_model_name, options) {
-  return Utils.build_path(["model_name"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, options)
+  rails_admin_index_path: Utils.route(["model_name"], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.new => /management/:model_name/new(.:format)
-  rails_admin_new_path: function(_model_name, options) {
-  return Utils.build_path(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, options)
+  rails_admin_new_path: Utils.route(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"new",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.bulk_delete => /management/:model_name/bulk_delete(.:format)
-  rails_admin_bulk_delete_path: function(_model_name, options) {
-  return Utils.build_path(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"bulk_delete",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, options)
+  rails_admin_bulk_delete_path: Utils.route(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"bulk_delete",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// rails_admin.import_donrio => /management/:model_name/import_donrio(.:format)
+  // function(model_name, options)
+  rails_admin_import_donrio_path: Utils.route(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"import_donrio",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// rails_admin.abuses => /management/:model_name/abuses(.:format)
+  // function(model_name, options)
+  rails_admin_abuses_path: Utils.route(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"abuses",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// rails_admin.import_adresat => /management/:model_name/import_adresat(.:format)
+  // function(model_name, options)
+  rails_admin_import_adresat_path: Utils.route(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"import_adresat",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.bulk_action => /management/:model_name/bulk_action(.:format)
-  rails_admin_bulk_action_path: function(_model_name, options) {
-  return Utils.build_path(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"bulk_action",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, options)
+  rails_admin_bulk_action_path: Utils.route(["model_name"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[6,"bulk_action",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// rails_admin.accept => /management/:model_name/:id/accept(.:format)
+  // function(model_name, id, options)
+  rails_admin_accept_path: Utils.route(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"accept",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// rails_admin.decline => /management/:model_name/:id/decline(.:format)
+  // function(model_name, id, options)
+  rails_admin_decline_path: Utils.route(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"decline",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.show => /management/:model_name/:id(.:format)
-  rails_admin_show_path: function(_model_name, _id, options) {
-  return Utils.build_path(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, id, options)
+  rails_admin_show_path: Utils.route(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.edit => /management/:model_name/:id/edit(.:format)
-  rails_admin_edit_path: function(_model_name, _id, options) {
-  return Utils.build_path(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, id, options)
+  rails_admin_edit_path: Utils.route(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"edit",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.delete => /management/:model_name/:id/delete(.:format)
-  rails_admin_delete_path: function(_model_name, _id, options) {
-  return Utils.build_path(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"delete",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, id, options)
+  rails_admin_delete_path: Utils.route(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"delete",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_admin.show_in_app => /management/:model_name/:id/show_in_app(.:format)
-  rails_admin_show_in_app_path: function(_model_name, _id, options) {
-  return Utils.build_path(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"show_in_app",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(model_name, id, options)
+  rails_admin_show_in_app_path: Utils.route(["model_name","id"], ["format"], [2,[2,[2,[2,[2,[2,[2,[2,[7,"/",false],[6,"management",false]],[7,"/",false]],[3,"model_name",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"show_in_app",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_info => /rails/info(.:format)
-  rails_info_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"info",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  rails_info_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"info",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_info_properties => /rails/info/properties(.:format)
-  rails_info_properties_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"info",false]],[7,"/",false]],[6,"properties",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  rails_info_properties_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"info",false]],[7,"/",false]],[6,"properties",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_info_routes => /rails/info/routes(.:format)
-  rails_info_routes_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"info",false]],[7,"/",false]],[6,"routes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  rails_info_routes_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"info",false]],[7,"/",false]],[6,"routes",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // rails_mailers => /rails/mailers(.:format)
-  rails_mailers_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"mailers",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  rails_mailers_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"rails",false]],[7,"/",false]],[6,"mailers",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // root => /
-  root_path: function(options) {
-  return Utils.build_path([], [], [7,"/",false], arguments);
-  },
+  // function(options)
+  root_path: Utils.route([], [], [7,"/",false], arguments),
+// sidekiq_web => /sidekiq
+  // function(options)
+  sidekiq_web_path: Utils.route([], [], [2,[7,"/",false],[6,"sidekiq",false]], arguments),
 // streets_houses_api_advertisements => /api/entity/streets_houses(.:format)
-  streets_houses_api_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"streets_houses",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
-// top_advertisements => /entity/top(.:format)
-  top_advertisements_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[6,"top",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  streets_houses_api_advertisements_path: Utils.route([], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"api",false]],[7,"/",false]],[6,"entity",false]],[7,"/",false]],[6,"streets_houses",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
+// top_advertisement => /entity/:id/top(.:format)
+  // function(id, options)
+  top_advertisement_path: Utils.route(["id"], ["format"], [2,[2,[2,[2,[2,[2,[7,"/",false],[6,"entity",false]],[7,"/",false]],[3,"id",false]],[7,"/",false]],[6,"top",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // user_password => /users/password(.:format)
-  user_password_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"password",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  user_password_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"password",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // user_registration => /users(.:format)
-  user_registration_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[7,"/",false],[6,"users",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  },
+  // function(options)
+  user_registration_path: Utils.route([], ["format"], [2,[2,[7,"/",false],[6,"users",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments),
 // user_session => /users/sign_in(.:format)
-  user_session_path: function(options) {
-  return Utils.build_path([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_in",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments);
-  }}
+  // function(options)
+  user_session_path: Utils.route([], ["format"], [2,[2,[2,[2,[7,"/",false],[6,"users",false]],[7,"/",false]],[6,"sign_in",false]],[1,[2,[8,".",false],[3,"format",false]],false]], arguments)}
 ;
     root.Routes.options = defaults;
     return root.Routes;
