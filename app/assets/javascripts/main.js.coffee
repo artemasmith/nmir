@@ -281,20 +281,29 @@ $('.GetChildren').livequery ->
       mark_last_selection(lid)
 
 $('.SelectLocation').livequery ->
-  $(this).click (event)->
+  $this = $(this)
+  lid = $this.attr('lid')
+  $this.click (event)->
     cancelEvent(event)
     sp = {}
-    sp['el'] = $(this)
-    sp['lid'] = $(this).attr('lid')
-    sp['name'] = $(this).attr('name')
-    sp['group'] = $(this).closest('.location-group')
-    sp['value'] = $(this).text()
+    sp['el'] = $this
+    sp['lid'] = lid
+    sp['name'] = $this.attr('name')
+    sp['group'] = $this.closest('.location-group')
+    sp['value'] = $this.text()
     sp['multi'] = sp['group'].attr('multi')
     sp['editable'] = sp['group'].attr('editable')
-    sp['has_children'] = $(this).attr('has_children')
+    sp['has_children'] = $this.attr('has_children')
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
+  if ($.trim($this.text()) is 'обл Ростовская')
+    $this.click()
+    button = $this.closest('.location-group').find('.GetChildren')
+    button.popover "destroy"
+    button.removeClass('dropdown-toggle')
+    getChildren.call($(".GetChildren[lid=#{lid}]"))
+  return
 
 $('.DelChildren').livequery ->
   $(this).click ->
@@ -456,71 +465,6 @@ $('.abuse_popover_action').livequery ->
     return
 
   return
-$('form.easyBootstrapValidator:visible').livequery ->
-  $(this).bootstrapValidator({
-    feedbackIcons:
-      valid: 'fa fa-check',
-      invalid: 'fa fa-times',
-      validating: 'fa fa-refresh'
-  })
-$('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
-  $(this).bootstrapValidator({
-    feedbackIcons:
-      valid: 'glyphicon glyphicon-ok'
-      invalid: 'glyphicon glyphicon-remove'
-      validating: 'glyphicon glyphicon-refresh'
-    fields:
-      'advertisement[user_attributes][password]':
-        validators:
-          stringLength:
-            min: 4
-            message: "Пароль должен быть не меньще 4 символов"
-      'advertisement[user_attributes][password_confirmation]':
-        validators:
-          stringLength:
-            min: 4
-            message: "Пароль должен быть не меньще 4 символов"
-      'user[email]':
-        message: "Такой email не допустим"
-        validators:
-          remote:
-            message: ("Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>.")
-            url: Routes.api_validation_index_path()
-      'advertisement[user_attributes][email]':
-        message: "Такой email не допустим"
-        validators:
-          remote:
-            message: ("Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>.")
-            url: Routes.api_validation_index_path()
-      'advertisement[offer_type]':
-        validators:
-          callback:
-            message: "Выберите вид сделки"
-            trigger: 'change'
-            callback:  ->
-              $('[name="advertisement[offer_type]"]').is(':checked')
-
-      'advertisement[category]':
-        validators:
-          callback:
-            message: "Выберите тип недвижимости"
-            trigger: 'change'
-            callback:  ->
-              $('[name="advertisement[category]"]').is(':checked')
-
-
-  })
-$('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
-
-  $this = $(this)
-  console.log $this.closest('form')
-  $this.closest('form').bootstrapValidator('addField', $this, {
-    message: "Такой телефон не допустим"
-    validators:
-      remote:
-        message: ("Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон.")
-        url: Routes.api_validation_index_path()
-  })
 
 
 
@@ -535,10 +479,7 @@ $("html").on "mouseup", (e) ->
 #  $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
 #  return
 
-$('form .attributes input, form .attributes textarea').livequery ->
-  $this = $(this)
-  unless $this.attr('data-bv-field')
-    $(this).closest('form').bootstrapValidator('addField', $(this))
+
 
 cancelEvent = (event) ->
   event = (event or window.event)
@@ -618,6 +559,7 @@ $('.click_additional_search_params_action').livequery ->
 
 $('.autocomplete-search-location').livequery ->
   $this = $(this)
+  for_ = $this.attr('for')
   sp = {}
   sp['parent_id'] = $this.attr('parent_id')
   sp['multi']  = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('multi')
@@ -634,6 +576,7 @@ $('.autocomplete-search-location').livequery ->
           parent_id: sp['parent_id']
         success: (data) ->
           response(data)
+          changeSearchButtonStatus(for_)
           return
       )
     select: (event, ui) ->
@@ -656,59 +599,52 @@ $('.autocomplete-search-location').livequery ->
   $this.focus()
 
 
-$('input[type="text"][valid-type=integer]').livequery ->
-  $(this).forceNumericOnly()
+changeSearchButtonStatus = (for_)->
+  emptyList = ($(".search-container-action[for=#{for_}] .SelectLocation:visible").length > 0)
+  emptyQuery = $.trim($(".search-or-create-location-action[for=#{for_}]").val()) is ""
+  emptyAutoComplite = ($(".search-or-create-location-action[for=#{for_}]").hasClass('autocomplete-search-location') and ($(".search-or-create-location-action[for=#{for_}]").parent().find('ul.ui-autocomplete li.ui-menu-item:visible').length > 0))
+  notFullQueryAutoComplite = ($(".search-or-create-location-action[for=#{for_}]").hasClass('autocomplete-search-location') and $.trim($(".search-or-create-location-action[for=#{for_}]").val()).length <=2 )
 
-
-$('input[type="text"][valid-type=float]').livequery ->
-  $(this).forceFloatOnly()
-
-changeSearchButtonStatus = ()->
-  if ($('.search-container-action .SelectLocation:visible').length > 0)
-    $('.create-location-action').addClass('hidden').addClass('disabled')
-    $('.empty-search-container-action').addClass('hidden')
+  if emptyList or emptyQuery or emptyAutoComplite or notFullQueryAutoComplite
+    $(".create-location-action[for=#{for_}]").addClass('hidden').addClass('disabled')
+    $(".empty-search-container-action[for=#{for_}]").addClass('hidden')
   else
-    $('.create-location-action').removeClass('hidden').removeClass('disabled')
-    $('.empty-search-container-action').removeClass('hidden')
+    $(".create-location-action[for=#{for_}]").removeClass('hidden').removeClass('disabled')
+    $(".empty-search-container-action[for=#{for_}]").removeClass('hidden')
 
 $('.search-or-create-location-action').livequery ->
+  for_ = $(this).attr('for')
   $(this).keyup (event)->
     cancelEvent(event)
     query = $(this).val()
-    exactResultPresent = false
     unless ($.trim(query) is "") or (query is $(this).attr("placeholder"))
-      $.each $('.search-container-action .SelectLocation'), (index, value) ->
-        if ($(value).text().toLowerCase() == query)
-          exactResultPresent = true
+      $.each $(".search-container-action[for=#{for_}] .SelectLocation"), (index, value) ->
         if $(value).is(":icontains('" + query + "')")
           $(value).show()
         else
           $(value).hide()
         return
     else
-      $('.search-container-action .SelectLocation').show()
-    changeSearchButtonStatus()
-    if !exactResultPresent and !($.trim(query) is "")
-      $('.create-location-action').removeClass('hidden').removeClass('disabled')
-
-
-
-  changeSearchButtonStatus()
+      $(".search-container-action[for=#{for_}] .SelectLocation").show()
+    changeSearchButtonStatus(for_)
+    return
+  changeSearchButtonStatus(for_)
 
 $('.create-location-action').livequery ->
   $this = $(this)
+  for_ = $(this).attr('for')
   $this.click ->
     $.ajax(
       type: 'POST'
       dataType: 'json'
       url: Routes.api_locations_path()
       data:
-        'location[title]': $('[name="location[title]"]').val()
-        'location[location_type]': $('[name="location[location_type]"]').val()
-        'location[location_id]': $('[name="location[location_id]"]').val()
+        'location[title]': $("[name='location[title]'][for=#{for_}]").val()
+        'location[location_type]': $("[name='location[location_type]'][for=#{for_}]").val()
+        'location[location_id]': $("[name='location[location_id]'][for=#{for_}]").val()
       success: (data) ->
-        context = $('.search-container-action')
-        $('[name="location[title]"]').val('').keyup()
+        context = $(".search-container-action[for=#{for_}]")
+        $("[name='location[title]'][for=#{for_}]").val('').keyup()
         template = "<div class='location-button button btn btn-default SelectLocation' has_children='#{data.has_children}' lid='#{data.id}' name='#{data.location_type}'>#{data.title}</div>"
         context.append(template)
         children = context.children('.SelectLocation')
@@ -731,7 +667,7 @@ $('.create-location-action').livequery ->
         sp['parent_id'] = 0
         sp['name'] = 'address'
         click_select_location(sp)
-        changeSearchButtonStatus()
+        changeSearchButtonStatus(for_)
         geoCoding()
         return
 

@@ -20,6 +20,7 @@
 //= require vendor/jquery.livequery
 //= require vendor/bootstrap-notify
 //= require vendor/bootstrapValidator.min
+//= require vendor/framework/bootstrap.min
 //= require vendor/ru_RU
 //= require vendor/jquery.price_format.2.0.min
 
@@ -34,7 +35,7 @@
 //= require extend
 //= require main
 //= require time
-//= require validator
+//= require validation
 
 
 

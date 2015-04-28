@@ -1,5 +1,5 @@
 .well.well-sm
-  = form_tag root_path, method: :get, class: 'form form-inline withoutBootstrapValidator find-location-form', role:'form'
+  = form_tag root_path, method: :get, class: 'form form-inline withoutBootstrapValidator search-locations-form', role:'form'
     /What a hell with this css??
     .row.col-xs-12.control_show_action.hidden
       .form-group
@@ -80,9 +80,6 @@
               | местоположение
               '
               i.caret
-            /validation only
-            /input#first-advlids type='hidden' name='advertisement[location_ids][]'
-            = hidden_field_tag 'advertisement[location_ids][]', @locations.present? ? @locations.last.id : nil, id: 'first-advlids'
     .last-selected-location lid=""
     - if @hidden_location_sections.present?
       .row.col-xs-12.control_hide_action
