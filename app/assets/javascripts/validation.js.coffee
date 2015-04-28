@@ -30,12 +30,8 @@ FormValidation.Validator.location_ids = validate: (validator, $field, options) -
   true
 
 
-FormValidation.Validator.notemptylocation = validate: (validator, $field, options) ->
-  console.log('dsdfsdfsdfsdfsdfsfdsfddfsd')
-  false
-
-
-$('.search-locations-form').livequery ->
+#example - delete after refactoring for delete
+$('.example-form').livequery ->
   $(this).formValidation({
     locale: 'ru_RU'
     framework: 'bootstrap'
@@ -49,7 +45,7 @@ $('.search-locations-form').livequery ->
       'advertisement[location_ids][]':
         validators:
           location_ids:
-            message: 'bfdff'
+            message: 'dfdf'
 
   })
 
@@ -57,6 +53,7 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
   $(this).formValidation({
     locale: 'ru_RU'
     framework: 'bootstrap'
+    excluded: ':disabled'
     err: container: 'popover'
     icon:
       valid: 'fa fa-check',
@@ -139,13 +136,15 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
       'advertisement[location_ids][]':
         excluded: false
         validators:
-          location_ids: {
+          location_ids:
             message: 'Please fill out each field'
-          }
+
           notEmpty:
             message: 'Please fill out each field'
-
-
+      'location_validation':
+        validators:
+          location_ids:
+            message: 'sad'
 
 
   })
