@@ -439,8 +439,9 @@ class AdvertisementsController < ApplicationController
   def get_locations
     @location = Location.find(params[:parent_id]) if params[:parent_id].to_i != 0
     if params[:editable] == 'false'
+      # @locations = get_locations_yield
       @locations = Rails.cache.fetch("get_locations:#{params[:offer_types]}:#{params[:categories]}:#{params[:parent_id]}", expires_in: 15.minutes) do
-        get_locations_yield
+         get_locations_yield
       end
     else
       @locations = get_locations_yield
@@ -614,7 +615,7 @@ class AdvertisementsController < ApplicationController
 
     if @location.present?
       if @location.city?
-        locations = @location.children_locations(:non_admin_area)
+        locations = @location.children_locations(:not_street)
       else
         locations = @location.children_locations
       end
@@ -630,12 +631,30 @@ class AdvertisementsController < ApplicationController
     end
 
     locations = locations.map do |l|
-      { id: l.id, location_type: l.location_type, title: l.title, has_children: (l.has_children?)  }
+      { id: l.id, location_type: l.location_type, title: l.title, has_children: (l.has_children?), position: l.position  }
     end
 
     locations = locations.delete_if{|l| sections.find{|s| s.location_id == l[:id]}.blank?} unless sections.nil?
 
-    locations.group_by{|l| l[:location_type]}
+    locations = locations.group_by{|l| l[:location_type]}
+
+    locations['street'] ||= [] if @location.present? && @location.city?
+    locations['cottage'] ||= [] if @location.present? && (@location.city? || @location.district?)
+    locations['garden'] ||= [] if @location.present? && (@location.city? || @location.district?)
+    locations['complex'] ||= [] if @location.present? && (@location.city? || @location.district?)
+
+    locations = locations.sort_by{|key, _| %w(region city district street admin_area non_admin_area cottage garden complex address landmark).index(key)}
+    locations.each do |_, value|
+      value.sort! do |a, b|
+        if a[:position].to_i > 0 || b[:position].to_i > 0
+          b[:position] <=> a[:position]
+        else
+          a[:title] <=> b[:title]
+        end
+      end
+    end
+
+    return locations
   end
 
 

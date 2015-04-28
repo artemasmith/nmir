@@ -1,45 +1,41 @@
 - if @locations.present?
-  - @locations.each_value do |value|
-    legend
-      = t("activerecord.attributes.location.#{value.first[:location_type]}")
-    - if value.first[:location_type] == 'address'
-      .search-or-create-location-container-action.hidden
-        .top-buffer
-          .col-md-12
-            .form-group
-              label
-                i.fa.fa-search
-                '
-                | поиск
+  - @locations.each do |key, value|
+    - if value.present? || (params[:editable] == 'true' && can?(:manage, Location)) || key == 'street'
+      h4
+        = "укажите #{t("activerecord.attributes.location.#{key}")}"
+      - if %w(address street cottage garden complex non_admin_area).include?(key) && (can?(:manage, Location) || (key == 'street'))
+        .col-md-12
+          .form-group
+            label
+              i.fa.fa-search
               '
-              = text_field_tag 'location[title]', nil, class: 'search-or-create-location-action', placeholder: ' найти по названию', autocomplete: 'off'
-              - if can?(:manage, Location)
-                = hidden_field_tag 'location[location_type]', :address
-                = hidden_field_tag 'location[location_id]', @location.id
-                '
-                = button_tag 'Добавить новый адрес', class: 'hidden create-location-action'
-    .row.top-buffer
-      .col-md-12
-        .empty-search-container-action.hidden
-          | Ничего не найдено
-        .btn-group.search-container-action data-toggle="buttons"
-          - value.sort_by{ |l| l[:title] }.each do |location|
-            .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}" class="button btn btn-default SelectLocation"
-              = location[:title]
-- elsif @location.present? && @location.street? && can?(:manage, Location)
-  legend
-    = t("activerecord.attributes.location.street")
-  .row.top-buffer
-    .col-md-12
-      .empty-search-container-action.hidden
-        | Ничего не найдено
-      .btn-group.search-container-action data-toggle="buttons"
+              | поиск
+            '
+            = text_field_tag 'location[title]', nil, class: "search-or-create-location-action#{' autocomplete-search-location' if key == 'street'}", placeholder: ' найти по названию', autocomplete: 'off', parent_id: @location.id, for: key
+            - if params[:editable] == 'true' && can?(:manage, Location)
+              = hidden_field_tag 'location[location_type]', key, for: key
+              = hidden_field_tag 'location[location_id]', @location.id, for: key
+              '
+              = button_tag 'Добавить новый адрес', class: 'hidden create-location-action', for: key
+      .row class="#{'hidden' if key == 'street'}"
+        .col-md-12
+          div
+          .empty-search-container-action.hidden for=key
+            | Ничего не найдено
+          .btn-group.search-container-action for=key data-toggle="buttons"
+            - value.each do |location|
+              .location-button name="#{location[:location_type]}" has_children="#{location[:has_children]}" lid="#{location[:id]}" class="button btn btn-default SelectLocation"
+                - if location[:position].to_i > 0
+                  strong
+                    = location[:title]
+                - else
+                  = location[:title]
 - else
-  legend
+  h4
     | Раздел пуст
-  .row.top-buffer
-    .col-md-12
-      | Ничего не найдено
+  /.row.top-buffer
+  .col-md-12
+    | Ничего не найдено
 
 
 

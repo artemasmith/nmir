@@ -46,6 +46,7 @@ class Location < ActiveRecord::Base
 
 
   # remember! add values to the end of array
+
   enum location_type: [:region, #1
                        :district, #3,
                        :city, #4, #6
@@ -107,7 +108,7 @@ class Location < ActiveRecord::Base
 
   def children_locations(type = :all)
     case self.location_type.to_sym
-      when :region, :street, :address, :landmark
+      when :region, :street, :address, :landmark, :cottage, :garden, :complex
         self.sublocations
       when :district
         case type
@@ -132,13 +133,14 @@ class Location < ActiveRecord::Base
             self.sublocations.where(location_type: 4)
           when :street
             self.sublocations.where(location_type: 5)
-
           when :cottage
             self.sublocations.where(location_type: 8)
           when :garden
             self.sublocations.where(location_type: 9)
           when :complex
             self.sublocations.where(location_type: 10)
+          when :not_street
+            self.sublocations.where(location_type: [3, 4, 8, 9, 10])
 
           else
             raise 'Invalid type'

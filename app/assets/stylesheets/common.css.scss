@@ -12,11 +12,6 @@
   margin-right: 40px;
 }
 
-#reg-phones {
-  padding-right: 0px;
-  padding-left: 0px;
-}
-
 
 .adv_item{
   margin-top: 2px; background-color: ghostwhite; padding-top: 10px; padding-bottom: 10px;
@@ -97,8 +92,16 @@ h2 {
   margin-left: -15px;
 }
 
-.glyphicon[data-bv-icon-for="advertisement[user_attributes][role]"], .glyphicon[data-bv-icon-for="user[role]"]  {
-  left: 90px;
+
+
+.form-horizontal .has-feedback .form-control-feedback[data-fv-icon-for="advertisement[user_attributes][role]"],
+{
+  right: -35px;
+}
+
+.form-horizontal .has-feedback #reg-phones .form-control-feedback
+{
+  right: 50px;
 }
 
 

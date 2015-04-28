@@ -1,6 +1,6 @@
 .form-group.role-selector-validation
   label.control-label.col-sm-3 for="radios"
-  .col-sm-4.zero-left
+  .col-sm-4
     - (AdvEnums::USER_ROLES - (current_user.present? && current_user.admin? ? [] : [:admin])).each_with_index  do |role, index|
       /.col-sm-6.zero-left
       = f.label :role, class: 'radio-inline', for: "advertisement_user_attributes_role_#{role}" do

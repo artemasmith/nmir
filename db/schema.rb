@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150328160855) do
+ActiveRecord::Schema.define(version: 20150427210306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -241,6 +241,7 @@ ActiveRecord::Schema.define(version: 20150328160855) do
     t.integer "city_id"
     t.boolean "loaded_resource",   default: false, null: false
     t.integer "status_type",       default: 0
+    t.integer "position",          default: 0
   end
 
   add_index "locations", ["admin_area_id"], name: "index_locations_on_admin_area_id", using: :btree
