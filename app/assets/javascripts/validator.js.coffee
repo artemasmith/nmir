@@ -16,9 +16,6 @@ $('.find-location-form').livequery ->
       validating: 'glyphicon glyphicon-refresh'
     #VERY IMPORTANT!!
     excluded: ':disabled'
-    submitHandler: ->
-      $("button[type='submit']").removeAttr('disabled');
-      return false;
     fields:
       'advertisement[location_ids][]':
         validators:
@@ -27,14 +24,11 @@ $('.find-location-form').livequery ->
           remote:
             message: 'Поиск только по области невозможен'
             url: Routes.check_if_specific_api_validation_index_path()
+            data:
+              ids: $('[name="advertisement[location_ids][]"]').map(->
+                return this.value).get().join(',')
   })
-  .on('err.field.fv', (e, data) ->
-    console.log("data " + data)
-    data.fv.disableSubmitButtons(false)
-  )
-  .on('success.field.fv', (e, data) ->
-    data.fv.disableSubmitButtons(false)
-  )
+
 
 
 
@@ -104,6 +98,7 @@ $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
       remote:
         message: ("Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон.")
         url: Routes.api_validation_index_path()
+
   })
 
 ##

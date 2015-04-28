@@ -264,6 +264,10 @@ sort_button_list = (context)->
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
   loc = $(".last-selected-location").attr('lid')
   $(".last-selected-location").attr('lid',loc + ' ' + sp['lid'])
+  #VALIDATION CODE!!! IMPORTANT TODO: Can I place this code in validator file on click event?
+  $('#first-advlids').val(sp['lid'])
+  $(".find-location-form").data('bootstrapValidator').resetForm()
+
 
 @mark_last_selection = (lid) ->
   $('.loc-btn').removeClass('active')
