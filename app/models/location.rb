@@ -141,7 +141,6 @@ class Location < ActiveRecord::Base
             self.sublocations.where(location_type: 10)
           when :not_street
             self.sublocations.where(location_type: [3, 4, 8, 9, 10])
-
           else
             raise 'Invalid type'
         end

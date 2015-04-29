@@ -465,154 +465,6 @@ $('.abuse_popover_action').livequery ->
     return
 
   return
-$('form.easyBootstrapValidator:visible').livequery ->
-  $(this).formValidation
-    locale: 'ru_RU'
-    framework: 'bootstrap'
-    err: container: 'tooltip'
-    icon:
-      valid: 'glyphicon glyphicon-ok',
-      invalid: 'glyphicon glyphicon-remove',
-      validating: 'glyphicon glyphicon-refresh'
-#    row: selector: 'td'
-#    button: selector: '#submitButton'
-#  $(this).bootstrapValidator({
-#    feedbackIcons:
-#      valid: 'fa fa-check',
-#      invalid: 'fa fa-times',
-#      validating: 'fa fa-refresh'
-#  })
-
-
-FormValidation.Validator.location_ids = validate: (validator, $field, options) ->
-  regions = $("div:not(.SelectLocation)[lid][name='region']").length
-  cities = $("div:not(.SelectLocation)[lid][name='city']").length
-  non_admin_areas = $("div:not(.SelectLocation)[lid][name='non_admin_area']").length
-  console.log 'FIRE!!!'
-  if cities < 1
-    return {
-      valid: false
-      message: 'Укажите город'
-    }
-  true
-
-$('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
-  $(this).formValidation({
-    locale: 'ru_RU'
-    framework: 'bootstrap'
-    err: container: 'popover'
-    icon:
-      valid: 'fa fa-check',
-      invalid: 'fa fa-times',
-      validating: 'fa fa-refresh'
-    fields:
-      'advertisement[user_attributes][password]':
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-      'advertisement[user_attributes][password_confirmation]':
-        trigger: 'blur'
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-      'advertisement[user_attributes][password_confirmation]':
-        message: "Пароли не совпадают"
-        validators:
-          callback:
-            trigger: 'blur'
-            callback:  (value, validator, $field) ->
-              value is $('[name="advertisement[user_attributes][password]"]').val()
-
-      'user[password]':
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-      'user[password_confirmation]':
-        trigger: 'blur'
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-      'user[password_confirmation]':
-        message: "Пароли не совпадают"
-        validators:
-          callback:
-            trigger: 'blur'
-            callback:  (value, validator, $field) ->
-              value is $('[name="user[password]"]').val()
-
-      'user[email]':
-        validators:
-          remote:
-            type: 'POST'
-            delay: 500
-            url: Routes.api_validation_index_path()
-            message: "Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>."
-
-
-      'advertisement[user_attributes][email]':
-        validators:
-          remote:
-            type: 'POST'
-            delay: 500
-            url: Routes.api_validation_index_path()
-            message: "Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>."
-
-
-      'advertisement[offer_type]':
-        message: "Выберите вид сделки"
-        icon: false
-        validators:
-          callback:
-            trigger: 'change'
-            callback:  ->
-              $('[name="advertisement[offer_type]"]').is(':checked')
-
-      'advertisement[category]':
-        message: "Выберите тип недвижимости"
-        icon: false
-        validators:
-          callback:
-            trigger: 'change'
-            callback:  ->
-              $('[name="advertisement[category]"]').is(':checked')
-      'advertisement[location_ids][]':
-        excluded: false
-        validators:
-          location_ids: {
-            message: 'Please fill out each field'
-          }
-          notEmpty:
-            message: 'Please fill out each field'
-
-
-
-
-  })
-
-$('#new_advertisement').formValidation('revalidateField', 'advertisement[location_ids][]');
-$('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
-  $this = $(this)
-  console.log $this.closest('form')
-  $this.closest('form').formValidation('addField', $this, {
-    validators:
-      remote:
-        type: 'POST'
-        delay: 500
-        trigger: 'keypress'
-        message: "Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон."
-        url: Routes.api_validation_index_path()
-      phone:
-        country: 'RU'
-        message: "Такой телефон не допустим"
-      notEmpty:
-        message: "Необходимо ввести телефон"
-  })
-
-
 
 $("html").on "mouseup", (e) ->
   unless $(e.target).closest(".popover").length
@@ -625,10 +477,7 @@ $("html").on "mouseup", (e) ->
 #  $(this).addClass "active" if $("input[value=#{$(this).attr('lid')}]").length > 0
 #  return
 
-$('form .attributes input, form .attributes textarea').livequery ->
-  $this = $(this)
-  unless $this.attr('data-bv-field')
-    $(this).closest('form').bootstrapValidator('addField', $(this))
+
 
 cancelEvent = (event) ->
   event = (event or window.event)
@@ -748,18 +597,12 @@ $('.autocomplete-search-location').livequery ->
   $this.focus()
 
 
-$('input[type="text"][valid-type=integer]').livequery ->
-  $(this).forceNumericOnly()
-
-
-$('input[type="text"][valid-type=float]').livequery ->
-  $(this).forceFloatOnly()
-
 changeSearchButtonStatus = (for_)->
   emptyList = ($(".search-container-action[for=#{for_}] .SelectLocation:visible").length > 0)
   emptyQuery = $.trim($(".search-or-create-location-action[for=#{for_}]").val()) is ""
   emptyAutoComplite = ($(".search-or-create-location-action[for=#{for_}]").hasClass('autocomplete-search-location') and ($(".search-or-create-location-action[for=#{for_}]").parent().find('ul.ui-autocomplete li.ui-menu-item:visible').length > 0))
   notFullQueryAutoComplite = ($(".search-or-create-location-action[for=#{for_}]").hasClass('autocomplete-search-location') and $.trim($(".search-or-create-location-action[for=#{for_}]").val()).length <=2 )
+
 
   if emptyList or emptyQuery or emptyAutoComplite or notFullQueryAutoComplite
     $(".create-location-action[for=#{for_}]").addClass('hidden').addClass('disabled')
