@@ -9,14 +9,14 @@ h1
   = form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form form-horizontal easyBootstrapValidator'}) do |f|
     fieldset
       .form-group
-        label.control-label.col-sm-4
+        label.control-label.col-sm-3
           i.fa.fa-envelope-o.fa-lg
           '
           | почта
         .col-sm-4
           = f.email_field :email, autofocus: true, class: 'form-control', required: true, placeholder: 'mail@example.com'
       .form-group
-        label.control-label.col-sm-4
+        label.control-label.col-sm-3
           i.fa.fa-unlock.fa-lg
           '
           | пароль
@@ -24,24 +24,24 @@ h1
           = f.password_field :password, autocomplete: 'off', class: 'form-control', placeholder: "******", required: true
       - if devise_mapping.rememberable?
         .form-group
-          label.control-label.col-sm-4
+          label.control-label.col-sm-3
           .col-sm-4
             label.checkbox for="user_remember_me"
               = f.check_box :remember_me, checked: true
               | запомнить меня
       .form-group
-        label.control-label.col-sm-4
+        label.control-label.col-sm-3
         .col-sm-2
           = f.button class: 'btn btn-primary btn-lg' do
-            i.fa.fa-sign-in
+            i.fa.fa-sign-in.fa-lg
             '
             | Войти
           br
           br
           a.small href="#{new_user_password_path}"
             i.fa.fa-refresh
-            '
-            | восстановить пароль
+              '
+              | восстановить пароль
 
 
 
