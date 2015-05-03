@@ -26,7 +26,7 @@ class Phone < ActiveRecord::Base
 
   def phone_number
     if self.original.to_s.scan(/\d/).join('').size < 6
-      self.errors.add(:phone_number, '^В номере не хватает цифр')
+      self.errors.add(:phone_number, '^в номере не хватает цифр')
     end
   end
 

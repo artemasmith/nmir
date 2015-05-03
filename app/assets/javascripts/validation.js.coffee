@@ -4,9 +4,17 @@ $('form.easyBootstrapValidator:visible').livequery ->
     framework: 'bootstrap'
     err: container: 'tooltip'
     icon:
-      valid: 'glyphicon glyphicon-ok',
-      invalid: 'glyphicon glyphicon-remove',
-      validating: 'glyphicon glyphicon-refresh'
+      valid: 'fa fa-check',
+      invalid: 'fa fa-times',
+      validating: 'fa fa-refresh'
+    fields:
+      'user[password_confirmation]':
+        message: "Пароли не совпадают"
+        validators:
+          callback:
+            trigger: 'blur'
+            callback:  (value, validator, $field) ->
+              value is $('[name="user[password]"]').val()
 #    row: selector: 'td'
 #    button: selector: '#submitButton'
 #  $(this).bootstrapValidator({
