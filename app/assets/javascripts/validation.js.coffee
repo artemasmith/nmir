@@ -1,5 +1,6 @@
 $('form.easyBootstrapValidator:visible').livequery ->
-  $(this).formValidation
+  $this = $(this)
+  $this.formValidation
     locale: 'ru_RU'
     framework: 'bootstrap'
     err: container: 'tooltip'
@@ -15,14 +16,7 @@ $('form.easyBootstrapValidator:visible').livequery ->
             trigger: 'blur'
             callback:  (value, validator, $field) ->
               value is $('[name="user[password]"]').val()
-#    row: selector: 'td'
-#    button: selector: '#submitButton'
-#  $(this).bootstrapValidator({
-#    feedbackIcons:
-#      valid: 'fa fa-check',
-#      invalid: 'fa fa-times',
-#      validating: 'fa fa-refresh'
-#  })
+
 
 
 FormValidation.Validator.location_ids = validate: (validator, $field, options) ->
@@ -38,27 +32,10 @@ FormValidation.Validator.location_ids = validate: (validator, $field, options) -
   true
 
 
-#example - delete after refactoring for delete
-$('.example-form').livequery ->
-  $(this).formValidation({
-    locale: 'ru_RU'
-    framework: 'bootstrap'
-    #err: container: 'popover'
-    excluded: ':disabled'
-    icon:
-      valid: 'fa fa-check',
-      invalid: 'fa fa-times',
-      validating: 'fa fa-refresh'
-    fields:
-      'advertisement[location_ids][]':
-        validators:
-          location_ids:
-            message: 'dfdf'
-
-  })
 
 $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
-  $(this).formValidation({
+  $this = $(this)
+  $this.formValidation({
     locale: 'ru_RU'
     framework: 'bootstrap'
     excluded: ':disabled'
@@ -141,14 +118,6 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
             trigger: 'change'
             callback:  ->
               $('[name="advertisement[category]"]').is(':checked')
-      'advertisement[location_ids][]':
-        excluded: false
-        validators:
-          location_ids:
-            message: 'Please fill out each field'
-
-          notEmpty:
-            message: 'Please fill out each field'
       'location_validation':
         validators:
           location_ids:
@@ -156,11 +125,17 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
 
 
   })
+#  .on 'focusout', '[name="user[email]"], [name="advertisement[user_attributes][email]"], [name="user[name]"], [name="advertisement[user_attributes][name]"], [name="advertisement[price_from]"]', ->
+#    unless $this.find('[type="submit"]:visible').is(':focus')
+#      $this.formValidation('validateField', $(this).attr('name'))
+#    return
 
-$('#new_advertisement').formValidation('revalidateField', 'advertisement[location_ids][]');
+
+
+
+#$('#new_advertisement').formValidation('revalidateField', 'advertisement[location_ids][]');
 $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
   $this = $(this)
-  console.log $this.closest('form')
   $this.closest('form').formValidation('addField', $this, {
     validators:
       remote:
@@ -179,7 +154,9 @@ $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
 $('form .attributes input, form .attributes textarea').livequery ->
   $this = $(this)
   unless $this.attr('data-bv-field')
-    $(this).closest('form').bootstrapValidator('addField', $(this))
+    form = $(this).closest('form')
+    form.bootstrapValidator('addField', $(this))
+
 
 
 $('input[type="text"][valid-type=integer]').livequery ->

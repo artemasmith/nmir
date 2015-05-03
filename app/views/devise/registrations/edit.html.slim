@@ -1,16 +1,18 @@
 h2
   = "Настройки учетной записи"
 .well
-  = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), method: :patch, html: { class: 'form-horizontal easyBootstrapValidator'}) do |f|
+  = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), method: :patch, html: { class: 'easyBootstrapValidator'}) do |f|
     = devise_error_messages!
-    fieldset
-      = render 'devise/registrations/edit_fields', f: f, check_phone: true
+    /.user-params
+    .form.form-horizontal role="form"
+      fieldset
+        = render 'devise/registrations/edit_fields', f: f, check_phone: true
 
       .form-group
         .col-sm-4.col-sm-offset-4
           .form-group
             .input-group
-              = f.submit 'Сохранить', class: 'btn btn-primary'
+              = f.submit 'Сохранить', class: 'btn btn-primary btn-lg'
 .phone-target-field value="user[phones_attributes]"
 
 /.well.clearfix

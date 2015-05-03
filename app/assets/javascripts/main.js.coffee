@@ -68,7 +68,7 @@ $().ready ->
 
 @position_map = (with_admin_area)->
   $.grep($("div:not(.SelectLocation)[lid]").map(->
-      if (!with_admin_area && ($(this).attr('name') isnt 'non_admin_area') and ($(this).attr('name') isnt 'admin_area')) or with_admin_area
+      if (!with_admin_area && ($(this).attr('name') isnt 'non_admin_area') and ($(this).attr('name') isnt 'admin_area') and ($(this).attr('name') isnt 'cottage') and ($(this).attr('name') isnt 'garden') and ($(this).attr('name') isnt 'complex')) or with_admin_area
         $.trim $(this).text()
       else
         null
