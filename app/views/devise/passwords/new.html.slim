@@ -7,14 +7,14 @@ h1
     = devise_error_messages!
     fieldset
       .form-group
-        label.control-label.col-sm-4
+        label.control-label.col-sm-3
           i.fa.fa-envelope-o.fa-lg
           '
           | почта
         .col-sm-4
           = f.text_field :email, class: 'form-control', placeholder: 'mail@example.com', required: true
       .form-group
-        label.control-label.col-sm-4
+        label.control-label.col-sm-3
         .col-sm-4
           = f.button class: 'btn btn-primary btn-lg' do
             i.fa.fa-send

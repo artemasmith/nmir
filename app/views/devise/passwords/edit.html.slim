@@ -1,0 +1,27 @@
+h2
+  |Смена Вашего пароля
+
+= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+  = devise_error_messages!
+  = f.hidden_field :reset_password_token
+  fieldset
+    .form.form-horizontal
+      .form-group
+        /.col-sm-3
+        = f.label :password, "Новый пароь", class: 'control-label col-sm-3'
+        .col-sm-4
+          = f.password_field :password, autofocus: true, autocomplete: "off", class: 'form-control'
+      .form-group
+        /.col-sm-3
+        = f.label :password_confirmation, "Еще раз новый пароль", class: 'control-label col-sm-3'
+        .col-sm-4
+          = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+      .form-group
+        .col-sm-3
+        .col-sm-4
+          = f.submit "Изменить", class: 'btn btn-lg btn-primary'
+      .form-group
+        .col-sm-3
+          br
+        .col-sm-4
+          = render "devise/shared/links"
