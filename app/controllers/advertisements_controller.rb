@@ -338,8 +338,8 @@ class AdvertisementsController < ApplicationController
     @today_counter, @all_days_counter = AdvertisementCounter.get_and_increase_count_for_adv(@adv.id)
     @grouped_allowed_attributes =  @adv.grouped_allowed_attributes
 
-    @sorted_locations = @adv.locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}.
-        delete_if{ |address| Location.location_types[address.location_type] >= 5 }
+    @sorted_locations = @adv.locations.sort_by{|location| Location.locations_list.index(location.location_type.to_s)}
+                            .delete_if{ |address| Location.location_types[address.location_type] >= 5 }
 
     with = {}
     conditions = {}
@@ -372,8 +372,12 @@ class AdvertisementsController < ApplicationController
         @adv.locations.find_all{|n| n.location_type.to_sym == :city},
         @adv.locations.find_all{|n| n.location_type.to_sym== :non_admin_area},
         @adv.locations.find_all{|n| n.location_type.to_sym == :street},
-        @adv.locations.find_all{|n| n.location_type.to_sym == :address}
+        @adv.locations.find_all{|n| n.location_type.to_sym == :address},
+        @adv.locations.find_all{|n| n.location_type.to_sym == :cottage},
+        @adv.locations.find_all{|n| n.location_type.to_sym == :complex},
+        @adv.locations.find_all{|n| n.location_type.to_sym == :garden}
     ].delete_if{|e| e.empty?}.flatten
+
 
     location_ids = list.map{|l| l.id}
     with[:location_ids] = location_ids
@@ -615,7 +619,7 @@ class AdvertisementsController < ApplicationController
 
     if @location.present?
       if @location.city?
-        locations = @location.children_locations(:not_street)
+        locations = @location.children_locations(:not_street_not_garden)
       else
         locations = @location.children_locations
       end

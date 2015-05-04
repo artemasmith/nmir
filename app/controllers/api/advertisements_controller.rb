@@ -1,6 +1,6 @@
 class Api::AdvertisementsController < ApplicationController
-  def streets_houses
-    @children = Location.suggest_location(params[:parent_id], params[:term])
+  def autocomlite
+    @children = Location.suggest_location(params[:parent_id], params[:term], params[:type])
     render json: @children
   end
 end

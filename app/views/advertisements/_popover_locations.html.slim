@@ -11,7 +11,7 @@
               '
               | поиск
             '
-            = text_field_tag 'location[title]', nil, class: "search-or-create-location-action#{' autocomplete-search-location' if key == 'street'}", placeholder: ' найти по названию', autocomplete: 'off', parent_id: @location.id, for: key
+            = text_field_tag 'location[title]', nil, class: "search-or-create-location-action#{' autocomplete-search-location' if %w(street cottage garden complex).include?(key)}", placeholder: ' найти по названию', autocomplete: 'off', parent_id: @location.id, for: key
             - if params[:editable] == 'true' && can?(:manage, Location)
               = hidden_field_tag 'location[location_type]', key, for: key
               = hidden_field_tag 'location[location_id]', @location.id, for: key

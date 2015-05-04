@@ -40,7 +40,7 @@ Rails.application.routes.draw do
     resources :locations
     resources :advertisements, :path => '/entity' do
       collection do
-        get 'streets_houses'
+        get 'autocomlite'
       end
     end
   end

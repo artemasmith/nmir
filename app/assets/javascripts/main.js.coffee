@@ -169,7 +169,7 @@ $().ready ->
 
 @getChildren = ->
   $this = $(this)
-  params = {'parent_id': $this.attr('lid')}
+  params = {'parent_id': $this.attr('lid'), 'editable': true}
   if $('.click_additional_search_params_action').length > 0
     offer_types = $.grep($('[name="advertisement[offer_type][]"]:checked').map( -> $(this).val() ).get(), (n) -> n).join(',')
     categories = $.grep($('[name="advertisement[category][]"]:checked').map( -> $(this).val() ).get(), (n) -> n).join(',')
@@ -297,6 +297,8 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
+    if sp['editable'] is 'true'
+      sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
   if ($.trim($this.text()) is 'обл Ростовская')
     $this.click()
     button = $this.closest('.location-group').find('.GetChildren')
@@ -307,8 +309,14 @@ $('.SelectLocation').livequery ->
 
 $('.DelChildren').livequery ->
   $(this).click ->
-    group = $(this).closest('.location-group').parent()
+    locationGroup = $(this).closest('.location-group')
+    group = locationGroup.parent()
+    editable = locationGroup.attr('editable')
+    form = group.closest('form')
     group.remove()
+    console.log form, editable
+    if editable
+      form.formValidation('revalidateField', 'location_validation')
 
 $('.location-group[state]').livequery ->
   attr = $(this).attr('state')
@@ -396,7 +404,7 @@ $('.ShowAdvPhone').livequery ->
     placement: 'top'
 
     content: ->
-      html = "<p class='lead'>номер телефона "+ $this.data('phone') + "</p>"
+      html = "<noindex><p class='lead'>номер телефона #{$this.data('phone')}</p></noindex>"
       html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
       html
   $this.click (event)->
@@ -562,16 +570,18 @@ $('.autocomplete-search-location').livequery ->
   sp['parent_id'] = $this.attr('parent_id')
   sp['multi']  = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('multi')
   sp['editable'] = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('editable')
+  sp['type'] = $this.attr('for')
   parent = $this.parent()
   $this.autocomplete({
     appendTo: parent
     source: (request, response) ->
       $.ajax(
-        url: '/api/entity/streets_houses'
+        url: '/api/entity/autocomlite'
         dataType: 'json'
         data:
           term: request.term
           parent_id: sp['parent_id']
+          type: sp['type']
         success: (data) ->
           response(data)
           changeSearchButtonStatus(for_)

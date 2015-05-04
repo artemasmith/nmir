@@ -133,7 +133,6 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
 
 
 
-#$('#new_advertisement').formValidation('revalidateField', 'advertisement[location_ids][]');
 $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
   $this = $(this)
   $this.closest('form').formValidation('addField', $this, {

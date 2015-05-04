@@ -47,19 +47,21 @@ class Location < ActiveRecord::Base
 
   # remember! add values to the end of array
 
-  enum location_type: [:region, #1
-                       :district, #3,
-                       :city, #4, #6
-                       :admin_area, # 5
-                       :non_admin_area,
-                       :street, #7
-                       :address,
-                       :landmark,
-                       :cottage,
-                       :garden,
-                       :complex
+  LOCATION_TYPES = [:region, #1
+                    :district, #3,
+                    :city, #4, #6
+                    :admin_area, # 5
+                    :non_admin_area,
+                    :street, #7
+                    :address,
+                    :landmark,
+                    :cottage,
+                    :garden,
+                    :complex
 
-       ]
+  ]
+
+  enum location_type: LOCATION_TYPES
 
   enum status_type: [:unchecked,
                        :checked,
@@ -86,8 +88,8 @@ class Location < ActiveRecord::Base
     self.children_count > 0
   end
 
-  def self.suggest_location parent_id, term
-    children = where(location_id: parent_id.to_i).street.where('LOWER(title) like ?', "%#{term.to_s.mb_chars.downcase}%").limit(5)
+  def self.suggest_location parent_id, term, type
+    children = where(location_id: parent_id.to_i).where(location_type: LOCATION_TYPES.index(type.to_sym)).where('LOWER(title) like ?', "%#{term.to_s.mb_chars.downcase}%").limit(5)
     children.map{ |l| { label: l.title, value: l.id, has_children: l.has_children? } }
   end
 
@@ -115,11 +117,11 @@ class Location < ActiveRecord::Base
           when :all
             self.sublocations
           when :cottage
-            self.sublocations.where(location_type: 8)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:cottage))
           when :garden
-            self.sublocations.where(location_type: 9)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:garden))
           when :complex
-            self.sublocations.where(location_type: 10)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:complex))
           else
             raise 'Invalid type'
         end
@@ -128,26 +130,26 @@ class Location < ActiveRecord::Base
           when :all
             self.sublocations
           when :admin_area
-            self.sublocations.where(location_type: 3)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:admin_area))
           when :non_admin_area
-            self.sublocations.where(location_type: 4)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:non_admin_area))
           when :street
-            self.sublocations.where(location_type: 5)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:street))
           when :cottage
-            self.sublocations.where(location_type: 8)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:cottage))
           when :garden
-            self.sublocations.where(location_type: 9)
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:garden))
           when :complex
-            self.sublocations.where(location_type: 10)
-          when :not_street
-            self.sublocations.where(location_type: [3, 4, 8, 9, 10])
+            self.sublocations.where(location_type: LOCATION_TYPES.index(:complex))
+          when :not_street_not_garden
+            self.sublocations.where(location_type: [LOCATION_TYPES.index(:admin_area), LOCATION_TYPES.index(:non_admin_area)])
           else
             raise 'Invalid type'
         end
       when :admin_area
         self.sublocations_for_city.where(admin_area_id: self.id)
       when :non_admin_area
-        self.sublocations_for_city.where(location_type: 5)
+        self.sublocations_for_city.where(location_type: LOCATION_TYPES.index(:non_admin_area))
 
 
 

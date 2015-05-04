@@ -114,8 +114,8 @@ module AdvertisementsHelper
 
   def render_icon icon
     icons = {
-        agent: '<i class="fa fa-check"></i>'.html_safe,
-        owner: '<i class="fa fa-cube"></i>'.html_safe
+        agent: '<i class="fa fa-cube"></i>'.html_safe,
+        owner: '<i class="fa fa-check"></i>'.html_safe
     }
     icons[icon]
   end
