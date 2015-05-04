@@ -10,8 +10,10 @@ class AbusesController < ApplicationController
 
   def update
     abuse = Abuse.find(params[:id].to_i)
-    abuse.status = params[:status].to_i
+    abuse.status = params[:abuse][:status].to_i
+    abuse.moderator_comment = params[:abuse][:moderator_comment]
     msg = {}
+
     if abuse.present? && abuse.valid? && can?(:update, Abuse)
       abuse.save
       msg[:notice] = 'updated abuse'

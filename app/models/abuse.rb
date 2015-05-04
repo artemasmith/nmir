@@ -30,12 +30,12 @@ class Abuse < ActiveRecord::Base
     field :created_at
     field :status, :enum do
       enum do
-        STATUSES.each_with_index.map { |i,j| [i,j]}
+        STATUSES.each_with_index.map { |i,j| [i,j.to_i]}
       end
     end
     field :abuse_type, :enum do
       enum do
-        ABUSE_TYPES.each_with_index.map { |i,j| [i,j]}
+        ABUSE_TYPES.each_with_index.map { |i,j| [i,j.to_i]}
       end
     end
     field :moderator_comment, :string
