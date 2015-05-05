@@ -31,10 +31,11 @@ RailsAdmin.config do |config|
       only Advertisement
     end
 
-    collection :abuses do
+    root :abuses do
       only Abuse
       controller do
         proc do
+          #@objects = params[:old].blank? ? Abuse.where(status: 0) : Abuse.where('status > 0')
           @objects = Abuse.where(status: 0) || []
         end
       end

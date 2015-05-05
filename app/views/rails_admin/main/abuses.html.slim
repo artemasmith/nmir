@@ -1,5 +1,24 @@
 h2= t 'activerecord.attributes.abuse.class'
 
+.well.well-sm
+  ul.nav.nav-pills
+    li.btn.btn-default
+      =link_to '/management/abuses'
+        i.fa.fa-list
+          '
+          | Активные
+          span.badge
+            = Abuse.where(status: 0).count
+    li.btn.btn-default
+      =link_to '/management/abuses?old=true'
+        i.fa.fa-pause
+          '
+          | Неактивные
+          span.badge
+            = Abuse.where('status > 0').count
+
+div
+  br
 table.table.table-bordered
   tr
     th.col-md-1= t 'activerecord.attributes.abuse.created_at'
@@ -10,6 +29,7 @@ table.table.table-bordered
     th.col-md-1= t 'activerecord.attributes.abuse.user'
     th.col-md-3= t 'admin.table_headers.advertisements'
     td
+  - @objects= Abuse.where('status > 0') if params[:old].present?
   - @objects.each do |abuse|
     =form_for abuse, url: "/abuses/#{abuse.id}", method: :patch do |f|
       =f.hidden_field :status, id: 'abuse-status'
