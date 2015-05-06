@@ -3,7 +3,7 @@ h2= t 'activerecord.attributes.abuse.class'
 .well.well-sm
   ul.nav.nav-pills
     li
-      =link_to '/management/abuses'
+      = link_to '/management/abuses'
         i.fa.fa-list
           '
           | Активные
@@ -11,7 +11,7 @@ h2= t 'activerecord.attributes.abuse.class'
           span.badge
             = Abuse.where(status: 0).count
     li
-      =link_to '/management/abuses?old=true'
+      = link_to '/management/abuses?old=true'
         i.fa.fa-pause
           '
           | Неактивные
@@ -19,8 +19,6 @@ h2= t 'activerecord.attributes.abuse.class'
           span.badge
             = Abuse.where('status > 0').count
 
-div
-  br
 table.table.table-bordered
   tr
     th.col-md-1= t 'activerecord.attributes.abuse.created_at'

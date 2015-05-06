@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :registrations => :registrations }
 
   namespace :api do
+    resources :validation
     resources :locations
     resources :advertisements, :path => '/entity' do
       collection do
