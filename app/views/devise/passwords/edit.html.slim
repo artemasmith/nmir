@@ -19,7 +19,10 @@ h2
       .form-group
         .col-sm-3
         .col-sm-4
-          = f.submit "Изменить", class: 'btn btn-lg btn-primary'
+          = f.button class: 'btn btn-lg btn-primary' do
+            i.fa.fa-refresh
+            '
+            |Изменить
       .form-group
         .col-sm-3
           br
