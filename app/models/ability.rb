@@ -21,6 +21,7 @@ class Ability
       can :create, Advertisement
     else
       can :read, :all
+      can :create, Abuse
       can :get_location, Advertisement
     end
     # Define abilities for the passed in user here. For example:
