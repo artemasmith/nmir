@@ -642,6 +642,7 @@ class AdvertisementsController < ApplicationController
 
     locations = locations.group_by{|l| l[:location_type]}
 
+    locations['non_admin_area'] ||= [] if @location.present? && @location.city?
     locations['street'] ||= [] if @location.present? && @location.city?
     locations['cottage'] ||= [] if @location.present? && (@location.city? || @location.district?)
     locations['garden'] ||= [] if @location.present? && (@location.city? || @location.district?)

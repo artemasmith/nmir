@@ -25,7 +25,7 @@
         a href="#{advertisement_path(adv)}-#{adv.url}"
           .col-lg-2.col-md-2.col-sm-3.col-xs-12
             - if adv.preview_url.present?
-              img src=adv.preview_url alt=adv.preview_alt style="height: 90px;"
+              img src=adv.preview_url alt=adv.preview_alt style="overflow: hidden;height: 90px;"
             -else
               img src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
 

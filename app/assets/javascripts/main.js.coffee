@@ -66,19 +66,18 @@ $().ready ->
   map.geoObjects.add placemark
   return placemark
 
-@position_map = (with_admin_area)->
+@position_map = ->
   $.grep($("div:not(.SelectLocation)[lid]").map(->
-      if (!with_admin_area && ($(this).attr('name') isnt 'non_admin_area') and ($(this).attr('name') isnt 'admin_area') and ($(this).attr('name') isnt 'cottage') and ($(this).attr('name') isnt 'garden') and ($(this).attr('name') isnt 'complex')) or with_admin_area
-        $.trim $(this).text()
-      else
-        null
+      if ($(this).attr('name') isnt 'non_admin_area') and ($(this).attr('name') isnt 'admin_area') and ($(this).attr('name') isnt 'cottage') and ($(this).attr('name') isnt 'garden') and ($(this).attr('name') isnt 'complex')
+        return $.trim $(this).text()
+      return null
     ), (n) ->
     (n isnt "Выбрать") and (n isnt "Место") and (n isnt "нажмите чтобы выбрать") and n
   )
 
 @geoCoding = ->
   return unless $('#map').data('editable')
-  position = @position_map(false).join " "
+  position = @position_map().join " "
   if position and window.map and window.ymaps
     ymaps.geocode(position).then (res) ->
       first = res.geoObjects.get(0)
@@ -570,7 +569,7 @@ $('.autocomplete-search-location').livequery ->
   sp['parent_id'] = $this.attr('parent_id')
   sp['multi']  = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('multi')
   sp['editable'] = $("input[value=#{sp['parent_id']}]").closest('.location-group').attr('editable')
-  sp['type'] = $this.attr('for')
+  sp['type'] = for_
   parent = $this.parent()
   $this.autocomplete({
     appendTo: parent
@@ -589,19 +588,21 @@ $('.autocomplete-search-location').livequery ->
       )
     select: (event, ui) ->
       cancelEvent(event)
-      sp['name'] = 'street'
+      sp['name'] = for_
       sp['lid'] = ui.item.value
       sp['group'] = $("input[value=#{sp['parent_id']}]").closest('.location-group')
       sp['value'] = ui.item.label
       if sp['editable'] is 'true'
         sp['has_children'] = 'true'
+        $this.closest('form').formValidation('revalidateField', 'location_validation')
       else
         sp['has_children'] = "#{ui.item.has_children}"
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
-      #console.log('added lid' + sp['lid'])
       $this.val('')
+      if sp['editable'] is 'true'
+        $this.closest('form').formValidation('revalidateField', 'location_validation')
       return false
     })
   $this.focus()

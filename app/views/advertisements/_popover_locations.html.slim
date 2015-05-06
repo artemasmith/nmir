@@ -16,7 +16,8 @@
               = hidden_field_tag 'location[location_type]', key, for: key
               = hidden_field_tag 'location[location_id]', @location.id, for: key
               '
-              = button_tag 'Добавить новый адрес', class: 'hidden create-location-action', for: key
+              a.hidden.create-location-action href='#' for=key
+                | Добавить новый адрес
       .row class="#{'hidden' if key == 'street'}"
         .col-md-12
           div

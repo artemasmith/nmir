@@ -23,11 +23,24 @@ FormValidation.Validator.location_ids = validate: (validator, $field, options) -
   regions = $("div:not(.SelectLocation)[lid][name='region']").length
   cities = $("div:not(.SelectLocation)[lid][name='city']").length
   non_admin_areas = $("div:not(.SelectLocation)[lid][name='non_admin_area']").length
-  console.log 'FIRE!!!'
+  rostov_el = $("div:not(.SelectLocation)[lid][name='city']:contains(г Ростов-на-Дону)")
+  rostov = rostov_el.length
+  rostovNonAdminArea = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='non_admin_area']").length
+  rostovStreet = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='street']").length
   if cities < 1
     return {
     valid: false
     message: 'Укажите город'
+    }
+  if rostov is 1 and rostovNonAdminArea is 0
+    return {
+    valid: false
+    message: 'Укажите неадминистративный район в г Ростов-на-Дону'
+    }
+  if rostov is 1 and rostovStreet is 0
+    return {
+    valid: false
+    message: 'Укажите улицу в г Ростов-на-Дону'
     }
   true
 
@@ -103,7 +116,7 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
 
       'advertisement[offer_type]':
         message: "Выберите вид сделки"
-        icon: false
+#        icon: false
         validators:
           callback:
             trigger: 'change'
@@ -112,7 +125,7 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
 
       'advertisement[category]':
         message: "Выберите тип недвижимости"
-        icon: false
+#        icon: false
         validators:
           callback:
             trigger: 'change'

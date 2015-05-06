@@ -13,7 +13,7 @@
           | multilisting.su
     .collapse.navbar-collapse
       ul.nav.navbar-nav
-        - if user_signed_in?
+        - if current_user.present?
           li class="#{'active' if current_page?(controller: '/cabinet')}"
             = link_to cabinet_index_path('advertisement[expired]' => 0)
               i.fa.fa-list.fa-lg

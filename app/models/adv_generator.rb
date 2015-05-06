@@ -32,13 +32,17 @@ module AdvGenerator
       end
 
       locations = sorted_child_location(child_location, self.locations).delete_if do |l|
-        not [:district, :city, :non_admin_area, :street, :address].include?(l.location_type.to_sym)
+        not [:district, :city, :non_admin_area, :street, :address, :cottage, :garden, :complex].include?(l.location_type.to_sym)
       end
 
       locations_present =
           locations.find{|e| e.location_type.to_sym == :non_admin_area}.present? &&
-          locations.find{|e| e.location_type.to_sym == :street}.present? &&
-          locations.find{|e| e.location_type.to_sym == :address}.present?
+          (
+            (locations.find{|e| e.location_type.to_sym == :street}.present? && locations.find{|e| e.location_type.to_sym == :address}.present?) ||
+            locations.find{|e| e.location_type.to_sym == :cottage}.present? ||
+            locations.find{|e| e.location_type.to_sym == :garden}.present? ||
+            locations.find{|e| e.location_type.to_sym == :complex}.present?
+          )
 
       locations_title = (locations.delete_if do |l|
         l.location_type.to_sym == :district && locations_present

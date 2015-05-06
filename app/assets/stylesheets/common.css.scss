@@ -94,6 +94,19 @@ h2 {
   right: -15px;
 }
 
+.form-horizontal .has-feedback .form-control-feedback[data-fv-icon-for="location_validation"]
+{
+  right: -15px;
+}
+
+.form-horizontal .has-feedback .form-control-feedback[data-fv-icon-for="advertisement[offer_type]"],
+.form-horizontal .has-feedback .form-control-feedback[data-fv-icon-for="advertisement[category]"]
+{
+  right: -35px;
+}
+
+
+
 
 
 

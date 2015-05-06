@@ -89,7 +89,7 @@ javascript:
 
   ga('create', 'UA-20191932-2', 'auto');
   ga('send', 'pageview');
-- if user_signed_in?
+- if current_user.present?
   javascript:
     ga('set', 'uid', #{current_user.id});
 hr
