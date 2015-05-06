@@ -41,6 +41,7 @@ ru:
       created_at: "Дата/Время"
       item: "Элемент"
       message: "Сообщение"
+      action: "Действия"
     actions:
       abuses:
         menu: 'Жалобы'

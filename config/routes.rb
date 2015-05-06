@@ -32,11 +32,6 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :registrations => :registrations }
 
   namespace :api do
-    resources :validation do
-      collection do
-        post 'check_if_specific'
-      end
-    end
     resources :locations
     resources :advertisements, :path => '/entity' do
       collection do

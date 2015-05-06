@@ -2,18 +2,20 @@ h2= t 'activerecord.attributes.abuse.class'
 
 .well.well-sm
   ul.nav.nav-pills
-    li.btn.btn-default
+    li
       =link_to '/management/abuses'
         i.fa.fa-list
           '
           | Активные
+          '
           span.badge
             = Abuse.where(status: 0).count
-    li.btn.btn-default
+    li
       =link_to '/management/abuses?old=true'
         i.fa.fa-pause
           '
           | Неактивные
+          '
           span.badge
             = Abuse.where('status > 0').count
 
@@ -28,56 +30,57 @@ table.table.table-bordered
     th.col-md-1= t 'activerecord.attributes.abuse.comment'
     th.col-md-1= t 'activerecord.attributes.abuse.user'
     th.col-md-3= t 'admin.table_headers.advertisements'
-    td
+    - if params[:old].blank?
+      th.col-md-3= t 'admin.table_headers.action'
   - @objects= Abuse.where('status > 0') if params[:old].present?
   - @objects.each do |abuse|
-    =form_for abuse, url: "/abuses/#{abuse.id}", method: :patch do |f|
-      =f.hidden_field :status, id: 'abuse-status'
-      tr
-        td
-          =abuse.created_at.strftime('%R')
-          br
-          = abuse.created_at.strftime('%m/%d/%Y')
-        td= abuse.status
-        td= abuse.abuse_type
-        td= f.text_area :moderator_comment
-        /td=abuse.moderator_comment
-        td= abuse.comment
-        td
-          = link_to abuse.user.name, rails_admin.show_path(model_name: :user, id: abuse.user_id)
-        td.col-md-3
-          -adv = abuse.advertisement
-          a href="#{rails_admin.show_path(model_name: :advertisement, id: adv.id)}"
-            /.col-lg-2.col-md-2.col-sm-3.col-xs-12
-              - if adv.preview_url.present?
-                img src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
-              -else
-                img src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
+    = form_for abuse, url: "/abuses/#{abuse.id}", method: :patch do |f|
+      - if abuse.user.present?
+        = f.hidden_field :status, id: 'abuse-status'
+        tr
+          td
+            = abuse.created_at.strftime('%R')
+            br
+            = abuse.created_at.strftime('%m/%d/%Y')
+          td= abuse.status
+          td= abuse.abuse_type
+          td= f.text_area :moderator_comment, disabled: params[:old].present?
+          /td=abuse.moderator_comment
+          td= abuse.comment
+          td
+            = link_to abuse.user.name, rails_admin.show_path(model_name: :user, id: abuse.user_id)
+          td.col-md-3
+            -adv = abuse.advertisement
+            a href="#{rails_admin.show_path(model_name: :advertisement, id: adv.id)}"
+              /.col-lg-2.col-md-2.col-sm-3.col-xs-12
+                - if adv.preview_url.present?
+                  img src=adv.preview_url alt=adv.preview_alt style="width: 145px;height: 90px;"
+                -else
+                  img src="#{image_path('empty_preview.png')}" style="width: 145px;height: 90px;"
 
-            /.col-lg-5.col-md-6.col-sm-9.col-xs-12
-            div
-              h4.media-heading
-                = adv.anchor
-              - if adv.price_from.present?
-                span.lead
-                  span.formatRub
-                    = adv.price_from
-                  - if adv.price_to.present? && adv.price_to != adv.price_from
-                    '
-                    | -
-                    '
+              /.col-lg-5.col-md-6.col-sm-9.col-xs-12
+              div
+                h4.media-heading
+                  = adv.anchor
+                - if adv.price_from.present?
+                  span.lead
                     span.formatRub
-                      = adv.price_to
-                  '
-                  i.fa.fa-rub
-              - if adv.locations_title.present?
-                br
-                  span
-                    = adv.locations_title[0..15]
+                      = adv.price_from
+                    - if adv.price_to.present? && adv.price_to != adv.price_from
+                      '
+                      | -
+                      '
+                      span.formatRub
+                        = adv.price_to
+                    '
+                    i.fa.fa-rub
+                - if adv.locations_title.present?
+                  br
+                    span
+                      = adv.locations_title[0..15]
 
-        td
-          /= link_to t('admin.actions.accept.link'), "/abuses/#{abuse.id}?status=1", method: :patch, class: 'btn btn-success'
-          =f.submit t('admin.actions.accept.link'),class: 'btn btn-success', onclick: '$("#abuse-status").val(1)'
-          br
-          /= link_to t('admin.actions.decline.link'), "/abuses/#{abuse.id}?status=2", method: :patch, class: 'btn btn-danger'
-          =f.submit t('admin.actions.decline.link'),class: 'btn btn-danger', onclick: '$("#abuse-status").val(2)'
+          - if params[:old].blank?
+            td
+              = f.submit t('admin.actions.accept.link'),class: 'btn btn-success', onclick: '$("#abuse-status").val(1)'
+              '
+              = f.submit t('admin.actions.decline.link'),class: 'btn btn-danger', onclick: '$("#abuse-status").val(2)'
