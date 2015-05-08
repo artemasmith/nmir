@@ -28,6 +28,12 @@
               i.fa.fa-tag.fa-lg
               '
               | Сео
+        - if can? :access, :rails_admin
+          li
+            a href=rails_admin.abuses_path
+              i.fa.fa-magic.fa-lg
+              '
+              | жалобы
 
       ul.nav.navbar-nav.navbar-right
         - unless current_user.present?
