@@ -29,6 +29,17 @@ module AdvertisementsHelper
     render 'advertisements/inputs/check_button', location: location
   end
 
+  def render_price_input()
+    attr = {
+        name_from: "price_from".to_sym,
+        name_to: "price_to".to_sym,
+        value_from: params[:advertisement].try(:[], "price_from".to_sym),
+        value_to: params[:advertisement].try(:[], "price_to".to_sym),
+        class_name: 'fa-rouble'
+    }
+    render '/advertisements/search_inputs/price', attr: attr
+  end
+
   def render_search_input(search_attribute)
     if search_attribute == 'room_from'
         attr = {
@@ -46,9 +57,10 @@ module AdvertisementsHelper
           value_from: params[:advertisement].try(:[], "#{suffix}_from".to_sym),
           value_to: params[:advertisement].try(:[], "#{suffix}_to".to_sym),
       }
-      if suffix == 'price'
-        return render '/advertisements/search_inputs/price', attr: attr.merge({class_name: 'fa-rouble'})
-      end
+       if suffix == 'price'
+      #   return render '/advertisements/search_inputs/price', attr: attr.merge({class_name: 'fa-rouble'})
+         return
+       end
       if suffix == 'floor' || suffix == 'floor_cnt'
         return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-2'})
       end

@@ -534,7 +534,7 @@ $('.range_date_picker_action').livequery ->
           moment().subtract("month", 1).endOf("month")
         ]
 
-      startDate: moment().subtract("days", 29)
+      #startDate: moment().subtract("days", 29)
       endDate: moment()
     },
     (dstart, dend) ->
