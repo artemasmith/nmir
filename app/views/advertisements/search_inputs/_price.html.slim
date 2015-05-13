@@ -1,8 +1,5 @@
-.form-group.additional_search_params_action
+.form-group
   label
-    - if attr[:class_name].present?
-      i.fa.fa-lg class=attr[:class_name]
-      '
     = t("advertisement.attributes.#{attr[:name_from]}").mb_chars.downcase
   '
   input.text-input-lg.width-define.text-right class=attr[:class_name_input] name="advertisement[#{attr[:name_from]}]" autocomplete='off' type="text" value=attr[:value_from]
@@ -10,5 +7,9 @@
   label —
   '
   input.text-input-lg.width-define.text-right class=attr[:class_name_input] name="advertisement[#{attr[:name_to]}]" autocomplete='off' type="text" value=attr[:value_to]
+  - if attr[:class_name].present?
+    '
+    i.fa class=attr[:class_name]
+
 
 

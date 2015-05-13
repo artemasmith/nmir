@@ -24,7 +24,7 @@ class Abuse < ActiveRecord::Base
   validates :abuse_type, presence: true
   validates :advertisement_id, presence: true
 
-  after_update :inform_users, if: Proc.new { |abuse| abuse.status == 'accepted' || abuse.status == 'not_accepted' }
+  after_save :inform_users, if: Proc.new { |abuse| abuse.status_changed? && (abuse.status == 'accepted' || abuse.status == 'not_accepted') }
 
   rails_admin do
     field :created_at
