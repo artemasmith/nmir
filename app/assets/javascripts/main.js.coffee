@@ -67,13 +67,50 @@ $().ready ->
   return placemark
 
 @position_map = ->
-  $.grep($("div:not(.SelectLocation)[lid]").map(->
+  map = $.grep($("div:not(.SelectLocation)[lid]").map(->
       if ($(this).attr('name') isnt 'non_admin_area') and ($(this).attr('name') isnt 'admin_area') and ($(this).attr('name') isnt 'cottage') and ($(this).attr('name') isnt 'garden') and ($(this).attr('name') isnt 'complex')
-        return $.trim $(this).text()
+        return [[$.trim($(this).text()), $(this).attr('name'), $(this), $(this).attr('lid')]]
       return null
     ), (n) ->
-    (n isnt "Выбрать") and (n isnt "Место") and (n isnt "нажмите чтобы выбрать") and n
-  )
+    n and (n[0] isnt "") and (n[0] isnt "Выбрать") and (n[0] isnt "Место") and (n[0] isnt "нажмите чтобы выбрать")
+  ).sort (x, y)->
+    list = ['region',
+    'district',
+    'city',
+    'street',
+    'address'
+    ]
+    a = list.indexOf(x[1])
+    b = list.indexOf(y[1])
+    if (a < b)
+      return 1
+    if (a > b)
+      return -1
+    return 0
+  el = map[0]
+  mapGeo = null
+  if el
+    $el = el[2]
+    mapGeo = [el[0]]
+    while true
+      $el = $el.parents().eq(2).find('.GetChildren:first')
+      lid = $el.attr('lid')
+      if $el.length > 0 && lid && lid isnt '0'
+        inMap = $.grep(map, (e) ->
+          e[3] is lid
+          ).length > 0
+        if inMap
+          mapGeo.unshift($.trim($el.text()))
+      else
+        break
+  return mapGeo || ["Ростов-на-Дону"]
+
+
+
+
+
+
+
 
 @geoCoding = ->
   return unless $('#map').data('editable')
@@ -296,14 +333,16 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
+
+    if sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская')
+      button = $this.closest('.location-group').find('.GetChildren')
+      button.popover "destroy"
+      button.removeClass('dropdown-toggle')
+      getChildren.call($(".GetChildren[lid=#{lid}]"))
     if sp['editable'] is 'true'
       sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
   if ($.trim($this.text()) is 'обл Ростовская')
     $this.click()
-    button = $this.closest('.location-group').find('.GetChildren')
-    button.popover "destroy"
-    button.removeClass('dropdown-toggle')
-    getChildren.call($(".GetChildren[lid=#{lid}]"))
   return
 
 $('.DelChildren').livequery ->
@@ -601,6 +640,13 @@ $('.autocomplete-search-location').livequery ->
       click_select_location(sp)
       geoCoding()
       $this.val('')
+
+      if sp['editable'] is 'true'
+        button = $this.closest('.location-group').find('.GetChildren')
+        button.popover "destroy"
+        button.removeClass('dropdown-toggle')
+        getChildren.call($(".GetChildren[lid=#{sp['lid']}]"))
+
       if sp['editable'] is 'true'
         $this.closest('form').formValidation('revalidateField', 'location_validation')
       return false

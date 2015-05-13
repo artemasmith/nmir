@@ -14,6 +14,7 @@ class DonrioWorker
         return
       end
 
+      adv.source = User::USER_SOURCES.index(:donrio)
       adv.offer_type = ParserDonrio.parse_offer_type row
       adv.category = ParserDonrio.parse_category row, titles
 

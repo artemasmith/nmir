@@ -2,13 +2,13 @@ namespace :advertisement do
   desc "Change status of adv by date"
   task status: :environment do
     slice_count = 3000
-    Advertisement.active.find_in_batches(batch_size: slice_count).each do |group|
+    Advertisement.where(source: AdvEnums::ADV_SOURCES.index(:unknown)).active.find_in_batches(batch_size: slice_count).each do |group|
       group.each do |adv|
         adv.expired! unless adv.yandex_valid?
       end
     end
 
-    Advertisement.expired.where(['updated_at < ?', DateTime.now - 90.days]).find_in_batches(batch_size: slice_count).each do |group|
+    Advertisement.where(source: AdvEnums::ADV_SOURCES.index(:unknown)).expired.where(['updated_at < ?', DateTime.now - 90.days]).find_in_batches(batch_size: slice_count).each do |group|
       group.each do |adv|
         adv.destroy
       end
