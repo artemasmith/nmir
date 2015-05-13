@@ -57,10 +57,6 @@ module AdvertisementsHelper
           value_from: params[:advertisement].try(:[], "#{suffix}_from".to_sym),
           value_to: params[:advertisement].try(:[], "#{suffix}_to".to_sym),
       }
-       if suffix == 'price'
-      #   return render '/advertisements/search_inputs/price', attr: attr.merge({class_name: 'fa-rouble'})
-         return
-       end
       if suffix == 'floor' || suffix == 'floor_cnt'
         return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-2'})
       end

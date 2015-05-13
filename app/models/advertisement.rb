@@ -132,7 +132,7 @@ class Advertisement < ActiveRecord::Base
 
     attr.flatten!
 
-    return %w(price_from owner) + attr.uniq.delete_if do |e|
+    return %w(owner) + attr.uniq.delete_if do |e|
       match = e.match(/(.+)(_to|_from)$/i)
       match ? match[2] == '_to' : false
     end.delete_if do |e|
