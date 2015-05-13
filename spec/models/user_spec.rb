@@ -12,7 +12,6 @@
 #  updated_at             :datetime
 #  name                   :string(255)
 #  blocked                :boolean          default(FALSE)
-#  from_admin             :boolean          default(FALSE)
 #  role                   :integer
 #  source                 :integer          default(0)
 #
@@ -27,7 +26,6 @@ RSpec.describe User, :type => :model do
     it { expect(user).to respond_to(:name) }
     it { expect(user).to respond_to(:blocked) }
     it { expect(user).to respond_to(:role) }
-    it { expect(user).to respond_to(:from_admin) }
   end
 
   describe 'permissions check' do

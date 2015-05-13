@@ -118,6 +118,15 @@
             i.fa.fa-calendar
           '
           input.text-input.range_date_picker_action name="advertisement[date_interval]" placeholder='▼за всё время' type="text" value=params[:advertisement][:date_interval].presence
+        - if can? :order, Advertisement
+          '
+          .form-group
+            .btn-group data-toggle="buttons"
+              label.btn.btn-xs.btn-default class="#{('active' if params[:advertisement][:order]=='1')}"
+                i.fa.fa-area-chart
+                '
+                input type="checkbox" name="advertisement[order]" value="1" checked=(params[:advertisement][:order]=='1')
+                = t("advertisement.attributes.order")
         - if can? :read_expired, Advertisement
           '
           .form-group

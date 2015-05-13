@@ -34,8 +34,13 @@ module AdvEnums
 
   USER_ROLES = [:owner, :agent, :admin]
 
+  ADV_SOURCES = [:unknown, :donrio, :adresat, :manual]
+
+
 
   included do
+
+    enum :source => AdvEnums::ADV_SOURCES
 
     # enums - add values to the end of array!
     enum offer_type: AdvEnums::OFFER_TYPES

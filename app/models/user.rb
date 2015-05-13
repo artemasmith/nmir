@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
   enum :role => AdvEnums::USER_ROLES
 
-  USER_SOURCES = [:unknown, :donrio, :adresat]
+  USER_SOURCES = [:unknown, :donrio, :adresat, :manual]
   enum :source => User::USER_SOURCES
   before_validation :set_params, :on => :create
   #before_save :deny_admin_thread
@@ -78,7 +78,6 @@ class User < ActiveRecord::Base
                          name: "#{cinfo[:name]}",
                          password: "#{Time.now.to_i}",
                          role: cinfo[:agent].present? ? cinfo[:agent] : 0,
-                         from_admin: true,
                          source: cinfo[:source])
       user.phones.create!(original: cinfo[:phone])
       return user

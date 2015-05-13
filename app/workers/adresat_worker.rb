@@ -13,6 +13,7 @@ class AdresatWorker
         return
       end
 
+      adv.source = User::USER_SOURCES.index(:adresat)
       adv.offer_type = ParserAdresat.parse_offer_type titles
       adv.category = ParserAdresat.parse_category row
 

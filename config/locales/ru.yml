@@ -317,6 +317,7 @@ ru:
       comment: 'комментарий'
       private_comment: 'скрытый комментарий'
       expired: 'устаревшие'
+      order: 'создано'
     offer:
       buy: 'куплю'
       sale: 'продажа'

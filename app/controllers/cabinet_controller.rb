@@ -11,7 +11,6 @@ class CabinetController < ApplicationController
     options = {
         :conditions => conditions,
         :with => with,
-        :order => 'updated_at DESC',
         :classes => [Advertisement]
     }
     @limit = (params[:per_page].presence || cookies[:per_page].presence || 25).to_i
@@ -27,6 +26,14 @@ class CabinetController < ApplicationController
         with['status_type'] = AdvEnums::STATUSES.index(:expired)
       else
         with['status_type'] = AdvEnums::STATUSES.index(:active)
+      end
+    end
+
+    [:order].each do |m|
+      if search_params[m].present? && search_params[m] == '1' && can?(:order, Advertisement)
+        options[m] = 'created_at DESC'
+      else
+        options[m] = 'updated_at DESC'
       end
     end
 

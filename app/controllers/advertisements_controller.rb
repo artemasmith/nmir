@@ -96,9 +96,10 @@ class AdvertisementsController < ApplicationController
     options = {
         :conditions => conditions,
         :with => with,
-        :order => 'updated_at DESC',
         :classes => [Advertisement]
     }
+
+
 
     @limit = (params[:per_page].presence || cookies[:per_page].presence || 25).to_i
     cookies[:per_page] = params[:per_page] if params[:per_page].present? && params[:per_page].to_i > 0
@@ -116,7 +117,7 @@ class AdvertisementsController < ApplicationController
       [:offer_type, :category].each do |m|
         with[m] =  [@section.attributes[m.to_s]] if @section.attributes[m.to_s].present?
       end
-      with[:property_type] =  AdvEnums::PROPERTY_TYPES.index(@section.property_type.to_sym) if @section.property_type.present?
+      with[:property_type] = AdvEnums::PROPERTY_TYPES.index(@section.property_type.to_sym) if @section.property_type.present?
 
       if @section.offer_type.present?
         adv_types = [Advertisement.adv_type(@section.offer_type)]
@@ -200,6 +201,14 @@ class AdvertisementsController < ApplicationController
         with['status_type'] = AdvEnums::STATUSES.index(:expired)
       else
         with['status_type'] = AdvEnums::STATUSES.index(:active)
+      end
+    end
+
+    [:order].each do |m|
+      if search_params[m].present? && search_params[m] == '1' && can?(:order, Advertisement)
+        options[m] = 'created_at DESC'
+      else
+        options[m] = 'updated_at DESC'
       end
     end
 
@@ -407,7 +416,6 @@ class AdvertisementsController < ApplicationController
         user = Phone.where(number: advertisement_params[:user_attributes][:phones_attributes].map{|_, e| Phone.normalize(e[:original])}).first.try :user
         if user.blank?
           @adv = Advertisement.new advertisement_params
-          @adv.user.from_admin = true
         else
           @adv = user.advertisements.new advertisement_params
         end
@@ -418,6 +426,10 @@ class AdvertisementsController < ApplicationController
       @adv = Advertisement.new advertisement_params
     end
     if @adv.valid?
+      if current_user.admin?
+        @adv.user.source = :admin
+        @adv.source = :admin
+      end
       @adv.save
       cookies[:location_ids] = advertisement_params[:location_ids]
       sign_in @adv.user if current_user.blank?
@@ -541,6 +553,7 @@ class AdvertisementsController < ApplicationController
                    :url,
                    :per_page,
                    :advertisement => [
+                     :order,
                      :expired,
                      :description,
                      :date_interval,

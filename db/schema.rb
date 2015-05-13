@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150427210306) do
+ActiveRecord::Schema.define(version: 20150427210307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 20150427210306) do
     t.string   "preview_alt"
     t.integer  "user_role"
     t.integer  "zoom",                                                        default: 12,    null: false
+    t.integer  "source",                                                      default: 0
   end
 
   add_index "advertisements", ["offer_type", "category", "property_type", "status_type"], name: "index_advertisements_on_ot_c_li_pt_st", using: :btree
@@ -323,7 +324,6 @@ ActiveRecord::Schema.define(version: 20150427210306) do
     t.datetime "updated_at"
     t.string   "name"
     t.boolean  "blocked",                default: false
-    t.boolean  "from_admin",             default: false
     t.integer  "role"
     t.integer  "source",                 default: 0
   end
