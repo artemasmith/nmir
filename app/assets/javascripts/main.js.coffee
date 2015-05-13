@@ -88,6 +88,7 @@ $().ready ->
       return -1
     return 0
   el = map[0]
+  mapGeo = null
   if el
     $el = el[2]
     mapGeo = [el[0]]
@@ -102,7 +103,7 @@ $().ready ->
           mapGeo.unshift($.trim($el.text()))
       else
         break
-  return mapGeo
+  return mapGeo || ["Ростов-на-Дону"]
 
 
 
@@ -203,7 +204,6 @@ $().ready ->
   return
 
 @getChildren = ->
-  console.log 'getChildren'
   $this = $(this)
   params = {'parent_id': $this.attr('lid'), 'editable': true}
   if $('.click_additional_search_params_action').length > 0
