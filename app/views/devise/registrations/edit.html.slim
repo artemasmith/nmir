@@ -21,7 +21,7 @@ h2
           .form-group
             .input-group
               /=link_to registration_path(resource_name), method: :delete do
-              = link_to '#' do
+              = link_to edit_cabinet_path(current_user.id) do
                 i.fa.fa-user-times
                   '
                   | Удалить учетную запись
