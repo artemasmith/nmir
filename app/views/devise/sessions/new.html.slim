@@ -3,9 +3,7 @@ h1
 = content_for :title
   | Вход
 .well.clearfix
-  - if flash[:alert]
-    .alert.alert-danger
-      = flash[:alert]
+  = render 'devise/shared/flash'
   = form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form form-horizontal easyBootstrapValidator'}) do |f|
     fieldset
       .form-group

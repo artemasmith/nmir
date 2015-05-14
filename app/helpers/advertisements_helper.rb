@@ -127,5 +127,14 @@ module AdvertisementsHelper
     }
     icons[icon]
   end
+
+  def render_model_errors resource
+    if resource.errors.present?
+      info =  '<p><div class="alert-danger">'
+      info += resource.errors.full_messages.join(';')
+      info += '</div></p>'
+      return info.html_safe
+    end
+  end
 end
 
