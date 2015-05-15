@@ -138,8 +138,6 @@ class AdvertisementsController < ApplicationController
     end
 
     @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories, offer_types)
-    @search_attributes.delete('price_from')
-    @search_attributes.delete('owner')
 
     [:price, :floor, :floor_cnt].each do |m|
       if search_params["#{m}_from"].present? || search_params["#{m}_to"].present?
@@ -484,8 +482,7 @@ class AdvertisementsController < ApplicationController
     categories = params[:categories].to_s.split(',').map{|e| AdvEnums::CATEGORIES[e.to_i].to_s}.uniq
 
     @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories, offer_types)
-    @search_attributes.delete('owner')
-    @search_attributes.delete('price_from')
+
   end
 
   def check_phone
