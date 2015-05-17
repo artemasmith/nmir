@@ -1,0 +1,5 @@
+-if flash.present?
+  p
+    .flash-messages
+      -flash.each do |key, value|
+        =content_tag :div, value, class: "flash #{key == 'error' ? "alert-danger" : "alert-info" }"

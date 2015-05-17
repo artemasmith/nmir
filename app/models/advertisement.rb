@@ -132,15 +132,17 @@ class Advertisement < ActiveRecord::Base
 
     attr.flatten!
 
-    return %w(owner) + attr.uniq.delete_if do |e|
+    return attr.uniq.delete_if do |e|
       match = e.match(/(.+)(_to|_from)$/i)
       match ? match[2] == '_to' : false
     end.delete_if do |e|
-      %w(comment price_from not_for_agents).include? e
+      %w(comment not_for_agents).include? e
     end.delete_if do |e|
       e == 'mortgage' && !is_offer_type
     end.delete_if do |e|
       attr.find_all{|n| n == e }.size != section_count
+    end.delete_if do |e|
+      e == 'owner' || e == 'price_from'
     end.sort_by{|l| sorted_list.index(l) || 99}
   end
 

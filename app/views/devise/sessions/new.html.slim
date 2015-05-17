@@ -3,21 +3,19 @@ h1
 = content_for :title
   | Вход
 .well.clearfix
-  - if flash[:alert]
-    .alert.alert-danger
-      = flash[:alert]
+  = render 'devise/shared/flash'
   = form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form form-horizontal easyBootstrapValidator'}) do |f|
     fieldset
       .form-group
         label.control-label.col-sm-3
-          i.fa.fa-envelope-o.fa-lg
+          i.fa.fa-at
           '
           | почта
         .col-sm-4
-          = f.email_field :email, autofocus: true, class: 'form-control', required: true, placeholder: 'mail@example.com'
+          = f.email_field :email, autofocus: true, class: 'form-control', required: true
       .form-group
         label.control-label.col-sm-3
-          i.fa.fa-unlock.fa-lg
+          i.fa.fa-lock
           '
           | пароль
         .col-sm-4
@@ -32,15 +30,24 @@ h1
         label.control-label.col-sm-3
         .col-sm-2
           = f.button class: 'btn btn-primary btn-lg' do
-            i.fa.fa-sign-in.fa-lg
+            i.fa.fa-sign-in
             '
             | Войти
-          br
-          br
-          a.small href="#{new_user_password_path}"
+      .form-group
+        label.control-label.col-sm-3
+        .col-sm-4
+          a href="#{new_user_registration_path}"
+            i.fa.fa-user-plus
+              '
+              | зарегистрироваться
+      .form-group
+        label.control-label.col-sm-3
+        .col-sm-4
+          a href="#{new_user_password_path}"
             i.fa.fa-refresh
               '
               | восстановить пароль
+
 
 
 

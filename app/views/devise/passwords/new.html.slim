@@ -4,7 +4,9 @@ h1
   | Восстановление пароля
 .well.clearfix
   = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'form form-horizontal easyBootstrapValidator' }) do |f|
-    = devise_error_messages!
+    /= devise_error_messages!
+    = render_model_errors resource
+    = render 'devise/shared/flash'
     fieldset
       .form-group
         label.control-label.col-sm-3

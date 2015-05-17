@@ -13,6 +13,25 @@
           | multilisting.su
     .collapse.navbar-collapse
       ul.nav.navbar-nav
+        li.yaSend yaparam="help"
+          a href="#"
+            i.fa.fa-life-bouy.fa-lg
+            '
+            |помощь
+        - if can? :access, :rails_admin
+          li
+            a href=rails_admin.abuses_path
+              i.fa.fa-magic.fa-lg
+              '
+              | жалобы
+        - if @root_section.present? && (can? :access, :rails_admin)
+          li
+            a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
+              i.fa.fa-tags.fa-lg
+              '
+              | Сео
+
+      ul.nav.navbar-nav.navbar-right
         - if current_user.present?
           li class="#{'active' if current_page?(controller: '/cabinet')}"
             = link_to cabinet_index_path('advertisement[expired]' => 0)
@@ -22,27 +41,6 @@
               '
               span.badge
                 = CabinetCounter.active_adv_count(current_user.id)
-        - if @root_section.present? && (can? :access, :rails_admin)
-          li
-            a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
-              i.fa.fa-tag.fa-lg
-              '
-              | Сео
-        - if can? :access, :rails_admin
-          li
-            a href=rails_admin.abuses_path
-              i.fa.fa-magic.fa-lg
-              '
-              | жалобы
-
-      ul.nav.navbar-nav.navbar-right
-        - unless current_user.present?
-          li.nav.navbar-nav
-            = link_to new_user_registration_path
-              .navbar-link
-                i.fa.fa-plug
-                '
-                | Зарегистрироваться
         - if @current_user
           li.dropdown.nav
             a.dropdown-toggle data-toggle="dropdown" href="#"
@@ -79,50 +77,25 @@
 
         - else
           li.nav.navbar-nav
-            a data-toggle="modal" data-target=".sign_in_modal" href='javascript:void(0)'
+            a href="#{new_user_session_path}"
               .navbar-link
-                i.fa.fa-lock
+                i.fa.fa-sign-in.fa-lg
                 '
                 | Войти
-            .modal.sign_in_modal aria-hidden="true" aria-labelledby="Авторизация" role="dialog"
-              .modal-dialog.modal-sm
-                .modal-content
-                  .modal-header
-                    button.close data-dismiss="modal" type="button"
-                      span aria-hidden="true"  &times;
-                      span.sr-only Close
-                    h4.modal-title Авторизация
-                  .modal-body
-                    = form_for resource, as: resource_name, url: session_path(resource_name), html: {role: "form", class: 'easyBootstrapValidator'} do |f|
-                      .form-group
-                        = f.email_field :email, autofocus: true, class: 'form-control', placeholder: 'mail@example.com', required: true
-                      .form-group
-                        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '********'
-                      .checkbox
-                        = f.label :remember_me, class: 'checkbox' do
-                          = f.check_box :remember_me, checked: true
-                          | запомнить меня
-                      = f.button class: 'btn btn-primary' do
-                        i.fa.fa-sign-in
-                        '
-                        | Войти
-                      '
-                      = link_to "Забыли пароль?", new_password_path(resource_name)
 
         - if current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create)
           li.nav.navbar-nav.active
             = link_to new_advertisement_path
-              i.fa.fa-bullhorn.fa-lg
+              i.fa.fa-plus.fa-lg
               '
               | Разместить объявление
         - else
           li.nav.navbar-nav
-            .navbar-btn.nav-font-color
-              = link_to new_advertisement_path
-                .btn.btn-warning
-                  i.fa.fa-bullhorn.fa-lg
-                  '
-                  |Разместить объявление
+            /.navbar-btn.nav-font-color
+            = link_to new_advertisement_path
+              i.fa.fa-plus.fa-lg
+              '
+              |Разместить объявление
 
 
 

@@ -482,6 +482,7 @@ class AdvertisementsController < ApplicationController
     categories = params[:categories].to_s.split(',').map{|e| AdvEnums::CATEGORIES[e.to_i].to_s}.uniq
 
     @search_attributes = Advertisement.grouped_allowed_search_attributes(adv_types, categories, offer_types)
+
   end
 
   def check_phone

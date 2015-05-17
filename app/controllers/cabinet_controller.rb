@@ -44,6 +44,20 @@ class CabinetController < ApplicationController
 
   end
 
+  def edit
+  end
+
+  def destroy
+    user = User.find(params[:id].to_i)
+    if user.present? && user.valid_password?(params[:password])
+      user.destroy
+      redirect_to root_path
+    else
+      flash.now[:error] = 'не могу удалить учетную запись: неправильный пароль'
+      render 'cabinet/edit'
+    end
+  end
+
 
   private
 

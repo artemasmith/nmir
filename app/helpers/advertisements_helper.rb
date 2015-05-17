@@ -29,16 +29,6 @@ module AdvertisementsHelper
     render 'advertisements/inputs/check_button', location: location
   end
 
-  def render_price_input()
-    attr = {
-        name_from: "price_from".to_sym,
-        name_to: "price_to".to_sym,
-        value_from: params[:advertisement].try(:[], "price_from".to_sym),
-        value_to: params[:advertisement].try(:[], "price_to".to_sym),
-        class_name: 'fa-rouble'
-    }
-    render '/advertisements/search_inputs/price', attr: attr
-  end
 
   def render_search_input(search_attribute)
     if search_attribute == 'room_from'
@@ -50,6 +40,7 @@ module AdvertisementsHelper
     elsif match = search_attribute.match(/(.+)(_from)$/i)
 
       suffix = match[1]
+      puts suffix
 
       attr = {
           name_from: "#{suffix}_from".to_sym,
@@ -57,6 +48,9 @@ module AdvertisementsHelper
           value_from: params[:advertisement].try(:[], "#{suffix}_from".to_sym),
           value_to: params[:advertisement].try(:[], "#{suffix}_to".to_sym),
       }
+      if suffix == 'price'
+        return render '/advertisements/search_inputs/price', attr: attr.merge({class_name: 'fa-rouble'})
+      end
       if suffix == 'floor' || suffix == 'floor_cnt'
         return render '/advertisements/search_inputs/integer', attr: attr.merge({class_name: nil}).merge({class_name_input: 'w-2'})
       end
@@ -72,11 +66,11 @@ module AdvertisementsHelper
       }
 
       if search_attribute == 'mortgage'
-        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-bank'}).merge({btn_class_name: 'btn-default'})
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-bank'}).merge({btn_class_name: 'btn-default'}).merge({ owner: false })
       end
 
       if search_attribute == 'owner'
-        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'}).merge({btn_class_name: 'btn-default'})
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'}).merge({btn_class_name: 'btn-default'}).merge({ owner: true })
       end
 
     end
@@ -126,6 +120,15 @@ module AdvertisementsHelper
         owner: '<i class="fa fa-check"></i>'.html_safe
     }
     icons[icon]
+  end
+
+  def render_model_errors resource
+    if resource.errors.present?
+      info =  '<p><div class="alert-danger">'
+      info += resource.errors.full_messages.join(';')
+      info += '</div></p>'
+      return info.html_safe
+    end
   end
 end
 

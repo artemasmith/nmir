@@ -13,6 +13,7 @@
       link rel="canonical" href=@street_section.url
     - elsif params[:advertisement].present?
       link rel="canonical" href=@root_section.url
+  /= render 'shared/flash_messages' if !flash.empty?
 = content_for :header
   = render 'advertisements/search_form'
 

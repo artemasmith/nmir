@@ -1,4 +1,4 @@
-.form-group.additional_search_params_action
+.form-group class=" #{ !attr[:owner] ? 'additional_search_params_action' : ''}"
   .btn-group data-toggle="buttons"
     label.btn.btn-xs class="#{attr[:btn_class_name]}" class="#{('active' if attr[:value]=='1')}"
       i.fa class="#{attr[:class_name]}"
