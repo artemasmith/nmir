@@ -13,7 +13,7 @@ namespace :sitemap do
         xml.urlset(xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9') do
           group.each do |advertisement|
             xml.url do
-              xml.loc "#{Rails.application.routes.url_helpers.advertisement_url(advertisement, host: host)}_#{advertisement.url}"
+              xml.loc "#{Rails.application.routes.url_helpers.advertisement_url(advertisement, host: host)}-#{advertisement.url}"
               xml.changefreq 'weekly'
               xml.priority 0.9
             end
@@ -33,14 +33,16 @@ namespace :sitemap do
             next if section.location_id.present? && Location.where(id: section.location_id).first.address?
             xml.url do
               if section.url != '/'
-                xml.loc "#{host}#{section.url}"
                 if section.advertisements_count > 1000
+                  xml.loc "#{host}#{section.url}"
                   xml.changefreq 'daily'
                   xml.priority 1.0
                 elsif section.advertisements_count > 100 && section.advertisements_count <= 1000
+                  xml.loc "#{host}#{section.url}"
                   xml.changefreq 'weekly'
                   xml.priority 0.9
-                else
+                elsif section.advertisements_count > 10
+                  xml.loc "#{host}#{section.url}"
                   xml.changefreq 'monthly'
                   xml.priority 0.6
                 end

@@ -39,7 +39,7 @@ class Location < ActiveRecord::Base
 
 
   def self.locations_list
-    %w(region district city cottage garden complex admin_area non_admin_area street address landmark)
+    %w(region district city admin_area non_admin_area street address cottage garden complex landmark)
   end
 
 

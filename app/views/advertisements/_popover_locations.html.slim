@@ -1,26 +1,20 @@
 - if @locations.present?
   - @locations.each do |key, value|
     - if value.present? || (params[:editable] == 'true' && can?(:manage, Location)) || key == 'street'
-      h4
-        = "укажите #{t("activerecord.attributes.location.#{key}")}"
-      - if %w(address street cottage garden complex non_admin_area).include?(key) && (can?(:manage, Location) || (key == 'street'))
-        .col-md-12
-          .form-group
-            label
-              i.fa.fa-search
-              '
-              | поиск
-            '
-            = text_field_tag 'location[title]', nil, class: "search-or-create-location-action#{' autocomplete-search-location' if %w(street cottage garden complex).include?(key)}", placeholder: ' найти по названию', autocomplete: 'off', parent_id: @location.id, for: key
+      .row.form-horizontal
+        span.col-md-4
+          label.control-label for=key
+            = t("activerecord.attributes.location.#{key}")
+        .col-md-7
+          - if %w(address street cottage garden complex non_admin_area).include?(key) && (can?(:manage, Location) || (key == 'street'))
+            = text_field_tag 'location[title]', nil, class: "form-control search-or-create-location-action#{' autocomplete-search-location' if %w(street cottage garden complex).include?(key)}", placeholder: ' найти по названию', autocomplete: 'off', parent_id: @location.id, for: key
             - if params[:editable] == 'true' && can?(:manage, Location)
               = hidden_field_tag 'location[location_type]', key, for: key
               = hidden_field_tag 'location[location_id]', @location.id, for: key
               '
               a.hidden.create-location-action href='#' for=key
                 | Добавить новый адрес
-      .row class="#{'hidden' if key == 'street'}"
-        .col-md-12
-          div
+        .col-md-12 class="#{'invisible' if key == 'street'}"
           .empty-search-container-action.hidden for=key
             | Ничего не найдено
           .btn-group.search-container-action for=key data-toggle="buttons"

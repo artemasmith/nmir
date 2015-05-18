@@ -455,10 +455,10 @@ class AdvertisementsController < ApplicationController
   def get_locations
     @location = Location.find(params[:parent_id]) if params[:parent_id].to_i != 0
     if params[:editable] == 'false'
-      # @locations = get_locations_yield
-      @locations = Rails.cache.fetch("get_locations:#{params[:offer_types]}:#{params[:categories]}:#{params[:parent_id]}", expires_in: 15.minutes) do
-         get_locations_yield
-      end
+      @locations = get_locations_yield
+      # @locations = Rails.cache.fetch("get_locations:#{params[:offer_types]}:#{params[:categories]}:#{params[:parent_id]}", expires_in: 15.minutes) do
+      #    get_locations_yield
+      # end
     else
       @locations = get_locations_yield
     end

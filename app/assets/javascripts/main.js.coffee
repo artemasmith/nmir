@@ -334,7 +334,7 @@ $('.SelectLocation').livequery ->
     sp['parent_id'] = 0
     click_select_location(sp)
 
-    if sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская')
+    if (sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская')) and (sp['has_children'] is 'true')
       button = $this.closest('.location-group').find('.GetChildren')
       button.popover "destroy"
       button.removeClass('dropdown-toggle')
@@ -631,17 +631,16 @@ $('.autocomplete-search-location').livequery ->
       sp['lid'] = ui.item.value
       sp['group'] = $("input[value=#{sp['parent_id']}]").closest('.location-group')
       sp['value'] = ui.item.label
+      sp['has_children'] = "#{ui.item.has_children}"
       if sp['editable'] is 'true'
-        sp['has_children'] = 'true'
         $this.closest('form').formValidation('revalidateField', 'location_validation')
-      else
-        sp['has_children'] = "#{ui.item.has_children}"
+
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
       $this.val('')
 
-      if sp['editable'] is 'true'
+      if sp['editable'] is 'true' && sp['has_children'] is 'true'
         button = $this.closest('.location-group').find('.GetChildren')
         button.popover "destroy"
         button.removeClass('dropdown-toggle')
