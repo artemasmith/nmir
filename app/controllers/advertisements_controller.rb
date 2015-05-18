@@ -633,7 +633,7 @@ class AdvertisementsController < ApplicationController
 
     if @location.present?
       if @location.city?
-        locations = @location.children_locations(:not_street_not_garden)
+        locations = @location.children_locations(:not_street)
       else
         locations = @location.children_locations
       end

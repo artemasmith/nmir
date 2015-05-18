@@ -57,16 +57,16 @@ ru:
           commerce: нежилой недвижимости
       location:
         admin_area: 'административные районы'
-        non_admin_area: 'неадминистративные районы'
+        non_admin_area: 'районы'
         region: 'регионы'
         district: 'районы'
         city: 'города'
         street: 'улицы'
         address: 'адреса'
         landmark: 'ориентиры'
-        cottage: 'коттеджные посёлки'
+        cottage: 'КП'
         garden: 'сады'
-        complex: 'жилищные комплексы'
+        complex: 'ЖК'
 
       advertisement:
 

@@ -141,7 +141,7 @@ class Location < ActiveRecord::Base
             self.sublocations.where(location_type: LOCATION_TYPES.index(:garden))
           when :complex
             self.sublocations.where(location_type: LOCATION_TYPES.index(:complex))
-          when :not_street_not_garden
+          when :not_street
             self.sublocations.where(location_type: [LOCATION_TYPES.index(:admin_area), LOCATION_TYPES.index(:non_admin_area)])
           else
             raise 'Invalid type'

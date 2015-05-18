@@ -1,13 +1,16 @@
 - if @locations.present?
   - @locations.each do |key, value|
-    - if value.present? || (params[:editable] == 'true' && can?(:manage, Location)) || key == 'street'
+    - condition = %w(address street cottage garden complex non_admin_area).include?(key) && (can?(:manage, Location) || params[:editable] == 'true')
+    - if value.present? || condition
       .row.form-horizontal
-        span.col-md-4
+        .col-md-1
           label.control-label for=key
             = t("activerecord.attributes.location.#{key}")
-        .col-md-7
-          - if %w(address street cottage garden complex non_admin_area).include?(key) && (can?(:manage, Location) || (key == 'street'))
-            = text_field_tag 'location[title]', nil, class: "form-control search-or-create-location-action#{' autocomplete-search-location' if %w(street cottage garden complex).include?(key)}", placeholder: ' найти по названию', autocomplete: 'off', parent_id: @location.id, for: key
+
+        .col-md-9
+          - if condition
+            '
+            = text_field_tag 'location[title]', nil, class: "search-or-create-location-action#{' autocomplete-search-location' if %w(street cottage garden complex).include?(key)}", placeholder: ' найти по названию', autocomplete: 'off', parent_id: @location.id, for: key
             - if params[:editable] == 'true' && can?(:manage, Location)
               = hidden_field_tag 'location[location_type]', key, for: key
               = hidden_field_tag 'location[location_id]', @location.id, for: key
