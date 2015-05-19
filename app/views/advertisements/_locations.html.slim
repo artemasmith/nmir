@@ -1,11 +1,11 @@
 .form.form-horizontal role="form"
   .form-group
-    label.col-sm-3.control-label for='advertisement[location_ids][]'
+    label.col-sm-2.control-label for='advertisement[location_ids][]'
       i.fa.fa-globe.fa-lg
       '
       | местоположение
       input type="hidden" name="location_validation"
-    .col-sm-9.form.inline-block
+    .col-sm-10.form.inline-block
       .location-cont
         .form-group.location-group.btn-group multi='true' editable='true' state="#{@location_state}"
           .btn.btn-default.GetChildren.dropdown-toggle lid=0 data-toggle="dropdown"
@@ -22,7 +22,7 @@
   .form-group
     = render_input :landmark, nil, f.object.landmark, nil
   .form-group
-    label.control-label.col-sm-3 for="appendedtext" на карте
+    label.control-label.col-sm-2 for="appendedtext" на карте
     .col-sm-7
       .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='true' data-zoom=@adv.zoom
 .last-selected-location

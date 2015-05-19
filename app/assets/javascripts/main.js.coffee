@@ -203,7 +203,7 @@ $().ready ->
     $('.DuplicatePhones').addClass('hidden')
   return
 
-@getChildren = ->
+@getChildren = (callback=null)->
   $this = $(this)
   params = {'parent_id': $this.attr('lid'), 'editable': true}
   if $('.click_additional_search_params_action').length > 0
@@ -214,6 +214,9 @@ $().ready ->
     params['editable'] = false
   $.getScript(
     Routes.get_locations_advertisements_path(params),
+    ->
+      if callback
+        callback()
   )
   return
 
@@ -406,9 +409,11 @@ $('.location-group[state]').livequery ->
   return
 
 $('#reg-phones').livequery ->
-  $(this).find('.dell-phone-number').first().addClass('hidden')
-  $(this).find('.add-phone-number').first().removeClass('hidden')
-  $(this).on 'nested:fieldAdded', (e) ->
+
+  $this = $(this)
+  $this.find('.dell-phone-number').first().addClass('hidden')
+  $this.find('.add-phone-number').first().removeClass('hidden')
+  $this.on 'nested:fieldAdded', (e) ->
     parent = e.target
     $(parent).find('.add-phone-number').addClass('hidden')
     $(parent).find('.dell-phone-number').removeClass('hidden')
@@ -416,7 +421,12 @@ $('#reg-phones').livequery ->
     $(parent).find('.form-control').attr('id', "#{time.getMinutes()} #{time.getSeconds()}")
     target_input = $('.phone-target-field ').attr('value')
     $(parent).find('.form-control').attr('name', target_input + "[#{time.getMinutes()}#{time.getSeconds()}][original]")
-    return
+    if $('#reg-phones').find('input:visible').length >= 3
+      $this.find('.add-phone-number').addClass('invisible')
+  $this.on 'nested:fieldRemoved', (e) ->
+    if $('#reg-phones').find('input:visible').length < 3
+      $this.find('.add-phone-number').removeClass('invisible')
+    return false
 
 $('.AdvProperty').livequery ->
   $(this).change prepare_allowed_attributes

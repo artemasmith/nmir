@@ -15,8 +15,8 @@
               = hidden_field_tag 'location[location_type]', key, for: key
               = hidden_field_tag 'location[location_id]', @location.id, for: key
               '
-              a.hidden.create-location-action href='#' for=key title="Добавить новый адрес"
-                i.fa.fa-edit
+              a.hidden.create-location-action.btn.btn-default href='#' for=key title="Добавить новый адрес"
+                i.fa.fa-plus
         .col-md-12
           .empty-search-container-action.hidden for=key
             | Ничего не найдено

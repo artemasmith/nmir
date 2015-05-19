@@ -3,8 +3,11 @@ $('form.easyBootstrapValidator:visible').livequery ->
   $this.formValidation
     locale: 'ru_RU'
     framework: 'bootstrap'
+    excluded: ':disabled'
     err:
-      container: 'tooltip'
+      container: null
+    row:
+      selector: '.form-group'
     icon:
       valid: 'fa fa-check',
       invalid: 'fa fa-times',
@@ -12,11 +15,11 @@ $('form.easyBootstrapValidator:visible').livequery ->
   .on('err.field.fv', (e, data) ->
     if data.fv
       data.fv.disableSubmitButtons false
-    return
+    return true
   ).on 'success.field.fv', (e, data) ->
     if data.fv
       data.fv.disableSubmitButtons false
-    return
+    return true
 
 baseLocationValidation = (validator)->
   location_el = $("div:not(.SelectLocation)[lid='0']")
@@ -29,10 +32,11 @@ baseLocationValidation = (validator)->
   rostovNonAdminArea = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='non_admin_area']").length
   rostovStreet = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='street']").length
   if cities < 1
+    message = 'Укажите город'
     if validator
       return {
       valid: false
-      message: 'Укажите город'
+      message: message
       }
     else
       if regions is 1
@@ -42,20 +46,22 @@ baseLocationValidation = (validator)->
           getChildren.call(location_el)
     return
   if rostov is 1 and rostovNonAdminArea is 0
+    message = 'Укажите неадминистративный район в г Ростов-на-Дону'
     if validator
       return {
       valid: false
-      message: 'Укажите неадминистративный район в г Ростов-на-Дону'
+      message: message
       }
     else
       getChildren.call(rostov_el)
       return
 
   if rostov is 1 and rostovStreet is 0
+    message = 'Укажите улицу в г Ростов-на-Дону'
     if validator
       return {
       valid: false
-      message: 'Укажите улицу в г Ростов-на-Дону'
+      message: message
       }
     else
       getChildren.call(rostov_el)
@@ -77,42 +83,28 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
     framework: 'bootstrap'
     excluded: ':disabled'
     err:
-      container: 'tooltip'
+       container: null
+    row:
+      selector: '.form-group'
     icon:
       valid: 'fa fa-check',
       invalid: 'fa fa-times',
       validating: 'fa fa-refresh'
     fields:
-      'advertisement[user_attributes][password]':
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-
-
-      'user[password]':
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-
-
       'user[email]':
         validators:
           remote:
             type: 'POST'
-            delay: 500
             url: Routes.api_validation_index_path()
-            message: "Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>."
+            message: "Такой email уже зарегистрирован на нашем сайте. <br/><a href='" + Routes.new_user_session_path() + "'>Выполните вход</a>."
 
 
       'advertisement[user_attributes][email]':
         validators:
           remote:
             type: 'POST'
-            delay: 500
             url: Routes.api_validation_index_path()
-            message: "Такой email уже зарегистрирован на нашем сайте. Используйте другой или <a href='" + Routes.new_user_session_path() + "'>выполните вход</a>."
+            message: "Такой email уже зарегистрирован на нашем сайте. <br/><a href='" + Routes.new_user_session_path() + "'>Выполните вход</a>."
 
 
       'advertisement[offer_type]':
@@ -125,7 +117,6 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
 
       'advertisement[category]':
         message: "Выберите тип недвижимости"
-#        icon: false
         validators:
           callback:
             trigger: 'change'
@@ -138,45 +129,66 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
             message: ''
 
 
-  }).on('submit', (e, data) ->
+  })
+  .on('submit', (e, data) ->
     baseLocationValidation(false)
+    return true
   ).on('err.field.fv', (e, data) ->
     if data.fv
       data.fv.disableSubmitButtons false
-    $icon = data.element.data('fv.icon')
-    title = $icon.data('bs.tooltip').getTitle()
-
-
-    return
+    return true
   ).on('success.field.fv', (e, data) ->
     if data.fv
       data.fv.disableSubmitButtons false
-    return
+    return true
   )
-  .on 'focusout', '[name="user[email]"], [name="advertisement[user_attributes][email]"], [name="user[name]"], [name="advertisement[user_attributes][name]"], [name="advertisement[price_from]"]', ->
+  .on 'focusout', 'input', ->
     $this.formValidation('validateField', $(this).attr('name'))
-
-
-
-    return
+    return true
 
 
 
 
 $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
+  colorLabel = ->
+    errors = $('#reg-phones').find('.has-error').length
+    successes = $('#reg-phones').find('.has-success').length
+    labelParent = $('label[for=reg-phones]').parent()
+    if errors is 0 and successes > 0
+      labelParent.removeClass('has-error').addClass('has-feedback has-success')
+    else
+      if successes is 0 and errors > 0
+        labelParent.removeClass('has-success').addClass('has-feedback has-error')
+      else
+        labelParent.removeClass('has-success has-error')
+    return
+
   $this = $(this)
   $this.closest('form').formValidation('addField', $this, {
+    err: $this.parent().parent()
+    row:
+      selector: '.field'
     validators:
       remote:
         type: 'POST'
         delay: 500
-        message: "Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон."
+        message: "Такой телефон уже зарегистрирован на нашем сайте. <br/><a href='" + Routes.new_user_session_path() + "'>Выполните вход</a>."
         url: Routes.api_validation_index_path()
       phone:
         country: 'RU'
         message: "Такой телефон не допустим"
       notEmpty:
         message: "Необходимо ввести телефон"
+    onError: (e, data) ->
+      console.log $(e.target).closest('.fields')
+      $(e.target).closest('.fields').removeClass('has-success').addClass('has-feedback has-error')
+      colorLabel()
+
+
+    onSuccess: (e, data) ->
+      console.log $(e.target).closest('.fields')
+      $(e.target).closest('.fields').removeClass('has-error').addClass('has-feedback has-success')
+      colorLabel()
   })
 
 $('form .attributes input, form .attributes textarea').livequery ->
