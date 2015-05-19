@@ -213,7 +213,7 @@ $().ready ->
     params['categories'] = categories
     params['editable'] = false
   $.getScript(
-    Routes.get_locations_advertisements_path(params)
+    Routes.get_locations_advertisements_path(params),
   )
   return
 
@@ -296,25 +296,28 @@ sort_button_list = (context)->
       sp['group'].parent().append(button)
     else
       $(".location-button.active[lid!=#{sp['lid']}]").click()
-      sp['group'].parent().find('.GetChildren').popover "destroy"
+      button = sp['group'].parent().find('.GetChildren')
+      button.popover "destroy"
+      button.removeClass('active')
+      button.removeClass('dropdown-toggle')
       getChildren.apply template.find(".GetChildren[lid=#{sp['lid']}]") if template
   loc = $(".last-selected-location").attr('lid')
   $(".last-selected-location").attr('lid',loc + ' ' + sp['lid'])
 
-@mark_last_selection = (lid) ->
-  $('.loc-btn').removeClass('active')
-  lids = lid.split(' ')
-  for i in [0..(lids.length-1)]
-    if lids[i]
-      $('.loc-btn[lid=' + lids[i] + ']').parent().find('.loc-btn').addClass( ' active')
-  $(".last-selected-location").attr('lid','')
+#@mark_last_selection = (lid) ->
+#  $('.loc-btn').removeClass('active')
+#  lids = lid.split(' ')
+#  for i in [0..(lids.length-1)]
+#    if lids[i]
+#      $('.loc-btn[lid=' + lids[i] + ']').parent().find('.loc-btn').addClass( ' active')
+#  $(".last-selected-location").attr('lid','')
 
-$('.GetChildren').livequery ->
-  $(this).on 'hide.bs.popover', ->
-    lid = $(".last-selected-location").attr('lid')
-    #console.log("lid on hide popover=#{lid}")
-    if lid
-      mark_last_selection(lid)
+#$('.GetChildren').livequery ->
+#  $(this).on 'hide.bs.popover', ->
+#    lid = $(".last-selected-location").attr('lid')
+#    #console.log("lid on hide popover=#{lid}")
+#    if lid
+#      mark_last_selection(lid)
 
 $('.SelectLocation').livequery ->
   $this = $(this)
@@ -337,6 +340,7 @@ $('.SelectLocation').livequery ->
     if (sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская')) and (sp['has_children'] is 'true')
       button = $this.closest('.location-group').find('.GetChildren')
       button.popover "destroy"
+      button.removeClass('active')
       button.removeClass('dropdown-toggle')
       getChildren.call($(".GetChildren[lid=#{lid}]"))
     if sp['editable'] is 'true'
@@ -386,7 +390,7 @@ $('.location-group[state]').livequery ->
         has_visible_children = true
         processElement(value, new_context)
     unless has_visible_children
-      new_context.find('.btn').addClass('active')
+      new_context.find('.btn[lid]').addClass('active')
     #console.log context
     sort_button_list(context)
 
@@ -516,6 +520,8 @@ $("html").on "mouseup", (e) ->
   unless $(e.target).closest(".popover").length
     $(".popover").each ->
       $(@previousSibling).popover "destroy"
+      $(@previousSibling).removeClass('active')
+      $(@previousSibling).removeClass('dropdown-toggle')
       return
   return
 
@@ -643,6 +649,7 @@ $('.autocomplete-search-location').livequery ->
       if sp['editable'] is 'true' && sp['has_children'] is 'true'
         button = $this.closest('.location-group').find('.GetChildren')
         button.popover "destroy"
+        button.removeClass('active')
         button.removeClass('dropdown-toggle')
         getChildren.call($(".GetChildren[lid=#{sp['lid']}]"))
 

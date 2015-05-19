@@ -54,7 +54,7 @@ def new_user
     name: 'asdsdsd',
     email: 'asd@asd.ru',
     role: :owner,
-    password: '11111111',
-    password_confirmation: '11111111'
+    password: '11111111'
+
   })
 end

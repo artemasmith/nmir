@@ -14,14 +14,7 @@
         | пароль
       -
       .col-sm-4
-        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6
-    .form-group
-      label.control-label.col-sm-3
-        i.fa.fa-unlock
-        '
-        | подтверждение пароля
-      .col-sm-4
-        = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6
+        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6, type: 'text'
 .form-group
   label.control-label.col-sm-3
     i.fa.fa-phone

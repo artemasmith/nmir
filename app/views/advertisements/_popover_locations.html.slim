@@ -15,9 +15,9 @@
               = hidden_field_tag 'location[location_type]', key, for: key
               = hidden_field_tag 'location[location_id]', @location.id, for: key
               '
-              a.hidden.create-location-action href='#' for=key
-                | Добавить новый адрес
-        .col-md-12 class="#{'invisible' if key == 'street'}"
+              a.hidden.create-location-action href='#' for=key title="Добавить новый адрес"
+                i.fa.fa-edit
+        .col-md-12
           .empty-search-container-action.hidden for=key
             | Ничего не найдено
           .btn-group.search-container-action for=key data-toggle="buttons"

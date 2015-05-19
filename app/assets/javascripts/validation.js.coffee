@@ -4,19 +4,11 @@ $('form.easyBootstrapValidator:visible').livequery ->
     locale: 'ru_RU'
     framework: 'bootstrap'
     err:
-      container: 'popover'
+      container: 'tooltip'
     icon:
       valid: 'fa fa-check',
       invalid: 'fa fa-times',
       validating: 'fa fa-refresh'
-    fields:
-      'user[password_confirmation]':
-        message: "Пароли не совпадают"
-        validators:
-          callback:
-            trigger: 'blur'
-            callback:  (value, validator, $field) ->
-              value is $('[name="user[password]"]').val()
   .on('err.field.fv', (e, data) ->
     if data.fv
       data.fv.disableSubmitButtons false
@@ -85,7 +77,7 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
     framework: 'bootstrap'
     excluded: ':disabled'
     err:
-      container: 'popover'
+      container: 'tooltip'
     icon:
       valid: 'fa fa-check',
       invalid: 'fa fa-times',
@@ -96,38 +88,14 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
           message: "Пароль должен быть не меньше 4 символов"
           stringLength:
             min: 4
-      'advertisement[user_attributes][password_confirmation]':
-        trigger: 'blur'
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-      'advertisement[user_attributes][password_confirmation]':
-        message: "Пароли не совпадают"
-        validators:
-          callback:
-            trigger: 'blur'
-            callback:  (value, validator, $field) ->
-              value is $('[name="advertisement[user_attributes][password]"]').val()
+
 
       'user[password]':
         validators:
           message: "Пароль должен быть не меньше 4 символов"
           stringLength:
             min: 4
-      'user[password_confirmation]':
-        trigger: 'blur'
-        validators:
-          message: "Пароль должен быть не меньше 4 символов"
-          stringLength:
-            min: 4
-      'user[password_confirmation]':
-        message: "Пароли не совпадают"
-        validators:
-          callback:
-            trigger: 'blur'
-            callback:  (value, validator, $field) ->
-              value is $('[name="user[password]"]').val()
+
 
       'user[email]':
         validators:
@@ -149,7 +117,6 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
 
       'advertisement[offer_type]':
         message: "Выберите вид сделки"
-#        icon: false
         validators:
           callback:
             trigger: 'change'
@@ -176,18 +143,22 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
   ).on('err.field.fv', (e, data) ->
     if data.fv
       data.fv.disableSubmitButtons false
+    $icon = data.element.data('fv.icon')
+    title = $icon.data('bs.tooltip').getTitle()
+
+
     return
   ).on('success.field.fv', (e, data) ->
     if data.fv
       data.fv.disableSubmitButtons false
     return
   )
+  .on 'focusout', '[name="user[email]"], [name="advertisement[user_attributes][email]"], [name="user[name]"], [name="advertisement[user_attributes][name]"], [name="advertisement[price_from]"]', ->
+    $this.formValidation('validateField', $(this).attr('name'))
 
 
-#  .on 'focusout', '[name="user[email]"], [name="advertisement[user_attributes][email]"], [name="user[name]"], [name="advertisement[user_attributes][name]"], [name="advertisement[price_from]"]', ->
-#    unless $this.find('[type="submit"]:visible').is(':focus')
-#      $this.formValidation('validateField', $(this).attr('name'))
-#    return
+
+    return
 
 
 
@@ -199,7 +170,6 @@ $('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
       remote:
         type: 'POST'
         delay: 500
-        trigger: 'keypress'
         message: "Такой телефон уже зарегистрирован на нашем сайте. Используйте другой телефон."
         url: Routes.api_validation_index_path()
       phone:

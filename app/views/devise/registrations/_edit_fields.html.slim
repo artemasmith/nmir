@@ -43,21 +43,15 @@
   label.control-label.col-sm-3
     i.fa.fa-unlock
     '
-    | пароль
+    | новый пароль
 
   .col-sm-4
-    = f.password_field :password, autocomplete: "off", class: 'form-control', required:  false, placeholder: '******', minlength: 4
-.form-group
-  label.control-label.col-sm-3
-    i.fa.fa-unlock
-    '
-    | подтверждение пароля
-  .col-sm-4
-    = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required:  false , placeholder: '******', minlength: 4
+    = f.password_field :password, autocomplete: "off", class: 'form-control', required:  false, placeholder: '******', minlength: 6, type: 'text'
+
 .form-group
   label.control-label.col-sm-3
     i.fa.fa-unlock
     '
     | текущий пароль
   .col-sm-4
-    = f.password_field :current_password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 4
+    = f.password_field :current_password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6, type: 'text'

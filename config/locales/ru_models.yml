@@ -9,7 +9,6 @@ ru:
         role: роль
 
         password: Пароль
-        password_confirmation: Подтверждение пароля
         current_password: текущий пароль
         name: Имя
         phones: Телефоны

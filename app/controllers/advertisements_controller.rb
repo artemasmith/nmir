@@ -426,7 +426,7 @@ class AdvertisementsController < ApplicationController
       @adv = Advertisement.new advertisement_params
     end
     if @adv.valid?
-      if current_user.admin?
+      if current_user.present? && current_user.admin?
         @adv.user.source = :admin
         @adv.source = :admin
       end
@@ -455,10 +455,10 @@ class AdvertisementsController < ApplicationController
   def get_locations
     @location = Location.find(params[:parent_id]) if params[:parent_id].to_i != 0
     if params[:editable] == 'false'
-      @locations = get_locations_yield
-      # @locations = Rails.cache.fetch("get_locations:#{params[:offer_types]}:#{params[:categories]}:#{params[:parent_id]}", expires_in: 15.minutes) do
-      #    get_locations_yield
-      # end
+      # @locations = get_locations_yield
+      @locations = Rails.cache.fetch("get_locations:#{params[:offer_types]}:#{params[:categories]}:#{params[:parent_id]}", expires_in: 15.minutes) do
+         get_locations_yield
+      end
     else
       @locations = get_locations_yield
     end
@@ -610,7 +610,7 @@ class AdvertisementsController < ApplicationController
 
                                           :mortgage,
                                           adv_type: [], offer_type: [], category: [], photo_ids: [], location_ids: [],
-                                          user_attributes: [:name, :role, :password, :password_confirmation, :email, phones_attributes: [:id, :original, :_destroy]])
+                                          user_attributes: [:name, :role, :password, :email, phones_attributes: [:id, :original, :_destroy]])
   end
 
   def overload_params
