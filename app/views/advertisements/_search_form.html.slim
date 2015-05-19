@@ -109,17 +109,18 @@
         = render_search_input('price_from')
         '
         = render_search_input('owner')
+        '
         .form-group
           label
-            i.fa.fa-search
+            i.fa.fa-tag
           '
-          input.text-input name="advertisement[description]" value=params[:advertisement][:description] placeholder=" поиск по тексту или №" type="text"
+          input.text-input name="advertisement[description]" value=params[:advertisement][:description]  type="text"
 
         .form-group
           label
             i.fa.fa-calendar
           '
-          input.text-input.range_date_picker_action name="advertisement[date_interval]" placeholder='▼за всё время' type="text" value=params[:advertisement][:date_interval].presence
+          input.text-input.range_date_picker_action name="advertisement[date_interval]"  type="text" value=params[:advertisement][:date_interval].presence
         - if can? :order, Advertisement
           '
           .form-group
