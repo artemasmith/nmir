@@ -83,19 +83,21 @@
                 '
                 | Войти
 
-        - if current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create)
-          li.nav.navbar-nav.active
+        /- if current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create)
+        - if should_not_be_orange?
+          li.nav.navbar-nav class="#{"active" if current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create)}"
             = link_to new_advertisement_path
               i.fa.fa-plus.fa-lg
               '
               | Разместить объявление
         - else
           li.nav.navbar-nav
-            /.navbar-btn.nav-font-color
-            = link_to new_advertisement_path
-              i.fa.fa-plus.fa-lg
-              '
-              |Разместить объявление
+            .navbar-btn.nav-font-color
+              = link_to new_advertisement_path
+               .btn.btn-warning
+                 i.fa.fa-bullhorn.fa-lg
+                 '
+                 |Разместить объявление
 
 
 
