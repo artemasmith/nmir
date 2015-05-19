@@ -5,7 +5,7 @@ namespace :sitemap do
     FileUtils.mkdir_p('../../shared') unless Dir.exists?('../../shared')
     FileUtils.mkdir_p('../../public/shared') unless Dir.exists?('../../public/shared')
     FileUtils.mkdir_p('../../shared/public/xml') unless Dir.exists?('../../shared/public/xml')
-
+    file_list = []
     index = 0
     Advertisement.active.find_in_batches(batch_size: 2000) do |group|
       index += 1
@@ -22,6 +22,7 @@ namespace :sitemap do
       end
       File.open(Rails.root.join('tmp', "sitemap_advertisement#{index}.xml"), 'w'){|f| f.write doc.to_xml}
       FileUtils.cp "tmp/sitemap_advertisement#{index}.xml", '../../shared/public/xml/'
+      file_list << "sitemap_advertisement#{index}.xml"
     end
 
     index = 0
@@ -60,17 +61,16 @@ namespace :sitemap do
       end
       File.open(Rails.root.join('tmp',"sitemap_section#{index}.xml"), 'w'){|f| f.write doc.to_xml}
       FileUtils.cp "tmp/sitemap_section#{index}.xml", '../../shared/public/xml/'
+      file_list << "sitemap_section#{index}.xml"
     end
     #
     # main sitemap
     doc =  Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.sitemapindex(xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9") do
-        Dir.glob('../../shared/public/xml/*xml').sort.reverse.each do |filename|
-          if filename != '../../shared/public/xml/sitemap.xml'
-            xml.sitemap do
-              xml.loc "#{Rails.application.routes.url_helpers.root_url(host: host)}xml/#{filename.split('/').last}"
-              xml.lastmod Date.current.strftime '%Y-%m-%d'
-            end
+        file_list.each do |filename|
+          xml.sitemap do
+            xml.loc "#{Rails.application.routes.url_helpers.root_url(host: host)}xml/#{filename}"
+            xml.lastmod Date.current.strftime '%Y-%m-%d'
           end
         end
       end
