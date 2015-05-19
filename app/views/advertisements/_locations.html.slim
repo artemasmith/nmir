@@ -19,11 +19,10 @@
 
 
 
-
+  .form-group
+    = render_input :landmark, nil, f.object.landmark, nil
   .form-group
     label.control-label.col-sm-3 for="appendedtext" на карте
     .col-sm-7
       .map#map data-latitude=@adv.latitude data-longitude=@adv.longitude data-editable='true' data-zoom=@adv.zoom
-  .form-group
-    = render_input :landmark,  nil, f.object.landmark , nil
 .last-selected-location

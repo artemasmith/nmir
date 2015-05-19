@@ -5,7 +5,6 @@ offer:
     - space_from
     - room_from
     - price_from
-    - not_for_agents
 
   flat:
     - floor_from
@@ -13,26 +12,22 @@ offer:
     - space_from
     - room_from
     - price_from
-    - not_for_agents
 
   hotel:
     - floor_from
     - floor_cnt_from
     - space_from
     - price_from
-    - not_for_agents
 
   house:
     - space_from
     - outdoors_space_from
     - price_from
-    - not_for_agents
 
 
   ijs:
     - outdoors_space_from
     - price_from
-    - not_for_agents
 
   room:
     - floor_from
@@ -40,43 +35,35 @@ offer:
     - space_from
     - room_from
     - price_from
-    - not_for_agents
 
   garage:
     - price_from
-    - not_for_agents
 
   office:
     - space_from
     - price_from
-    - not_for_agents
 
   trade:
     - space_from
     - price_from
-    - not_for_agents
 
   storage:
     - space_from
     - outdoors_space_from
     - price_from
-    - not_for_agents
 
   cafe:
     - space_from
     - outdoors_space_from
     - price_from
-    - not_for_agents
 
   land:
     - outdoors_space_from
     - price_from
-    - not_for_agents
 
   free_appointment:
     - space_from
     - price_from
-    - not_for_agents
 
 demand:
   hotel:
@@ -84,7 +71,6 @@ demand:
     - floor_cnt_from
     - space_from
     - price_from
-    - not_for_agents
   newbuild:
     - floor_from
     - floor_to
@@ -96,7 +82,6 @@ demand:
     - room_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   flat:
@@ -110,7 +95,6 @@ demand:
     - room_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   house:
@@ -120,7 +104,6 @@ demand:
     - outdoors_space_to
     - price_from
     - price_to
-    - not_for_agents
 
 
 
@@ -129,7 +112,6 @@ demand:
     - outdoors_space_to
     - price_from
     - price_to
-    - not_for_agents
 
     
   room:
@@ -143,13 +125,11 @@ demand:
     - room_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   garage:
     - price_from
     - price_to
-    - not_for_agents
 
 
   office:
@@ -157,7 +137,6 @@ demand:
     - space_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   trade:
@@ -165,7 +144,6 @@ demand:
     - space_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   storage:
@@ -175,7 +153,6 @@ demand:
     - outdoors_space_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   cafe:
@@ -185,7 +162,6 @@ demand:
     - outdoors_space_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   land:
@@ -193,7 +169,6 @@ demand:
     - outdoors_space_to
     - price_from
     - price_to
-    - not_for_agents
 
 
   free_appointment:
@@ -201,5 +176,4 @@ demand:
     - space_to
     - price_from
     - price_to
-    - not_for_agents
 

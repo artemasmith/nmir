@@ -13,7 +13,7 @@ h1
     = f.hidden_field :latitude, class: 'latitude-value'
     = f.hidden_field :longitude, class: 'longitude-value'
     = f.hidden_field :zoom, class: 'zoom-value'
-    = render '/advertisements/user', f: f
+    = render '/advertisements/user_admin', f: f
     .adv-params
       .form.form-horizontal role="form"
         .form-group
@@ -45,17 +45,19 @@ h1
                   = f.radio_button :category,  "#{category}"
                   = t "advertisement.category.#{category}"
 
-      = render '/advertisements/comment', f: f
       = render '/advertisements/locations', f: f
       = render '/advertisements/attributes_place', f: f
       = render '/advertisements/photos', f: f
-      .fields
-        .col-sm-offset-3.form.form-horizontal
-          = f.button class: 'btn btn-primary btn-lg' do
-            - if @adv.new_record?
-              i.fa.fa-bullhorn
-            - else
-              i.fa.fa-save
-            '
-            = "#{@adv.new_record? ? 'Создать' : 'Сохранить'}"
+      = render '/advertisements/comment', f: f
+    = render '/advertisements/user_blank_user', f: f
+    = render 'advertisements/not_for_agents', f: f
+    .fields
+      .col-sm-offset-3
+        = f.button class: 'btn btn-primary btn-lg' do
+          - if @adv.new_record?
+            i.fa.fa-bullhorn
+          - else
+            i.fa.fa-save
+          '
+          = "#{@adv.new_record? ? 'Создать' : 'Сохранить'}"
 

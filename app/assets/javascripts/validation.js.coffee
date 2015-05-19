@@ -3,7 +3,8 @@ $('form.easyBootstrapValidator:visible').livequery ->
   $this.formValidation
     locale: 'ru_RU'
     framework: 'bootstrap'
-    err: container: 'tooltip'
+    err:
+      container: 'popover'
     icon:
       valid: 'fa fa-check',
       invalid: 'fa fa-times',
@@ -17,11 +18,11 @@ $('form.easyBootstrapValidator:visible').livequery ->
             callback:  (value, validator, $field) ->
               value is $('[name="user[password]"]').val()
   .on('err.field.fv', (e, data) ->
-    if data.fv.getSubmitButton()
+    if data.fv
       data.fv.disableSubmitButtons false
     return
   ).on 'success.field.fv', (e, data) ->
-    if data.fv.getSubmitButton()
+    if data.fv
       data.fv.disableSubmitButtons false
     return
 
@@ -83,7 +84,8 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
     locale: 'ru_RU'
     framework: 'bootstrap'
     excluded: ':disabled'
-    err: container: 'popover'
+    err:
+      container: 'popover'
     icon:
       valid: 'fa fa-check',
       invalid: 'fa fa-times',
@@ -169,16 +171,16 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
             message: ''
 
 
-  }).on('err.field.fv', (e, data) ->
-    if data.fv.getSubmitButton()
+  }).on('submit', (e, data) ->
+    baseLocationValidation(false)
+  ).on('err.field.fv', (e, data) ->
+    if data.fv
       data.fv.disableSubmitButtons false
     return
   ).on('success.field.fv', (e, data) ->
-    if data.fv.getSubmitButton()
+    if data.fv
       data.fv.disableSubmitButtons false
     return
-  ).on('submit', (e, data) ->
-    baseLocationValidation(false)
   )
 
 

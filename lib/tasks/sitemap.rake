@@ -30,7 +30,7 @@ namespace :sitemap do
       doc =  Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
         xml.urlset(xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9') do
           group.each do |section|
-            next if section.location_id.present? && Location.where(id: section.location_id).first.address?
+            next if section.location_id.present? && location = Location.where(id: section.location_id).first && location.address?
             xml.url do
               if section.url != '/'
                 if section.advertisements_count > 1000
