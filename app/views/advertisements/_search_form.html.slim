@@ -48,23 +48,7 @@
             - active = ((@section.present? && @section.url != '/' ? [@section.attributes[:category.to_s].to_s] : params[:advertisement][:category]) || []).include?(AdvEnums::CATEGORIES.index(category).to_s) || (@section.present? && @section.commerce?)
             label.btn.btn-default.click_additional_search_params_action class="#{'active' if active}"
               input type="checkbox" name="advertisement[category][]" value="#{AdvEnums::CATEGORIES.index(category)}" checked=active = t("advertisement.category.#{category}")
-    - if @hidden_sections.present?
-      - @hidden_sections.group_by { |section| section.location_id }.each_pair do |_, group|
-        - if group.present?
-          .row.col-xs-12.control_hide_action
-            - group.group_by { |section| section.offer_type }.each_pair do |key, value|
-              label.control-label
-                = I18n.t("activerecord.attributes.section.enum_title.#{key}")
-              '
-              - value.each do |section|
-                .form-group
-                - if section.category
-                  = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.category}"), section.url, class: 'btn btn-default btn-xs'
-                - elsif section.property_type
-                  = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.property_type}"), section.url, class: 'btn btn-default btn-xs'
-                - else
-                  = link_to 'недвижимость', section.url, class: 'btn btn-default btn-xs'
-                '
+
 
     .row.col-xs-12.form-group.control_show_action.hidden
       .control_remove_action
@@ -81,29 +65,7 @@
               '
               i.caret
     .last-selected-location lid=""
-    - if @hidden_location_sections.present?
-      .row.col-xs-12.control_hide_action
-        label.control-label
-          | недвижимость
-          '
-        - @hidden_location_sections.each do |section|
-          .form-group
-            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
-          '
-    - if @current_sections.present?
-      .row.col-xs-12.control_hide_action
-        label.control-label
-          = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.offer_type}")
-          '
-          - if @root_section.category.present?
-            = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.category}")
-          - else
-            = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.property_type}")
-          '
-        - @current_sections.each do |section|
-          .form-group
-            = link_to section.short_title, section.url, class: 'btn btn-default btn-xs'
-          '
+
     .row
       .col-md-10.col-sm-9.col-xs-12.additional_search_params_container_action
         = render_search_input('price_from')

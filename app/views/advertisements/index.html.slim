@@ -46,6 +46,7 @@
         = render 'advertisements/search_results'
 
 
+  = advertisements_pagination
   - if params[:advertisement].empty?
     - if @root_section.present?
       - if params[:page].blank?
@@ -55,5 +56,41 @@
         - if @root_section.p2.present?
           p
             == bb_tags(@root_section.p2, @bbtags)
-  = advertisements_pagination
-
+  .row
+    - if @hidden_sections.present?
+      - @hidden_sections.group_by { |section| section.location_id }.each_pair do |_, group|
+        - if group.present?
+          .col-xs-12
+            - group.group_by { |section| section.offer_type }.each_pair do |key, value|
+              label.control-label
+                = I18n.t("activerecord.attributes.section.enum_title.#{key}")
+              '
+              - value.each do |section|
+                - if section.category
+                  = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.category}"), section.url, class: 'btn btn-default btn-xs yaSend', yaparam: "fast_navigation"
+                - elsif section.property_type
+                  = link_to I18n.t("activerecord.attributes.section.enum_title.#{section.property_type}"), section.url, class: 'btn btn-default btn-xs yaSend', yaparam: "fast_navigation"
+                - else
+                  = link_to 'недвижимость', section.url, class: 'btn btn-default btn-xs yaSend', yaparam: "fast_navigation"
+                '
+    - if @hidden_location_sections.present?
+      .col-xs-12
+        label.control-label
+          | недвижимость
+          '
+        - @hidden_location_sections.each do |section|
+          = link_to section.short_title, section.url, class: 'btn btn-default btn-xs yaSend', yaparam: "fast_navigation"
+          '
+    - if @current_sections.present?
+      .col-xs-12
+        label.control-label
+          = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.offer_type}")
+          '
+          - if @root_section.category.present?
+            = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.category}")
+          - else
+            = I18n.t("activerecord.attributes.section.enum_title.#{@root_section.property_type}")
+          '
+        - @current_sections.each do |section|
+          = link_to section.short_title, section.url, class: 'btn btn-default btn-xs yaSend', yaparam: "fast_navigation"
+          '

@@ -456,7 +456,7 @@ $('.ShowAdvPhone').livequery ->
     placement: 'top'
 
     content: ->
-      html = "<noindex><p class='lead'>номер телефона #{$this.data('phone')}</p></noindex>"
+      html = "<p class='lead'>номер телефона #{$this.data('phone')}</p>"
       html += "<p>Объявление №" + $this.data('n') + " на сайте мультилистинг су</p>"
       html
   $this.click (event)->
