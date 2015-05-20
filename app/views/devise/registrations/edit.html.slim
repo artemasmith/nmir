@@ -1,8 +1,11 @@
-h2
+= content_for :title
+  | Настройки учетной записи
+h1
   = "Настройки учетной записи"
 .well
   = nested_form_for(resource, as: resource_name, url: registration_path(resource_name), method: :patch, html: { class: 'easyBootstrapValidator'}) do |f|
-    = devise_error_messages!
+    /= devise_error_messages!
+    = render 'devise/shared/flash'
     /.user-params
     .form.form-horizontal role="form"
       fieldset
