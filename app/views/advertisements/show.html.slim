@@ -11,7 +11,7 @@
       - section = @sections.find {|section| section.location_id == location.id}
       - if section.present?
         li
-          = link_to location.title, section.url
+          = link_to location.title, section.url, class: 'yaSend', yaparam: 'click_to_breadcrumbs'
 h1
   = @adv.h1
 .well.well-sm.clearfix

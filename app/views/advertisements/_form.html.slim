@@ -53,7 +53,7 @@ h1
     = render 'advertisements/not_for_agents', f: f
     .fields
       .col-sm-offset-3
-        = f.button class: 'btn btn-primary btn-lg' do
+        = f.button class: "btn btn-primary btn-lg yaSend", yaparam: "#{ current_user.blank? ? "register_and_entity_create" : "entity_create" }" do
           - if @adv.new_record?
             i.fa.fa-bullhorn
           - else

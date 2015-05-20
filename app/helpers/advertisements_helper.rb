@@ -70,7 +70,7 @@ module AdvertisementsHelper
       end
 
       if search_attribute == 'owner'
-        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'}).merge({btn_class_name: 'btn-default'}).merge({ owner: true })
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check yaSend'}).merge({btn_class_name: 'btn-default'}).merge({ owner: true }).merge( yaparam: 'from_owner')
       end
 
     end
