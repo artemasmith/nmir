@@ -137,5 +137,6 @@ module AdvertisementsHelper
     current_page?(controller: 'devise/passwords', action: :edit)|| current_page?(controller: '/registrations', action: :new) ||
     current_page?(controller: '/registrations', action: :edit) || current_page?(controller: '/cabinet')
   end
+
 end
 

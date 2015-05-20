@@ -15,19 +15,19 @@
       ul.nav.navbar-nav
         li.yaSend yaparam="help"
           a href="#"
-            i.fa.fa-life-bouy.fa-lg
+            i.fa.fa-life-bouy
             '
-            |помощь
+            | Помощь
         - if can? :access, :rails_admin
           li
             a href=rails_admin.abuses_path
-              i.fa.fa-magic.fa-lg
+              i.fa.fa-magic
               '
               | жалобы
         - if @root_section.present? && (can? :access, :rails_admin)
           li
             a href=rails_admin.edit_path(model_name: 'section', id: @root_section.id)
-              i.fa.fa-tags.fa-lg
+              i.fa.fa-tags
               '
               | Сео
 
@@ -35,7 +35,7 @@
         - if current_user.present?
           li class="#{'active' if current_page?(controller: '/cabinet')}"
             = link_to cabinet_index_path('advertisement[expired]' => 0)
-              i.fa.fa-list.fa-lg
+              i.fa.fa-list
               '
               | Мои объявления
               '
@@ -76,10 +76,10 @@
                   | Выход
 
         - else
-          li.nav.navbar-nav
+          li.nav.navbar-nav class="#{ "active" if current_page?(controller: '/devise/sessions', action: :new) }"
             a href="#{new_user_session_path}"
               .navbar-link
-                i.fa.fa-sign-in.fa-lg
+                i.fa.fa-sign-in
                 '
                 | Войти
 
@@ -95,7 +95,7 @@
             .navbar-btn.nav-font-color
               = link_to new_advertisement_path
                 .btn.btn-warning
-                  i.fa.fa-bullhorn.fa-lg
+                  i.fa.fa-plus.fa-lg
                   '
                   | Разместить объявление
 
