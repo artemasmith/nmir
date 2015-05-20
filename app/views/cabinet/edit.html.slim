@@ -10,10 +10,11 @@ h1
     .form.form-horizontal role="form"
       fieldset
         .form-group
-          .col-md-3
+          label.control-label.col-md-3
+            i.fa.fa-lock
+            '
+            |Пароль
           .col-md-4
-            label
-              |Пароль
             =password_field_tag :password, nil, class: 'form-control', required: true
         .form-group
           .col-md-3
