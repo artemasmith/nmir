@@ -101,7 +101,7 @@ module AdvertisementsHelper
     end
 
     if (name_from == :comment)
-      return render '/advertisements/inputs/textarea', attr
+      return render '/advertisements/inputs/textarea', attr.merge(icon: 'fa-bullhorn')
     end
 
     if (name_from == :not_for_agents) || (name_from == :mortgage)
@@ -109,7 +109,7 @@ module AdvertisementsHelper
     end
 
     if (name_from == :landmark)
-      return render '/advertisements/inputs/text', attr
+      return render '/advertisements/inputs/text', attr.merge(icon: 'fa-tag')
     end
 
   end

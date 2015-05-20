@@ -1,4 +1,8 @@
-= label_tag name_from, t("advertisement.attributes.#{name_from}"), class:'col-sm-3 control-label'
+/= label_tag name_from, t("advertisement.attributes.#{name_from}"), class:'col-sm-3 control-label'
+label.col-sm-3.control-label
+    i.fa class="#{ icon if icon.present? }"
+    '
+    = t("advertisement.attributes.#{name_from}")
 .controls
   .col-sm-6
     = text_area_tag("advertisement[#{name_from}]", value_from, class: 'form-control', placeholder: 'опишите подробно параметры и преимущества объекта', rows: 6)
