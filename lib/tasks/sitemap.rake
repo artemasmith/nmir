@@ -35,22 +35,28 @@ namespace :sitemap do
               location = Location.where(id: section.location_id).first
               next if location.present? && location.address?
             end
-            xml.url do
-              if section.url != '/'
-                if section.advertisements_count > 1000
+            if section.url != '/'
+              if section.advertisements_count > 1000
+                xml.url do
                   xml.loc "#{host}#{section.url}"
                   xml.changefreq 'daily'
                   xml.priority 1.0
-                elsif section.advertisements_count > 100 && section.advertisements_count <= 1000
+                end
+              elsif section.advertisements_count > 100 && section.advertisements_count <= 1000
+                xml.url do
                   xml.loc "#{host}#{section.url}"
                   xml.changefreq 'weekly'
                   xml.priority 0.9
-                elsif section.advertisements_count > 10
+                end
+              elsif section.advertisements_count > 10
+                xml.url do
                   xml.loc "#{host}#{section.url}"
                   xml.changefreq 'monthly'
                   xml.priority 0.6
                 end
-              else
+              end
+            else
+              xml.url do
                 xml.loc "#{Rails.application.routes.url_helpers.root_url(host: host)}"
                 xml.changefreq 'daily'
                 xml.priority 1.0
