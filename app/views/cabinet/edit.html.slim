@@ -1,21 +1,26 @@
 h1
   | Удалить профиль
-- if flash.present?
-    =flash[:error]
-=form_tag cabinet_path(current_user.id), method: :delete, class: 'easyBootstrapValidator' do
-  .form.form-horizontal role="form"
-    fieldset
-      .form-group
-        .col-md-3
-        .col-md-4
-          label
-            |Пароль
-          =password_field_tag :password, nil, class: 'form-control', required: true
-      .form-group
-        .col-md-3
-        .col-md-4
-          =button_tag class: 'btn btn-lg btn-danger'
-            i.fa.fa-user-times.fa-lg
+
+= form_tag cabinet_path(current_user.id), method: :delete, class: 'easyBootstrapValidator' do
+  .well
+    .alert.alert-danger
+      | ВНИМАНИЕ, ВАШИ ОБЪЯВЛЕНИЯ И УЧЕТНАЯ ЗАПИСЬ УДАЛЯЮТСЯ БЕЗВОЗВРАТНО
+      - if flash.present?
+        = flash[:error]
+    .form.form-horizontal role="form"
+      fieldset
+        .form-group
+          label.control-label.col-md-3
+            i.fa.fa-lock
             '
-            |Удалить
+            | Пароль
+          .col-md-4
+            = password_field_tag :password, nil, class: 'form-control', required: true
+        .form-group
+          .col-md-3
+          .col-md-4
+            = button_tag class: 'btn btn-lg btn-danger'
+              i.fa.fa-user-times.fa-lg
+              '
+              | Удалить
 

@@ -1,29 +1,30 @@
 .form-group
   label.control-label.col-sm-2
-    i.fa.fa-envelope-o
+    i.fa.fa-at
     '
     | почта
   .col-sm-4
-    = f.email_field :email, class: 'form-control', required: true, placeholder: 'mail@example.com'
+    = f.email_field :email, class: 'form-control', placeholder: 'mail@example.com', type: 'text'
 - if additional_params
   - if (f.object.new_record? && !can?(:create_from_admin, f.object))
     .form-group
+
       label.control-label.col-sm-2
-        i.fa.fa-unlock
+        i.fa.fa-lock
         '
         | пароль
       -
       .col-sm-4
-        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6, type: 'text'
+        = f.password_field :password, autocomplete: "off", class: 'form-control', required: true, placeholder: '******', minlength: 6
 .form-group
   label.control-label.col-sm-2 for='reg-phones'
-    i.fa.fa-phone
+    i.fa.fa-mobile
     '
     | телефон
   .col-sm-4#reg-phones
     = f.fields_for :phones, (f.object.phones.presence || f.object.phones.build) do |phone_form|
       .input-group
-        = phone_form.text_field :original, class: "form-control#{check_phone ? ' checkPhone': ''}", required: true, placeholder: '+7(863) 2-12-85-06'
+        = phone_form.text_field :original, class: "form-control#{check_phone ? ' checkPhone': ''}", placeholder: '+7(863) 2-12-85-06'
         span.input-group-btn
           = phone_form.link_to_remove class: 'btn btn-default dell-phone-number ' do
             i.fa.fa-minus

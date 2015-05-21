@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/management', as: 'rails_admin'
   match '/' => 'advertisements#index', via: [:get]
 
-  devise_for :users, :controllers => { :registrations => :registrations }
+  devise_for :users, :controllers => { :registrations => :registrations, passwords: :passwords }
 
   namespace :api do
     resources :validation

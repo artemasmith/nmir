@@ -10,7 +10,7 @@ h1
     fieldset
       .form-group
         label.control-label.col-sm-3
-          i.fa.fa-envelope-o.fa-lg
+          i.fa.fa-at.fa-lg
           '
           | почта
         .col-sm-4
@@ -22,3 +22,10 @@ h1
             i.fa.fa-send
             '
             | Выслать инструкции
+      .form-group
+        label.control-label.col-sm-3
+        .col-sm-4
+          = link_to new_user_session_path do
+            i.fa.fa-user-plus
+            '
+            |зарегистрироваться

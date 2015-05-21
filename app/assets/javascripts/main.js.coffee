@@ -203,7 +203,7 @@ $().ready ->
     $('.DuplicatePhones').addClass('hidden')
   return
 
-@getChildren = (callback=null)->
+@getChildren = (event, callback)->
   $this = $(this)
   params = {'parent_id': $this.attr('lid'), 'editable': true}
   if $('.click_additional_search_params_action').length > 0
@@ -307,21 +307,6 @@ sort_button_list = (context)->
   loc = $(".last-selected-location").attr('lid')
   $(".last-selected-location").attr('lid',loc + ' ' + sp['lid'])
 
-#@mark_last_selection = (lid) ->
-#  $('.loc-btn').removeClass('active')
-#  lids = lid.split(' ')
-#  for i in [0..(lids.length-1)]
-#    if lids[i]
-#      $('.loc-btn[lid=' + lids[i] + ']').parent().find('.loc-btn').addClass( ' active')
-#  $(".last-selected-location").attr('lid','')
-
-#$('.GetChildren').livequery ->
-#  $(this).on 'hide.bs.popover', ->
-#    lid = $(".last-selected-location").attr('lid')
-#    #console.log("lid on hide popover=#{lid}")
-#    if lid
-#      mark_last_selection(lid)
-
 $('.SelectLocation').livequery ->
   $this = $(this)
   lid = $this.attr('lid')
@@ -345,9 +330,10 @@ $('.SelectLocation').livequery ->
       button.popover "destroy"
       button.removeClass('active')
       button.removeClass('dropdown-toggle')
-      getChildren.call($(".GetChildren[lid=#{lid}]"))
-    if sp['editable'] is 'true'
-      sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
+      getChildren.call($(".GetChildren[lid=#{lid}]"), null, ->
+        if sp['editable'] is 'true'
+          sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
+      )
   if ($.trim($this.text()) is 'обл Ростовская')
     $this.click()
   return
@@ -359,7 +345,6 @@ $('.DelChildren').livequery ->
     editable = locationGroup.attr('editable')
     form = group.closest('form')
     group.remove()
-    console.log form, editable
     if editable
       form.formValidation('revalidateField', 'location_validation')
 

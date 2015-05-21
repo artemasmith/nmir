@@ -3,5 +3,5 @@
   = "#{t("activerecord.attributes.section.enum_title.#{@adv.offer_type}")} #{t("activerecord.attributes.section.enum_title.#{@adv.category}")}"
   '
   - @near_sections.each do |near_section|
-    = link_to near_section.short_title, near_section.url if near_section.short_title.present?
+    = link_to near_section.short_title, near_section.url, class: 'yaSend', yaparam: 'lick_to_section_link_in_ad' if near_section.short_title.present?
     '

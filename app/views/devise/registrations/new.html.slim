@@ -8,9 +8,11 @@ header
     fieldset
       = render 'devise/registrations/fields', f: f, additional_params: true, check_phone: false
       .form-group
-        .col-sm-4.col-sm-offset-4
-          .form-group
-            .input-group
-              = f.submit 'Зарегистрироваться', class: 'btn btn-primary'
+        .col-sm-3
+        .col-sm-4
+          = f.button  class: 'btn btn-primary btn-lg yaSend', yaparam="register"
+            i.fa.fa-user-plus.fa-lg
+            '
+            | Зарегистрироваться
 .phone-target-field value="user[phones_attributes]"
 

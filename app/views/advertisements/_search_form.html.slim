@@ -59,7 +59,7 @@
           i.fa.fa-globe.fa-lg
         '
         .form-group.location-group.btn-group multi='true' editable='false' state="#{@location_state}"
-          .btn.btn-default.GetChildren.dropdown-toggle lid="#{0}" data-toggle="dropdown"
+          .btn.btn-default.GetChildren.dropdown-toggle.yaSend yaparam="root_place_selector_press" lid="#{0}" data-toggle="dropdown"
             b
               | местоположение
               '
@@ -71,17 +71,18 @@
         = render_search_input('price_from')
         '
         = render_search_input('owner')
+        '
         .form-group
           label
-            i.fa.fa-search
+            i.fa.fa-tag
           '
-          input.text-input name="advertisement[description]" value=params[:advertisement][:description] placeholder=" поиск по тексту или №" type="text"
+          input.text-input name="advertisement[description]" value=params[:advertisement][:description]  type="text"
 
         .form-group
           label
             i.fa.fa-calendar
           '
-          input.text-input.range_date_picker_action name="advertisement[date_interval]" placeholder='▼за всё время' type="text" value=params[:advertisement][:date_interval].presence
+          input.text-input.range_date_picker_action name="advertisement[date_interval]"  type="text" value=params[:advertisement][:date_interval].presence
         - if can? :order, Advertisement
           '
           .form-group
@@ -103,7 +104,7 @@
         = render 'advertisements/additional_search_params'
 
       .col-md-2.col-sm-3.col-xs-12
-        button.btn.btn-primary.btn-lg.btn-block type="submit"
+        button.btn.btn-primary.btn-lg.btn-block.yaSend yaparam="search" type="submit"
           i.fa.fa-search.fa-lg
           '
           | Найти

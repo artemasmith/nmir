@@ -70,7 +70,7 @@ module AdvertisementsHelper
       end
 
       if search_attribute == 'owner'
-        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check'}).merge({btn_class_name: 'btn-default'}).merge({ owner: true })
+        return render '/advertisements/search_inputs/boolean', attr: attr.merge({class_name: 'fa-check yaSend'}).merge({btn_class_name: 'btn-default'}).merge({ owner: true }).merge( yaparam: 'from_owner')
       end
 
     end
@@ -101,7 +101,7 @@ module AdvertisementsHelper
     end
 
     if (name_from == :comment)
-      return render '/advertisements/inputs/textarea', attr
+      return render '/advertisements/inputs/textarea', attr.merge(icon: 'fa-bullhorn')
     end
 
     if (name_from == :not_for_agents) || (name_from == :mortgage)
@@ -109,7 +109,7 @@ module AdvertisementsHelper
     end
 
     if (name_from == :landmark)
-      return render '/advertisements/inputs/text', attr
+      return render '/advertisements/inputs/text', attr.merge(icon: 'fa-tag')
     end
 
   end
@@ -124,18 +124,20 @@ module AdvertisementsHelper
 
   def render_model_errors resource
     if resource.errors.present?
-      info =  '<p><div class="alert-danger">'
+      info =  '<p><div class="alert alert-danger">'
       info += resource.errors.full_messages.join(';')
       info += '</div></p>'
+      info.gsub!('Email не найдена','Пользователь с такими данными не найден.')
       return info.html_safe
     end
   end
 
   def should_not_be_orange?
     current_page?(controller: '/advertisements', action: :new) || current_page?(controller: '/advertisements', action: :create) ||
-    current_page?(controller: 'devise/sessions', action: :new)  || current_page?(controller: 'devise/passwords', action: :new) ||
-    current_page?(controller: 'devise/passwords', action: :edit)|| current_page?(controller: '/registrations', action: :new) ||
+    current_page?(controller: '/devise/sessions', action: :new)  || current_page?(controller: '/passwords', action: :new) ||
+    current_page?(controller: '/passwords', action: :edit)|| current_page?(controller: '/registrations', action: :new) ||
     current_page?(controller: '/registrations', action: :edit) || current_page?(controller: '/cabinet')
   end
+
 end
 
