@@ -68,20 +68,20 @@
     .row
       .col-md-10.col-sm-9.col-xs-12.additional_search_params_container_action
         = render_search_input('price_from')
-        '
+        | &nbsp
         = render_search_input('owner')
         '
         .form-group
           label
             i.fa.fa-tag
           '
-          input.text-input name="advertisement[description]" value=params[:advertisement][:description]  type="text"
-
+          input.text-input name="advertisement[description]" value=params[:advertisement][:description]  type="text" autocomplete="off" placeholder=" поиск по тексту или №"
+        '
         .form-group
           label
             i.fa.fa-calendar
           '
-          input.text-input.range_date_picker_action name="advertisement[date_interval]"  type="text" value=params[:advertisement][:date_interval].presence
+          input.text-input.range_date_picker_action name="advertisement[date_interval]"  type="text" value=params[:advertisement][:date_interval].presence autocomplete="off" placeholder=" ▼за всё время"
         - if can? :order, Advertisement
           '
           .form-group

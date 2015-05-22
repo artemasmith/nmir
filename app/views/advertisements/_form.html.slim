@@ -52,12 +52,12 @@ h1
     = render '/advertisements/user_blank_user', f: f
     = render 'advertisements/not_for_agents', f: f
     .fields
-      .col-sm-offset-3
+      .col-lg-offset-2
         = f.button class: "btn btn-primary btn-lg yaSend", yaparam: "#{ current_user.blank? ? "register_and_entity_create" : "entity_create" }" do
           - if @adv.new_record?
-            i.fa.fa-bullhorn
+            i.fa.fa-plus.fa-lg
           - else
-            i.fa.fa-save
+            i.fa.fa-save.fa-lg
           '
           = "#{@adv.new_record? ? 'Создать' : 'Сохранить'}"
 
