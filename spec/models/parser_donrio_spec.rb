@@ -44,13 +44,19 @@ RSpec.describe ParserDonrio do
   describe "agent in contact row (flat)" do
     let(:titles3){ { "Тел контанк" => 0 }}
     let(:row3){[ '(908)516-82-27" Валерия агент на % не претендует' ]}
+    let(:row5){ ['(951)499-28-83" марина Агент 12'] }
+    let(:row7){ ['(951)499-28-83" марина поСредник 12'] }
 
     it { ParserDonrio.parse_name_and_phone(row3, titles3).should eq(['Валерия', '+79085168227', 1]) }
+    it { ParserDonrio.parse_name_and_phone(row5, titles3).should eq(['марина', '+79514992883', 1]) }
+    it { ParserDonrio.parse_name_and_phone(row7, titles3).should eq(['марина', '+79514992883', 1]) }
 
     describe "house agent in contact" do
-      let(:row4){ [ '(904)443-22-50 агент на % не претендует"' ] }
+      let(:row4){ ['(904)443-22-50 агент на % не претендует"'] }
+      let(:row6){ ['(904)443-22-50 ПосРедник на % не претендует"'] }
 
       it { ParserDonrio.parse_name_and_phone(row4, titles3).should eq(['', '+79044432250', 1]) }
+      it { ParserDonrio.parse_name_and_phone(row6, titles3).should eq(['', '+79044432250', 1]) }
     end
   end
 
