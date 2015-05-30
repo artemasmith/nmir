@@ -44,21 +44,6 @@ RSpec.describe Location, :type => :model do
     end
   end
 
-  describe 'has neighborhoods.' do
-    let(:street) { locations(:street) }
-    let(:district) { locations(:district) }
-
-    before { location.neighbors << [ street, district ] } 
-
-    it 'can add new neighbors' do
-      expect(location.neighbors.count).to eq(2)
-    end
-
-    it 'dont have inverse relation' do
-      expect(street.neighbors.count).to eq(0)
-    end
-  end
-
   describe 'has some methods' do
     let(:address) { locations(:address) }
     it 'parent_locations method should return all parent nodes' do

@@ -24,4 +24,9 @@ FactoryGirl.define do
     abuse_type 0
     user
   end
+
+  factory :phone do
+    original '9199342222'
+    user
+  end
 end
