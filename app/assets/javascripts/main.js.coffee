@@ -324,16 +324,16 @@ $('.SelectLocation').livequery ->
     sp['common'] = true
     sp['parent_id'] = 0
     click_select_location(sp)
-
+    #revalidate anyway
+    #sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
     if (sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская')) and (sp['has_children'] is 'true')
       button = $this.closest('.location-group').find('.GetChildren')
       button.popover "destroy"
       button.removeClass('active')
       button.removeClass('dropdown-toggle')
-      getChildren.call($(".GetChildren[lid=#{lid}]"), null, ->
-        if sp['editable'] is 'true'
-          sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
-      )
+      #in the getChildren callback sp[el] is an empty object!
+      sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
+      getChildren.call($(".GetChildren[lid=#{lid}]"), null)
   if ($.trim($this.text()) is 'обл Ростовская')
     $this.click()
   return

@@ -54,9 +54,12 @@ RSpec.describe ParserDonrio do
     describe "house agent in contact" do
       let(:row4){ ['(904)443-22-50 агент на % не претендует"'] }
       let(:row6){ ['(904)443-22-50 ПосРедник на % не претендует"'] }
+      let(:row8){ ['(904)443-22-50 '] }
 
       it { ParserDonrio.parse_name_and_phone(row4, titles3).should eq(['', '+79044432250', 1]) }
       it { ParserDonrio.parse_name_and_phone(row6, titles3).should eq(['', '+79044432250', 1]) }
+      it { ParserDonrio.parse_name_and_phone(row8, titles3).should eq(['', '+79044432250', 0]) }
+
     end
   end
 

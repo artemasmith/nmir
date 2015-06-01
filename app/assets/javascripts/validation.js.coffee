@@ -88,6 +88,7 @@ $('form.easyBootstrapValidator:visible').livequery ->
       data.fv.disableSubmitButtons false
     return true
 
+
 #markLocation = (type, message)->
 #  console.log $("label[for='#{type}']")
 #  if message
