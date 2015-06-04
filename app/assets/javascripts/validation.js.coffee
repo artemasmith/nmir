@@ -96,6 +96,21 @@ $('form.easyBootstrapValidator:visible').livequery ->
 #  else
 #    $("label[for='#{type}']").removeClass('control-label')
 
+#err:
+#  container: ($field, validator) ->
+#    console.log("dsdsd" + validator)
+#    getChildren.call()
+#    return $('.validation-error-messages')
+
+scrollToField = (destination) ->
+  console.log('we are in scroll func')
+  res = $('html')
+  if ($.browser.safari)
+    res = $('body')
+  res.animate({scrollTop: destination }, 1100)
+  return false
+
+
 baseLocationValidation = (validator) ->
   location_el = $("div:not(.SelectLocation)[lid='0']")
   region_el = $("div:not(.SelectLocation)[lid][name='region']")
@@ -106,9 +121,14 @@ baseLocationValidation = (validator) ->
   rostov = rostov_el.length
   rostovNonAdminArea = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='non_admin_area']").length
   rostovStreet = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='street']").length
+#  container =  ($field, validator)->
+#    getChildren.call(region_el)
+#    return $("(.SelectLocation)[lid][name='city']").first
+
   if cities < 1
     message = 'Пожалуйста, укажите город'
     if validator
+      scrollToField($('.GetChildren'))
       return {
       valid: false
       message: message
@@ -128,6 +148,7 @@ baseLocationValidation = (validator) ->
   if rostov is 1 and rostovNonAdminArea is 0
     message = 'Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону'
     if validator
+      scrollToField($('.GetChildren'))
       return {
       valid: false
       message: message
@@ -139,6 +160,7 @@ baseLocationValidation = (validator) ->
   if rostov is 1 and rostovStreet is 0
     message = 'Пожалуйста, укажите улицу в г Ростов-на-Дону'
     if validator
+      scrollToField($('.GetChildren'))
       return {
       valid: false
       message: message
@@ -151,7 +173,7 @@ baseLocationValidation = (validator) ->
   else
     return
 
-FormValidation.Validator.location_ids = validate: (validator, $field, options) ->
+FormValidation.Validator.location_ids =  validate: (validator, $field, options) ->
   return baseLocationValidation(true)
 
 
@@ -203,7 +225,10 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
       $(this).focusout()
     return true
 
-  ).on('err.field.fv', (e, data) ->
+  )
+  .on('err.field.fv', (e, data) ->
+    console.log('data' + data)
+    console.log('e' + e)
     if data.fv
       data.fv.disableSubmitButtons false
     return true
