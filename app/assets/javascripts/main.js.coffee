@@ -326,6 +326,7 @@ $('.SelectLocation').livequery ->
     click_select_location(sp)
     #revalidate anyway
     #sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
+    #IF NOT VALID - DO NOT SHOW POPOVER!!!!
     if (sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская')) and (sp['has_children'] is 'true')
       button = $this.closest('.location-group').find('.GetChildren')
       button.popover "destroy"
