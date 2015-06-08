@@ -238,21 +238,23 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
       $('form').data('formValidation').$invalidFields.each((i) ->
         isvalid = false if $(this)[i].name == 'location_validation')
       key = ''
+      validation_location_type = ''
       if error_msg == 'Пожалуйста, укажите город' && !isvalid
         key = 'region'
-      if (error_msg == 'Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону' or error_msg == 'Пожалуйста, укажите улицу в г Ростов-на-Дону') && !isvalid
+        validation_location_type = 'city'
+      if error_msg == 'Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону' && !isvalid
         key = 'city'
+        validation_location_type = 'non_admin_area'
+      if error_msg == 'Пожалуйста, укажите улицу в г Ростов-на-Дону' && !isvalid
+        key = 'city'
+        validation_location_type = 'street'
       $('.GetChildren').popover("destroy")
-      console.log('before get children in validation ' + isvalid + 'key '+ $("div:not(.SelectLocation)[lid][name=#{key}]"))
+#      console.log('before get children in validation ' + isvalid + 'key '+ $("div:not(.SelectLocation)[lid][name=#{key}]"))
       getChildren.call($("div:not(.SelectLocation)[lid][name=#{key}]"), null, ->
-        console.log('get child in city ' + key)
-#        $('.validation-error-message.' + key).text(error_msg)
-        $('.validation-locations').text(error_msg)
+#        console.log('get child in city ' + key)
+        $('.validation-error-message.' + validation_location_type).text(error_msg)
+#        $('.validation-locations').text(error_msg)
       )
-
-      console.log('get child in city ' + key)
-      #$('.validation-error-message.' + key).text(error_msg)
-      $('.validation-locations').text(error_msg)
 
     if data.fv
       data.fv.disableSubmitButtons false
