@@ -103,19 +103,11 @@ $('form.easyBootstrapValidator:visible').livequery ->
 #    return $('.validation-error-messages')
 
 scrollToField = (destination) ->
-  console.log('we are in scroll func')
   res = $('html')
   if ($.browser.safari)
     res = $('body')
   res.animate({scrollTop: destination }, 1100)
   return false
-
-show_error_message = (parent, field, msg) ->
-  getChildren.call(parent, null)
-  $("validation-error-message-" + field).text(msg)
-  console.log('we added message ' + msg + ' key ' + field)
-  return
-
 
 baseLocationValidation = (validator) ->
   location_el = $("div:not(.SelectLocation)[lid='0']")
@@ -142,7 +134,6 @@ baseLocationValidation = (validator) ->
       return {
       valid: false
       message: message
-      container: '.validation-locations'
       }
     else
       if regions is 1
@@ -187,7 +178,10 @@ baseLocationValidation = (validator) ->
 FormValidation.Validator.location_ids =  validate: (validator, $field, options) ->
   return baseLocationValidation(true)
 
-
+test_func = (key, error_msg) ->
+  console.log('get child in city ' + key)
+  console.log('validation div ' + $('.validation-error-message.' + key).attributes)
+  return $('.validation-error-message.' + key).text(error_msg)
 
 $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
   $this = $(this)
@@ -222,8 +216,6 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
               $('[name="advertisement[category]"]').is(':checked')
       'location_validation':
         icon: false
-#        err:
-#          container: '.validation-locations'
         validators:
           location_ids:
             message: ''
@@ -241,31 +233,26 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
   )
   .on('err.field.fv', (e, data) ->
     if data.field == 'location_validation'
-      #if data.message == 'Пожалуйста, укажите город'
+      error_msg = $('.help-block[data-fv-validator*="location_ids"]').text()
+      isvalid = true
+      $('form').data('formValidation').$invalidFields.each((i) ->
+        isvalid = false if $(this)[i].name == 'location_validation')
       key = ''
-      if $('.help-block[data-fv-validator*="location_ids"]').text() == 'Пожалуйста, укажите город'
+      if error_msg == 'Пожалуйста, укажите город' && !isvalid
         key = 'region'
-      if $('.help-block[data-fv-validator*="location_ids"]').text() == 'Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону'
+      if (error_msg == 'Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону' or error_msg == 'Пожалуйста, укажите улицу в г Ростов-на-Дону') && !isvalid
         key = 'city'
-      msg = $('.help-block[data-fv-validator*="location_ids"]').text()
       $('.GetChildren').popover("destroy")
+      console.log('before get children in validation ' + isvalid + 'key '+ $("div:not(.SelectLocation)[lid][name=#{key}]"))
       getChildren.call($("div:not(.SelectLocation)[lid][name=#{key}]"), null, ->
-        console.log('get child in city')
-        $('.validation-locations').text(msg)
+        console.log('get child in city ' + key)
+#        $('.validation-error-message.' + key).text(error_msg)
+        $('.validation-locations').text(error_msg)
       )
-      $('.validation-locations').text(msg)
-#      if $('.help-block[data-fv-validator*="location_ids"]').text() == 'Пожалуйста, укажите город'
-#        getChildren.call($("div:not(.SelectLocation)[lid][name='region']"), null)
-#        console.log('get child in city')
-#        $('.validation-locations').text('Пожалуйста, укажите город')
-#      else if $('.help-block[data-fv-validator*="location_ids"]').text() == 'Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону'
-#        getChildren.call($("div:not(.SelectLocation)[lid][name='city']"), null)
-#        console.log('get child in region')
-#        $('.validation-locations').text('Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону')
-#      else if $('.help-block[data-fv-validator*="location_ids"]').text() == 'Пожалуйста, укажите улицу в г Ростов-на-Дону'
-#        getChildren.call($("div:not(.SelectLocation)[lid][name='city']"), null)
-#        console.log('get in child district in rostov')
-#        $('.validation-locations').text('Пожалуйста, укажите улицу в г Ростов-на-Дону')
+
+      console.log('get child in city ' + key)
+      #$('.validation-error-message.' + key).text(error_msg)
+      $('.validation-locations').text(error_msg)
 
     if data.fv
       data.fv.disableSubmitButtons false

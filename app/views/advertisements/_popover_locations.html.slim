@@ -4,7 +4,7 @@
     - condition = %w(address street cottage garden complex non_admin_area).include?(key) && (can?(:manage, Location) || params[:editable] == 'true')
     - if value.present? || condition
       .row.form-horizontal
-        div class="validation-error-message-#{key}"
+        div class="validation-error-message #{key}"
         .col-md-1
           label for=key
             = t("activerecord.attributes.location.#{key}")

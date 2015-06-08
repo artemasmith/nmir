@@ -327,14 +327,26 @@ $('.SelectLocation').livequery ->
     #revalidate anyway
     #sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
     #IF NOT VALID - DO NOT SHOW POPOVER!!!!
-    if (sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская')) and (sp['has_children'] is 'true')
+    invalid_status = false
+    vlength = $('form').data('formValidation').$invalidFields.length
+    $('form').data('formValidation').$invalidFields.each( (i) ->
+      if $(this)[i].name == 'location_validation'
+        invalid_status = true )
+
+    sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
+    if (sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская') or invalid_status) and (sp['has_children'] is 'true')
       button = $this.closest('.location-group').find('.GetChildren')
       button.popover "destroy"
       button.removeClass('active')
       button.removeClass('dropdown-toggle')
       #in the getChildren callback sp[el] is an empty object!
       sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
-      getChildren.call($(".GetChildren[lid=#{lid}]"), null)
+      $('form').data('formValidation').$invalidFields.each( (i) ->
+        if $(this)[i].name == 'location_validation'
+          invalid_status = true )
+      console.log('invalid status = ' + invalid_status)
+      if !invalid_status
+        getChildren.call($(".GetChildren[lid=#{lid}]"), null)
   if ($.trim($this.text()) is 'обл Ростовская')
     $this.click()
   return
@@ -634,23 +646,31 @@ $('.autocomplete-search-location').livequery ->
       sp['group'] = $("input[value=#{sp['parent_id']}]").closest('.location-group')
       sp['value'] = ui.item.label
       sp['has_children'] = "#{ui.item.has_children}"
-      if sp['editable'] is 'true'
-        $this.closest('form').formValidation('revalidateField', 'location_validation')
+#      if sp['editable'] is 'true'
+#        $this.closest('form').formValidation('revalidateField', 'location_validation')
 
       sp['common'] = false
       click_select_location(sp)
       geoCoding()
       $this.val('')
 
+      $this.closest('form').formValidation('revalidateField', 'location_validation')
+      invalid_status = false
+      $('form').data('formValidation').$invalidFields.each( (i) ->
+        if $(this)[i].name == 'location_validation'
+          invalid_status = true )
+#      console.log('we revalidate fields =  ' + invalid_status)
+
       if sp['editable'] is 'true' && sp['has_children'] is 'true'
         button = $this.closest('.location-group').find('.GetChildren')
         button.popover "destroy"
         button.removeClass('active')
         button.removeClass('dropdown-toggle')
-        getChildren.call($(".GetChildren[lid=#{sp['lid']}]"))
+        if !invalid_status
+          getChildren.call($(".GetChildren[lid=#{sp['lid']}]"))
 
-      if sp['editable'] is 'true'
-        $this.closest('form').formValidation('revalidateField', 'location_validation')
+#      if sp['editable'] is 'true'
+#        $this.closest('form').formValidation('revalidateField', 'location_validation')
       return false
     })
   $this.focus()
