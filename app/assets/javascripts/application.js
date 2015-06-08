@@ -34,6 +34,7 @@
 
 //= require extend
 //= require main
+//= require location
 //= require time
 //= require validation
 
