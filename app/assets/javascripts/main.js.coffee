@@ -328,10 +328,11 @@ $('.SelectLocation').livequery ->
     #sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
     #IF NOT VALID - DO NOT SHOW POPOVER!!!!
     invalid_status = false
-    vlength = $('form').data('formValidation').$invalidFields.length
-    $('form').data('formValidation').$invalidFields.each( (i) ->
-      if $(this)[i].name == 'location_validation'
-        invalid_status = true )
+#    vlength = $('form').data('formValidation').$invalidFields.length
+    if $('form').data('formValidation')
+      $('form').data('formValidation').$invalidFields.each( (i) ->
+        if $(this)[i].name is 'location_validation'
+          invalid_status = true )
 
     sp['el'].closest('form').formValidation('revalidateField', 'location_validation')
     if (sp['editable'] is 'true' or ($.trim($this.text()) is 'обл Ростовская') or invalid_status) and (sp['has_children'] is 'true')
@@ -344,7 +345,6 @@ $('.SelectLocation').livequery ->
       $('form').data('formValidation').$invalidFields.each( (i) ->
         if $(this)[i].name == 'location_validation'
           invalid_status = true )
-      console.log('invalid status = ' + invalid_status)
       if !invalid_status
         getChildren.call($(".GetChildren[lid=#{lid}]"), null)
   if ($.trim($this.text()) is 'обл Ростовская')
