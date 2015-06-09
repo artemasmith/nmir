@@ -14,6 +14,8 @@
       if callback
         callback()
   )
+  if $('from').formValidation()
+    $('from').formValidation('revalidateField', 'location_validation')
   return
 
 $(".location-button").livequery ->

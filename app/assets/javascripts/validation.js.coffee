@@ -109,28 +109,24 @@ scrollToField = (destination) ->
   res.animate({scrollTop: destination }, 1100)
   return false
 
+show_error_msg = (dom, msg) ->
+  $(dom).text(msg)
+  return
+
 baseLocationValidation = (validator) ->
   location_el = $("div:not(.SelectLocation)[lid='0']")
   region_el = $("div:not(.SelectLocation)[lid][name='region']")
   regions = region_el.length
   cities = $("div:not(.SelectLocation)[lid][name='city']").length
 #  city = $("div:not(.SelectLocation)[lid][name='city']").first()
-  non_admin_areas = $("div:not(.SelectLocation)[lid][name='non_admin_area']").length
   rostov_el = $("div:not(.SelectLocation)[lid][name='city']:contains(г Ростов-на-Дону)")
   rostov = rostov_el.length
   rostovNonAdminArea = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='non_admin_area']").length
   rostovStreet = rostov_el.closest('.form-group-location').find("div:not(.SelectLocation)[lid][name='street']").length
-#  container =  ($field, validator)->
-#    getChildren.call(region_el)
-#    return $("(.SelectLocation)[lid][name='city']").first
 
   if cities < 1
     message = 'Пожалуйста, укажите город'
     if validator
-      scrollToField($('.GetChildren'))
-#      parent = region_el if region_el
-#      parent = location_el if !parent
-#      show_error_message(parent,'city',message)
       return {
       valid: false
       message: message
@@ -138,11 +134,15 @@ baseLocationValidation = (validator) ->
     else
       if regions is 1
         getChildren.call(region_el, null, ->
+#          console.log('region is 1')
+          show_error_msg('.validation-error-message.city', message)
+
 #          markLocation('city', message)
 #          markLocation('district', message)
         )
       else
         if regions is 0
+#          console.log('region is 0')
           getChildren.call(location_el, null, ->
 #            markLocation('region', message)
           )
@@ -150,25 +150,27 @@ baseLocationValidation = (validator) ->
   if rostov is 1 and rostovNonAdminArea is 0
     message = 'Пожалуйста, укажите неадминистративный район в г Ростов-на-Дону'
     if validator
-      scrollToField($('.GetChildren'))
       return {
       valid: false
       message: message
       }
     else
-      getChildren.call(rostov_el)
+#      console.log('rostov 1 and rostovnonadmin else')
+      getChildren.call(rostov_el, null,->
+        show_error_msg('.validation-error-message.non_admin_area', message))
       return
 
   if rostov is 1 and rostovStreet is 0
     message = 'Пожалуйста, укажите улицу в г Ростов-на-Дону'
     if validator
-      scrollToField($('.GetChildren'))
       return {
       valid: false
       message: message
       }
     else
-      getChildren.call(rostov_el)
+#      console.log('rostov is 1 and rostov street 0 else')
+      getChildren.call(rostov_el, null, ->
+        show_error_msg('.validation-error-message.street', message))
       return
   if validator
     return true
@@ -177,11 +179,6 @@ baseLocationValidation = (validator) ->
 
 FormValidation.Validator.location_ids =  validate: (validator, $field, options) ->
   return baseLocationValidation(true)
-
-test_func = (key, error_msg) ->
-  console.log('get child in city ' + key)
-  console.log('validation div ' + $('.validation-error-message.' + key).attributes)
-  return $('.validation-error-message.' + key).text(error_msg)
 
 $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible').livequery ->
   $this = $(this)
@@ -233,6 +230,7 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
   )
   .on('err.field.fv', (e, data) ->
     if data.field == 'location_validation'
+      scrollToField($('.GetChildren'))
       error_msg = $('.help-block[data-fv-validator*="location_ids"]').text()
       isvalid = true
       $('form').data('formValidation').$invalidFields.each((i) ->
@@ -249,6 +247,7 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
         key = 'city'
         validation_location_type = 'street'
       $('.GetChildren').popover("destroy")
+#      console.log('message ' + error_msg)
 #      console.log('before get children in validation ' + isvalid + 'key '+ $("div:not(.SelectLocation)[lid][name=#{key}]"))
       getChildren.call($("div:not(.SelectLocation)[lid][name=#{key}]"), null, ->
 #        console.log('get child in city ' + key)
