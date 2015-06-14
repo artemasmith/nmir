@@ -16,10 +16,10 @@ RSpec.describe ParserAdresat do
 
     it { ParserAdresat.parse_floor_from(row, titles).should eq(1) }
     it { ParserAdresat.parse_floor_cnt_from(row, titles).should eq(10) }
-    it { ParserAdresat.parse_price(row, titles).should eq(3450.0) }
+    it { ParserAdresat.parse_price(row, titles).should eq(3450000) }
     it { ParserAdresat.parse_room_from(row, titles).should eq(2) }
     it { ParserAdresat.parse_space_from(row, titles).should eq(60.0) }
-    it { ParserAdresat.parse_landmark(row, titles).should eq('Рыбак Дона') }
+    it { ParserAdresat.parse_landmark(row, titles, nil).should eq('Рыбак Дона') }
 
     it { ParserAdresat.parse_year(row, titles).should eq('2015') }
     it { ParserAdresat.parse_balcony(row, titles).should eq('не указано') }
@@ -36,9 +36,9 @@ RSpec.describe ParserAdresat do
     let(:titles3){{ "РЕЗУЛЬТАТ ПОИСКА: Ростов-на-Дону г   Раздел:ПРОДАЮ УЧАСТКИ найдено заявок: 14.Объект" => 0 }}
 
     it { ParserAdresat.parse_offer_type(titles).should eq(:sale) }
-    it { ParserAdresat.parse_category(titles).should eq(:flat) }
-    it { ParserAdresat.parse_category(titles2).should eq(:house) }
-    it { ParserAdresat.parse_category(titles3).should eq(:ijs) }
+    it { ParserAdresat.parse_category(titles.keys).should eq(:flat) }
+    it { ParserAdresat.parse_category(titles2.keys).should eq(:house) }
+    it { ParserAdresat.parse_category(titles3.keys).should eq(:ijs) }
     it { ParserAdresat.parse_adv_type(titles).should eq(:offer) }
 
   end

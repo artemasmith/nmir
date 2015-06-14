@@ -59,6 +59,8 @@ end
 
 module AdvSpecHelper
   def adv_attr_list
+    #private_comment
+    #expire_date
     %i(
       offer_type
       property_type
@@ -67,7 +69,7 @@ module AdvSpecHelper
 
       created_at
       updated_at
-      expire_date
+
       payed_adv
       manually_added
       distance
@@ -81,7 +83,7 @@ module AdvSpecHelper
       agency_id
       not_for_agents
       comment
-      private_comment
+
 
       floor_from
       floor_to
@@ -112,10 +114,10 @@ module AdvSpecHelper
   def new_adv
     # valid parameters
     Advertisement.new({
-      offer_type: 1,
-      property_type: 1,
-      category: 1,
-      adv_type: 1,
+      offer_type: :rent,
+      property_type: :residental,
+      category: :flat,
+      adv_type: :offer,
 
       distance: 100,
       time_on_transport: 15,
@@ -128,7 +130,7 @@ module AdvSpecHelper
       agency_id: 1,
       not_for_agents: true,
       comment: 'afss',
-      private_comment: 'asd',
+      #private_comment: 'asd',
 
       floor_from: 1,
       floor_to: 4,

@@ -23,7 +23,7 @@ RSpec.describe ParserDonrio do
   ] }
 
   describe "correct input for flat provided" do
-    it { ParserDonrio.parse_name_and_phone(row,titles).should eq(["Елена", "+79613060047"]) }
+    it { ParserDonrio.parse_name_and_phone(row,titles).should eq(["Елена", "+79613060047", 0]) }
     it { ParserDonrio.parse_space_from(row,titles).should eq(35) }
     it { ParserDonrio.parse_price(row).should eq(1720000) }
     it { ParserDonrio.parse_floor_from(row,titles).should eq(0) }
@@ -31,12 +31,35 @@ RSpec.describe ParserDonrio do
     it { ParserDonrio.parse_category(row,titles).should eq(:flat) }
 
     describe "house correct input" do
-      it { ParserDonrio.parse_name_and_phone(row2,titles2).should eq(["Виктория", "89094283730"]) }
+      it { ParserDonrio.parse_name_and_phone(row2,titles2).should eq(["Виктория", "89094283730", 0]) }
       it { ParserDonrio.parse_space_from(row2,titles2).should eq(50) }
       it { ParserDonrio.parse_price(row2).should eq(2000000) }
       it { ParserDonrio.parse_floor_from(row2,titles2).should eq(nil) }
       it { ParserDonrio.parse_floor_cnt_from(row2,titles2).should eq(nil) }
       it { ParserDonrio.parse_category(row2,titles2).should eq(:house) }
+    end
+
+  end
+
+  describe "agent in contact row (flat)" do
+    let(:titles3){ { "Тел контанк" => 0 }}
+    let(:row3){[ '(908)516-82-27" Валерия агент на % не претендует' ]}
+    let(:row5){ ['(951)499-28-83" марина Агент 12'] }
+    let(:row7){ ['(951)499-28-83" марина поСредник 12'] }
+
+    it { ParserDonrio.parse_name_and_phone(row3, titles3).should eq(['Валерия', '+79085168227', 1]) }
+    it { ParserDonrio.parse_name_and_phone(row5, titles3).should eq(['марина', '+79514992883', 1]) }
+    it { ParserDonrio.parse_name_and_phone(row7, titles3).should eq(['марина', '+79514992883', 1]) }
+
+    describe "house agent in contact" do
+      let(:row4){ ['(904)443-22-50 агент на % не претендует"'] }
+      let(:row6){ ['(904)443-22-50 ПосРедник на % не претендует"'] }
+      let(:row8){ ['(904)443-22-50 '] }
+
+      it { ParserDonrio.parse_name_and_phone(row4, titles3).should eq(['', '+79044432250', 1]) }
+      it { ParserDonrio.parse_name_and_phone(row6, titles3).should eq(['', '+79044432250', 1]) }
+      it { ParserDonrio.parse_name_and_phone(row8, titles3).should eq(['', '+79044432250', 0]) }
+
     end
   end
 

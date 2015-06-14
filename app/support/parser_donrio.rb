@@ -45,13 +45,20 @@ class ParserDonrio
     phones
   end
 
-  AGENT_PHRASES = ['агент на не претендует', 'агент на % не претендует', 'посредник % на не претендует', 'у нас как агент', 'агент на %не претендут', 'агент  на% не претендует' ]
+  def self.remove_agent(str, bad_str)
+    pos = str.index(/#{bad_str}/i)
+    if pos
+      return str[0..(pos-1)]
+    end
+    str
+  end
 
   def self.parse_name_and_phone row, titles
     begin
       prepare = row[titles['Тел контанк']]
       agent = prepare.match(/(агент|посредник)/i) ? 1 : 0
-      AGENT_PHRASES.each { |pattern| prepare = prepare.gsub(/#{pattern}/i, '') }
+      prepare = remove_agent(prepare, 'агент')
+      prepare = remove_agent(prepare, 'посредник')
       prepare = prepare.strip.scan(/[A-Za-z_А-Яа-я]+|[\s0-9\(\)-]+/)
       list = prepare.map do |e|
          e.gsub(/[-+\(\)\s]/, '').strip

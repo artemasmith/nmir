@@ -10,9 +10,13 @@
 
 require 'rails_helper'
 
-RSpec.describe Phone, :type => :model do
+describe Phone, :type => :model do
+  let(:user){ FactoryGirl.create(:user) }
+  #let(:adv){ FactoryGirl.create(:advertisement, user_id: user.id)}
+  let(:phone) { FactoryGirl.create(:phone, user_id: user.id) }
   describe 'must be converted from city number to mobile' do
-    subject(:phone) { Phone.new }
+
+
 
     describe 'Megaphone' do
       it '8-863-226-* >> 8-928-226-*' do
@@ -82,20 +86,17 @@ RSpec.describe Phone, :type => :model do
   end
     
   describe 'with existing number' do
-    subject(:phone) { Phone.new }
-
-    before(:all) do 
-      Phone.create(original: '8-863-229-11-22')
-    end 
+    let(:phone2) { Phone.new }
 
     it 'with same phone'  do
-      phone.original = '8-863-229-11-22'
-      expect(phone).not_to be_valid
+      Phone.create(original: '8-863-229-11-22', user_id: user.id)
+      phone2.original = '8-863-229-11-22'
+      expect(phone2).not_to be_valid
     end
   end
 
   describe 'has original and normalized number.' do
-    subject(:phone) { Phone.new }
+    # subject(:phone) { Phone.new }
 
     it { expect(phone).to respond_to(:original) }
     it { expect(phone).to respond_to(:number) }
