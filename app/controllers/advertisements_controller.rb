@@ -427,13 +427,13 @@ class AdvertisementsController < ApplicationController
     end
     if @adv.valid?
       if current_user.present? && current_user.admin?
-        @adv.user.source = :admin
-        @adv.source = :admin
+        @adv.user.source = :manual
+        @adv.source = :manual
       end
       @adv.save
       cookies[:location_ids] = advertisement_params[:location_ids]
       sign_in @adv.user if current_user.blank?
-      redirect_to "#{advertisement_path(@adv)}-#{@adv.url}"
+      redirect_to "#{advertisement_path(@adv)}-#{@adv.url}", flash: {entity_submit: true}
     else
       load_location_state!
       @grouped_allowed_attributes = @adv.grouped_allowed_attributes

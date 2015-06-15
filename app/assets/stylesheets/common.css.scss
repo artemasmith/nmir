@@ -58,13 +58,13 @@ h2 {
   font-size: 1.6em;
 }
 
-.form-horizontal .location-group, .form-horizontal .form-group-location{
+.location-group, .form-group-location{
   margin: 0!important;
   display: inline-block!important;
 }
 
 
-.form-inline .form-group.location-group, .form-horizontal .form-group.location-group {
+.form-group.location-group, .form-group.location-group {
   position: inherit;
 }
 
@@ -117,10 +117,16 @@ h2 {
   right: -35px;
 }
 
-.map{
+.map
+{
   width: auto;
   height: 425px;
   margin-bottom: 15px;
+}
+
+body {
+//  background-image: url(back.png);
+//  background-color: #98a8b7
 }
 
 

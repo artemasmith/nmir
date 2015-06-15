@@ -25,8 +25,10 @@ class Phone < ActiveRecord::Base
   after_save :update_advs
 
   def phone_number
-    if self.original.to_s.scan(/\d/).join('').size < 6
+    if self.original.to_s.scan(/\d/).join('').size < 10
       self.errors.add(:phone_number, '^в номере не хватает цифр')
+    elsif self.original.to_s.scan(/\d/).join('').size > 12
+      self.errors.add(:phone_number, '^в номере слишком много цифр')
     end
   end
 
@@ -66,14 +68,15 @@ class Phone < ActiveRecord::Base
 
   def self.normalize(phone)
     number = phone.gsub(/[\(\)\-_ ]+/, '')
-    number.gsub!(/^8/, '+7')
-
+    number.gsub!(/^8/, '+7') if number.length == 11
     number = "2#{number}" if number.length == 6
 
     if number.length == 7
       number = "+7863#{number}"
     elsif number.length == 10
       number = "+7#{number}"
+    elsif number.length == 11 && number[0] =='7'
+      number = "+#{number}"
     end
 
     convert_city_phones(number)

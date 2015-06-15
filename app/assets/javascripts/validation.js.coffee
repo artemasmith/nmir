@@ -49,7 +49,7 @@ initPhone = ($this) ->
           url: Routes.api_validation_index_path()
         phone:
           country: 'RU'
-          message: "Такой телефон не допустим"
+          message: "Пожалуйста, введите телефон с кодом города/сети"
         notEmpty:
           message: "Пожалуйста, введите телефон"
       onError: (e, data) ->
@@ -246,7 +246,10 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
       if error_msg == 'Пожалуйста, укажите улицу в г Ростов-на-Дону' && !isvalid
         key = 'city'
         validation_location_type = 'street'
-      $('.GetChildren').popover("destroy")
+      el = $('.GetChildren')
+      el.popover("destroy")
+      $('.GetChildren').removeClass('active')
+      $('.GetChildren').removeClass('dropdown-toggle')
 #      console.log('message ' + error_msg)
 #      console.log('before get children in validation ' + isvalid + 'key '+ $("div:not(.SelectLocation)[lid][name=#{key}]"))
       getChildren.call($("div:not(.SelectLocation)[lid][name=#{key}]"), null, ->

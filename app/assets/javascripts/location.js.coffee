@@ -8,9 +8,15 @@
     params['offer_types'] = offer_types
     params['categories'] = categories
     params['editable'] = false
+    $this.closest('.location-group').parent().append("<div lid=#{$this.attr('lid')} class=\"btn fa fa-spinner fa-spin\"></div>")
   $.getScript(
     Routes.get_locations_advertisements_path(params),
     ->
+      $(".btn.fa.fa-spinner[lid=#{$this.attr('lid')}]").remove()
+      $this.parent().find('.close_action').click ->
+        $this.popover('destroy')
+        $this.removeClass('active')
+        $this.removeClass('dropdown-toggle')
       if callback
         callback()
   )
@@ -335,6 +341,4 @@ $('.create-location-action').livequery ->
         changeSearchButtonStatus(for_)
         geoCoding()
         return
-
-
     )

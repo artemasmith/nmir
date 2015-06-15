@@ -22,7 +22,7 @@ class CabinetController < ApplicationController
     with[:user_id] = current_user.id
 
     [:expired].each do |m|
-      if search_params[m].present? && search_params[m] == '1' && can?(:read_expired, Advertisement)
+      if search_params[m].present? && search_params[m] == '1'
         with['status_type'] = AdvEnums::STATUSES.index(:expired)
       else
         with['status_type'] = AdvEnums::STATUSES.index(:active)

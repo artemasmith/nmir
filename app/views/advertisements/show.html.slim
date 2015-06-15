@@ -120,7 +120,9 @@ h1
       i.fa.fa-arrow-down
 
     = render 'advertisements/search_results'
-
+- if flash[:entity_submit]
+  javascript:
+    send_ya_metrika && send_ya_metrika('entity_submit');
 
 
 

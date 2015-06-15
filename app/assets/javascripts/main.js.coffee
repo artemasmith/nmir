@@ -225,7 +225,7 @@ $('.AdvPropertySearch').livequery ->
   $(this).change set_adv_property
 
 $('.checkPhone').livequery ->
-  $(this).on 'keyup paste', ->
+  $(this).on 'keyup paste input', ->
     check_phones()
 
 $('.DuplicatePhones').livequery ->

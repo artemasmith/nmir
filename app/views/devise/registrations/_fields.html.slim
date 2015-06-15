@@ -1,12 +1,12 @@
-.form-group
-  label.control-label.col-sm-2
-    i.fa.fa-at
-    '
-    | почта
-  .col-sm-4
-    = f.email_field :email, class: 'form-control', placeholder: 'mail@example.com', type: 'text'
 - if additional_params
   - if (f.object.new_record? && !can?(:create_from_admin, f.object))
+    .form-group
+      label.control-label.col-sm-2
+        i.fa.fa-at
+        '
+        | почта
+      .col-sm-4
+        = f.email_field :email, class: 'form-control', placeholder: 'mail@example.com', type: 'text'
     .form-group
 
       label.control-label.col-sm-2
