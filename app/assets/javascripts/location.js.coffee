@@ -22,6 +22,8 @@
   )
   if $('from').formValidation()
     $('from').formValidation('revalidateField', 'location_validation')
+
+  send_ya_metrika('root_place_selector_press')
   return
 
 $(".location-button").livequery ->
