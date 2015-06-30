@@ -507,6 +507,12 @@ $('.yaSend').livequery ->
     send_ya_metrika($(this).attr('yaparam'))
     return
 
+$('.createEntity').livequery ->
+  $(this).on 'submit', ->
+#    alert('dfgdfgdfgdfg')
+#    console.log('send ya!')
+    send_ya_metrika('entity_submit')
+
 
 
 

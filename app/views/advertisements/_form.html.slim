@@ -7,7 +7,7 @@ h1
     | Редактирование объявления
 
 .well.well-sm
-  = nested_form_for @adv, html: {multipart: true, class: 'fileupload'} do |f|
+  = nested_form_for @adv, html: {multipart: true, class: "fileupload #{ 'createEntity' if @adv.new_record? }"} do |f|
     = f.hidden_field :adv_type, class: 'adv-type-value'
     = f.hidden_field :property_type, class: 'property-type-value'
     = f.hidden_field :latitude, class: 'latitude-value'

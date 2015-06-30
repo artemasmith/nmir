@@ -19,6 +19,10 @@ initEmail = ($this) ->
     })
     form.formValidation('revalidateField', $this.name)
 
+$('input[type=text][name="user[email]"], input[type=text][name="advertisement[user_attributes][email]"]').livequery ->
+  $this = $(this)
+  $this.focusout ->
+    initEmail($this)
 
 colorLabel = ->
   errors = $('#reg-phones').find('.has-error').length
@@ -64,6 +68,38 @@ initPhone = ($this) ->
     })
     form.formValidation('revalidateField', $this.name)
 
+
+initPassword = ($this) ->
+  console.log('inipass')
+#  unless $this.attr('data-fv-field')
+  console.log('in unless cile')
+  form = $this.closest('form')
+  console.log form
+  validators =
+    password:
+      message: "Пожалуйста, введите password"
+    notEmpty:
+      message: "Пожалуйста, введите password"
+    stringLength:
+      message: 'Min length is 6 symbols'
+      min: 6
+
+  form.formValidation('addField', $this, {
+    validators: validators
+  })
+  form.formValidation('revalidateField', $this.name)
+
+
+$('input[type=password][name="user[password]"], input[type=password][name="advertisement[user_attributes][password]"]').livequery ->
+  $this = $(this)
+  $this.focusout ->
+    initPassword($this)
+
+
+$('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
+  $this = $(this)
+  $this.focusout ->
+    initPhone($this)
 
 $('form.easyBootstrapValidator:visible').livequery ->
   $this = $(this)
@@ -271,17 +307,6 @@ $('form:not(".withoutBootstrapValidator"):not(".easyBootstrapValidator"):visible
     return true
 
 
-$('input[type=text][name="user[email]"], input[type=text][name="advertisement[user_attributes][email]"]').livequery ->
-  $this = $(this)
-  $this.focusout ->
-    initEmail($this)
-
-
-
-$('#reg-phones input[type=text]:not(.checkPhone)').livequery ->
-  $this = $(this)
-  $this.focusout ->
-    initPhone($this)
 
 $('form .attributes input, form .attributes textarea').livequery ->
   $this = $(this)
