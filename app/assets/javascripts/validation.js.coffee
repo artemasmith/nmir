@@ -70,18 +70,14 @@ initPhone = ($this) ->
 
 
 initPassword = ($this) ->
-  console.log('inipass')
-#  unless $this.attr('data-fv-field')
-  console.log('in unless cile')
   form = $this.closest('form')
-  console.log form
   validators =
     password:
       message: "Пожалуйста, введите password"
     notEmpty:
       message: "Пожалуйста, введите password"
     stringLength:
-      message: 'Min length is 6 symbols'
+      message: 'Минимальная длина пароля 6 символов'
       min: 6
 
   form.formValidation('addField', $this, {
